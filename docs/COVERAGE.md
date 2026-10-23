@@ -133,15 +133,15 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #X10 | TDD | glossary/tdd | glossary |
 | 111-list #X11 | DDD | glossary/ddd | glossary |
 | 111-list #X12 | Fowler's 12 smells | glossary/fowlers-smells | glossary |
-| 111-list #X13 | Pocock Standards axis | `chg-standards-conform` | gap |
+| 111-list #X13 | Pocock Standards axis | `chg-match-codebase-pattern` | draft |
 | 111-list #X14 | Pocock Spec axis | `chg-matches-spec` | draft |
 | 111-list #X15 | Thermo-nuclear points | glossary/thermo-nuclear | glossary |
 | research-gap | a change is too large to review (about 200-400 lines or 20+ fi | `chg-size-ceiling` | draft |
 | research-gap | a change mixes refactor or formatting with behavior change. | `chg-refactor-separate` | draft |
-| research-gap | legacy behavior changes with no test recording what it does to | `chg-characterization-test` | gap |
+| research-gap | legacy behavior changes with no test recording what it does to | `chg-chestertons-fence` | draft |
 | research-gap | the description omits what the problem is, or lists only the c | `chg-author-hygiene` | draft |
 | research-gap | code changes without tests and no reason is given. | `chg-tests-ship-with-change` | draft |
-| research-gap | a rewrite names no defect that only a rewrite fixes. | `chg-no-rewrite-without-defect` | gap |
+| research-gap | a rewrite names no defect that only a rewrite fixes. | `chg-chestertons-fence` | draft |
 | research-gap | a module is a shallow wrapper or pass-through, or leaks one pi | `mod-deep-modules` | draft |
 | research-gap | an abstraction is introduced from one or two uses, or grows fl | `mod-no-wrong-abstraction` | draft |
 | research-gap | a comment restates the code or is stale. | `fn-comments-explain-why` | draft |
@@ -184,7 +184,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | change-codebase | ADRs (gap: format unsourced) | `code-adr` | draft |
 | change-codebase | Consistency drift | `code-consistency-drift` | draft |
 | change-codebase | Supply chain: workflows, provenance | `code-workflow-supply-chain` | draft |
-| core-python | How I review: Ledger: PASS/FAIL/N/A with evidence | dropped: out of scope (change-level cards) | dropped |
+| core-python | How I review: Ledger: PASS/FAIL/N/A with evidence | `chg-review-comment-format` | draft |
 | core-python | What the tools own: Linter owns what it can decide; add the gate | `py-ruff-gate` | draft |
 | core-python | Architecture: Three layers named by what they do; dependencies point inward | `mod-layers-point-inward` | draft |
 | core-python | Architecture: Entry module stays thin | `mod-thin-entry-point` | draft |
@@ -221,10 +221,10 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Error handling: Specific exceptions only | `fn-specific-exceptions-only` | draft |
 | core-python | Error handling: Propagate, translate with `from` | `fn-propagate-dont-swallow` | draft |
 | core-python | Error handling: Base exception per package, errors module | `py-error-hierarchy` | draft |
-| core-python | Error handling: Retry only transient failures on idempotent operations | dropped: out of scope (service-level cards) | dropped |
-| core-python | Error handling: Error responses don't leak internals | dropped: out of scope (service-level cards) | dropped |
-| core-python | Error handling: Log the branches that matter with a request ID | dropped: out of scope (service-level cards) | dropped |
-| core-python | Security: Validate every input; name new attack surface; secrets from settings | dropped: out of scope (service-level cards) | dropped |
+| core-python | Error handling: Retry only transient failures on idempotent operations | `svc-retry-policy` | draft |
+| core-python | Error handling: Error responses don't leak internals | `sys-secrets-and-errors` | draft |
+| core-python | Error handling: Log the branches that matter with a request ID | `svc-request-id-logging` | gap |
+| core-python | Security: Validate every input; name new attack surface; secrets from settings | `mod-validate-at-boundary-once`, `chg-name-attack-surface`, `sys-secrets-and-errors` | draft |
 | core-python | Docstrings and comments: Comments explain why | `fn-comments-explain-why` | draft |
 | core-python | Docstrings and comments: Comments survive loss of context | `fn-comments-survive-context` | draft |
 | core-python | Docstrings and comments: No forced docstrings, Google style | `py-docstrings-google` | draft |
@@ -236,15 +236,15 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Testing: Whole-object assertions; mock at the boundary; fake has real signature | `mod-mock-at-boundaries-only` | draft |
 | core-python | Testing: No Arrange/Act/Assert comments; deterministic; layout mirrors source; fixtures; regression test first | `py-test-hygiene` | draft |
 | core-python | Concurrency: No check-then-act across `await`; atomic operations | `fn-no-check-then-act-across-await`, `py-await-check-then-act` | draft |
-| core-python | Concurrency: Shared state reasoned about for races | dropped: out of scope (change-level cards) | dropped |
+| core-python | Concurrency: Shared state reasoned about for races | `fn-no-check-then-act-across-await` | draft |
 | core-python | Resource lifecycle: Per-key caches bounded | `mod-bounded-caches` | draft |
 | core-python | Resource lifecycle: Pooled clients built once | `mod-pooled-clients-built-once`, `py-httpx-client-lifespan` | draft |
 | core-python | Resource lifecycle: Timeouts on both legs | `svc-timeouts`, `py-httpx-client-lifespan` | draft |
 | core-python | Resource lifecycle: Stream, don't materialise; bound background tasks | `svc-stream-dont-materialise` | gap |
 | core-python | Change discipline: Never silence a diagnostic | `py-no-silenced-diagnostics` | draft |
 | core-python | Change discipline: No paths relative to the working directory | `py-paths-from-file` | draft |
-| core-python | Change discipline: Verify before claiming; delete workarounds; stay in scope; Chesterton; measure | dropped: out of scope (change-level cards) | dropped |
-| core-python | Writing the review: Severity labels, one comment per finding, design first | dropped: out of scope (change-level cards) | dropped |
+| core-python | Change discipline: Verify before claiming; delete workarounds; stay in scope; Chesterton; measure | `chg-verify-before-claim`, `chg-matches-spec`, `chg-chestertons-fence` | draft |
+| core-python | Writing the review: Severity labels, one comment per finding, design first | `chg-review-comment-format` | draft |
 | core-python | Critical rules: Bookmark table | dropped: bookmark table, severity lives on cards | dropped |
 | core-python | Additions beyond the guide: Deep modules | `mod-deep-modules` | draft |
 | core-python | Additions beyond the guide: Wrong abstraction | `mod-no-wrong-abstraction` | draft |
@@ -297,10 +297,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 
 Reserved ids with no card. Each line is the rule the card would check.
 
-- `chg-characterization-test`: FAIL if legacy behavior changes with no test recording what it does today.
 - `chg-migration-add-column-rewrite`: FAIL if ADD COLUMN with a volatile default, generated stored column or identity on a large table.
-- `chg-no-rewrite-without-defect`: FAIL if a rewrite names no defect that only a rewrite fixes.
-- `chg-standards-conform`: FAIL if the diff violates a documented repo standard and the comment cites it.
 - `code-ai-pr-disclosure`: FAIL if an AI-assisted PR lacks disclosure or an author able to explain it.
 - `code-build-hermetic`: FAIL if build depends on host tools or floating versions, or a release is not tied to one revision.
 - `code-secret-scan`: FAIL if a credential is committed to the repo (unsourced).
@@ -309,4 +306,5 @@ Reserved ids with no card. Each line is the rule the card would check.
 - `mod-prefer-sync-api`: FAIL if a module exposes an async-only API where a synchronous one would let callers add concurrency.
 - `mod-subtype-passes-parent-tests`: FAIL if a subclass breaks the parent's black-box tests (stricter inputs, weaker outputs, broken invariants).
 - `svc-saga-steps`: FAIL if a step after the pivot is not idempotent and retryable, or a compensation can fail unhandled.
+- `svc-request-id-logging`: FAIL if a log line on a request path carries no request id.
 - `svc-stream-dont-materialise`: FAIL if a large result is materialised in memory, or background tasks are unbounded.
