@@ -11,9 +11,9 @@ borrowed_from:
   - https://www.honeycomb.io/blog/time-to-version-observability-signs-point-to-yes
 ---
 
-**Rule.** Emit one structured event per request carrying ids (user or tenant, build, flag state, trace), keep metric labels bounded, and record deploys and flag changes as telemetry.
+**Rule.** Emit one structured event per request carrying trace, tenant, build and flag state.
 
-**Why.** Many narrow log lines cannot be joined to answer "who is affected"; a metric labeled with user id explodes cost; without a deploy marker you cannot compare before and after.
+**Why.** Also keep metric labels bounded and record deploys and flag changes as telemetry. Many narrow log lines cannot be joined to answer "who is affected"; a metric labeled with user id explodes cost; without a deploy marker you cannot compare before and after.
 
 **FAIL**
 

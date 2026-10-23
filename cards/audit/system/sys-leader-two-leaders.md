@@ -27,4 +27,6 @@ if am_leader: send_invoices()      # not idempotent, lease never rechecked
 for inv in pending: if lease.valid(): send_once(inv.id)   # keyed, idempotent
 ```
 
+**See also.** [[sys-lock-fencing]], [[svc-idempotency-key]].
+
 **Counterpoint.** AWS recommends first asking whether you need a leader at all (idempotent APIs or optimistic locking often suffice); hardening the leader is the second choice, not the first.

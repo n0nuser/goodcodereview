@@ -28,4 +28,6 @@ Runbook: "roll back to previous version" (last attempted: never; migration not r
 Runbook: rollback drill 2026-10-01, schema is expand-only, on-call may trigger.
 ```
 
+**See also.** [[chg-rollback-path]], [[prod-canary-staged-rollout]].
+
 **Counterpoint.** "Drills are costly." Do one when a migration or release process changes; it is cheaper than discovering rollback is impossible during an outage.

@@ -11,9 +11,9 @@ borrowed_from:
   - https://aws.amazon.com/builders-library/implementing-health-checks/
 ---
 
-**Rule.** Wire the load balancer and restarter to liveness and local checks only; dependency checks feed alarms, and a host must not evict itself because a shared dependency failed.
+**Rule.** Wire load balancers and restarters to liveness and local checks only, never to shared-dependency checks.
 
-**Why.** If the database blips, every host fails its check, all are removed at once, and a partial outage becomes total.
+**Why.** Dependency status belongs in alarms. If the database blips, every host fails its check, all are removed at once, and a partial outage becomes total.
 
 **FAIL**
 

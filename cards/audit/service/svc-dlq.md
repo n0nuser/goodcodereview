@@ -11,9 +11,9 @@ borrowed_from:
   - https://aws.amazon.com/builders-library/avoiding-insurmountable-queue-backlogs/
 ---
 
-**Rule.** Every consumer queue has a dead-letter queue with a max receive count, an alarm when it is non-empty, and a visibility timeout longer than worst-case processing (or an extension).
+**Rule.** Give every consumer queue a dead-letter queue.
 
-**Why.** A poison message otherwise loops forever, hides real backlog, and processing that outlives the visibility timeout creates duplicate work.
+**Why.** A poison message otherwise loops forever and hides real backlog. Also keep the visibility timeout longer than worst-case processing (or extend it), or slow work is delivered twice.
 
 **FAIL**
 

@@ -6,8 +6,8 @@ Source check (docs/research/ops-docs-recheck.md) -> card id. Cards with no sourc
 
 | Source check | Card |
 |---|---|
-| asyncio: discarded create_task, TaskGroup, shield | svc-py-task-reference |
-| asyncio: swallowed CancelledError, TimeoutError inside timeout block | svc-py-cancellation |
+| asyncio: discarded create_task, TaskGroup, shield | py-task-reference |
+| asyncio: swallowed CancelledError, TimeoutError inside timeout block | py-cancellation |
 | asyncio: await without timeout bound; Azure retry/timeouts | svc-timeouts |
 | Azure retry: backoff, attempts, non-transient, stacked layers; AWS correlated: jitter | svc-retry-policy |
 | Azure retry/saga: idempotency, unique saga id | svc-idempotency-key |
@@ -24,7 +24,7 @@ Source check (docs/research/ops-docs-recheck.md) -> card id. Cards with no sourc
 | PG altertable: NOT VALID / VALIDATE | sys-constraint-not-valid |
 | PG createindex: CONCURRENTLY, INVALID leftovers | sys-index-concurrently |
 | GitLab migration style + avoiding downtime | sys-migration-expand-contract |
-| OWASP A03:2025, Scorecard, SLSA | sys-supply-chain |
+| OWASP A03:2025, Scorecard, SLSA | dropped here; home is the code-* cards (code-dependency-pinning, code-workflow-supply-chain, code-dependency-licence-sbom) |
 | OWASP LLM01 | sys-prompt-injection |
 | OWASP A10:2025, ASVS V16 (error leaks, fail open, log data) | sys-secrets-and-errors |
 | OWASP A01 (SSRF folded in) | sys-ssrf |
@@ -37,7 +37,9 @@ Source check (docs/research/ops-docs-recheck.md) -> card id. Cards with no sourc
 
 ## Cards with no source in docs/research (first-hand, draft)
 
-svc-api-compat-pagination, svc-py-check-then-act-await, sys-n-plus-one-pooling, prod-slo-error-budget, inc-postmortem-owned-actions. Also partly unsourced: svc-sqli-authn and sys-ssrf (OWASP index only), sys-secrets-and-errors (secret storage), prod-kill-switch-fallback (kill switch).
+Check-then-act across await: dropped here; home is [[fn-no-check-then-act-across-await]].
+
+svc-api-compat-pagination, sys-n-plus-one-pooling, prod-slo-error-budget, inc-postmortem-owned-actions. Also partly unsourced: svc-sqli-authn and sys-ssrf (OWASP index only), sys-secrets-and-errors (secret storage), prod-kill-switch-fallback (kill switch).
 
 ## Not covered by a card (no FAIL): glossary candidates
 

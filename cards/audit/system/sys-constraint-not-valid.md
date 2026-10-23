@@ -4,7 +4,8 @@ level: system
 tags: [database, migrations, postgres]
 severity: block
 status: draft
-lang: sql
+note: ADD CONSTRAINT ... USING INDEX route not independently verified; PostgreSQL is the example dialect
+lang: core
 applies_when: A migration adds a CHECK, FOREIGN KEY or NOT NULL constraint to a large existing table.
 tool_gate: Migration linter.
 borrowed_from:
@@ -28,4 +29,4 @@ ALTER TABLE orders ADD CONSTRAINT amt_pos CHECK (amount > 0) NOT VALID;
 ALTER TABLE orders VALIDATE CONSTRAINT amt_pos;   -- next migration
 ```
 
-**Counterpoint.** "NOT VALID is lock-free." Not quite: the ADD still takes its lock briefly, so pair it with `lock_timeout`. Unique and primary keys do not accept NOT VALID; they need a concurrently built unique index first (the ADD ... USING INDEX route was not independently verified in the notes).
+**Counterpoint.** "NOT VALID is lock-free." Not quite: the ADD still takes its lock briefly, so pair it with `lock_timeout`. Unique and primary keys do not accept NOT VALID; they need a concurrently built unique index first.

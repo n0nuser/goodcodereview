@@ -12,9 +12,9 @@ borrowed_from:
   - https://aws.amazon.com/builders-library/workload-isolation-using-shuffle-sharding/
 ---
 
-**Rule.** Enforce a per-tenant quota and concurrency cap, and return 429 for over-quota but 503 for the service's own lack of capacity.
+**Rule.** Enforce a per-tenant quota on shared APIs and queues.
 
-**Why.** Without a quota one noisy tenant consumes shared capacity for everyone. Wrong status codes make clients retry quota errors as if they were transient capacity problems.
+**Why.** Without a quota one noisy tenant consumes shared capacity for everyone. Also add a per-tenant concurrency cap, and return 429 for over-quota but 503 for the service's own lack of capacity, so clients do not retry quota errors as capacity problems.
 
 **FAIL**
 

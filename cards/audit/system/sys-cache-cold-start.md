@@ -11,9 +11,9 @@ borrowed_from:
   - https://aws.amazon.com/builders-library/caching-challenges-and-strategies/
 ---
 
-**Rule.** The miss path must be rate-capped and coalesced, and the system must survive with the cache empty or down.
+**Rule.** Cap and coalesce the cache-miss path so an empty cache cannot overwhelm the origin.
 
-**Why.** After a deploy, restart or cache outage every request misses at once and the origin is overwhelmed (a stampede), which also stops the cache from refilling.
+**Why.** The system must also survive with the cache down. After a deploy, restart or cache outage every request misses at once and the origin is overwhelmed (a stampede), which also stops the cache from refilling.
 
 **FAIL**
 

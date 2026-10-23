@@ -1,5 +1,5 @@
 ---
-id: svc-py-task-reference
+id: py-task-reference
 level: service
 tags: [asyncio, concurrency]
 severity: block
@@ -28,5 +28,7 @@ async with asyncio.TaskGroup() as tg:
     tg.create_task(send_email(user))
 # or: t = create_task(...); bg.add(t); t.add_done_callback(bg.discard)
 ```
+
+**See also.** [[py-cancellation]]; for retried background work, [[svc-idempotency-key]].
 
 **Counterpoint.** "The set-and-discard recipe from the docs is enough." It keeps the task alive but still never retrieves the exception; the docs point to TaskGroup for that. The same reference rule applies to tasks passed to `asyncio.shield`.

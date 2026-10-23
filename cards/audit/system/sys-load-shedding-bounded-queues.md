@@ -12,9 +12,9 @@ borrowed_from:
   - https://aws.amazon.com/builders-library/fairness-in-multi-tenant-systems/
 ---
 
-**Rule.** Bound every queue, reject or shed excess work cheaply, and provide a way to sideline old or excess messages.
+**Rule.** Bound every queue and reject excess work cheaply.
 
-**Why.** An unbounded queue turns overload into minutes of latency; by the time old items are served, callers have given up, and the backlog keeps the system busy with useless work.
+**Why.** An unbounded queue turns overload into minutes of latency; by the time old items are served, callers have given up. Also keep a way to sideline old or excess messages (see PASS).
 
 **FAIL**
 

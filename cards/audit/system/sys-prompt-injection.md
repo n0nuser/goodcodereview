@@ -11,9 +11,9 @@ borrowed_from:
   - https://genai.owasp.org/llmrisk/llm01-prompt-injection/
 ---
 
-**Rule.** Treat model output and model-read content as untrusted: validate output deterministically, keep credentials in code not in the model, and require human approval for high-risk actions.
+**Rule.** Validate model output deterministically before code acts on it.
 
-**Why.** Injected instructions in retrieved text can steer tool calls. OWASP says no fool-proof prevention exists and RAG or fine-tuning do not fully fix it, so the goal is limiting impact.
+**Why.** Also keep credentials in code, not in the model, and require human approval for high-risk actions. Injected instructions in retrieved text can steer tool calls. OWASP says no fool-proof prevention exists and RAG or fine-tuning do not fully fix it, so the goal is limiting impact.
 
 **FAIL**
 

@@ -1,5 +1,5 @@
 ---
-id: svc-py-cancellation
+id: py-cancellation
 level: service
 tags: [asyncio, cancellation]
 severity: block
@@ -34,4 +34,4 @@ except TimeoutError:
     handle_timeout()
 ```
 
-**Counterpoint.** "Cleanup code must run even on cancel." Use `finally` or catch, clean up, then re-raise; suppressing is allowed only with an explicit `uncancel()`.
+**Counterpoint.** "Cleanup code must run even on cancel." Use `finally` or catch, clean up, then re-raise; clean up in `finally`, then re-raise; never suppress. (`uncancel()` is task bookkeeping, not permission to swallow.)

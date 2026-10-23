@@ -11,9 +11,9 @@ borrowed_from:
   - https://aws.amazon.com/builders-library/caching-challenges-and-strategies/
 ---
 
-**Rule.** A cache has a size bound, a justified TTL, hit/miss and origin-request metrics, a versioned value format, and an invalidation story.
+**Rule.** Bound every cache and version its values.
 
-**Why.** An unbounded cache is a memory leak with extra steps. An arbitrary TTL either serves stale data or does not help. Unversioned values break during a rolling deploy when old and new code read each other's entries.
+**Why.** Also give it a justified TTL, hit/miss and origin-request metrics, and an invalidation story. An unbounded cache is a memory leak with extra steps. An arbitrary TTL either serves stale data or does not help. Unversioned values break during a rolling deploy when old and new code read each other's entries.
 
 **FAIL**
 
@@ -25,7 +25,7 @@ CACHE[k] = pickle(value)           # no version field
 **PASS**
 
 ```text
-cache = LRU(max=10_000, ttl=60s); value = {"v": 2, "data": ...}
+cache = LRU(max=10_000, ttl=60)   # pseudocode; value = {"v": 2, "data": ...}
 metrics: hits, misses, origin_calls
 ```
 

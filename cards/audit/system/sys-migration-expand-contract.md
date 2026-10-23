@@ -12,9 +12,9 @@ borrowed_from:
   - https://docs.gitlab.com/development/migration_style_guide/
 ---
 
-**Rule.** Ship destructive schema changes over several releases (stop using, then drop), and run data backfills in batches, separate from the schema change.
+**Rule.** Run data backfills in batches, in a migration separate from the schema change.
 
-**Why.** During a rolling deploy old code still runs against the new schema. A dropped or renamed column breaks it, and a large backfill in one transaction holds locks for its whole run.
+**Why.** A large backfill in one transaction holds locks for its whole run. The principle of staging destructive changes across releases is [[chg-expand-contract]]; this card is the large-table procedure: stop using the column, drop it in a later release, and keep it ignored in code until the release after.
 
 **FAIL**
 
@@ -28,4 +28,4 @@ release N: RENAME COLUMN a TO b ; UPDATE big_table SET b = ... (one tx)
 N: add b, dual-write, ignore a in code ; N+1: batched backfill ; N+2: drop a
 ```
 
-**Counterpoint.** "Three releases for a rename is heavy." It is, and for tables small enough that a lock is harmless a single step is fine; GitLab's procedure targets zero-downtime on large tables, and the card applies only there.
+**Counterpoint.** "Three releases for a rename is heavy." It is, which is why the one-step exception lives in [[chg-expand-contract]] and applies here unchanged; this card covers only the batching and release steps for large tables.

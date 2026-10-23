@@ -4,7 +4,7 @@ level: system
 tags: [database, migrations, postgres]
 severity: block
 status: draft
-lang: sql
+lang: core
 applies_when: A migration creates an index on an existing large or busy table.
 tool_gate: Migration linter.
 borrowed_from:

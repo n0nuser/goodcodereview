@@ -11,9 +11,9 @@ borrowed_from:
   - https://sre.google/sre-book/monitoring-distributed-systems/
 ---
 
-**Rule.** Page on user-visible symptoms, cover latency, traffic, errors and saturation, track latency as a distribution, and delete alerts that never fire or are never used.
+**Rule.** Page on user-visible symptoms, not causes.
 
-**Why.** Cause-based pages (CPU high) wake people without user impact; a mean hides the slow tail; failed-request latency mixed with successes hides both.
+**Why.** Also cover latency, traffic, errors and saturation, track latency as a distribution, and delete alerts that never fire. Cause-based pages (CPU high) wake people without user impact; a mean hides the slow tail; failed-request latency mixed with successes hides both.
 
 **FAIL**
 

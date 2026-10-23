@@ -4,6 +4,7 @@ level: production
 tags: [reliability, slo]
 severity: discuss
 status: draft
+note: no source yet; first-hand reasoning
 lang: core
 applies_when: A service has users or dependents who rely on its availability.
 tool_gate: none
@@ -26,4 +27,4 @@ borrowed_from: []
 SLO: 99.9% of requests succeed in 300ms over 30d ; budget burn alert; freeze at 0
 ```
 
-**Counterpoint.** "SLOs are bureaucracy for small teams." A one-line target is enough; skip it for internal tools with no users. docs/research has no SLO page (only a canary note that references a budget), so the card is draft and unsourced.
+**Counterpoint.** "SLOs are bureaucracy for small teams." A one-line target is enough; skip it for internal tools with no users.

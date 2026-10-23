@@ -13,7 +13,7 @@ borrowed_from:
   - https://aws.amazon.com/builders-library/leader-election-in-distributed-systems/
 ---
 
-**Rule.** If a lock protects correctness, the write must be checked on the resource side (fencing token or compare-and-set); holding the lock is not proof.
+**Rule.** Check a correctness lock on the resource side (fencing token or compare-and-set), never by lock possession alone.
 
 **Why.** A holder can pause past its TTL, lose the lock and still write. Only the store can reject the stale writer.
 
@@ -30,5 +30,7 @@ if redis.set(key, id, nx=True, px=10000):
 token = lock.acquire()             # monotonically increasing
 db.update(row, where fence < token, set fence = token)
 ```
+
+**See also.** [[sys-leader-two-leaders]], [[svc-idempotency-key]].
 
 **Counterpoint.** Sources disagree. Kleppmann says Redlock gives no monotonic token and so is unsafe for correctness; antirez answers that a random unique token with check-and-set suffices and that ordered tokens need a linearizable store. Both agree locks used only for efficiency may be loose. So: state which kind of lock it is; for correctness, require a resource-side check, do not rule on Redlock itself.

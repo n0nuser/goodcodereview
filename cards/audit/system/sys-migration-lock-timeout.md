@@ -4,6 +4,7 @@ level: system
 tags: [database, migrations, postgres]
 severity: block
 status: draft
+note: lock-queue consequence is inference, not stated in the Postgres page read
 lang: core
 applies_when: A migration runs ALTER TABLE on a busy PostgreSQL table.
 tool_gate: Migration linter (e.g. flag ALTER without lock_timeout).
@@ -13,9 +14,9 @@ borrowed_from:
   - https://docs.gitlab.com/development/migration_style_guide/
 ---
 
-**Rule.** Set `lock_timeout` for the migration session and retry, instead of waiting indefinitely for a table lock.
+**Rule.** Set `lock_timeout` for the migration session and retry on timeout.
 
-**Why.** The default is 0, meaning wait forever, and most ALTER forms need the strongest lock. A migration stuck waiting can make later queries on that table wait behind it (our inference from lock queueing, not stated in the notes).
+**Why.** The default is 0, meaning wait forever, and most ALTER forms need the strongest lock. A migration stuck waiting can make later queries on that table wait behind it (inferred from how lock queues work).
 
 **FAIL**
 
