@@ -1,0 +1,37 @@
+---
+id: chg-no-silenced-diagnostics
+level: change
+tags: [errors, lint, ci]
+severity: should-fix
+status: draft
+lang: core
+applies_when: The diff adds a suppression (lint ignore, type ignore, skipped test, swallowed error) or deletes a failing check.
+tool_gate: Linter rule that requires a reason and ticket on each suppression.
+note: extends Palantir (TODO without issue, red checks) and Go (discarded errors) to suppressions
+borrowed_from:
+  - https://go.dev/wiki/CodeReviewComments
+  - https://blog.palantir.com/code-review-best-practices-19e02780015f
+---
+
+**Rule.** A suppression names the rule, the reason and a ticket; a swallowed error, skipped test or disabled check is a FAIL unless justified.
+
+**Why.** Silencing a diagnostic hides the problem it reports and removes the safety net for the next author.
+
+**FAIL**
+
+```python
+x = load(cfg)  # type: ignore
+try: sync()
+except Exception: pass
+@pytest.mark.skip   # flaky
+```
+
+**PASS**
+
+```python
+x = load(cfg)  # type: ignore[arg-type]  # lib stub wrong, TICKET-42
+try: sync()
+except SyncTimeout as e: log.warning("sync timeout", exc_info=e); retry()
+```
+
+**Counterpoint.** Sometimes a warning is a false positive. Then suppress narrowly with a reason, which keeps the gate useful. Palantir's list covers TODOs without issue references and merging with checks red; the Go list covers discarded errors. Applying both to suppressions extends them.
