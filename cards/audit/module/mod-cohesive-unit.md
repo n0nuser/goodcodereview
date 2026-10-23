@@ -11,9 +11,9 @@ borrowed_from:
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
 ---
 
-**Rule.** Keep one cohesive unit per module. Split an oversized package into subpackages, move big literals out, and inline a folder that holds one module.
+**Rule.** Keep one cohesive concept per module.
 
-**Why.** Banner comments and `# ---- section ----` markers show a module doing several jobs. Large literals bury the logic around them.
+**Why.** Banner comments and `# ---- section ----` markers show a module doing several jobs. Large literals bury the logic around them. Split an oversized package into subpackages, move big literals to their own module, and inline a folder that holds one module.
 
 **FAIL**
 

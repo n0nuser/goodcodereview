@@ -7,7 +7,8 @@ status: draft
 lang: core
 applies_when: A call passes a literal `True` or `False` for a parameter.
 tool_gate: ruff FBT
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
 **Rule.** Replace a boolean flag argument with an enum, keyword-only argument or two functions.

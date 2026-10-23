@@ -2,17 +2,18 @@
 id: mod-layers-point-inward
 level: module
 tags: [architecture]
-severity: block
+severity: should-fix
 status: draft
 lang: core
 applies_when: The codebase has separable transport, logic and outbound-boundary code.
 tool_gate: import-linter or similar
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** Name layers for what they do (surface, logic, boundary) and let dependencies point inward. A service never touches transport types; a surface never skips the service.
+**Rule.** Make dependencies point inward: surface, then logic, then boundary.
 
-**Why.** Once transport types leak into logic, you cannot reuse or test the logic without the transport, and a change to the API shape ripples into the rules.
+**Why.** Once transport types leak into logic, you cannot reuse or test the logic without the transport, and a change to the API shape ripples into the rules. Name the layers for what they do (surface, logic, boundary).
 
 **FAIL**
 

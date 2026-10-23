@@ -2,23 +2,25 @@
 id: py-httpx-client-lifespan
 level: module
 tags: [python, resources]
-severity: block
+severity: should-fix
 status: draft
 lang: python
-applies_when: A Python service creates `httpx` or DB clients.
+applies_when: A Python service creates an `httpx` client.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** Build the pooled client once in the app lifespan and reuse it, with explicit connect and read timeouts. Scope short-lived clients with `with`/`async with`. Never `read=None`. Core rules: [[mod-pooled-clients-built-once]], [[fn-timeouts-on-external-calls]].
+**Rule.** Pass an explicit `httpx.Timeout` to every `httpx` client.
 
-**Why.** Per-call clients drop pooling; `read=None` hangs forever.
+**Why.** Core rules: [[svc-timeouts]], [[mod-pooled-clients-built-once]]. `read=None` disables the read timeout. Build the client once in the app lifespan and reuse it.
 
 **FAIL**
 
 ```python
-async def fetch(u):
-    return await httpx.AsyncClient().get(u)
+async def fetch(url):
+    async with httpx.AsyncClient(timeout=None) as c:
+        return await c.get(url)
 ```
 
 **PASS**
@@ -31,4 +33,4 @@ async def lifespan(app):
         yield
 ```
 
-**Counterpoint.** "Defaults are fine." httpx's default is 5s per phase; whatever the default, set it explicitly so a version change doesn't change behaviour.
+**Counterpoint.** "httpx defaults are fine." They are (5s), but set the value explicitly so a library change cannot silently change behaviour.

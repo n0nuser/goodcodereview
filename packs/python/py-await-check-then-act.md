@@ -7,26 +7,33 @@ status: draft
 lang: python
 applies_when: An `async def` reads state, awaits, then writes based on that read.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** Never split check and write across an `await`: another task runs at each one. Use an atomic statement, transaction, idempotency key or optimistic concurrency. A Python lock covers one process only. Core rule: [[fn-no-check-then-act-across-await]].
+**Rule.** Do not rely on `asyncio.Lock` or the single-threaded event loop to make check-then-act safe.
 
-**Why.** Concurrent withdrawals both read 100 and both succeed.
+**Why.** Core rule: [[fn-no-check-then-act-across-await]]. In Python the loop is single-threaded only between awaits, and an `asyncio.Lock` covers one process; the guard has to live where the state lives.
 
 **FAIL**
 
 ```python
-bal = await repo.get_balance(id)
-if bal >= amt:
-    await repo.set_balance(id, bal - amt)
+async with lock:                       # one process only
+    bal = await repo.get_balance(acct)
+    if bal >= amt:
+        await repo.set_balance(acct, bal - amt)
 ```
 
 **PASS**
 
 ```python
-if not await repo.debit_if_sufficient(id, amt):
-    raise InsufficientFunds(id)
+result = await session.execute(
+    update(Account)
+    .where(Account.id == acct, Account.balance >= amt)
+    .values(balance=Account.balance - amt)
+)
+if result.rowcount == 0:
+    raise InsufficientFunds(acct)
 ```
 
-**Counterpoint.** "asyncio is single-threaded, so no race." True only between awaits; every await is a place where another task runs.
+**Counterpoint.** "asyncio is single-threaded, so there is no race." True only between awaits; every await is a point where another task runs, and a second worker process shares no lock.

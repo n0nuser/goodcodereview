@@ -7,12 +7,13 @@ status: draft
 lang: python
 applies_when: Annotations use `typing` aliases or the type gate is missing.
 tool_gate: ruff UP; mypy --strict; pyright
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** Write `X | None`, not `Optional`/`Union`; builtin `list`/`dict`/`tuple`, not `typing.List`. Gate new code with `mypy --strict` and pyright.
+**Rule.** Write `X | None` and builtin generics, not `typing` aliases.
 
-**Why.** A tool decides these, so a human comment is waste. The point is to make sure the gate exists.
+**Why.** A tool decides these, so a human comment is waste. The point is to make sure the gate exists. Gate new code with `mypy --strict` and pyright.
 
 **FAIL**
 

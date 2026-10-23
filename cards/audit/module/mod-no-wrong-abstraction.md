@@ -12,9 +12,9 @@ borrowed_from:
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
 ---
 
-**Rule.** Duplicate until the pattern is proven. When an abstraction grows boolean switches for its callers, inline it and re-split.
+**Rule.** Inline an abstraction that has grown flags for its callers, then re-split it.
 
-**Why.** A wrong abstraction is harder to remove than the duplication it replaced. Each new caller adds a branch, until nobody can say what the code is for.
+**Why.** Extract an abstraction at two real call sites ([[chg-abstraction-needs-two-callers]]). A wrong one is harder to remove than the duplication it replaced, because each new caller adds a branch until nobody can say what the code is for.
 
 **FAIL**
 
@@ -28,4 +28,4 @@ def render(doc, *, as_pdf=False, for_email=False, legacy=False, skip_header=Fals
 render_pdf(doc), render_email(doc)   # small, similar, independent
 ```
 
-**Counterpoint.** Sources disagree: Ousterhout lists repetition as a red flag (one fact in many places); AHA/Sandi Metz prefer duplication to a wrong abstraction. They fit together: dedupe knowledge (a rule, a format, a constant), wait on shape. At the second copy tolerate it; at the third, ask. The count is a weak heuristic, not a law.
+**Counterpoint.** Sources disagree: Ousterhout lists repetition as a red flag (one fact in many places); the AHA/Sandi Metz line prefers duplication to a wrong abstraction. They fit together: dedupe knowledge (a rule, a format, a constant), wait on shape, and extract only when the second real caller shows what is shared.

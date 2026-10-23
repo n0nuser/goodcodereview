@@ -7,12 +7,13 @@ status: draft
 lang: python
 applies_when: Tests differ only in inputs and expected values.
 tool_gate: ruff PT006/PT007 (style only)
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** Use `@pytest.mark.parametrize` for variations. Assert an empty computed parameter list is not empty, since pytest reports it as a skip.
+**Rule.** Use `@pytest.mark.parametrize` for test variations.
 
-**Why.** Copy-pasted tests drift, and an empty parametrization silently runs nothing.
+**Why.** Copy-pasted tests drift, and an empty parametrization silently runs nothing. Assert a computed parameter list is not empty first.
 
 **FAIL**
 

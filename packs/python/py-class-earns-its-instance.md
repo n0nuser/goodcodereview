@@ -11,9 +11,9 @@ borrowed_from:
   - https://go.dev/wiki/CodeReviewComments
 ---
 
-**Rule.** A class needs real state, an injected collaborator or a substitutable abstraction. A `Protocol` needs two or more real implementations swapped at runtime; a test-only seam lives in the test suite.
+**Rule.** Give a class real state or a collaborator; otherwise write a module function.
 
-**Why.** A static-only class is a module with extra typing. A one-implementation `Protocol` is a speculative interface ([[mod-yagni]]).
+**Why.** A static-only class is a module with extra typing. A one-implementation `Protocol` is a speculative interface ([[mod-yagni]]). A `Protocol` needs two or more real implementations swapped at runtime; see [[mod-yagni]].
 
 **FAIL**
 

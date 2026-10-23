@@ -30,7 +30,7 @@ Source: the author's Python code review guide. Each rule heading maps to a card 
 | Naming and classes | Name intermediate conditions | fn-name-intermediate-conditions |
 | Naming and classes | Bool argument at call site | fn-bool-arg-at-callsite |
 | Naming and classes | Code explains itself; rename before commenting | fn-comments-explain-why |
-| Naming and classes | English everywhere | gap: no card; no source in research |
+| Naming and classes | English everywhere | gap: no card |
 | Naming and classes | No codenames or ticket numbers in code | fn-comments-survive-context |
 | Naming and classes | A class earns its instance; Protocol needs two implementations | py-class-earns-its-instance |
 | Naming and classes | Field names over indexes; no getattr/setattr | fn-no-getattr-for-known-names |
@@ -59,13 +59,13 @@ Source: the author's Python code review guide. Each rule heading maps to a card 
 | Concurrency | Shared state reasoned about for races | out of scope (change-level cards) |
 | Resource lifecycle | Per-key caches bounded | mod-bounded-caches |
 | Resource lifecycle | Pooled clients built once | mod-pooled-clients-built-once, py-httpx-client-lifespan |
-| Resource lifecycle | Timeouts on both legs | fn-timeouts-on-external-calls, py-httpx-client-lifespan |
+| Resource lifecycle | Timeouts on both legs | svc-timeouts, py-httpx-client-lifespan |
 | Resource lifecycle | Stream, don't materialise; bound background tasks | gap: no card |
 | Change discipline | Never silence a diagnostic | py-no-silenced-diagnostics |
 | Change discipline | No paths relative to the working directory | py-paths-from-file |
 | Change discipline | Verify before claiming; delete workarounds; stay in scope; Chesterton; measure | out of scope (change-level cards) |
 | Writing the review | Severity labels, one comment per finding, design first | out of scope (change-level cards) |
 | Critical rules | Bookmark table | severity `block` on the cards above |
-| Research additions (not in the guide) | Deep modules | mod-deep-modules |
-| Research additions | Wrong abstraction | mod-no-wrong-abstraction |
-| Research additions | Fowler smells (draft: no Fowler source in research notes) | mod-fowler-smells |
+| Additions beyond the guide | Deep modules | mod-deep-modules |
+| Additions beyond the guide | Wrong abstraction | mod-no-wrong-abstraction |
+| Additions beyond the guide | Fowler smells | mod-fowler-smells |

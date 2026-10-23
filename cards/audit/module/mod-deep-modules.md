@@ -30,4 +30,4 @@ class Reader:
 def read_lines(path, encoding="utf-8") -> list[str]: ...
 ```
 
-**Counterpoint.** Ousterhout and Martin disagree: Martin favours many very small functions; Ousterhout says that yields shallow, entangled pieces and cites a reported 3-4x slowdown in a hot loop (later disputed). No strong data either way. Ask the local question: does the split help a reader here?
+**Counterpoint.** Ousterhout and Martin disagree: Martin favours many very small functions, Ousterhout says that yields shallow, entangled pieces. Evidence is thin on both sides. Ask the local question: does the split help a reader here?

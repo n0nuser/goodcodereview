@@ -7,10 +7,11 @@ status: draft
 lang: python
 applies_when: The diff adds `test_init_*` or a test file for a plain model or dataclass.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** Do not test `__init__` or plain models directly. Cover them through the behaviour that uses them. If `__init__` needs a test, it has logic it should not have ([[py-init-assign-only]]).
+**Rule.** Cover `__init__` and plain models through the behaviour that uses them.
 
 **Why.** Such tests restate the class and break on every field change without proving behaviour.
 

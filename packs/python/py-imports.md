@@ -7,12 +7,13 @@ status: draft
 lang: python
 applies_when: A Python module has imports.
 tool_gate: ruff I, TID252, PLC0415
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** Put all imports at module top, absolute only. Never import a `_`-prefixed name from another module. `__all__` appears only in a re-export `__init__.py`.
+**Rule.** Put imports at module top, absolute only.
 
-**Why.** Local imports hide dependencies and cycles. Relative imports break on moving files. Importing a private name couples you to something its owner may change without notice.
+**Why.** Local imports hide dependencies and cycles. Relative imports break on moving files. Importing a private name couples you to something its owner may change without notice. Never import a `_`-prefixed name from another module, and use `__all__` only in a re-export `__init__.py`.
 
 **FAIL**
 

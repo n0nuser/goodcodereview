@@ -7,7 +7,8 @@ status: draft
 lang: core
 applies_when: A module does anything at import or load time other than defining names.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
 **Rule.** Keep I/O at the edges. Importing a package must not touch the network, read files or read the environment.

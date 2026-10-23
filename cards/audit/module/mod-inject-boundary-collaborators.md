@@ -7,7 +7,8 @@ status: draft
 lang: core
 applies_when: A class uses a database, HTTP, cloud or clock collaborator.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
 **Rule.** Inject boundary collaborators through the constructor. Do not construct them inside or reach for a global.

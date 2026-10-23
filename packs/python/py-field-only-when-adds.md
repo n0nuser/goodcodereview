@@ -7,7 +7,8 @@ status: draft
 lang: python
 applies_when: A pydantic model or settings class uses `Field()`.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
 **Rule.** Use `Field()` only when it adds something: a constraint, an alias or API docs. Set plain defaults directly.

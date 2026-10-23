@@ -7,12 +7,13 @@ status: draft
 lang: core
 applies_when: A test uses mocks, patches or fakes.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** Mock only at the boundary (HTTP, DB, cloud, clock, I/O). Internal objects are real. A fake accepts only what the real thing accepts. Assert outcomes as whole objects.
+**Rule.** Mock only at the process boundary (HTTP, DB, cloud, clock, I/O).
 
-**Why.** Mocks of internals pin the implementation, so any refactor breaks tests that prove nothing. A fake looser than the real client passes tests the real backend rejects.
+**Why.** Mocks of internals pin the implementation, so any refactor breaks tests that prove nothing. A fake looser than the real client passes tests the real backend rejects. Keep internal objects real, make a fake accept only what the real client accepts, and assert whole outcomes. See [[chg-agent-mock-asserting-tests]] for tests that must fail when behaviour breaks.
 
 **FAIL**
 

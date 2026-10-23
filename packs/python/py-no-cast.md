@@ -2,12 +2,13 @@
 id: py-no-cast
 level: function
 tags: [python, types]
-severity: block
+severity: should-fix
 status: draft
 lang: python
 applies_when: Code calls `typing.cast(...)`.
-tool_gate: ruff (custom) / grep gate
-borrowed_from:   []  # first-hand: author's own Python review guide
+tool_gate: ruff TID251 (banned-api)
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
 **Rule.** Do not use `cast()`. Parse the boundary into a typed model, or narrow with `isinstance`.

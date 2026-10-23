@@ -7,7 +7,8 @@ status: draft
 lang: core
 applies_when: A function returns a list, set or map.
 tool_gate: type checker
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
 **Rule.** Return an empty collection for "nothing found"; return `None` only when absent differs from empty.

@@ -7,7 +7,8 @@ status: draft
 lang: core
 applies_when: A function returns or passes a tuple whose positions mean different things.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
 **Rule.** Return a small named record, not a positional tuple, once the fields differ in meaning.

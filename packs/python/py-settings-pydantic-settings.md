@@ -6,13 +6,14 @@ severity: should-fix
 status: draft
 lang: python
 applies_when: Python code reads configuration from the environment.
-tool_gate: ruff (custom ban on os.environ) or grep gate
-borrowed_from:   []  # first-hand: author's own Python review guide
+tool_gate: ruff TID251 (banned-api) on `os.environ`
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** Load env config through `pydantic-settings`, importing `BaseSettings` from `pydantic_settings`, not `pydantic`. Core rule: [[mod-central-config]].
+**Rule.** Load env config with `BaseSettings` from `pydantic_settings`.
 
-**Why.** `os.environ.get` returns untyped strings with silent defaults. `BaseSettings` parses, validates and fails at startup. Importing from `pydantic` breaks on v2.
+**Why.** Core rule: [[mod-central-config]]. `os.environ.get` returns untyped strings with silent defaults; `BaseSettings` parses, validates and fails at startup. In pydantic v2 `BaseSettings` is no longer importable from `pydantic`.
 
 **FAIL**
 
@@ -23,9 +24,11 @@ timeout = float(os.environ.get("TIMEOUT", "5"))
 **PASS**
 
 ```python
+from pydantic_settings import BaseSettings
+
 class Settings(BaseSettings):
     database_url: str
     request_timeout_s: float = 5.0
 ```
 
-**Counterpoint.** "os.environ is stdlib and enough." For one flag, maybe. Past two, you re-implement parsing and error messages by hand, per call site.
+**Counterpoint.** "os.environ is stdlib and enough." For one flag, maybe. Past two, you re-implement parsing and error messages at every call site.

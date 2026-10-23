@@ -12,9 +12,9 @@ borrowed_from:
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
 ---
 
-**Rule.** Use one name per concept across the codebase, the project's glossary terms, and never a name that says something the code does not do.
+**Rule.** Use one name for one concept across the codebase.
 
-**Why.** If `customer`, `client` and `account` all mean the same thing, readers wonder whether they differ. A name that misdescribes behaviour is worse than a vague one.
+**Why.** If `customer`, `client` and `account` all mean the same thing, readers wonder whether they differ. A name that misdescribes behaviour is worse than a vague one. Follow the project glossary, and never choose a name that says something the code does not do.
 
 **FAIL**
 

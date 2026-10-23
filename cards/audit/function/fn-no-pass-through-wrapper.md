@@ -30,4 +30,4 @@ class UserService:
 # or the service adds something: check access, map to a domain error
 ```
 
-**Counterpoint.** "The service layer should expose everything for uniformity." Uniform emptiness is still emptiness. If a layer boundary is the goal, say what the layer adds. Ousterhout (via a secondary summary) flags pass-throughs; the Clean Code side of that debate favours small forwarding methods less strongly, so treat this as a design call, not a law.
+**Counterpoint.** "The service layer should expose everything for uniformity." Uniform emptiness is still emptiness. If a layer boundary is the goal, say what the layer adds. The Clean Code side of the Ousterhout debate favours small forwarding methods more readily, so treat this as a design call, not a law.

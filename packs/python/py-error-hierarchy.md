@@ -7,12 +7,13 @@ status: draft
 lang: python
 applies_when: A Python package raises its own exceptions.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** Define a base exception per package and its specific errors in a dedicated `errors` module. Chain with `raise ... from err`. Core rules: [[fn-specific-exceptions-only]], [[fn-propagate-dont-swallow]].
+**Rule.** Give each package one base exception, with the specific ones in an `errors` module.
 
-**Why.** A base class gives callers one safe catch for the package. Inline `class X(Exception)` next to a raise scatters the hierarchy.
+**Why.** A base class gives callers one safe catch for the package. Inline `class X(Exception)` next to a raise scatters the hierarchy. Chain with `raise ... from err` ([[fn-propagate-dont-swallow]]).
 
 **FAIL**
 

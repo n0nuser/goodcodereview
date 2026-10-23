@@ -7,25 +7,35 @@ status: draft
 lang: python
 applies_when: A Python function validates request or config data by hand.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** Use pydantic models and validators for validation. Fields are `snake_case`; for camelCase JSON use `alias_generator=to_camel` and `model_dump(by_alias=True)`. Core rule: [[mod-validate-at-boundary-once]].
+**Rule.** Validate request data with a pydantic model, not hand-written checks.
 
-**Why.** The model is the validation, the schema and the docs in one place.
+**Why.** Core rule: [[mod-validate-at-boundary-once]]. Fields stay `snake_case` in Python; for camelCase JSON use an alias generator and dump by alias.
 
 **FAIL**
 
 ```python
-if body.get("currency") not in {"EUR", "USD"}: raise ValueError
+def create_order(body: dict):
+    if body.get("currency") not in {"EUR", "USD"}:
+        raise ValueError("bad currency")
 ```
 
 **PASS**
 
 ```python
+from pydantic import BaseModel, ConfigDict, Field
+from pydantic.alias_generators import to_camel
+
 class CreateOrder(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
     items: list[LineItemIn] = Field(min_length=1)
-    currency: Currency   # StrEnum
+    currency: Currency          # StrEnum: unknown values fail at parse
+
+body = CreateOrder.model_validate(payload)
+body.model_dump(by_alias=True)
 ```
 
 **Counterpoint.** "Validators hide logic." They put it next to the field it protects. Hand-rolled checks are where drift starts.

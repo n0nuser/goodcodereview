@@ -5,32 +5,34 @@ tags: [python, testing]
 severity: discuss
 status: draft
 lang: python
-applies_when: A Python test suite is added or changed.
-tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+applies_when: A Python test uses the current date or time, or reaches the network.
+tool_gate: pytest-socket (`--disable-socket`)
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** Mirror the source layout, keep shared fixtures in `tests/fixtures/` and single-use fixtures local with the narrowest scope, freeze time, and no outbound network. Blank lines separate arrange/act/assert; no section comments. A bug gets a failing regression test first.
+**Rule.** Freeze time and block network in tests.
 
-**Why.** Tests that depend on clock or network flake; a fixture used once but defined globally is noise; a fix without a failing test may not fix anything.
+**Why.** Tests that depend on the clock or the network flake, and fail in CI at midnight or offline.
 
 **FAIL**
 
 ```python
-# Arrange
-user = ...
-# Act
-r = f(user)
+def test_token_expires():
+    token = issue_token(ttl=60)
+    assert token.expires_at > datetime.now()
 ```
 
 **PASS**
 
 ```python
-user = ...
+from freezegun import freeze_time
 
-r = f(user)
-
-assert r == expected
+@freeze_time("2026-01-01 12:00:00")
+def test_token_expires():
+    token = issue_token(ttl=60)
+    assert token.expires_at == datetime(2026, 1, 1, 12, 1)
+# run with: pytest --disable-socket
 ```
 
-**Counterpoint.** "The comments help newcomers." The blank-line structure does the same without comments that are trivially stale.
+**Counterpoint.** "Real time catches real bugs." It catches flakes. Test time-dependent logic with a frozen clock and cover real-network behaviour in a separate, opt-in suite.

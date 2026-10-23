@@ -7,7 +7,8 @@ status: draft
 lang: core
 applies_when: A function returns a status, kind or outcome, and callers branch on it.
 tool_gate: type checker with exhaustive match
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
 **Rule.** Return an enum (or a tagged type), never a bare string the caller must compare.

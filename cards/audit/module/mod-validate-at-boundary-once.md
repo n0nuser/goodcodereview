@@ -7,7 +7,8 @@ status: draft
 lang: core
 applies_when: Input checks appear in more than one layer, or hand-rolled checks appear on a dict.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
 **Rule.** Validate at the boundary, once, with a schema or model. Inner layers receive typed, already-valid data.

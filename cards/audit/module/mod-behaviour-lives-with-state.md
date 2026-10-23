@@ -7,7 +7,8 @@ status: draft
 lang: core
 applies_when: A service function computes something only from one object's own fields.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
 **Rule.** Put invariants and calculations over one object on that object. Move logic to a service only when it spans objects or needs an injected collaborator.

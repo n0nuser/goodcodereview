@@ -7,12 +7,13 @@ status: draft
 lang: python
 applies_when: The project is Python and has a linter configuration.
 tool_gate: ruff
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** Configure Ruff with at least E, F, I, B, UP, SIM, BLE, TID, D. Anything the gate can decide is not a review comment: the comment is "add the gate".
+**Rule.** Enable the Ruff rule sets E, F, I, B, UP, SIM, BLE, TID and D in CI.
 
-**Why.** Formatting, import order, `Optional` vs `X | None`, bare `except` and relative imports belong to the tool. Human review time goes to what tools cannot see. `D1xx` stays ignored: the gate checks docstring format, not presence.
+**Why.** Formatting, import order, `Optional` vs `X | None`, bare `except` and relative imports belong to the tool. Human review time goes to what tools cannot see. `D1xx` stays ignored: the gate checks docstring format, not presence. Anything the gate decides is not a review comment; the comment is "add the gate".
 
 **FAIL**
 

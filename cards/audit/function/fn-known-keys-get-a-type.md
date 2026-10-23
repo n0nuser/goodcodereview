@@ -7,7 +7,8 @@ status: draft
 lang: core
 applies_when: A function takes or returns a dictionary whose keys are fixed and known.
 tool_gate: mypy --strict (partial)
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
 **Rule.** Give a fixed key set a record type (model, dataclass or typed dict). Use a generic map only for open keys.

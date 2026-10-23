@@ -7,7 +7,8 @@ status: draft
 lang: core
 applies_when: Business code reads environment variables or holds configuration values.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
 **Rule.** Read configuration in one settings module and pass it in. Business code does not read the environment or hold knobs.

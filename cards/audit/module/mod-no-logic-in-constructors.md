@@ -2,12 +2,13 @@
 id: mod-no-logic-in-constructors
 level: module
 tags: [state, testing]
-severity: block
+severity: should-fix
 status: draft
 lang: core
 applies_when: A constructor does work beyond assigning its arguments.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
 **Rule.** Constructors assign only. I/O, parsing and heavy computation go in a named factory.

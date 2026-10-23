@@ -7,7 +7,8 @@ status: draft
 lang: python
 applies_when: Python code builds a path to a data file or fixture.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
 **Rule.** Resolve paths from `__file__`, not the current working directory.

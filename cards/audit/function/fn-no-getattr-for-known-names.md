@@ -7,7 +7,8 @@ status: draft
 lang: core
 applies_when: Code reads or writes an attribute or field by a dynamic key when the name is known at write time.
 tool_gate: ruff B009 / B010
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
 **Rule.** Use plain field access. Reserve dynamic access for genuinely dynamic names.

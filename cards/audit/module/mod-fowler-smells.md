@@ -10,6 +10,7 @@ tool_gate: none
 borrowed_from:
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
+note: no Fowler or Beck primary source yet; mapped through Ousterhout's red flags. Add one before stable.
 ---
 
 **Rule.** Name the smell, point to the line, and suggest the refactoring; do not file smells as taste.
@@ -28,4 +29,4 @@ review: "This is messy."
 review: "should-fix: price_total reads only Order fields (feature envy). Move it to Order."
 ```
 
-**Counterpoint.** "Smells are subjective." Yes: they signal, not prove. Sources here do not give Fowler's catalogue directly, so this card is DRAFT: it is mapped through Ousterhout's red flags (shallow module, pass-through, special-general mix). Add the Fowler/Beck primary source before marking stable.
+**Counterpoint.** "Smells are subjective." Yes: they signal, they do not prove. That is why the comment names the smell, the line and the refactoring; "this is messy" gives the author nothing to act on.

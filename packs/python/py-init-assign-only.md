@@ -2,31 +2,40 @@
 id: py-init-assign-only
 level: module
 tags: [python, classes]
-severity: block
+severity: should-fix
 status: draft
 lang: python
-applies_when: A Python class defines `__init__`.
+applies_when: A Python class defines `__init__` or `__post_init__`.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** `__init__` only assigns attributes. Put I/O, parsing and heavy computation in a `@classmethod` factory. Core rule: [[mod-no-logic-in-constructors]].
+**Rule.** Keep `__init__` and `__post_init__` to assignments; do I/O in a `@classmethod` factory.
 
-**Why.** Tests must build real files or patch `open` just to create the object.
+**Why.** Core rule: [[mod-no-logic-in-constructors]]. A dataclass's `__post_init__` is a constructor too, so the same rule applies there.
 
 **FAIL**
 
 ```python
-def __init__(self, path):
-    self._prices = json.loads(path.read_text())
+@dataclass
+class PriceList:
+    path: Path
+    def __post_init__(self):
+        self.prices = json.loads(self.path.read_text())
 ```
 
 **PASS**
 
 ```python
-def __init__(self, prices): self._prices = prices
-@classmethod
-def from_file(cls, path): ...
+@dataclass
+class PriceList:
+    prices: dict[str, Decimal]
+
+    @classmethod
+    def from_file(cls, path: Path) -> "PriceList":
+        raw = json.loads(path.read_text())
+        return cls({sku: Decimal(p) for sku, p in raw.items()})
 ```
 
-**Counterpoint.** "Dataclasses already do this." Right: use a `dataclass` and the problem mostly disappears, apart from `__post_init__`, which has the same rule.
+**Counterpoint.** "Dataclasses make `__post_init__` normal." Normal for derived fields and cheap validation; not for reading files or calling APIs.

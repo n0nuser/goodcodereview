@@ -7,12 +7,13 @@ status: draft
 lang: python
 applies_when: The change adds or edits an `__init__.py`.
 tool_gate: none
-borrowed_from:   []  # first-hand: author's own Python review guide
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** Keep `__init__.py` empty, except at a library's public boundary where it is a pure re-export (with `__all__`). No comments or docstrings in an empty one.
+**Rule.** Keep `__init__.py` empty unless it re-exports the public API.
 
-**Why.** Logic in `__init__.py` runs at import ([[mod-no-import-side-effects]]) and hides where things live.
+**Why.** Logic in `__init__.py` runs at import ([[mod-no-import-side-effects]]) and hides where things live. A re-export file may use `__all__`; an empty one has no comment or docstring.
 
 **FAIL**
 

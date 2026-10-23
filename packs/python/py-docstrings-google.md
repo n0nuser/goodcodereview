@@ -11,9 +11,9 @@ borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
 ---
 
-**Rule.** Write a docstring only when it adds what the signature cannot say, in Google style, with no Sphinx roles. Never force presence; the gate checks format only.
+**Rule.** Write a Google-style docstring only when it adds what the signature cannot say.
 
-**Why.** Forced docstrings restate the signature and rot. The ones that matter state units, side effects and what callers may rely on.
+**Why.** Forced docstrings restate the signature and rot. The ones that matter state units, side effects and what callers may rely on. Presence is never forced; the gate checks format only.
 
 **FAIL**
 

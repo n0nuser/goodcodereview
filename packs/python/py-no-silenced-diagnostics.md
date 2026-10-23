@@ -2,28 +2,31 @@
 id: py-no-silenced-diagnostics
 level: change
 tags: [python, tooling]
-severity: block
+severity: should-fix
 status: draft
 lang: python
-applies_when: A diff adds `# noqa`, `# type: ignore`, widens the ignore list, or skips a test.
-tool_gate: ruff PGH003/PGH004
-borrowed_from:   []  # first-hand: author's own Python review guide
+applies_when: A diff adds `# noqa` or `# type: ignore`.
+tool_gate: ruff PGH003, PGH004
+borrowed_from: []
+note: from the author's own Python review guide
 ---
 
-**Rule.** Never silence a diagnostic to get green. A justified suppression names one code and a reason on the same line. Remove the shim and its ignore when the cause is fixed.
+**Rule.** Suppress a Python diagnostic only with a single named code and a reason on the same line.
 
-**Why.** A bare suppression turns off a whole class of future errors on that line and hides the real bug.
+**Why.** Core rule: [[chg-no-silenced-diagnostics]]. A bare `# type: ignore` silences every error on the line, including the next one someone introduces.
 
 **FAIL**
 
 ```python
 total = compute(order)  # type: ignore
+x = risky()  # noqa
 ```
 
 **PASS**
 
 ```python
 import numpy_stubs  # type: ignore[import-untyped]  # no stubs published upstream
+except Exception:  # noqa: BLE001  # process boundary: log and continue
 ```
 
-**Counterpoint.** "CI is red for unrelated reasons." Then fix or mark the unrelated cause on its own; do not widen the ignore list.
+**Counterpoint.** "A reason on every line is noise." Only the suppressions need one, and they should be rare; a pile of them is the finding.
