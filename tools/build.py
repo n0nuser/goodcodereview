@@ -80,7 +80,7 @@ def card_html(fm, body, ids):
 def listing(title, intro, cards, ids):
     tags = sorted({t for _, fm, _ in cards for t in fm["tags"]})
     bar = "<p>" + "".join(f'<span class="tag" data-t="{html.escape(t)}">#{html.escape(t)}</span>' for t in tags) + "</p>"
-    return page(title, intro + bar + "".join(card_html(fm, b, ids) for _, fm, b in cards) or "<p>No cards yet.</p>", True)
+    return page(title, intro + bar + ("".join(card_html(fm, b, ids) for _, fm, b in cards) or "<p>No cards yet.</p>"), True)
 
 
 def rule(body):
