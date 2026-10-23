@@ -34,4 +34,4 @@ except TimeoutError:
     handle_timeout()
 ```
 
-**Counterpoint.** "Cleanup code must run even on cancel." Use `finally` or catch, clean up, then re-raise; clean up in `finally`, then re-raise; never suppress. (`uncancel()` is task bookkeeping, not permission to swallow.)
+**Counterpoint.** "Cleanup code must run even on cancel." Clean up in `finally`, then re-raise; never suppress. (`uncancel()` is task bookkeeping, not permission to swallow.)
