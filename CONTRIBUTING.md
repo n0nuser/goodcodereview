@@ -11,3 +11,5 @@ A card is accepted when it has:
 - your own words: distil sources, never paste their text
 
 New cards start as `status: draft`. Only `stable` cards ship in `SKILL.md`.
+
+Run `python3 tools/validate.py` to lint cards and `python3 tools/build.py` to build the site and skill.
