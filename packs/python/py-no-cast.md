@@ -1,0 +1,31 @@
+---
+id: py-no-cast
+level: function
+tags: [python, types]
+severity: block
+status: draft
+lang: python
+applies_when: Code calls `typing.cast(...)`.
+tool_gate: ruff (custom) / grep gate
+borrowed_from:   []  # first-hand: author's own Python review guide
+---
+
+**Rule.** Do not use `cast()`. Parse the boundary into a typed model, or narrow with `isinstance`.
+
+**Why.** `cast` is a promise to the type checker that nothing verifies at runtime. When the promise is wrong, the type checker's output is a lie that spreads.
+
+**FAIL**
+
+```python
+data = cast(dict[str, int], json.loads(raw))
+```
+
+**PASS**
+
+```python
+class Payload(BaseModel):
+    counts: dict[str, int]
+data = Payload.model_validate_json(raw)
+```
+
+**Counterpoint.** "Sometimes the checker is wrong." Then fix the stub or narrow with `isinstance`/`assert`, which check at runtime. A justified `type: ignore[code]` with a reason is more honest than a cast, because it stays visible.
