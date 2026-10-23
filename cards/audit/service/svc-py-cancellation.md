@@ -1,0 +1,37 @@
+---
+id: svc-py-cancellation
+level: service
+tags: [asyncio, cancellation]
+severity: block
+status: draft
+lang: python
+applies_when: Async code catches exceptions around awaits or uses asyncio.timeout.
+tool_gate: Ruff BLE001 / S110 for broad swallow; lint for CancelledError needs custom rule.
+borrowed_from:
+  - https://docs.python.org/3/library/asyncio-task.html
+---
+
+**Rule.** Re-raise `CancelledError` (do not catch it via bare `except` or `BaseException`), and catch `TimeoutError` outside the `asyncio.timeout()` block.
+
+**Why.** TaskGroup and timeouts are built on cancellation; swallowing it makes shutdown hang and timeouts silently not fire. The conversion to `TimeoutError` happens at context exit, so a handler inside the block never sees it.
+
+**FAIL**
+
+```python
+async with asyncio.timeout(5):
+    try: await fetch()
+    except TimeoutError: ...        # never reached
+    except BaseException: pass      # eats cancellation
+```
+
+**PASS**
+
+```python
+try:
+    async with asyncio.timeout(5):
+        await fetch()
+except TimeoutError:
+    handle_timeout()
+```
+
+**Counterpoint.** "Cleanup code must run even on cancel." Use `finally` or catch, clean up, then re-raise; suppressing is allowed only with an explicit `uncancel()`.
