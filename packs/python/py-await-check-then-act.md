@@ -11,14 +11,14 @@ borrowed_from: []
 note: from the author's own Python review guide
 ---
 
-**Rule.** Do not rely on `asyncio.Lock` or the single-threaded event loop to make check-then-act safe.
+**Rule.** A Python lock covers one process only: when more than one worker or process can run, make check-then-act an atomic DB statement or constraint.
 
-**Why.** Core rule: [[fn-no-check-then-act-across-await]]. In Python the loop is single-threaded only between awaits, and an `asyncio.Lock` covers one process; the guard has to live where the state lives.
+**Why.** Core rule: [[fn-no-check-then-act-across-await]]. An `asyncio.Lock` does serialise tasks inside one event loop, but a second worker or host shares no lock, so the guard has to live where the state lives.
 
 **FAIL**
 
 ```python
-async with lock:                       # one process only
+async with lock:                       # fine for one process, useless with two workers
     bal = await repo.get_balance(acct)
     if bal >= amt:
         await repo.set_balance(acct, bal - amt)
@@ -36,4 +36,4 @@ if result.rowcount == 0:
     raise InsufficientFunds(acct)
 ```
 
-**Counterpoint.** "asyncio is single-threaded, so there is no race." True only between awaits; every await is a point where another task runs, and a second worker process shares no lock.
+**Counterpoint.** "asyncio is single-threaded, so a lock or no lock is enough." Within one process an `asyncio.Lock` is correct, and without it every await is a point where another task runs. The rule applies once deployment can run more than one worker, which is the normal case.
