@@ -4,4 +4,4 @@ Slow first requests after a deploy, restart or scale-up, when caches and runtime
 
 **Why a reviewer cares.** Cold caches can stampede the dependency.
 
-**Checks.** `svc-cache-miss-protection`
+**Checks.** `sys-cache-cold-start`
