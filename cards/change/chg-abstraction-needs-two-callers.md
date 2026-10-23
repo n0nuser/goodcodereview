@@ -13,9 +13,9 @@ borrowed_from:
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
 ---
 
-**Rule.** Move logic into a shared module or the owning layer only when two or more real call sites exist today; and reject an abstraction that its callers bend with growing flags.
+**Rule.** Extract shared logic only once two or more real call sites exist today.
 
-**Why.** An abstraction guessed from one use encodes the wrong seams. Callers then add parameters and conditionals, and the "shared" code becomes harder to change than copies would have been.
+**Why.** An abstraction guessed from one use encodes the wrong seams. Callers then bend it with flags and conditionals, and the shared code becomes harder to change than copies would have been; when that happens, inline it and re-split.
 
 **FAIL**
 
@@ -28,7 +28,11 @@ def format_row(r, *, legacy=False, for_csv=False, skip_total=False): ...
 
 ```python
 # two callers share the same stable steps -> extract
-# a third caller needs a variant -> inline back and re-split
+def render_total(items):
+    return sum(i.price * i.qty for i in items)
+
+# a third caller needs a variant -> inline back and re-split,
+# do not add render_total(items, legacy=True, skip_tax=True)
 ```
 
-**Counterpoint.** Ousterhout's red-flag list counts repetition as a smell, while Dodds and Metz prefer duplication over the wrong abstraction. They reconcile: repeated knowledge (a format, a rule) must live in one place; repeated code shape is cheap to leave until the pattern is proven. No data backs either side. The "second vs third copy" threshold is a weak heuristic.
+**Counterpoint.** Ousterhout's red-flag list counts repetition as a smell, while Dodds and Metz prefer duplication over the wrong abstraction. They reconcile: repeated knowledge (a format, a rule) must live in one place; repeated code shape is cheap to leave until the pattern is proven. Neither side has data. Dodds and Metz point to the third copy as the moment to ask; this card takes two real call sites as the earliest point to extract. See also [[mod-no-wrong-abstraction]].

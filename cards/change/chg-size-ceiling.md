@@ -7,6 +7,7 @@ status: draft
 lang: core
 applies_when: The diff exceeds roughly 400 changed lines or about 20 files and is not generated or a pure move.
 tool_gate: Size labels or a diff-size warning in CI.
+note: 200-400 LOC figure traces to one vendor study (SmartBear write-up of a Cisco study); original report not read
 borrowed_from:
   - https://sback.it/publications/icse2018seip.pdf
   - https://www.microsoft.com/en-us/research/publication/characteristics-of-useful-code-reviews-an-empirical-study-at-microsoft/
@@ -30,4 +31,4 @@ borrowed_from:
 Stack of 6 changes of 150-300 lines, each builds and passes tests alone.
 ```
 
-**Counterpoint.** The numbers are weakly sourced. The direction (smaller is better) holds across Google logs (median change 24 lines), Microsoft comment data (usefulness drops from about 20 files) and others. The 200-400 figure traces to a single vendor study (SmartBear's write-up of a Cisco study; the original report was not read), so call it a heuristic. Comment count rising with size is not defect yield.
+**Counterpoint.** The numbers are heuristics. The direction (smaller is better) holds across Google logs (median change 24 lines), Microsoft comment data (usefulness drops from about 20 files) and others. The 200-400 figure comes from a single vendor study, so do not treat it as a threshold. Comment count rising with size is not defect yield.

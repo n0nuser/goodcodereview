@@ -14,9 +14,9 @@ borrowed_from:
   - https://www.kubernetes.dev/docs/guide/pull-requests/
 ---
 
-**Rule.** Before requesting review, the author has self-reviewed the diff, CI is green (or a failing job is shown to fail on the base branch too), and the description gives the reason, the impact and how it was verified.
+**Rule.** Self-review the diff and write the description before requesting review.
 
-**Why.** Reviewer time spent on stray debug lines, red builds or a missing "why" is wasted and teaches reviewers to skim.
+**Why.** Reviewer time spent on stray debug lines, red builds or a missing "why" is wasted and teaches reviewers to skim. The description gives the reason, the impact and how it was verified; CI is green, or a failing job is shown to fail on the base branch too.
 
 **FAIL**
 

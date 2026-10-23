@@ -7,6 +7,7 @@ status: draft
 lang: core
 applies_when: The change renames, removes or reshapes a column, API field, message, config key or exported symbol that other code reads.
 tool_gate: Schema or API diff tools (breaking-change detectors) in CI.
+note: expand/contract recipe itself unsourced; compatibility principle from CPython devguide and Hyrum's law
 borrowed_from:
   - https://www.hyrumslaw.com/
   - https://devguide.python.org/getting-started/pull-request-lifecycle/
@@ -30,4 +31,4 @@ ALTER TABLE users RENAME COLUMN name TO full_name;  -- app v1 still reads name
 -- change 3 (later): drop name
 ```
 
-**Counterpoint.** Three steps are slow for internal, single-deploy code. Answer: when producer and consumers ship atomically from one repo and no old data lives on, a one-step change is fine; say so in the description. Sources give only the compatibility principle (optional params with defaults are safe, observable behaviour gets depended on); the expand/contract recipe itself has no source in the notes, so this card stays draft.
+**Counterpoint.** Three steps are slow for internal code. Exception, stated once: when producer and consumers deploy atomically from one repo, or the table is small enough to alter in one safe step, a one-step change is fine; say so in the description. Batching and release steps for databases are in [[sys-migration-expand-contract]].

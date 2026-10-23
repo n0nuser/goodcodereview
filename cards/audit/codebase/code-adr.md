@@ -7,6 +7,7 @@ status: draft
 lang: core
 applies_when: Auditing whether the reasons behind significant design choices are recorded.
 tool_gate: none
+note: ADR format unsourced; problem-and-alternatives practice from Hickey and Orosz
 borrowed_from:
   - https://github.com/matthiasn/talk-transcripts/blob/master/Hickey_Rich/HammockDrivenDev.md
   - https://blog.pragmaticengineer.com/good-code-reviews-better-code-reviews/
@@ -28,4 +29,4 @@ Repo uses Kafka for one 10-msg/day job. No record why; nobody dares remove it.
 docs/adr/0007-queue.md: problem, 2 alternatives, chosen, consequences, status.
 ```
 
-**Counterpoint.** ADRs rot and become paperwork. Answer: keep each to a page, write them only for hard-to-reverse choices, and mark superseded ones. The notes support stating the problem and alternatives; the ADR format itself has no source in them, so this card is draft.
+**Counterpoint.** ADRs rot and become paperwork. Keep each to a page, write them only for hard-to-reverse choices, and mark superseded ones.

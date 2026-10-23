@@ -15,7 +15,7 @@ borrowed_from:
 
 **Rule.** New API ships with at least one real caller in the same change; fail speculative interfaces and options nothing uses.
 
-**Why.** Unused API has no proof it fits real needs, yet once published it must be kept. Interfaces designed before a consumer exists usually get the shape wrong.
+**Why.** Unused API has no proof it fits real needs, yet once published it must be kept. Interfaces designed before a consumer exists usually get the shape wrong. See also [[mod-yagni]].
 
 **FAIL**
 

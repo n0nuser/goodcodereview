@@ -7,6 +7,7 @@ status: draft
 lang: core
 applies_when: The change adds a feature flag, kill switch or config toggle.
 tool_gate: Flag registry linter that requires owner and expiry fields.
+note: one practitioner essay (switch off a long-lived branch); retirement discipline is an extension
 borrowed_from:
   - https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to
 ---
@@ -30,4 +31,4 @@ if flags.get("new_checkout"):   # who owns it? when does it go?
 if flags.get("new_checkout"): ...
 ```
 
-**Counterpoint.** Some flags are permanent (kill switches, entitlements). Answer: label them as such with an owner; the check is that the intent is explicit. The source here is one practitioner essay (flag to switch a long-lived branch off); retirement discipline is our extension.
+**Counterpoint.** Some flags are permanent (kill switches, entitlements). Label them as such with an owner; the check is that the intent is explicit.

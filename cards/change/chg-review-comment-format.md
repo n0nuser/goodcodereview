@@ -14,9 +14,9 @@ borrowed_from:
   - https://slack.engineering/how-about-code-reviews/
 ---
 
-**Rule.** Each comment holds one finding, carries a severity label (block, should-fix, or nit/optional), and is phrased as a question or a fact, not a verdict on the person.
+**Rule.** Give each review comment one finding and a severity label (block, should-fix, nit).
 
-**Why.** Bundled or unlabelled comments leave the author unable to tell what blocks merge, and blame-shaped wording stalls the discussion.
+**Why.** Phrase comments as a question or a fact, not a verdict on the person. Bundled or unlabelled comments leave the author unable to tell what blocks merge, and blame-shaped wording stalls the discussion.
 
 **FAIL**
 

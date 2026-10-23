@@ -12,9 +12,9 @@ borrowed_from:
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
 ---
 
-**Rule.** Search for an existing helper before accepting a new one, and fail any new function that duplicates something already in the repo; the author names where they searched.
+**Rule.** Search the repo for an existing helper before adding a new one.
 
-**Why.** Reviewers see only the diff, so a reimplementation of a helper a few files away looks fine in isolation. Two copies then drift and get fixed once.
+**Why.** Reviewers see only the diff, so a reimplementation of a helper a few files away looks fine in isolation. Two copies then drift and get fixed once. The author names where they searched.
 
 **FAIL**
 

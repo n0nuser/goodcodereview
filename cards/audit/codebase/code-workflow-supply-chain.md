@@ -7,15 +7,16 @@ status: draft
 lang: core
 applies_when: Auditing CI workflow files and release pipelines.
 tool_gate: OpenSSF Scorecard run in CI; workflow linters.
+note: SLSA page fetched was the v1.0 path, which says a newer version is current
 borrowed_from:
   - https://github.com/ossf/scorecard/blob/main/docs/checks.md
   - https://slsa.dev/spec/v1.0/levels
   - https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/
 ---
 
-**Rule.** Actions are pinned to full commit SHAs, workflows declare minimal `permissions:`, no untrusted event data is interpolated into `run:`, and releases carry build provenance.
+**Rule.** Pin every CI action to a full commit SHA.
 
-**Why.** The pipeline holds secrets and publish rights, so a compromised action or injected input owns the artifact.
+**Why.** The pipeline holds secrets and publish rights, so a compromised action or injected input owns the artifact. Also give workflows least-privilege tokens, keep untrusted event data out of `run:` and out of `pull_request_target` checkouts, and attach build provenance to releases. Dependency pins live in [[code-dependency-pinning]] and the inventory in [[code-dependency-licence-sbom]].
 
 **FAIL**
 
@@ -38,4 +39,4 @@ steps:
     env: { TITLE: ${{ github.event.pull_request.title }} }
 ```
 
-**Counterpoint.** SHA pinning blocks automatic fixes and adds update churn. Answer: let an update bot propose SHA bumps. SLSA levels are a scale (L1 provenance exists, L2 signed from a hosted platform, L3 hardened); the SLSA page notes a newer version than the one fetched.
+**Counterpoint.** SHA pinning blocks automatic fixes and adds update churn. Let an update bot propose SHA bumps. SLSA levels are a scale: L1 provenance exists, L2 signed from a hosted platform, L3 hardened build platform.

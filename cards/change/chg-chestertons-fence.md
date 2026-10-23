@@ -12,9 +12,9 @@ borrowed_from:
   - https://michaelfeathers.silvrback.com/characterization-testing
 ---
 
-**Rule.** Before deleting or rewriting code you do not understand, read its history and add a test recording what it does today; the description names the defect that justifies a rewrite.
+**Rule.** Add a characterization test before rewriting code you do not understand.
 
-**Why.** Strange code often carries a fix for a bug that is no longer visible. Removing it re-ships the bug.
+**Why.** Strange code often carries a fix for a bug that is no longer visible. Removing it re-ships the bug. Check the history first (blame, linked incidents) and, for a rewrite, name the defect that justifies it.
 
 **FAIL**
 
@@ -30,4 +30,4 @@ git blame shows sleep added for rate-limit incident INC-17.
 PR keeps it with a comment, adds a characterization test first.
 ```
 
-**Counterpoint.** Joel's anti-rewrite case rests on anecdotes (Netscape, Borland) and Hickey argues for restating the problem, which may mean a new design. Answer: rethinking is allowed; a big-bang rewrite needs small shippable steps, the old path working meanwhile, and a named defect.
+**Counterpoint.** Joel Spolsky's anti-rewrite case rests on anecdotes (Netscape, Borland), and Hickey argues for restating the problem, which may mean a new design. Rethinking is allowed; a big-bang rewrite needs small shippable steps, the old path working meanwhile, and a named defect.

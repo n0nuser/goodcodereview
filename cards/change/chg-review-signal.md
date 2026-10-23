@@ -32,4 +32,4 @@ the null dereference on line 90 never mentioned.
 one nit. Formatting left to the formatter, which CI enforces.
 ```
 
-**Counterpoint.** Limiting comments risks missing issues. Answer: the cap applies to opinion, not to defects; every real defect is still raised. Sources split on style: Google says the style guide wins, Slack says leave formatting to tools. Both agree repeated nits mean a missing gate.
+**Counterpoint.** Limiting comments risks missing issues. The cap applies to opinion, not to defects; every real defect is still raised. Google says the style guide wins; Slack says leave formatting to tools. Both agree repeated nits mean a missing gate.

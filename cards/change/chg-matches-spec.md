@@ -14,7 +14,7 @@ borrowed_from:
 
 **Rule.** Every behaviour change in the diff traces to the stated requirement; flag missing requirements and any change nobody asked for.
 
-**Why.** Unrequested changes carry unreviewed risk and surprise the owners. Misunderstood problems, not typos, are the source of the serious defects.
+**Why.** Unrequested changes carry unreviewed risk and surprise the owners. As a heuristic, a misunderstood requirement does more damage than a typo, so check the diff against the ask first.
 
 **FAIL**
 

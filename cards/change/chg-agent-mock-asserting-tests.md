@@ -15,7 +15,7 @@ borrowed_from:
 
 **Rule.** A test must fail when the behaviour breaks; reject tests that mostly assert on mocks, copy the implementation, or were edited to match new output without explanation.
 
-**Why.** Generated tests tend to confirm what the code does, passing against a bug. A suite that cannot fail gives false confidence.
+**Why.** Generated tests tend to confirm what the code does, passing against a bug. A suite that cannot fail gives false confidence. Mock only at real boundaries; see [[mod-mock-at-boundaries-only]].
 
 **FAIL**
 

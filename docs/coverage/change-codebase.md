@@ -27,7 +27,7 @@ Source item -> card id. "gap" marks items with no usable source in `docs/researc
 | Agent code: hallucinated APIs, re-implemented helpers | chg-agent-grounded-code |
 | Agent code: mock-asserting tests | chg-agent-mock-asserting-tests |
 | Agent code: same-session self-review | chg-agent-independent-review |
-| File-size ceiling 1k lines (gap: heuristic) | code-file-size-ceiling |
+| File-size ceiling 1k lines (gap: heuristic) | code-file-lines-ceiling |
 | Dead code | code-dead-code |
 | Dependency pinning | code-dependency-pinning |
 | Licences, SBOM (licence part is a gap) | code-dependency-licence-sbom |

@@ -13,9 +13,9 @@ borrowed_from:
   - https://danluu.com/tests-v-reason/
 ---
 
-**Rule.** A claim of "works" or "bug" cites something run: a failing repro, a passing test, a command output. For fixes, reproduce the bug first and rerun the repro after applying the change.
+**Rule.** Back every "works" or "bug" claim with something run: a repro, a test or command output.
 
-**Why.** Reasoning that "looks correct" misses stateful and corner cases, and a reviewer's false finding wastes the author's time.
+**Why.** Reasoning that "looks correct" misses stateful and corner cases, and a reviewer's false finding wastes the author's time. For a bug fix, reproduce the bug first and rerun the repro after the change.
 
 **FAIL**
 
@@ -31,4 +31,4 @@ Author: "repro: script X failed 3/10 runs; after fix 0/200. Test added."
 Reviewer checked out the branch and reran it.
 ```
 
-**Counterpoint.** Running everything is slow. Answer: scale with risk; a rename needs no repro. For UI changes the sources say to see it running, not only read it. Luu's case rests on examples, not studies.
+**Counterpoint.** Running everything is slow. Scale with risk; a rename needs no repro. For UI changes, Google says to see it running, not only read it. Luu's case for tests over reasoning rests on examples, not studies.

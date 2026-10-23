@@ -12,9 +12,9 @@ borrowed_from:
   - https://github.com/ossf/scorecard/blob/main/docs/checks.md
 ---
 
-**Rule.** Every deployable has a committed lockfile and CI installs from it; dependency updates arrive through reviewed changes, staged, not silently.
+**Rule.** Commit a lockfile with hashes and install from it in CI.
 
-**Why.** Unpinned versions make builds non-reproducible and let a compromised release flow straight into production.
+**Why.** Unpinned versions make builds non-reproducible and let a compromised release flow straight into production. Updates should arrive as reviewed changes, staged, not silently. Action pins and token scope are in [[code-workflow-supply-chain]].
 
 **FAIL**
 

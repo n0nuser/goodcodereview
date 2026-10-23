@@ -14,9 +14,9 @@ borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
 ---
 
-**Rule.** Put refactors, renames, reformatting and file moves in their own commit or PR, apart from behaviour changes; never edit moved code in the same patch as the move.
+**Rule.** Put refactors, renames and reformatting in their own commit or PR, apart from behaviour changes.
 
-**Why.** A reviewer can verify a pure refactor by "tests unchanged" and a pure move by diff. Mixed in with logic, neither check works and a real bug hides in noise.
+**Why.** A reviewer can verify a pure refactor by "tests unchanged" and a pure move by diff. Mixed in with logic, neither check works and a real bug hides in noise. Never edit moved code in the same patch as the move.
 
 **FAIL**
 

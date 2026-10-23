@@ -1,5 +1,5 @@
 ---
-id: code-file-size-ceiling
+id: code-file-lines-ceiling
 level: codebase
 tags: [structure, size]
 severity: discuss
@@ -7,6 +7,7 @@ status: draft
 lang: core
 applies_when: Auditing a repo for files that have grown past comprehension.
 tool_gate: CI check on lines per file (cloc, wc) with an allowlist.
+note: 1,000-line figure is a heuristic with no source
 borrowed_from:
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
   - https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to
@@ -30,4 +31,4 @@ $ wc -l src/*.py | sort -n | tail -2
 No hand-written file over 1,000 lines; generated files listed in an allowlist.
 ```
 
-**Counterpoint.** Ousterhout favours deep modules and a long file can be coherent; splitting for its own sake adds shallow pieces. Answer: 1,000 is a trigger for a look, not a verdict; the fix is to separate decisions (see his information-leakage and temporal-decomposition flags). The 1k figure has no source in the notes (our heuristic), hence draft.
+**Counterpoint.** Ousterhout favours deep modules and a long file can be coherent; splitting for its own sake adds shallow pieces. 1,000 lines is a trigger for a look, not a verdict; the fix is to separate decisions (his information-leakage and temporal-decomposition flags).
