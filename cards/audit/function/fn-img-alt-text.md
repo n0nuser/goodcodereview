@@ -3,7 +3,7 @@ id: fn-img-alt-text
 level: function
 tags: [accessibility, frontend, html]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: Markup or a component renders an image, an icon, or a chart.
 tool_gate: ESLint `jsx-a11y/alt-text` and axe `image-alt` catch a missing `alt`. Only a person can judge whether the text is accurate.

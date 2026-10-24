@@ -3,7 +3,7 @@ id: fn-native-button-or-link
 level: function
 tags: [accessibility, usability, frontend, html]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: A component handles a click or tap, or navigates.
 tool_gate: ESLint `jsx-a11y/click-events-have-key-events` and `jsx-a11y/no-static-element-interactions`; `jsx-a11y/anchor-is-valid` for `href="#"`.
@@ -37,4 +37,4 @@ borrowed_from:
 <a href="/billing">Billing</a>
 ```
 
-**Counterpoint.** "Native buttons are hard to style." They are not: reset `border`, `background`, and `font` on the element. Rebuilding the keyboard, role, and focus behaviour by hand costs more and fails more often. Where a custom widget is unavoidable, see `fn-aria-role-has-state-and-keys`.
+**Counterpoint.** "Native buttons are hard to style." They are not: reset `border`, `background`, and `font` on the element. Rebuilding the keyboard, role, and focus behaviour by hand costs more and fails more often. Where a custom widget is unavoidable, follow the WAI-ARIA Authoring Practices pattern for it.

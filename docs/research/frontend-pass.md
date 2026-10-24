@@ -276,3 +276,22 @@ Notes: 3 orgs (GOV.UK, W3C, Section508 weak). The law cited by GOV.UK is a UK du
 - Dropped: "no autoplaying media" and "captions". Not researched in this pass.
 - Not read: Material Design, Refactoring UI, Steve Krug, the WAI-ARIA patterns other than the modal dialog, the WCAG 1.4.11 and 2.5.7 pages, and the USWDS accessibility pages.
 - Weak points to fix before a stable pass: a second firm org for `svc-async-content-reserves-space`, a Material or Chrome source for `fn-target-size`, and a primary source for before-and-after screenshots.
+
+## 10. Stable pass re-check
+
+Fetched 2026-10-24 with `curl`, tags stripped, then searched. These rows add to or correct the rows above.
+
+112. https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA22 (org: W3C; read: full). Technique ARIA22, test step 1: the container that will hold the status message has `role="status"` before the message occurs. With rows 34 and 35, "the region exists first" has 3 orgs (W3C, Mozilla, Heydon Pickering). -> `fn-status-announced-live-region`.
+113. Row 13 (WebAIM), corrected. The dialog row of the keyboard table says modal dialogs keep focus, Esc closes, and on close focus should usually return to the opener. So return focus has 2 orgs (W3C APG, WebAIM). The MDN `dialog` page (row 24) does not state it. -> `fn-dialog-focus-managed`.
+114. Rows 13 (WebAIM) and 4 (A11y Project), searched for "sticky", "obscured", "hidden", and "covered". Neither page covers focus hidden by a fixed bar. That clause has 2 orgs (W3C, Google). -> `fn-focus-indicator-visible`.
+115. Row 4 (A11y Project), corrected. The checklist says to remove `tabindex` values other than 0 or -1, with no hedge. Row 30 called this partial. It backs the rule in full. -> `fn-no-positive-tabindex`.
+116. Row 4 (A11y Project), for reflow. Three checklist items: do not disable viewport zoom (1.4.4), increase text size to 200% (1.4.4), and remove horizontal scrolling (1.4.10). With rows 85 to 87, `svc-reflow-and-zoom` has 3 orgs (W3C, Deque, A11y Project). -> `svc-reflow-and-zoom`.
+117. Row 4 (A11y Project), for headings. "Don't skip heading levels", and use CSS classes for a visual treatment. Row 2 (Mozilla) shows real heading markup but says nothing about levels. So no skipped levels has 2 orgs (W3C, A11y Project). -> `fn-heading-structure`.
+118. Row 4 (A11y Project), for target size. "Ensure that button and link icons can be activated with ease", citing 2.5.5, with no number. Does not back 24 px. -> `fn-target-size`.
+119. Row 61 (Baymard), confirmed. "Many forms reset upon submission, removing user entries", which forces users to redo earlier work. Backs keeping entered values. -> `fn-keep-input-on-error`.
+120. Row 65 (Apple alerts), searched. Button titles describe the result ("Delete", not "OK"). Always include Cancel on a destructive alert, and do not make it the default. So naming the outcome has 2 orgs (NN/g, Apple). -> `fn-destructive-confirm-or-undo`.
+121. https://github.com/jsx-eslint/eslint-plugin-jsx-a11y (org: jsx-eslint; read: the README rule table, in full; same page as row 5). These rule names exist: `alt-text`, `anchor-is-valid`, `click-events-have-key-events`, `heading-has-content`, `label-has-associated-control`, `no-static-element-interactions`, `role-has-required-aria-props`, `tabindex-no-positive`. Tool gate only.
+122. https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md (org: Deque; read: full). These rule ids exist: `aria-required-attr`, `color-contrast`, `heading-order` (best practice), `image-alt`, `label`, `meta-viewport`, `p-as-heading` (experimental), `tabindex` (best practice), `target-size` (WCAG 2.2 AA). Tool gate only.
+123. https://stylelint.io/user-guide/rules (org: Stylelint; read: rule list). `declaration-property-value-disallowed-list` is a core rule. Tool gate only.
+124. https://github.com/YozhikM/stylelint-a11y (org: stylelint-a11y; read: README). The `stylelint-a11y` plugin has the rule `a11y/media-prefers-reduced-motion`. Tool gate only.
+125. https://github.com/mozilla/eslint-plugin-no-unsanitized (org: Mozilla; read: README) and https://github.com/jsx-eslint/eslint-plugin-react (org: jsx-eslint; read: README rule table). The rules are `no-unsanitized/property`, `no-unsanitized/method`, and `react/no-danger`. Tool gate only, for `fn-no-raw-html-sink`.

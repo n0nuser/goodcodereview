@@ -26,6 +26,33 @@ redis.conf: maxmemory 2gb, maxmemory-policy allkeys-lru
 
 **Counterpoint.** "Stale data is a business risk, not a review issue." It is one when the staleness window was never chosen. The rule asks for a decision, not a number. A soft TTL (refresh in the background) under a hard TTL (must refetch) balances freshness against load.
 
+## sys-consistent-ui-terms
+
+severity: discuss  
+concerns: usability, accessibility  
+applies_when: Several screens or apps show the same action, status, or concept to the same users.
+
+**Rule.** Use one label and one icon for the same action and the same concept across all screens.
+
+**Why.** When "Remove", "Delete", and "Discard" all mean the same thing, users stop trusting any of them and ask whether each one differs. Keep the control in the same place on each screen, too. A familiar control costs no thought. A different one costs a pause, and in a destructive flow, a mistake.
+
+**FAIL**
+
+```text
+Orders page:    [Delete]       (trash icon, right of row)
+Customers page: [Remove]       (x icon, left of row)
+Invoices page:  [Discard draft](no icon, menu)
+```
+
+**PASS**
+
+```text
+Orders, Customers, Invoices: [Delete] with the trash icon, last action in the row menu.
+A different outcome, such as archive, gets a different label: [Archive].
+```
+
+**Counterpoint.** "Each team knows its users best." Consistent does not mean uniform. Differ where the job differs, and keep the wording and look of the shared actions the same. Drive the shared parts from the design-system component, so they cannot drift.
+
 ## sys-fanout-leg-deadlines
 
 severity: should-fix  

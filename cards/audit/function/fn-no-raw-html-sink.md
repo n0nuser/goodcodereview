@@ -6,7 +6,7 @@ severity: block
 status: draft
 lang: core
 applies_when: Code writes a string into a page, a template or a rendered model-output view.
-tool_gate: ESLint (`no-unsanitized`, `react/no-danger`) and template-engine autoescape checks.
+tool_gate: ESLint (`no-unsanitized/property`, `no-unsanitized/method`, `react/no-danger`) and template-engine autoescape checks.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
   - https://genai.owasp.org/llmrisk/llm052025-improper-output-handling/

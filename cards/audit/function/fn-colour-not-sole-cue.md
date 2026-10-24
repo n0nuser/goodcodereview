@@ -3,7 +3,7 @@ id: fn-colour-not-sole-cue
 level: function
 tags: [accessibility, usability, frontend, css]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: Styles or markup show an error, a required field, a status, or a link using colour.
 tool_gate: none; view the page in greyscale, or run a browser colour-vision emulation.
@@ -23,7 +23,7 @@ borrowed_from:
 ```css
 .field.error { border-color: red; }
 .status-ok   { color: green; }
-a { color: #0a58ca; text-decoration: none; }
+a { color: #0a58ca; text-decoration: none; }   /* no underline, no hover or focus cue */
 ```
 
 **PASS**
@@ -34,4 +34,4 @@ a { color: #0a58ca; text-decoration: none; }
 <a href="/terms" style="text-decoration: underline">terms</a>
 ```
 
-**Counterpoint.** "Colour is the quickest cue, and the icon clutters the design." Colour can stay as the fast cue. The rule asks for a second one, not for removing the first. A text prefix such as "Error:" costs a few characters.
+**Counterpoint.** "Colour is the quickest cue, and the icon clutters the design." Colour can stay as the fast cue. The rule asks for a second one, not for removing the first. A text prefix such as "Error:" costs a few characters. A link in body text can also pass with 3:1 contrast against the text around it plus a non-colour cue on hover and focus. The underline is the simpler fix.

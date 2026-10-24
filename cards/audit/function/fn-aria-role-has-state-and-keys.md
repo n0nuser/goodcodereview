@@ -7,7 +7,7 @@ status: draft
 lang: core
 applies_when: A custom widget sets `role` or an `aria-*` attribute because no native element fits.
 tool_gate: ESLint `jsx-a11y/role-has-required-aria-props`; axe `aria-required-attr`. Neither checks that the keys work.
-note: 3 orgs; the two tool-gate names come from author knowledge, not from the pages read
+note: 3 orgs (W3C, Mozilla, Heydon Pickering); both tool-gate rule names checked against the jsx-a11y README and the axe rule list; held at draft: the state and keys clauses have 2 orgs each, only W3C backs all three
 borrowed_from:
   - https://www.w3.org/WAI/ARIA/apg/practices/read-me-first/
   - https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html
@@ -22,7 +22,8 @@ borrowed_from:
 **FAIL**
 
 ```jsx
-<div role="switch" onClick={toggle}>Dark mode</div>
+<button type="button" role="switch" onClick={toggle}>Dark mode</button>
+// no aria-checked: announced as a switch of unknown state
 ```
 
 **PASS**

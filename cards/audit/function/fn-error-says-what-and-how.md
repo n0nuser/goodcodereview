@@ -3,7 +3,7 @@ id: fn-error-says-what-and-how
 level: function
 tags: [usability, accessibility, frontend, forms]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: Code builds the message shown when user input fails validation.
 tool_gate: none; a rendered check that submits each invalid field.
@@ -38,4 +38,4 @@ borrowed_from:
 <input id="dob" name="dob" aria-invalid="true" aria-describedby="dob-err">
 ```
 
-**Counterpoint.** "Detailed messages leak information." For a login, that is true: say "Email or password is wrong". For ordinary fields, the specific message is the fix. WCAG 3.3.3 makes the same exception when a suggestion would weaken security.
+**Counterpoint.** "Detailed messages leak information." For a login, that is true: say "Email or password is wrong". For ordinary fields, the specific message is the fix. Hold back the suggestion only where it would weaken security.

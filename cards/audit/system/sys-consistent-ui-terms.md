@@ -3,7 +3,7 @@ id: sys-consistent-ui-terms
 level: system
 tags: [usability, accessibility, frontend, design-system]
 severity: discuss
-status: draft
+status: stable
 lang: core
 applies_when: Several screens or apps show the same action, status, or concept to the same users.
 tool_gate: none; list the labels and icons for one action across all screens.
@@ -16,9 +16,9 @@ borrowed_from:
   - https://design-system.service.gov.uk/components/error-message/
 ---
 
-**Rule.** Use one label, one icon, and one place for the same action and the same concept across all screens.
+**Rule.** Use one label and one icon for the same action and the same concept across all screens.
 
-**Why.** When "Remove", "Delete", and "Discard" all mean the same thing, users stop trusting any of them and ask whether each one differs. A familiar control costs no thought. A different one costs a pause, and in a destructive flow, a mistake.
+**Why.** When "Remove", "Delete", and "Discard" all mean the same thing, users stop trusting any of them and ask whether each one differs. Keep the control in the same place on each screen, too. A familiar control costs no thought. A different one costs a pause, and in a destructive flow, a mistake.
 
 **FAIL**
 
@@ -35,4 +35,4 @@ Orders, Customers, Invoices: [Delete] with the trash icon, last action in the ro
 A different outcome, such as archive, gets a different label: [Archive].
 ```
 
-**Counterpoint.** "Each team knows its users best." The standard asks for consistent, not uniform. Differ where the job differs, and keep the wording and look of the shared actions the same. Drive the shared parts from the design-system component, so they cannot drift.
+**Counterpoint.** "Each team knows its users best." Consistent does not mean uniform. Differ where the job differs, and keep the wording and look of the shared actions the same. Drive the shared parts from the design-system component, so they cannot drift.

@@ -3,7 +3,7 @@ id: fn-keep-input-on-error
 level: function
 tags: [usability, frontend, forms]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: A form handler or component re-renders after a failed validation or a failed submit.
 tool_gate: none; a test that submits an invalid form and asserts the entered values are still there.

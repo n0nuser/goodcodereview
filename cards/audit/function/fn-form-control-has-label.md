@@ -3,7 +3,7 @@ id: fn-form-control-has-label
 level: function
 tags: [accessibility, usability, frontend, forms]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: Markup or a component renders an input, a select, or a textarea.
 tool_gate: ESLint `jsx-a11y/label-has-associated-control` and axe `label`.
@@ -37,4 +37,4 @@ borrowed_from:
 <label>Name <input type="text" name="name" autocomplete="name"></label>
 ```
 
-**Counterpoint.** "The design shows a floating placeholder label." A floating label is a real label if it stays visible and is wired to the input. Use `aria-label` only where the purpose is already visible, such as a search icon button.
+**Counterpoint.** "The design shows a floating placeholder label." A floating label is a real label if it stays visible and is wired to the input. Use `aria-label` only where the purpose is already visible, such as a search field next to a Search button.

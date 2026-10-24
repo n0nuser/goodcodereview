@@ -1,5 +1,33 @@
 # function
 
+## fn-colour-not-sole-cue
+
+severity: should-fix  
+concerns: accessibility, usability  
+applies_when: Styles or markup show an error, a required field, a status, or a link using colour.
+
+**Rule.** Pair every colour that carries meaning with a second cue: text, an icon, a shape, or an underline.
+
+**Why.** Colour-blind users, glare, greyscale mode, and a screen reader all remove colour. A red border on a bad field, or a link that differs from body text only by hue, tells those users nothing.
+
+**FAIL**
+
+```css
+.field.error { border-color: red; }
+.status-ok   { color: green; }
+a { color: #0a58ca; text-decoration: none; }   /* no underline, no hover or focus cue */
+```
+
+**PASS**
+
+```html
+<input aria-invalid="true" aria-describedby="e1" style="border: 2px solid #b42318">
+<p id="e1" class="error"><svg aria-hidden="true">…</svg> Error: enter a date such as 27/03/2026</p>
+<a href="/terms" style="text-decoration: underline">terms</a>
+```
+
+**Counterpoint.** "Colour is the quickest cue, and the icon clutters the design." Colour can stay as the fast cue. The rule asks for a second one, not for removing the first. A text prefix such as "Error:" costs a few characters. A link in body text can also pass with 3:1 contrast against the text around it plus a non-colour cue on hover and focus. The underline is the simpler fix.
+
 ## fn-comments-explain-why
 
 severity: should-fix  
@@ -26,6 +54,93 @@ retry = False  # see the PR, currently disabled
 ```
 
 **Counterpoint.** "Good names make comments unnecessary." Names carry *what*. They cannot carry why a branch exists, a unit, or what callers may rely on, and a missing reason costs more than a slightly stale one. Rename first, then comment what the name cannot say. A stale comment is a defect either way. The test is whether the comment adds information that the code cannot carry.
+
+## fn-destructive-confirm-or-undo
+
+severity: should-fix  
+concerns: usability  
+applies_when: A handler deletes user data, spends money, or sends something that cannot be recalled.
+
+**Rule.** Make a destructive action reversible with undo, or ask the user to confirm it before it runs.
+
+**Why.** People click the wrong thing. If the action cannot be reversed and nothing stops it, one slip deletes their work. Undo costs a successful user nothing, while a dialog on every click trains them to click through. A dialog works best when its buttons name the outcome, such as "Delete project" and "Cancel", because "OK" and "Are you sure?" say nothing about what happens next.
+
+**FAIL**
+
+```jsx
+<button onClick={() => api.deleteProject(id)}>Delete</button>
+```
+
+**PASS**
+
+```jsx
+async function remove() {
+  await api.softDelete(id);
+  toast("Project deleted", { action: { label: "Undo", onClick: () => api.restore(id) } });
+}
+// irreversible case: a dialog "Delete project “Q3 plan”?" with buttons "Delete project" and "Cancel"
+```
+
+**Counterpoint.** "Confirm everything to be safe." Frequent prompts are dismissed without reading, so they protect nothing. Use undo for common actions and reserve the dialog for rare, irreversible ones. Do not make Cancel the default button.
+
+## fn-dialog-focus-managed
+
+severity: block  
+concerns: accessibility, usability  
+applies_when: A component opens a modal dialog, drawer, or menu that covers the page.
+
+**Rule.** When a modal opens, move focus into it and keep Tab inside it. Make Escape close it.
+
+**Why.** Without it, a keyboard user keeps tabbing through the page behind the dialog, or gets stuck inside it with no exit. When it closes, return focus to the control that opened it. Focus that falls to the top of the page makes them start over.
+
+**FAIL**
+
+```jsx
+{open && <div className="modal"><h2>Delete?</h2><button onClick={del}>Delete</button></div>}
+```
+
+**PASS**
+
+```html
+<button id="opener">Delete project</button>
+<dialog id="dlg" aria-labelledby="t"><h2 id="t">Delete project?</h2>
+  <button autofocus>Cancel</button> <button>Delete</button></dialog>
+<script>
+  const opener = document.getElementById("opener"), dlg = document.getElementById("dlg");
+  opener.onclick = () => dlg.showModal();   // focus moves in, page behind is inert
+  dlg.onclose = () => opener.focus();       // focus returns to the opener
+</script>
+```
+
+**Counterpoint.** "Our library handles it." Check, because a library that traps focus but never restores it is common. Prefer the native `<dialog>` with `showModal()`, which makes the page inert and closes on Escape. A dialog built from generic elements must recreate each of those.
+
+## fn-error-says-what-and-how
+
+severity: should-fix  
+concerns: usability, accessibility  
+applies_when: Code builds the message shown when user input fails validation.
+
+**Rule.** Show each validation error next to its field, in plain words that name what is wrong and how to fix it.
+
+**Why.** "Invalid input" or an error code leaves the user to guess which field and what to change. A message at the top of a long form, or in a toast that fades, sends a magnifier user searching. Naming the fix is the shortest path to a valid form.
+
+**FAIL**
+
+```html
+<input id="dob" name="dob" class="red">
+<div class="toast">Error 422: invalid data</div>
+```
+
+**PASS**
+
+```html
+<label for="dob">Date of birth</label>
+<p id="dob-err"><span class="visually-hidden">Error:</span>
+   Enter a date of birth in the past, such as 27 3 1986</p>
+<input id="dob" name="dob" aria-invalid="true" aria-describedby="dob-err">
+```
+
+**Counterpoint.** "Detailed messages leak information." For a login, that is true: say "Email or password is wrong". For ordinary fields, the specific message is the fix. Hold back the suggestion only where it would weaken security.
 
 ## fn-fetch-only-needed-data
 
@@ -54,6 +169,118 @@ emails = User.objects.values_list("email", flat=True)
 ```
 
 **Counterpoint.** "Pushing logic into the database makes it the bottleneck." It does for formatting and business rules. Filtering and aggregation are what the database is built for, and moving them out usually ships far more data than it saves.
+
+## fn-focus-indicator-visible
+
+severity: block  
+concerns: accessibility, usability  
+applies_when: Styles or script change `outline`, `:focus`, or `:focus-visible`.
+
+**Rule.** Keep a visible focus indicator on every focusable element. Never set `outline: none` without a replacement.
+
+**Why.** A keyboard user finds their place by the focus ring. Remove it and they navigate blind. A sticky header that covers the focused link has the same effect once they tab down the page. `scroll-padding-top` on `html`, as tall as the header, keeps the focused element in view.
+
+**FAIL**
+
+```css
+*:focus { outline: none; }
+a:focus { outline: 0; }
+```
+
+**PASS**
+
+```css
+:focus-visible { outline: 3px solid #1a56db; outline-offset: 2px; }
+```
+
+**Counterpoint.** "Designers dislike the ring on mouse clicks." `:focus-visible` shows the ring for keyboard focus and hides it for most mouse clicks. Restyle the ring if you must. Do not remove it.
+
+## fn-form-control-has-label
+
+severity: block  
+concerns: accessibility, usability  
+applies_when: Markup or a component renders an input, a select, or a textarea.
+
+**Rule.** Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.
+
+**Why.** A screen reader announces a bare field as "edit text". Voice-control users cannot say its name. A label also enlarges the click target. A placeholder vanishes when the user types, so it fails every user who looks away and comes back.
+
+**FAIL**
+
+```html
+<input type="email" placeholder="Email">
+<div class="label">Name</div>
+<input type="text" id="name">
+```
+
+**PASS**
+
+```html
+<label for="email">Email</label>
+<input type="email" id="email" autocomplete="email">
+
+<label>Name <input type="text" name="name" autocomplete="name"></label>
+```
+
+**Counterpoint.** "The design shows a floating placeholder label." A floating label is a real label if it stays visible and is wired to the input. Use `aria-label` only where the purpose is already visible, such as a search field next to a Search button.
+
+## fn-heading-structure
+
+severity: should-fix  
+concerns: accessibility, usability  
+applies_when: Markup or a component renders a title or a section heading.
+
+**Rule.** Mark every heading with a real `<h1>` to `<h6>` element, not a styled `div`, `span`, or `p`.
+
+**Why.** Screen-reader users jump from heading to heading to scan a page. A `div` styled as a heading is invisible to that. Pick the level from the outline, not from the size you want: a skipped level, such as `h2` to `h4`, makes the outline look as if a section is missing.
+
+**FAIL**
+
+```html
+<div class="title-large">Account</div>
+<p><b>Billing</b></p>
+<span class="bold">Invoices</span>
+```
+
+**PASS**
+
+```html
+<h1>Account</h1>
+<h2>Billing</h2>
+<h3>Invoices</h3>
+<!-- size comes from CSS: h2 { font-size: 1rem } -->
+```
+
+**Counterpoint.** "The design needs a small `h2`." That is a CSS problem. Keep the level that matches the outline and set the size in the stylesheet. Jumping back up a level, such as `h4` to `h2`, is fine when a section ends.
+
+## fn-img-alt-text
+
+severity: should-fix  
+concerns: accessibility  
+applies_when: Markup or a component renders an image, an icon, or a chart.
+
+**Rule.** Give every `<img>` an `alt` attribute: text that serves the image's purpose, or `alt=""` when the image is decorative.
+
+**Why.** A screen reader has nothing to say about an image with no `alt`, and often reads the file name instead. An informative image with an empty `alt` hides its content. A decorative image with a long `alt` adds noise to every page view.
+
+**FAIL**
+
+```html
+<img src="/img/IMG_0042.jpg">
+<img src="/img/chart.png" alt="chart">
+<img src="/img/divider.png" alt="divider line">
+<button><img src="/img/trash.svg"></button>
+```
+
+**PASS**
+
+```html
+<img src="/img/q3-revenue.png" alt="Revenue grew from 4.1 to 5.3 million in Q3">
+<img src="/img/divider.png" alt="">
+<button><img src="/img/trash.svg" alt="Delete draft"></button>
+```
+
+**Counterpoint.** "A linter already checks `alt`." It checks that the attribute exists, not that the text fits the image or the context. Review the text itself. For a chart, give a short `alt` plus the data nearby as text.
 
 ## fn-independent-work-concurrent
 
@@ -108,6 +335,66 @@ out = "".join(f"{row.id},{row.name}\n" for row in rows)
 
 **Counterpoint.** "CPython optimises `+=` in place." Sometimes: only in CPython, and only while nothing else holds a reference to the string. Code that leans on it turns quadratic on other runtimes. A small fixed number of pieces is fine with `+` or an f-string, which read better. The rule covers loops over input-sized data.
 
+## fn-keep-input-on-error
+
+severity: should-fix  
+concerns: usability  
+applies_when: A form handler or component re-renders after a failed validation or a failed submit.
+
+**Rule.** After a failed validation or submit, show the form again with every value the user entered, correct or not.
+
+**Why.** A form that wipes its fields turns one typo into ten minutes of retyping, and some users give up. The user fixes one field, not the whole page.
+
+**FAIL**
+
+```jsx
+async function submit(e) {
+  e.preventDefault();
+  const res = await post("/signup", values);
+  if (!res.ok) { setErrors(res.errors); setValues(EMPTY); }
+}
+```
+
+**PASS**
+
+```jsx
+async function submit(e) {
+  e.preventDefault();
+  const res = await post("/signup", values);
+  if (!res.ok) setErrors(res.errors);   // values stay as typed
+}
+```
+
+**Counterpoint.** "Clear a password or card number on error for safety." That is a fair exception for secrets, and the message should say so. Everything else the user typed stays.
+
+## fn-native-button-or-link
+
+severity: block  
+concerns: accessibility, usability  
+applies_when: A component handles a click or tap, or navigates.
+
+**Rule.** Use `<button>` for an action and `<a href>` for navigation. Do not attach a click handler to a `div`, `span`, or `a` with no `href`.
+
+**Why.** A `div` is not in the tab order, has no role, and ignores Enter and Space. A keyboard or screen-reader user cannot reach or operate it. A fake link also loses open-in-new-tab and copy-link. A native element gives all of that with no code.
+
+**FAIL**
+
+```jsx
+<div className="btn" onClick={save}>Save</div>
+<a href="#" onClick={openMenu}>Menu</a>
+<span onClick={() => navigate("/billing")}>Billing</span>
+```
+
+**PASS**
+
+```jsx
+<button type="button" onClick={save}>Save</button>
+<button type="button" onClick={openMenu}>Menu</button>
+<a href="/billing">Billing</a>
+```
+
+**Counterpoint.** "Native buttons are hard to style." They are not: reset `border`, `background`, and `font` on the element. Rebuilding the keyboard, role, and focus behaviour by hand costs more and fails more often. Where a custom widget is unavoidable, follow the WAI-ARIA Authoring Practices pattern for it.
+
 ## fn-no-blocking-call-in-async-code
 
 severity: block  
@@ -136,6 +423,66 @@ async def handler(req):
 
 **Counterpoint.** "This call is fast enough." A short read from a local SSD can be quicker synchronously. Measure it with asyncio debug mode or the runtime's equivalent. A call that crosses the network, or that waits on anything outside the process, is never in that class.
 
+## fn-no-positive-tabindex
+
+severity: should-fix  
+concerns: accessibility, usability  
+applies_when: Markup sets `tabindex`, or a layout reorders content with CSS.
+
+**Rule.** Write the DOM in reading order and never set `tabindex` above 0.
+
+**Why.** A positive `tabindex` jumps those elements to the front of the tab order, ahead of everything else on the page. Each new control then needs a new number, and the order stops matching what the user sees. CSS that moves items visually without moving them in the DOM does the same thing.
+
+**FAIL**
+
+```html
+<input name="last" tabindex="2">
+<input name="first" tabindex="1">
+<button tabindex="3">Save</button>
+```
+
+**PASS**
+
+```html
+<input name="first">
+<input name="last">
+<button>Save</button>
+<!-- tabindex="0" only to add a custom widget to the order; tabindex="-1" to focus it from script -->
+```
+
+**Counterpoint.** "The visual layout puts the sidebar first, but the main content comes first in the DOM." Reorder the DOM to match, or accept the difference only if the order still makes sense to a keyboard user. Do not patch it with numbers.
+
+## fn-reduced-motion-respected
+
+severity: should-fix  
+concerns: accessibility, usability  
+applies_when: Styles or script add a transition, an animation, a parallax effect, or autoplay motion.
+
+**Rule.** Switch off or replace large, repeating, or interaction-triggered motion when `prefers-reduced-motion: reduce` is set.
+
+**Why.** Scaling, panning, and parallax can trigger nausea and dizziness for people with vestibular disorders. They have already told their device so. A page that ignores the setting makes them leave.
+
+**FAIL**
+
+```css
+.hero   { animation: zoom-in 1.2s ease-out infinite alternate; }
+.card   { transition: transform 0.6s; }
+.card:hover { transform: scale(1.3) rotate(4deg); }
+```
+
+**PASS**
+
+```css
+.hero { animation: zoom-in 1.2s ease-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) {
+  .hero { animation: none; }
+  .card { transition: opacity 0.2s; }
+  .card:hover { transform: none; opacity: 0.9; }
+}
+```
+
+**Counterpoint.** "Motion carries meaning, such as a loading spinner." Keep what the user needs and make it gentler: swap movement for a fade. The rule is about decorative and large movement, not about every pixel that moves.
+
 ## fn-regex-compiled-once
 
 severity: should-fix  
@@ -163,3 +510,32 @@ func valid(s string) bool { return lower.MatchString(s) }
 ```
 
 **Counterpoint.** "The library caches patterns." Python and .NET keep recently used patterns, so a few static calls are fine. A pattern built from input or an unbounded set of patterns defeats the cache.
+
+## fn-status-announced-live-region
+
+severity: should-fix  
+concerns: accessibility, usability  
+applies_when: Script shows a message after an async action without moving focus, such as "Saved", a result count, or an error.
+
+**Rule.** Announce an async status message through a live region (`role="status"` or `role="alert"`) that is already in the markup before its text changes.
+
+**Why.** A sighted user sees "Saved" appear. A screen-reader user hears nothing, because focus did not move. Most readers announce a change only in a region that existed first, so a region created together with its message is often skipped.
+
+**FAIL**
+
+```js
+const note = document.createElement("div");
+note.textContent = "Changes saved";
+document.body.append(note);
+```
+
+**PASS**
+
+```html
+<div id="status" role="status" aria-live="polite"></div>
+<script>
+  document.getElementById("status").textContent = "Changes saved";
+</script>
+```
+
+**Counterpoint.** "Move focus to the message instead." Use that for a blocking error after submit, where the user must act. For a passive result, moving focus steals the user's place. Keep `assertive` and `role="alert"` for errors, because they interrupt speech.
