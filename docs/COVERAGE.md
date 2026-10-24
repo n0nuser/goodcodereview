@@ -132,10 +132,43 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #X9b | SOLID (Liskov) | `mod-subtype-passes-parent-tests` | gap |
 | 111-list #X10 | TDD | glossary/tdd | glossary |
 | 111-list #X11 | DDD | glossary/ddd | glossary |
-| 111-list #X12 | Fowler's 12 smells | glossary/fowlers-smells | glossary |
 | 111-list #X13 | Pocock Standards axis | `chg-match-codebase-pattern` | draft |
 | 111-list #X14 | Pocock Spec axis | `chg-matches-spec` | draft |
-| 111-list #X15 | Thermo-nuclear points | glossary/thermo-nuclear | glossary |
+| pocock-smells | Mysterious Name | `mod-one-name-per-concept` | draft |
+| pocock-smells | Duplicated Code | `chg-reuse-before-write` | draft |
+| pocock-smells | Feature Envy | `mod-behaviour-lives-with-state` | draft |
+| pocock-smells | Data Clumps | `fn-no-anonymous-tuples`, `fn-known-keys-get-a-type` | draft |
+| pocock-smells | Primitive Obsession | `fn-no-stringly-typed-returns` | draft |
+| pocock-smells | Repeated Switches | `mod-fowler-smells` | draft |
+| pocock-smells | Shotgun Surgery | `mod-fowler-smells` | draft |
+| pocock-smells | Divergent Change | `mod-cohesive-unit` | draft |
+| pocock-smells | Speculative Generality | `mod-yagni` | draft |
+| pocock-smells | Message Chains | `mod-fowler-smells` | draft |
+| pocock-smells | Middle Man | `fn-no-pass-through-wrapper` | draft |
+| pocock-smells | Refused Bequest | `mod-subtype-passes-parent-tests` | gap |
+| pocock-smells | Smells are judgement calls; the repo's own standard overrides the baseline | `mod-fowler-smells` | draft |
+| pocock-smells | Skip what tooling already enforces | `py-ruff-gate` | draft |
+| pocock-smells | Axes reported separately, never reranked; worst finding per axis | dropped: output format of one skill | dropped |
+| thermo-nuclear | P0 Ambition: restructure to delete whole layers (code judo) | dropped: reviewer posture, nothing to FAIL | dropped |
+| thermo-nuclear | P1 File crosses 1000 lines | `code-file-lines-ceiling` | draft |
+| thermo-nuclear | P2 Ad-hoc conditionals, one-off flags in unrelated flows | `chg-no-special-case-branches` | gap |
+| thermo-nuclear | P3 Working code is not enough; prefer removing moving parts | dropped: reviewer posture, see chg-review-signal | dropped |
+| thermo-nuclear | P4 Magic, thin wrappers, identity helpers | `fn-no-pass-through-wrapper` | draft |
+| thermo-nuclear | P5 Needless optionality, any/unknown, casts, loose object shapes | `py-no-cast`, `fn-known-keys-get-a-type` | draft |
+| thermo-nuclear | P6 Logic in the wrong layer; bespoke helper beside a canonical one | `mod-layers-point-inward`, `chg-reuse-before-write` | draft |
+| thermo-nuclear | P7a Independent async work run sequentially | `fn-independent-work-concurrent` | gap |
+| thermo-nuclear | P7b Related updates that can leave state half applied | `fn-atomic-related-updates` | gap |
+| thermo-nuclear | Copy-pasted logic | `chg-reuse-before-write` | draft |
+| thermo-nuclear | Temporary branching likely to stay | `chg-flag-owner-retirement` | draft |
+| thermo-nuclear | Few high-conviction comments; direct tone; approval bar | `chg-review-signal`, `chg-review-comment-format` | draft |
+| thermo-nuclear | Review: only report added or modified code | `chg-review-signal` | draft |
+| thermo-nuclear | Review: trace side effects before claiming breakage; no unfinished research | `chg-verify-before-claim` | draft |
+| thermo-nuclear | Review: developer-experience breaks (env vars, ports, secret sources, new scripts) | `chg-devex-breaking-config` | gap |
+| thermo-nuclear | Review: feature-gate leaks | `chg-flag-owner-retirement` | draft |
+| thermo-nuclear | Review: do not report an intended breakage | dropped: reviewer posture | dropped |
+| thermo-nuclear | Review: do not over-report priority | `chg-review-signal` | draft |
+| thermo-nuclear | Review: read bot comments only after own audit | `chg-agent-independent-review` | draft |
+| thermo-nuclear | Thermos: two parallel passes then merge | dropped: workflow mechanics; fresh context is chg-agent-independent-review | dropped |
 | research-gap | a change is too large to review (about 200-400 lines or 20+ fi | `chg-size-ceiling` | draft |
 | research-gap | a change mixes refactor or formatting with behavior change. | `chg-refactor-separate` | draft |
 | research-gap | legacy behavior changes with no test recording what it does to | `chg-chestertons-fence` | draft |
@@ -298,10 +331,14 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 Reserved ids with no card. Each line is the rule the card would check.
 
 - `chg-migration-add-column-rewrite`: FAIL if ADD COLUMN with a volatile default, generated stored column or identity on a large table.
+- `chg-devex-breaking-config`: FAIL if a change renames env vars, remaps ports, moves secret sources or adds a required script with no migration note.
+- `chg-no-special-case-branches`: FAIL if a change adds a one-off conditional, flag or nullable mode into an unrelated flow instead of a dedicated abstraction.
 - `code-ai-pr-disclosure`: FAIL if an AI-assisted PR lacks disclosure or an author able to explain it.
 - `code-build-hermetic`: FAIL if build depends on host tools or floating versions, or a release is not tied to one revision.
 - `code-secret-scan`: FAIL if a credential is committed to the repo (unsourced).
 - `fn-english-identifiers`: FAIL if identifiers or comments are not in English.
+- `fn-atomic-related-updates`: FAIL if related updates can leave state half applied when one step fails.
+- `fn-independent-work-concurrent`: FAIL if independent awaits or calls run one after another with no reason.
 - `fn-resource-lifetime`: FAIL if a task, goroutine, thread or handle has no owner or stop path, or is not released on the error path.
 - `mod-prefer-sync-api`: FAIL if a module exposes an async-only API where a synchronous one would let callers add concurrency.
 - `mod-subtype-passes-parent-tests`: FAIL if a subclass breaks the parent's black-box tests (stricter inputs, weaker outputs, broken invariants).
