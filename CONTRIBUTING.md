@@ -14,6 +14,8 @@ A card is accepted when it has:
 
 New cards start as `status: draft`. Only `stable` cards ship in `SKILL.md`.
 
+A stable card must not name a draft card id. `tools/validate.py` fails if one does. When you promote a draft to stable, add back the links to it that stable cards dropped.
+
 Run `python3 tools/validate.py` to lint the cards. Run `python3 tools/build.py` to build the site and the skill.
 
 After a build, run `python3 tools/agent_ready_check.py` to check `site/` against the agent-readiness items in `docs/research/agent-readiness-gaps.md`. It reads files only and exits 1 on any failure. CI does not run it.

@@ -66,6 +66,7 @@ def validate(root):
     for p, fm, _ in cards:
         if fm and "id" in fm:
             ids.setdefault(fm["id"], []).append(p)
+    drafts = {fm["id"] for _, fm, _ in cards if fm and fm.get("status") == "draft" and "id" in fm}
     for p, fm, body in cards:
         rel = p.relative_to(root)
 
@@ -115,6 +116,11 @@ def validate(root):
         for ref in sorted(set(re.findall(r"\[\[([^\]]+)\]\]", body))):
             if ref not in ids and ref not in glossary:
                 err(f"unresolved cross-ref [[{ref}]]")
+        if fm.get("status") == "stable":
+            text = p.read_text()
+            for d in sorted(drafts):
+                if re.search(rf"(?<![a-z0-9-]){re.escape(d)}(?![a-z0-9-])", text):
+                    err(f"stable card names draft id '{d}'")
     return errors
 
 

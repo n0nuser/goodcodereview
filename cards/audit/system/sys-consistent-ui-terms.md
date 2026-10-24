@@ -7,7 +7,7 @@ status: stable
 lang: core
 applies_when: Several screens or apps show the same action, status, or concept to the same users.
 tool_gate: none; list the labels and icons for one action across all screens.
-note: This card is about words and controls a user sees. Names in code are `mod-one-name-per-concept`, and API field names are `svc-api-naming-consistent`.
+note: This card is about words and controls a user sees. It does not cover names in code or API field names.
 borrowed_from:
   - https://www.nngroup.com/articles/ten-usability-heuristics/
   - https://www.cs.umd.edu/users/ben/goldenrules.html
