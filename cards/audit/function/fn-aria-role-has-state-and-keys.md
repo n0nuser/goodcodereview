@@ -7,12 +7,16 @@ status: draft
 lang: core
 applies_when: A custom widget sets `role` or an `aria-*` attribute because no native element fits.
 tool_gate: ESLint `jsx-a11y/role-has-required-aria-props`; axe `aria-required-attr`. Neither checks that the keys work.
-note: held at draft; W3C backs all three clauses, but the state and keys clauses have only 2 orgs each (W3C with Heydon Pickering, W3C with Mozilla); tool-gate rule names checked against the jsx-a11y README and the axe rule list
+note: state clause: W3C, Mozilla, Deque, Heydon Pickering; keys clause: W3C, Mozilla, Google web.dev; name clause: W3C and Deque (both map to WCAG 4.1.2); tool-gate rule names checked against the jsx-a11y README and the axe rule list
 borrowed_from:
   - https://www.w3.org/WAI/ARIA/apg/practices/read-me-first/
   - https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html
   - https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility/HTML
   - https://inclusive-components.design/toggle-button/
+  - https://www.w3.org/WAI/ARIA/apg/patterns/switch/
+  - https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/switch_role
+  - https://dequeuniversity.com/rules/axe/html/4.10/aria-required-attr
+  - https://web.dev/learn/accessibility/aria-html
 ---
 
 **Rule.** When a native element cannot do the job, give the custom widget its name, its state attribute, and the keys its role promises.

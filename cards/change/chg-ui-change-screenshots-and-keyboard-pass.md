@@ -7,11 +7,14 @@ status: draft
 lang: core
 applies_when: The change alters markup, styles, or behaviour a user sees or operates.
 tool_gate: A pull request template with a UI checklist; the screenshots and the keyboard result are the evidence.
-note: 3 orgs for the keyboard and zoom pass (W3C, WebAIM, GOV.UK). Before-and-after screenshots have no primary source; they are practice of this repo's authors.
+note: keyboard and zoom pass: W3C, WebAIM, GOV.UK; before-and-after screenshots: PR templates of WordPress Gutenberg, Elastic EUI and Mozilla addons-frontend (project practice, not standards guidance)
 borrowed_from:
   - https://www.w3.org/WAI/test-evaluate/preliminary/
   - https://webaim.org/techniques/keyboard/
   - https://www.gov.uk/service-manual/helping-people-to-use-your-service/making-your-service-accessible-an-introduction
+  - https://raw.githubusercontent.com/WordPress/gutenberg/trunk/.github/PULL_REQUEST_TEMPLATE.md
+  - https://raw.githubusercontent.com/elastic/eui/main/.github/pull_request_template.md
+  - https://raw.githubusercontent.com/mozilla/addons-frontend/master/.github/PULL_REQUEST_TEMPLATE.md
 ---
 
 **Rule.** A UI change shows before-and-after screenshots and says what a keyboard-only pass and a 200% zoom check found on the changed screens.
