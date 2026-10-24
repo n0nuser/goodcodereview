@@ -38,6 +38,8 @@ body:
         - compatibility
         - testing
         - maintainability
+        - accessibility
+        - usability
         - observability
         - process
     validations:
