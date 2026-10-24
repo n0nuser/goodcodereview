@@ -208,7 +208,7 @@ Notes: 5 orgs (Google, Microsoft, AWS, Mozilla, Cloudflare). The card overlaps `
 
 - change: `chg-new-query-has-plan`. A claim needs numbers (`chg-perf-claim-evidence`, stable). A query in a loop is `sys-n-plus-one-pooling`. No separate "benchmark for a hot-path change" card: a reviewer cannot tell which paths are hot without a profile, and the regression side is `code-perf-budget-in-ci`.
 - function: `fn-join-dont-concat-in-loop`, `fn-regex-compiled-once`, `fn-no-blocking-call-in-async-code`, `fn-fetch-only-needed-data`. `fn-independent-work-concurrent` gets two sources.
-- module: no new card, because no checkable rule is left. Cache bounds are `mod-bounded-caches`, and client reuse is `mod-pooled-clients-built-once`, which gets sources and the `performance` tag.
+- module: no new card, because no checkable rule is left. Cache bounds are `sys-cache-bounds-invalidation`, and client reuse is `mod-pooled-clients-built-once`, which gets sources and the `performance` tag.
 - service: `svc-list-endpoint-paginates`. `svc-timeouts` gets one source and a FAIL line. Payload and request size limits are `svc-bound-client-controlled-sizes`. Connection reuse is `mod-pooled-clients-built-once`.
 - system: `sys-fanout-leg-deadlines`. `sys-n-plus-one-pooling` and `sys-cache-bounds-invalidation` get sources, and the cache card gets the tag. The per-hop latency budget is no checkable rule beyond `svc-timeouts`, because only 2 orgs state it and `svc-timeouts` already derives the timeout from the caller's remaining deadline.
 - codebase: `code-perf-budget-in-ci`. A separate "benchmarks stay runnable" card is no checkable rule on its own, because the budget job runs them, and the sources (Go, Rust, JMH docs) were not read in this pass.

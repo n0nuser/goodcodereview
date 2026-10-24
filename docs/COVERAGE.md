@@ -270,7 +270,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Testing: No Arrange/Act/Assert comments; deterministic; layout mirrors source; fixtures; regression test first | `py-test-hygiene` | draft |
 | core-python | Concurrency: No check-then-act across `await`; atomic operations | `fn-no-check-then-act-across-await`, `py-await-check-then-act` | draft |
 | core-python | Concurrency: Shared state reasoned about for races | `fn-no-check-then-act-across-await` | draft |
-| core-python | Resource lifecycle: Per-key caches bounded | `mod-bounded-caches` | draft |
+| core-python | Resource lifecycle: Per-key caches bounded | `sys-cache-bounds-invalidation` | stable |
 | core-python | Resource lifecycle: Pooled clients built once | `mod-pooled-clients-built-once`, `py-httpx-client-lifespan` | draft |
 | core-python | Resource lifecycle: Timeouts on both legs | `svc-timeouts`, `py-httpx-client-lifespan` | draft |
 | core-python | Resource lifecycle: Stream, don't materialise; bound background tasks | `svc-stream-dont-materialise`, `svc-bounded-background-tasks` | draft |
