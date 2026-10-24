@@ -3,7 +3,7 @@ id: chg-breaking-change-taxonomy
 level: change
 tags: [compatibility, api]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: The change alters anything a caller can observe, documented or not.
 tool_gate: Contract tests and API-diff tooling.
@@ -31,4 +31,4 @@ PR states: "ordering changes, known consumers A and B checked,
 flag orders_newest_first defaults off for one release".
 ```
 
-**Counterpoint.** Treating everything as breaking freezes the code. Hyrum's law is an observation, not a measurement; weigh by known consumers and blast radius, and use staged rollout rather than a ban. Optional parameters with defaults are the safe way to add.
+**Counterpoint.** Treating everything as breaking freezes the code. Answer: weigh by known consumers and blast radius, and use staged rollout rather than a ban. Optional parameters with defaults are the safe way to add.

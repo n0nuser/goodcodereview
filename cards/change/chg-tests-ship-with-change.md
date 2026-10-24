@@ -3,7 +3,7 @@ id: chg-tests-ship-with-change
 level: change
 tags: [testing]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: The change alters behaviour of non-trivial code.
 tool_gate: Coverage-delta or "changed source without changed tests" check in CI.
@@ -31,4 +31,4 @@ PR adds discount.py change and test_discount.py with the edge cases
 (zero quantity, stacked coupons); the test was seen failing before the fix.
 ```
 
-**Counterpoint.** Google says approve a change that improves code health even if imperfect, while Kubernetes and CPython are stricter about tests before merge. Answer: untestable cases exist (config, pure docs, emergency fixes), and the rule allows them with a written reason and a ticket for the test.
+**Counterpoint.** "Holding a good change for tests blocks progress." Approve changes that improve the code even if imperfect, but the test is part of the change, not polish. Untestable cases exist (config, pure docs, emergency fixes), and the rule allows them with a written reason and a ticket for the test.

@@ -3,7 +3,7 @@ id: chg-refactor-separate
 level: change
 tags: [refactoring, scope]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: The change both restructures or reformats code and changes behaviour, or moves code between files.
 tool_gate: A formatter check in CI removes the reformatting case.
@@ -32,4 +32,4 @@ commit 1: move parser (git detects rename, 0 content change)
 commit 2: fix off-by-one + test
 ```
 
-**Counterpoint.** Separate PRs cost review round trips, and Beck himself notes tidying inside the PR irritates reviewers yet is costly to split in PR workflows. Separate commits in one PR are an acceptable compromise; the ideal is separate PRs. A tidy that only exists to enable the behaviour change in hand may ship with it if commits stay apart.
+**Counterpoint.** Separate PRs cost review round trips, and untangling a mixed branch after the fact is work. Separate commits in one PR are an acceptable compromise; the ideal is separate PRs. A tidy that only exists to enable the behaviour change in hand may ship with it if commits stay apart.

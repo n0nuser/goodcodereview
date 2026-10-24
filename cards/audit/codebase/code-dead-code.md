@@ -3,7 +3,7 @@ id: code-dead-code
 level: codebase
 tags: [cleanup, deletion]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: Auditing for code, flags and files that nothing uses.
 tool_gate: Dead-code detectors (vulture, knip, deadcode) plus unused-export lint in CI.

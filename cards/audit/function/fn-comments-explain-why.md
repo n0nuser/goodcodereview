@@ -3,7 +3,7 @@ id: fn-comments-explain-why
 level: function
 tags: [readability, docs]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: A comment sits next to code, or the code needs one to be understood.
 tool_gate: none
@@ -11,6 +11,7 @@ borrowed_from:
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
   - https://github.com/johnousterhout/aposd-vs-clean-code/blob/main/README.md
+  - https://henrikwarne.com/2024/01/10/tidy-first/
 ---
 
 **Rule.** Write comments that give a reason, a constraint or a trade-off. Never restate what the next line does. Rename before commenting.
@@ -32,4 +33,4 @@ retry = False  # see the PR, currently disabled
 # TODO: remove when billing emits entitlement events itself.
 ```
 
-**Counterpoint.** Sources disagree. Martin treats comments as a last resort after names; Ousterhout argues missing comments cost more than wrong ones (his multiplier is anecdotal). Both agree a stale comment is a defect and a *what* comment is waste. The test: does it add information the code cannot carry?
+**Counterpoint.** "Good names make comments unnecessary." Names carry *what*; they cannot carry why a branch exists, a unit, or what callers may rely on, and a missing reason costs more than a slightly stale one. Rename first, then comment what the name cannot say. A stale comment is a defect either way. The test: does it add information the code cannot carry?

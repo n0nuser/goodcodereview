@@ -3,7 +3,7 @@ id: mod-yagni
 level: module
 tags: [design, scope]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: The change adds an abstraction, parameter, hook or option.
 tool_gate: none
@@ -30,4 +30,4 @@ def send(msg, retries=3, backoff=None, hook=None): ...   # nobody passes these
 def send_welcome_email(user): ...
 ```
 
-**Counterpoint.** "But we will surely need it." Then add it when you do, in a change that has the real second caller to shape it. Optimising for easy change means simple code, not built-in flexibility. Trivial single-use logic stays inline. Sources note the cost of waiting is low; the cost of the wrong guess is not.
+**Counterpoint.** "But we will surely need it." Then add it when you do, in a change that has the real second caller to shape it. Optimising for easy change means simple code, not built-in flexibility. Trivial single-use logic stays inline. The cost of waiting is low; the cost of the wrong guess is not.

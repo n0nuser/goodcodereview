@@ -3,13 +3,14 @@ id: code-dependency-pinning
 level: codebase
 tags: [supply-chain, dependencies]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: Auditing how the repo resolves third-party packages.
 tool_gate: Lockfile-required install in CI; dependency-update bot config present.
 borrowed_from:
   - https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/
   - https://github.com/ossf/scorecard/blob/main/docs/checks.md
+  - https://sre.google/sre-book/release-engineering/
 ---
 
 **Rule.** Commit a lockfile with hashes and install from it in CI.
