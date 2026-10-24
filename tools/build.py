@@ -67,7 +67,8 @@ def page(title, body, script=False):
     nav = '<nav><a href="index.html">Home</a><a href="change.html">Change</a><a href="glossary.html">Glossary</a></nav>'
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f"<title>{html.escape(title)}</title><style>{CSS}</style></head><body>{nav}<h1>{html.escape(title)}</h1>{body}"
-            f"<footer>created and edited by Pablo</footer>{'<script>' + JS + '</script>' if script else ''}</body></html>")
+            f'<footer>Created and edited by <a href="https://pablogonzalez.me">Pablo González</a> · Content CC BY 4.0 · Code MIT · <a href="https://github.com/n0nuser/goodcodereview">Source</a></footer>'
+            f"{'<script>' + JS + '</script>' if script else ''}</body></html>")
 
 
 def card_html(fm, body, ids):
@@ -115,6 +116,8 @@ def main():
     (SITE / "glossary.html").write_text(page("Glossary", g))
     llms += [f"## Glossary (glossary.html)"] + [f"- {p.stem}" for p in gloss]
     (SITE / "llms.txt").write_text("\n".join(llms) + "\n")
+    (SITE / "robots.txt").write_text("User-agent: *\nAllow: /\n")
+    (SITE / "404.html").write_text(page("Not found", '<p><a href="index.html">Back to the start</a></p>'))
     links = lambda ls: "".join(f'<a href="{l}.html">{l}</a>' for l in ls)
     (SITE / "index.html").write_text(page("Good Code Review", (
         "<p>What to check when reviewing code. Every check ends in PASS, FAIL or N/A with file:line evidence.</p>"

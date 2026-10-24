@@ -1,0 +1,14 @@
+{
+  "name": "goodcodereview",
+  "description": "A reference for what to check when reviewing code",
+  "owner": { "name": "Pablo González", "url": "https://pablogonzalez.me" },
+  "plugins": [
+    {
+      "name": "goodcodereview",
+      "source": "./",
+      "description": "Review code against stable cards, from a diff up to an incident",
+      "homepage": "https://goodcodereview.com",
+      "license": "MIT"
+    }
+  ]
+}
