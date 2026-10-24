@@ -551,28 +551,28 @@ From `docs/research/frontend-pass.md`. Every card here carries the `accessibilit
 
 | Source | Item | Maps to | Status |
 |---|---|---|---|
-| frontend-pass | Every image has an `alt`, empty when decorative (5 orgs) | `fn-img-alt-text` | draft |
-| frontend-pass | Every form control has a visible, programmatic label (5 orgs) | `fn-form-control-has-label` | draft |
-| frontend-pass | `button` for actions, `a href` for navigation (4 orgs) | `fn-native-button-or-link` | draft |
-| frontend-pass | Visible, unobscured focus indicator (4 orgs) | `fn-focus-indicator-visible` | draft |
-| frontend-pass | A modal moves focus in, traps it, closes on Escape, and returns focus (3 orgs; the return step has 1) | `fn-dialog-focus-managed` | draft |
-| frontend-pass | No `tabindex` above 0; DOM in reading order (3 orgs) | `fn-no-positive-tabindex` | draft |
+| frontend-pass | Every image has an `alt`, empty when decorative (5 orgs) | `fn-img-alt-text` | stable |
+| frontend-pass | Every form control has a visible, programmatic label (5 orgs) | `fn-form-control-has-label` | stable |
+| frontend-pass | `button` for actions, `a href` for navigation (4 orgs) | `fn-native-button-or-link` | stable |
+| frontend-pass | Visible, unobscured focus indicator (4 orgs) | `fn-focus-indicator-visible` | stable |
+| frontend-pass | A modal moves focus in, traps it, closes on Escape, and returns focus (3 orgs; the return step has 1) | `fn-dialog-focus-managed` | stable |
+| frontend-pass | No `tabindex` above 0; DOM in reading order (3 orgs) | `fn-no-positive-tabindex` | stable |
 | frontend-pass | A custom widget gets its name, state, and keys (3 orgs) | `fn-aria-role-has-state-and-keys` | draft |
-| frontend-pass | Async status goes through a live region that already exists (3 orgs) | `fn-status-announced-live-region` | draft |
-| frontend-pass | Real headings in outline order (3 orgs) | `fn-heading-structure` | draft |
-| frontend-pass | A second cue beside colour (4 orgs) | `fn-colour-not-sole-cue` | draft |
+| frontend-pass | Async status goes through a live region that already exists (3 orgs) | `fn-status-announced-live-region` | stable |
+| frontend-pass | Real headings in outline order (3 orgs) | `fn-heading-structure` | stable |
+| frontend-pass | A second cue beside colour (4 orgs) | `fn-colour-not-sole-cue` | stable |
 | frontend-pass | Pointer targets 24 by 24 CSS px or spaced (2 orgs) | `fn-target-size` | draft |
-| frontend-pass | Reduce or remove large motion under `prefers-reduced-motion` (5 orgs; WCAG level AAA) | `fn-reduced-motion-respected` | draft |
-| frontend-pass | Error next to the field, naming the problem and the fix (5 orgs) | `fn-error-says-what-and-how` | draft |
-| frontend-pass | Keep the entered values after a failed submit (3 orgs plus 1 related) | `fn-keep-input-on-error` | draft |
-| frontend-pass | Undo or a named-outcome confirmation for destructive actions (4 orgs) | `fn-destructive-confirm-or-undo` | draft |
-| frontend-pass | Colour tokens meet 4.5:1 for text and 3:1 for UI parts (5 orgs) | `mod-colour-tokens-meet-contrast` | draft |
-| frontend-pass | Do not ask again for what the flow already has (3 orgs) | `svc-no-redundant-entry` | draft |
-| frontend-pass | Feedback past 1 s, progress and cancel past 10 s (4 orgs) | `svc-slow-operation-shows-progress` | draft |
+| frontend-pass | Reduce or remove large motion under `prefers-reduced-motion` (5 orgs; WCAG level AAA) | `fn-reduced-motion-respected` | stable |
+| frontend-pass | Error next to the field, naming the problem and the fix (5 orgs) | `fn-error-says-what-and-how` | stable |
+| frontend-pass | Keep the entered values after a failed submit (3 orgs plus 1 related) | `fn-keep-input-on-error` | stable |
+| frontend-pass | Undo or a named-outcome confirmation for destructive actions (4 orgs) | `fn-destructive-confirm-or-undo` | stable |
+| frontend-pass | Colour tokens meet 4.5:1 for text and 3:1 for UI parts (5 orgs) | `mod-colour-tokens-meet-contrast` | stable |
+| frontend-pass | Do not ask again for what the flow already has (3 orgs) | `svc-no-redundant-entry` | stable |
+| frontend-pass | Feedback past 1 s, progress and cancel past 10 s (4 orgs) | `svc-slow-operation-shows-progress` | stable |
 | frontend-pass | Reserve space for late content (1 firm org, 2 indirect) | `svc-async-content-reserves-space` | draft |
-| frontend-pass | Usable at 320 CSS px and 200% text zoom; zoom not blocked (2 orgs) | `svc-reflow-and-zoom` | draft |
+| frontend-pass | Usable at 320 CSS px and 200% text zoom; zoom not blocked (2 orgs) | `svc-reflow-and-zoom` | stable |
 | frontend-pass | A unique `<title>` per page and route, updated on navigation (2 orgs) | `svc-page-title-per-route` | draft |
-| frontend-pass | One label, icon, and place per action across screens (4 orgs) | `sys-consistent-ui-terms` | draft |
+| frontend-pass | One label, icon, and place per action across screens (4 orgs) | `sys-consistent-ui-terms` | stable |
 | frontend-pass | An automated accessibility check fails the build (3 orgs; tools find a minority) | `code-a11y-check-in-ci` | draft |
 | frontend-pass | A UI change ships screenshots and a keyboard and zoom pass (3 orgs; screenshots unsourced) | `chg-ui-change-screenshots-and-keyboard-pass` | draft |
 | frontend-pass | Audit with assistive technology before a public launch (3 orgs, one weak) | `prod-a11y-audit-before-launch` | draft |
