@@ -1,0 +1,33 @@
+---
+id: chg-delete-legacy-after-migration
+level: change
+tags: [migration, cleanup]
+severity: should-fix
+status: draft
+lang: core
+applies_when: The change adds a new API, path or config and every caller lives in this repo.
+tool_gate: Dead-code and unused-export checks.
+note: one vendor's engineering guidance (opinion), from principle-migrate-callers-then-delete-legacy-apis/SKILL.md; applies only without outside consumers
+borrowed_from:
+  - https://github.com/cursor/plugins
+---
+
+**Rule.** When no consumer sits outside the repo, move every caller to the new API and delete the old one, and the tests that pinned its internals, in the same change.
+
+**Why.** Two supported ways to do one task both keep gaining callers. The old path becomes the one nobody dares remove.
+
+**FAIL**
+
+```text
++ def fetch_user_v2(id): ...
+  def fetch_user(id): ...        # kept "for now"; 14 callers still use it
+```
+
+**PASS**
+
+```text
+- def fetch_user(id): ...
++ def fetch_user(id): ...        # new behaviour; all 14 callers updated in this diff
+```
+
+**Counterpoint.** This rule applies only when no consumer sits outside the repo: a published library, a public API, a client on an older release, or data written by older code. For those, follow [[chg-expand-contract]] and remove the old form later. Check the consumer claim before you mark `FAIL`.

@@ -10,11 +10,12 @@ tool_gate: none
 borrowed_from:
   - https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/
   - https://michaelfeathers.silvrback.com/characterization-testing
+  - https://github.com/cursor/plugins
 ---
 
 **Rule.** Add a characterization test before rewriting code you do not understand.
 
-**Why.** Strange code often carries a fix for a bug that is no longer visible. Removing it re-ships the bug. Check the history first (blame, linked incidents). For a rewrite, name the defect that justifies it.
+**Why.** Strange code often carries a fix for a bug that is no longer visible. Removing it re-ships the bug. Check the history first (blame, the PR that added it, tickets, postmortems); defensive code such as null checks, retries and timeouts usually answers a real incident. For a rewrite, name the defect that justifies it.
 
 **FAIL**
 
