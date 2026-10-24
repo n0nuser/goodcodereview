@@ -231,7 +231,7 @@ def page(title, body, script=False, links=(), cur=""):
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">'
             f'<link rel="icon" href="{FAVICON}">'
             f"<title>{html.escape(title)}</title><style>{CSS}</style></head><body><a class=skip href=#main>Skip to content</a>{nav}<main id=main tabindex=-1><h1>{html.escape(title)}</h1>{body}</main>"
-            f'<footer>Created and edited by <a href="https://pablogonzalez.me">Pablo González</a> · Content CC BY 4.0 · Code MIT · <a href="https://github.com/n0nuser/goodcodereview">Source</a> · Styled with <a href="https://good-css.com">good-css.com</a></footer>'
+            f'<footer>Created and edited by <a href="https://pablogonzalez.me">Pablo González</a> · Content CC BY 4.0 · Code MIT · <a href="https://github.com/n0nuser/goodcodereview">Source</a></footer>'
             f"{'<script>' + JS + '</script>' if script else ''}</body></html>")
 
 
@@ -381,7 +381,7 @@ def main():
         "<h2>Report format</h2><p>" + VERDICT + "</p>" + EXAMPLE_HTML +
         "<h2>Packs</h2><p>A pack adds language-specific cards on top of the levels. Use one with the level that matches your input.</p>"
         "<p>" + (", ".join(f'<a href="pack-{p}.html">{p.capitalize()} pack</a>' for p in packs) or "No packs yet.") + "</p>"
-        '<p class="note">Writing CSS? <a href="https://good-css.com">good-css.com</a> has the rules this site\'s CSS follows.</p>'), True, links, "index.html"))
+        '<p class="note">Writing CSS? <a href="https://good-css.com">good-css.com</a> has rules for reviewing CSS.</p>'), True, links, "index.html"))
 
     stable = [c for c in cards if c[1]["status"] == "stable"]
     draft = [c for c in cards if c[1]["status"] != "stable"]
