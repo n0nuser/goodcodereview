@@ -3,11 +3,11 @@ id: fn-dialog-focus-managed
 level: function
 tags: [accessibility, usability, frontend, keyboard]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: A component opens a modal dialog, drawer, or menu that covers the page.
 tool_gate: none; a component test that opens the dialog, presses Tab and Escape, and asserts `document.activeElement`.
-note: 3 orgs for the dialog behaviour; only W3C APG states the return-focus step, MDN does not
+note: 3 orgs (W3C, Mozilla, WebAIM) for focus in, Tab kept inside, and Escape. Return focus to the opener has 2 (W3C APG, WebAIM; MDN does not state it), so it is in Why
 borrowed_from:
   - https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
   - https://www.w3.org/WAI/WCAG22/Understanding/no-keyboard-trap.html
@@ -15,9 +15,9 @@ borrowed_from:
   - https://webaim.org/techniques/keyboard/
 ---
 
-**Rule.** When a modal opens, move focus into it and keep Tab inside. Escape closes it, and focus returns to the control that opened it.
+**Rule.** When a modal opens, move focus into it and keep Tab inside it. Make Escape close it.
 
-**Why.** Without it, a keyboard user keeps tabbing through the page behind the dialog, or gets stuck inside it with no exit. After close, focus that falls to the top of the page makes them start over.
+**Why.** Without it, a keyboard user keeps tabbing through the page behind the dialog, or gets stuck inside it with no exit. When it closes, return focus to the control that opened it. Focus that falls to the top of the page makes them start over.
 
 **FAIL**
 

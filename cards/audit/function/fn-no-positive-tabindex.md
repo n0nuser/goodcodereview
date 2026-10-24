@@ -3,11 +3,11 @@ id: fn-no-positive-tabindex
 level: function
 tags: [accessibility, usability, frontend, keyboard]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: Markup sets `tabindex`, or a layout reorders content with CSS.
 tool_gate: ESLint `jsx-a11y/tabindex-no-positive`; axe `tabindex`.
-note: 3 orgs; the two tool-gate names come from author knowledge, not from the pages read
+note: 4 orgs (W3C, Google, WebAIM, A11y Project); both tool-gate rule names checked against the jsx-a11y README and the axe rule list
 borrowed_from:
   - https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html
   - https://web.dev/learn/accessibility/focus

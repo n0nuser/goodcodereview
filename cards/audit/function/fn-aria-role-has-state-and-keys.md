@@ -3,11 +3,11 @@ id: fn-aria-role-has-state-and-keys
 level: function
 tags: [accessibility, frontend, aria, keyboard]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: A custom widget sets `role` or an `aria-*` attribute because no native element fits.
 tool_gate: ESLint `jsx-a11y/role-has-required-aria-props`; axe `aria-required-attr`. Neither checks that the keys work.
-note: 3 orgs; the two tool-gate names come from author knowledge, not from the pages read
+note: 3 orgs (W3C, Mozilla, Heydon Pickering); both tool-gate rule names checked against the jsx-a11y README and the axe rule list
 borrowed_from:
   - https://www.w3.org/WAI/ARIA/apg/practices/read-me-first/
   - https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html

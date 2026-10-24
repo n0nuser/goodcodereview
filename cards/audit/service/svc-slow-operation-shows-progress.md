@@ -3,11 +3,11 @@ id: svc-slow-operation-shows-progress
 level: service
 tags: [usability, accessibility, frontend]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: A page action, such as a save, an upload, a search, or a page load, can take more than about a second.
 tool_gate: none; throttle the network and run the action.
-note: 4 orgs; Norman's feedback principle is topic only
+note: 3 orgs (NN/g, Apple, Shneiderman) for feedback and graded progress. The 1 s and 10 s limits and the Cancel button come from NN/g, and Cancel also from Apple, so they are in Why. Norman's feedback principle is topic only
 borrowed_from:
   - https://www.nngroup.com/articles/response-times-3-important-limits/
   - https://www.nngroup.com/articles/skeleton-screens/
@@ -17,9 +17,9 @@ borrowed_from:
   - https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html
 ---
 
-**Rule.** Show that work is under way within about a second, and show progress with a way to cancel past about ten.
+**Rule.** Show that a slow action is under way, and show its progress when it runs long.
 
-**Why.** With no feedback, users click again, reload, or leave, and a double click can run the action twice. A bar tells them whether to wait. A message that says what is happening is better than "Loading".
+**Why.** With no feedback, users click again, reload, or leave, and a double click can run the action twice. A bar tells them whether to wait. A message that says what is happening is better than "Loading". As a guide, show feedback after about one second. Past about ten seconds, show how much is done and offer Cancel where stopping is safe.
 
 **FAIL**
 
@@ -30,10 +30,11 @@ borrowed_from:
 **PASS**
 
 ```jsx
-<button onClick={upload} disabled={busy} aria-busy={busy}>Upload</button>
+<button onClick={busy ? undefined : upload} aria-disabled={busy}>Upload</button>
 {busy && <progress value={sent} max={total} aria-label="Uploading report.pdf" />}
 {busy && <button onClick={cancel}>Cancel</button>}
-<div role="status" aria-live="polite">{busy ? `Uploading, ${pct}%` : ""}</div>
+<div role="status">{message}</div>   // "Uploading report.pdf", then "Upload complete"
+// aria-disabled keeps keyboard focus on the button; disabled would drop it
 ```
 
 **Counterpoint.** "A spinner on a 200 ms call flickers." Right: below about a second, show nothing, or the placeholder just flashes. Skeleton screens suit page loads, and progress bars suit uploads and other long jobs.

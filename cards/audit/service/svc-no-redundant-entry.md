@@ -3,10 +3,11 @@ id: svc-no-redundant-entry
 level: service
 tags: [usability, accessibility, frontend, forms]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: A multi-step flow, such as checkout or signup, asks for data in more than one step.
 tool_gate: none; a walk through the flow that lists each field asked twice.
+note: 3 orgs (W3C, NN/g, Shneiderman)
 borrowed_from:
   - https://www.w3.org/WAI/WCAG22/Understanding/redundant-entry.html
   - https://www.nngroup.com/articles/ten-usability-heuristics/
@@ -29,7 +30,7 @@ borrowed_from:
 ```html
 <!-- step 2 -->
 <label><input type="checkbox" name="same" checked> Billing address is the same as shipping</label>
-<input name="billing_address" value="12 Elm Road, Leeds" hidden>
+<input name="billing_address" value="12 Elm Road, Leeds" hidden>   <!-- shown, filled in, if the box is unchecked -->
 ```
 
-**Counterpoint.** "Retyping a new password confirms it." The standard names that exception, and also allows asking again when the data has expired or when repeating is the point of the task. Browser autofill does not count: the page itself must supply the value.
+**Counterpoint.** "Retyping a new password confirms it." That is a fair exception. So is data that is no longer valid, and re-entry that is the point of the task, such as a memory test. Browser autofill does not count: the page itself must supply the value.

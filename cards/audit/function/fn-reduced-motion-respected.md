@@ -3,10 +3,10 @@ id: fn-reduced-motion-respected
 level: function
 tags: [accessibility, usability, frontend, css, motion]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: Styles or script add a transition, an animation, a parallax effect, or autoplay motion.
-tool_gate: Stylelint `a11y/media-prefers-reduced-motion` (a plugin; name from author knowledge). A browser run with reduced motion emulated.
+tool_gate: Stylelint `a11y/media-prefers-reduced-motion` from the `stylelint-a11y` plugin. A browser run with reduced motion emulated.
 note: WCAG 2.3.3 is level AAA, so this is good practice and not an AA floor
 borrowed_from:
   - https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion

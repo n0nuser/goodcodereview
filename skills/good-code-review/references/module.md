@@ -1,5 +1,41 @@
 # module
 
+## mod-colour-tokens-meet-contrast
+
+severity: should-fix  
+concerns: accessibility, usability  
+applies_when: A design-system module or theme defines foreground and background colour tokens.
+
+**Rule.** Make every text and background token pair meet 4.5:1 (3:1 for large text), and every border, icon, and focus colour meet 3:1 against its neighbour.
+
+**Why.** Low contrast is invisible to the author on a bright monitor. Fixing it once in the tokens fixes every component. Fixing it per component means hunting through each one, and each new component can reintroduce it.
+
+**FAIL**
+
+```css
+:root {
+  --text-muted: #9aa0a6;     /* 2.6:1 on white */
+  --bg: #ffffff;
+  --input-border: #e0e0e0;   /* 1.3:1 on white */
+}
+```
+
+**PASS**
+
+```css
+:root {
+  --text-muted: #5f6368;     /* 6.0:1 on white */
+  --bg: #ffffff;
+  --input-border: #767676;   /* 4.5:1 on white, above the 3:1 floor */
+}
+```
+
+```js
+test.each(pairs)("%s meets 4.5:1", (fg, bg) => expect(ratio(fg, bg)).toBeGreaterThanOrEqual(4.5));
+```
+
+**Counterpoint.** "The brand colour fails." A logo is exempt. A brand-coloured button label or link is not. Darken the shade used for text and keep the brand shade for fills. The ratio is exact: 4.499:1 fails.
+
 ## mod-pooled-clients-built-once
 
 severity: should-fix  

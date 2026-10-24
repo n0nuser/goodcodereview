@@ -3,7 +3,7 @@ id: mod-colour-tokens-meet-contrast
 level: module
 tags: [accessibility, usability, frontend, css, design-system]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: A design-system module or theme defines foreground and background colour tokens.
 tool_gate: axe `color-contrast` on rendered components; a unit test that computes the ratio for each token pair. axe cannot see text on images or gradients.
@@ -17,7 +17,7 @@ borrowed_from:
   - https://www.w3.org/WAI/test-evaluate/preliminary/
 ---
 
-**Rule.** Every text and background token pair meets 4.5:1 (3:1 for large text), and every border, icon, and focus colour meets 3:1 against its neighbour.
+**Rule.** Make every text and background token pair meet 4.5:1 (3:1 for large text), and every border, icon, and focus colour meet 3:1 against its neighbour.
 
 **Why.** Low contrast is invisible to the author on a bright monitor. Fixing it once in the tokens fixes every component. Fixing it per component means hunting through each one, and each new component can reintroduce it.
 

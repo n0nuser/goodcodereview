@@ -3,7 +3,7 @@ id: fn-native-button-or-link
 level: function
 tags: [accessibility, usability, frontend, html]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: A component handles a click or tap, or navigates.
 tool_gate: ESLint `jsx-a11y/click-events-have-key-events` and `jsx-a11y/no-static-element-interactions`; `jsx-a11y/anchor-is-valid` for `href="#"`.

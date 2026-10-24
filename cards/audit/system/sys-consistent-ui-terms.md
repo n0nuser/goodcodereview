@@ -3,7 +3,7 @@ id: sys-consistent-ui-terms
 level: system
 tags: [usability, accessibility, frontend, design-system]
 severity: discuss
-status: draft
+status: stable
 lang: core
 applies_when: Several screens or apps show the same action, status, or concept to the same users.
 tool_gate: none; list the labels and icons for one action across all screens.
@@ -35,4 +35,4 @@ Orders, Customers, Invoices: [Delete] with the trash icon, last action in the ro
 A different outcome, such as archive, gets a different label: [Archive].
 ```
 
-**Counterpoint.** "Each team knows its users best." The standard asks for consistent, not uniform. Differ where the job differs, and keep the wording and look of the shared actions the same. Drive the shared parts from the design-system component, so they cannot drift.
+**Counterpoint.** "Each team knows its users best." Consistent does not mean uniform. Differ where the job differs, and keep the wording and look of the shared actions the same. Drive the shared parts from the design-system component, so they cannot drift.
