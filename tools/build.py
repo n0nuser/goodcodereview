@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Validate, then emit site/ and skills/good-code-review/. Run from anywhere."""
+import datetime
+import hashlib
 import html
+import json
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 from urllib.parse import urlparse
@@ -44,6 +48,10 @@ NONE_NOTE = (f'<p><strong>No vetted cards for this level yet.</strong> It gives 
 SEVERITY = ["## Severity", "", "- `block`: must be fixed before merge or release.", "- `should-fix`: fix it, but it need not block.",
             "- `discuss`: raise it and decide together.", ""]
 BASE = "https://goodcodereview.com"
+REPO = "https://github.com/n0nuser/goodcodereview"
+SITE_NAME = "Good Code Review"
+SITE_DESC = "A checklist for reviewing code, for people and for agents. Every check ends in PASS, FAIL, or N/A with file:line evidence."
+LICENCE_URL = "https://creativecommons.org/licenses/by/4.0/"
 NAME = {lv: "Change review" if lv == "change" else f"{lv.capitalize()} audit" for lv in LEVELS}
 VERDICT = ("Report each check as <code>PASS</code>, <code>FAIL</code>, or <code>N/A</code> with <code>file:line</code> evidence. A <code>FAIL</code> carries the card's severity. "
            "Any <code>block</code> <code>FAIL</code> means request changes. A <code>should-fix</code> or <code>discuss</code> <code>FAIL</code> goes in the review but does not block.")
@@ -57,6 +65,100 @@ EMPTY_RULE = (f'A level marked "{EMPTY_MARK}" has no stable cards. Give no verdi
               "You may list its draft cards as notes, never as `PASS` or `FAIL`.")
 DRAFT_RULE = "Draft cards are never verdicts."
 DRAFT_NOTE = "A draft card is not vetted. Read it for ideas, but do not use it for a verdict."
+PACK_DESC = "Draft cards specific to {pk}, not vetted. Use them with the level page that matches your input."
+CONCERNS_DESC = "Every card's rule on one page. Pick a concern, such as performance or security, to scope a review."
+GLOSSARY_DESC = "Terms that the cards link to, with a note on why a reviewer cares."
+ABOUT_DESC = "Who makes Good Code Review, what stable and draft cards mean, and the licences."
+PRIVACY_DESC = "Good Code Review collects nothing: no cookies, no analytics, no accounts."
+WHEN_TO_USE = ("Use this site when you are asked to review, audit, or check code: a diff or pull request, a file or function, a package, a service, "
+               "a design document that spans services, a repository, a release, or an incident. Match the input to a level in the routing table, "
+               "then check every stable card for that level and report each as `PASS`, `FAIL`, or `N/A` with evidence. "
+               "To review only some concerns, such as performance, check only the cards that list them. "
+               "Do not use it to write code or to run tests, and never turn a draft card into a verdict.")
+ABOUT = """Good Code Review is a checklist for reviewing code, for people and for agents. Each check is a card: one rule that a reviewer marks `PASS`, `FAIL`, or `N/A`, with a FAIL example and a PASS example. The cards are grouped into eight levels, from a single diff up to an incident, so a reviewer picks the level that matches the input.
+
+# Who makes it
+
+[Pablo González](https://pablogonzalez.me) created and edits the site and the cards. The cards, the build script, and the skill files are in the [GitHub repository](https://github.com/n0nuser/goodcodereview).
+
+# What stable and draft mean
+
+A stable card is vetted, and its FAIL and PASS lines are real verdicts. A draft card is not vetted. Read it for ideas, but do not use it for a verdict. The home page shows how many cards of each kind every level has.
+
+# How the site is built
+
+`python3 tools/build.py` reads the cards in the repository and writes this site as plain static files, plus the Markdown, `llms.txt`, and skill files that agents read. Cloudflare Pages hosts the result. There is no database and no server code.
+
+# Cost and licence
+
+The site and the cards are free to read and use. The content is under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) and the code is under the MIT licence.
+
+# Contact
+
+To report a wrong card, propose a card, or ask a question, open an issue on [GitHub Issues](https://github.com/n0nuser/goodcodereview/issues)."""
+PRIVACY = """This site collects nothing about you. It sets no cookies, runs no analytics or tracking scripts, has no accounts or forms, and stores nothing in your browser.
+
+# What runs in your browser
+
+The filter buttons and the copy buttons use a small script that is part of each page. It runs only in your browser, makes no network requests, and sends nothing anywhere. Every page reads fine with JavaScript turned off. Without it, the filter buttons do nothing and the copy buttons stay hidden.
+
+# What loads from other sites
+
+Nothing. Pages load no fonts, images, scripts, or styles from other sites. Links to other sites, such as the author's website and GitHub, load only when you follow them, and those sites have their own policies.
+
+# Hosting
+
+Cloudflare Pages hosts the site. Like any web host, it handles each request and may keep standard server logs under its own privacy policy. That is outside this site's code.
+
+# Contact
+
+Questions about this page go through [GitHub Issues](https://github.com/n0nuser/goodcodereview/issues)."""
+INDEX_MD = """# Good Code Review
+
+A checklist for reviewing code, for people and for agents. A card is one rule that a reviewer marks `PASS`, `FAIL`, or `N/A`. Each card has a FAIL example and a PASS example.
+
+## Choose a review
+
+Pick the level that matches your input and work through its checklist. Only stable cards are vetted.
+
+{levels}
+
+## Scope a review
+
+To review only some concerns, such as performance, use the [Concerns page](https://goodcodereview.com/concerns.md).
+
+## Start a review with an agent
+
+Paste this to your agent:
+
+```text
+Read https://goodcodereview.com/llms.txt and use it to review my code.
+```
+
+To install it as a skill, run:
+
+```text
+{npx}
+```
+
+To install it as a Claude Code plugin, run:
+
+```text
+{plugin}
+```
+
+## Report format
+
+{verdict}
+
+```text
+{example}
+```
+
+## Packs
+
+{packs}
+"""
 CSS = """*,*::before,*::after{box-sizing:border-box;min-width:0}
 :root{color-scheme:light dark;
 --bg:light-dark(oklch(.985 0 none),oklch(.18 0 none));--fg:light-dark(oklch(.2 0 none),oklch(.93 0 none));
@@ -150,6 +252,7 @@ figcaption{padding-block:.3rem;color:var(--tone);font:700 var(--step--1)/1.3 var
 figure pre{background:color-mix(in oklch,var(--tone) 7%,var(--bg));border-radius:0;white-space:pre-wrap;overflow-wrap:anywhere}figure pre code{overflow-wrap:anywhere}
 article:target>.ch h3{text-decoration:underline;text-decoration-color:var(--acc);text-decoration-thickness:.15em;text-underline-offset:.2em}
 footer{margin-block-start:var(--space-l);padding-block:var(--space-s) var(--space-m);border-block-start:1px solid var(--line);color:var(--mut);font:var(--step--1)/1.5 var(--ui)}
+.fl{display:flex;flex-wrap:wrap;gap:0 var(--space-m);margin:0;padding:0;list-style:none}.fl a{display:flex;align-items:center;min-block-size:44px}
 @media(hover:hover) and (pointer:fine){
 a:hover{text-decoration-thickness:.16em}nav a:hover,summary:hover{color:var(--acc)}
 button:hover{border-color:var(--fg)}ul.ck li:not(.th):hover{background:color-mix(in oklch,var(--fg) 4%,transparent)}
@@ -160,7 +263,7 @@ html{scroll-behavior:smooth}button{transition:transform 140ms var(--ease-out),ba
 JS = """const q=s=>[...document.querySelectorAll(s)],S={c:new Set(),t:new Set(),l:new Set()},E=document.getElementById('empty'),D=document.getElementById('dsum'),C=document.getElementById('count');
 function go(){q('[data-tags]').forEach(a=>{const g=a.dataset.tags.split(' ');
 a.hidden=(S.c.size>0&&![...S.c].some(x=>g.includes(x)))||[...S.t].some(x=>!g.includes(x))||(S.l.size>0&&!S.l.has(a.dataset.level))});
-const on=S.c.size+S.t.size+S.l.size>0,s=q('article[data-tags]:not([hidden])').filter(a=>!a.closest('details')).length,d=q('details [data-tags]:not([hidden])').length;
+const on=S.c.size+S.t.size+S.l.size>0,s=q('li[data-tags]:not([hidden])').filter(a=>!a.closest('details')).length,d=q('details [data-tags]:not([hidden])').length;
 if(E){E.hidden=!on||s>0;E.textContent='No stable cards match.'+(d?' '+d+' draft '+(d>1?'cards match':'card matches')+' below.':'')}
 if(D)D.textContent=D.dataset.n+' draft cards'+(on?' ('+d+' match)':'')
 if(C)C.textContent=on?s+' stable and '+d+' draft '+(s+d==1?'card matches.':'cards match.'):''}
@@ -198,9 +301,14 @@ def inline(s, ids):
 
 def md(text, ids):
     out, mark = [], ""
-    for i, part in enumerate(re.split(r"^```[^\n]*\n(.*?)^```[ \t]*$", text, flags=re.S | re.M)):
-        if i % 2:
-            pre = f"<pre><code>{html.escape(part)}</code></pre>"
+    lang = ""
+    for i, part in enumerate(re.split(r"^```([^\n]*)\n(.*?)^```[ \t]*$", text, flags=re.S | re.M)):
+        if i % 3 == 1:
+            lang = part.strip()
+            continue
+        if i % 3 == 2:
+            cls = f' class="language-{html.escape(lang)}"' if lang else ""
+            pre = f"<pre><code{cls}>{html.escape(part)}</code></pre>"
             out.append(f'<figure class="{mark}"><figcaption>{inline(f"**{mark.upper()}**", ids)}</figcaption>{pre}</figure>' if mark else pre)
             mark = ""
             continue
@@ -220,7 +328,30 @@ def md(text, ids):
     return re.sub(fig("fail") + "\n" + fig("pass"), r'<div class="ex">\1\2</div>', "\n".join(out), flags=re.S)
 
 
-def page(title, body, script=False, links=(), cur=""):
+def page_url(slug):
+    """The URL Cloudflare Pages serves: it redirects /x.html to /x and /index.html to /."""
+    return BASE + "/" if slug == "index" else f"{BASE}/{slug}"
+
+
+def head_tags(title, desc, slug):
+    """Canonical, description, Open Graph, discovery links, and the site-type declaration. The 404 page gets none."""
+    if not slug:
+        return ""
+    q = lambda t: html.escape(t, quote=True)
+    og = {"title": title, "description": desc, "type": "website", "url": page_url(slug), "site_name": SITE_NAME}
+    return (f'<meta name="description" content="{q(desc)}"><link rel="canonical" href="{page_url(slug)}">'
+            + "".join(f'<meta property="og:{k}" content="{q(v)}">' for k, v in og.items())
+            + f'<link rel="alternate" type="text/markdown" href="/{slug}.md"><link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">'
+            '<link rel="sitemap" type="application/xml" href="/sitemap.xml"><meta name="is-agentic-site-type" content="content">')
+
+
+FOOTER = (f'<footer><p>Created and edited by <a href="https://pablogonzalez.me">Pablo González</a> · Content CC BY 4.0 · Code MIT · <a href="{REPO}">Source</a></p>'
+          '<ul class="fl"><li><a href="about.html">About</a></li><li><a href="privacy.html">Privacy</a></li>'
+          f'<li><a href="{REPO}/issues">Contact (GitHub Issues)</a></li><li><a href="llms.txt">llms.txt</a></li><li><a href="sitemap.xml">Sitemap</a></li>'
+          f'<li><a href="{REPO}/blob/main/AGENTS.md">AGENTS.md</a></li><li><a href="{REPO}/tree/main/skills/good-code-review">Skill folder</a></li></ul></footer>')
+
+
+def page(title, body, script=False, links=(), cur="", desc="", slug="", ld=None):
     aud = {f"{lv}.html" for lv in AUDIT}
     a = lambda h, t: f'<a href="{h}"{" aria-current=page" if h == cur else ""}>{html.escape(t)}</a>'
     items = [a(h, t) for h, t in links if h not in aud]
@@ -228,11 +359,12 @@ def page(title, body, script=False, links=(), cur=""):
     if menu:
         items.insert(next(i for i, (h, _) in enumerate(links) if h in aud), f'<details><summary>Audits</summary><div>{menu}</div></details>')
     nav = '<header><nav aria-label="Site">' + "".join(items) + "</nav></header>"
+    full = title if slug == "index" else f"{title} | {SITE_NAME}"
+    jsonld = '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + "</script>" if ld else ""
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">'
             f'<link rel="icon" href="{FAVICON}">'
-            f"<title>{html.escape(title)}</title><style>{CSS}</style></head><body><a class=skip href=#main>Skip to content</a>{nav}<main id=main tabindex=-1><h1>{html.escape(title)}</h1>{body}</main>"
-            f'<footer>Created and edited by <a href="https://pablogonzalez.me">Pablo González</a> · Content CC BY 4.0 · Code MIT · <a href="https://github.com/n0nuser/goodcodereview">Source</a></footer>'
-            f"{'<script>' + JS + '</script>' if script else ''}</body></html>")
+            f"<title>{html.escape(full)}</title>{head_tags(full, desc, slug)}<style>{CSS}</style>{jsonld}</head><body><a class=skip href=#main>Skip to content</a>{nav}<main id=main tabindex=-1><h1>{html.escape(title)}</h1>{body}</main>"
+            f"{FOOTER}{'<script>' + JS + '</script>' if script else ''}</body></html>")
 
 
 def concerns(fm):
@@ -269,7 +401,7 @@ def copy_pre(text, label):
     return f"<pre class='wrap'><code>{text}</code></pre>" + f'<button type="button" data-copy="pre" hidden>{label}</button>'
 
 
-def listing(title, intro, cards, ids, links, cur, empty=False, compact=False):
+def listing(title, intro, cards, ids, links, cur, desc, empty=False, compact=False):
     stable = [c for c in cards if c[1]["status"] == "stable"]
     draft = [c for c in cards if c[1]["status"] != "stable"]
     seen = {t for _, fm, _ in cards for t in fm["tags"]}
@@ -282,19 +414,21 @@ def listing(title, intro, cards, ids, links, cur, empty=False, compact=False):
         flt += "<details><summary>Topic tags</summary>" + buttons("Topics", "t", topics) + "</details>"
     th = '<li class="th" aria-hidden="true"><span>Card</span><span>Severity</span><span>Concerns</span><span>Rule</span></li>'
     # compact: one row per draft, linked to the page that holds the full card
-    dbody = ('<div class="ckw"><ul class="ck">' + th + "".join(row(fm, b, ids, f"pack-{fm['lang']}.html" if fm["lang"] != "core" else f"{fm['level']}.html") for _, fm, b in draft) + "</ul></div>"
+    home_page = lambda fm: f"pack-{fm['lang']}.html" if fm["lang"] != "core" else f"{fm['level']}.html"
+    dbody = ('<div class="ckw"><ul class="ck">' + th + "".join(row(fm, b, ids, home_page(fm)) for _, fm, b in draft) + "</ul></div>"
              if compact else "".join(card_html(fm, b, ids) for _, fm, b in draft))
     drafts = (f'<h2>Draft cards</h2>{"" if stable or empty else "<p>No stable cards yet.</p>"}<details><summary id="dsum" data-n="{len(draft)}">{len(draft)} draft cards</summary>'
               f"<p>{DRAFT_NOTE}{' Each row links to the full card.' if compact else ''}</p>" + dbody + "</details>") if draft else ""
     if empty:
-        return page(title, NONE_NOTE + intro + LEGEND + drafts, True, links, cur)
+        return page(title, NONE_NOTE + intro + LEGEND + drafts, True, links, cur, desc, cur[:-5])
     intro += EXAMPLE_HTML
     if not stable:
-        return page(title, intro + LEGEND + drafts, True, links, cur)
-    ck = '<button type="button" data-copy="ck" hidden>Copy checklist as markdown</button><div class="ckw"><ul class="ck">' + th + "".join(row(fm, b, ids) for _, fm, b in stable) + "</ul></div>"
+        return page(title, intro + LEGEND + drafts, True, links, cur, desc, cur[:-5])
+    ck = ('<button type="button" data-copy="ck" hidden>Copy checklist as markdown</button><div class="ckw"><ul class="ck">' + th
+          + "".join(row(fm, b, ids, home_page(fm) if compact else "") for _, fm, b in stable) + "</ul></div>")
     body = (intro + f"<h2>Checklist</h2>{ck}" + LEGEND + f'<h2>Filters</h2>{"<noscript><p>The filters need JavaScript. Without it, the page lists every card.</p></noscript>" if compact else ""}{flt}<p id="count" class="note" role="status"></p><p id="empty" hidden></p>'
-            "<h2>Cards</h2>" + "".join(card_html(fm, b, ids) for _, fm, b in stable) + drafts)
-    return page(title, body, True, links, cur)
+            + ("" if compact else "<h2>Cards</h2>" + "".join(card_html(fm, b, ids) for _, fm, b in stable)) + drafts)
+    return page(title, body, True, links, cur, desc, cur[:-5])
 
 
 def rule(body):
@@ -317,6 +451,34 @@ def check_routes(by_lv, refs, skill_text, stable_ids):
     return errs
 
 
+def build_date():
+    """One date for every lastmod and `updated`: the HEAD commit date, or today's date outside a git checkout."""
+    try:
+        out = subprocess.run(["git", "log", "-1", "--format=%cs"], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        out = ""
+    return out or datetime.date.today().isoformat()
+
+
+def front(title, desc, slug, date):
+    """YAML frontmatter for a served Markdown file. JSON strings are valid YAML."""
+    return "---\n" + "\n".join(f"{k}: {json.dumps(v, ensure_ascii=False)}" for k, v in
+                               {"title": title, "description": desc, "canonical": page_url(slug), "updated": date}.items()) + "\n---\n\n"
+
+
+def headers_file(slugs):
+    """Cloudflare Pages `_headers`: https://developers.cloudflare.com/pages/configuration/headers/"""
+    md = lambda s: f'</{s}.md>; rel="alternate"; type="text/markdown"'
+    out = ["# Generated by tools/build.py. Format: https://developers.cloudflare.com/pages/configuration/headers/",
+           "/*", '  Link: </sitemap.xml>; rel="sitemap", </llms.txt>; rel="describedby"']
+    for s in slugs:
+        out += ["/" if s == "index" else f"/{s}", f"  Link: {md(s)}"]
+    out += ["/*.md", "  Content-Type: text/markdown; charset=utf-8", "/*.txt", "  Content-Type: text/plain; charset=utf-8",
+            "/sitemap.xml", "  Content-Type: application/xml; charset=utf-8",
+            "/.well-known/agent-skills/index.json", "  Content-Type: application/json; charset=utf-8"]
+    return "\n".join(out) + "\n"
+
+
 def main():
     errs = validate(ROOT)
     if errs:
@@ -326,8 +488,10 @@ def main():
     packs = sorted({fm["lang"] for _, fm, _ in cards if fm["lang"] != "core"})
     gloss = sorted((ROOT / "glossary").glob("*.md"))
     bad = [e for p, _, b in cards for e in check_md(p.relative_to(ROOT), b)] + [e for g in gloss for e in check_md(g.relative_to(ROOT), g.read_text())]
+    bad += [f"{n}: {e}" for n, t in (("ABOUT", ABOUT), ("PRIVACY", PRIVACY)) for e in check_md(n, t)]
     if bad:
         sys.exit("\n".join(bad))
+    date = build_date()
     ids = {fm["id"]: (f"pack-{fm['lang']}.html" if fm["lang"] != "core" else f"{fm['level']}.html") + f"#{fm['id']}"
            for _, fm, _ in cards}
     ids.update({g.stem: f"glossary.html#{g.stem}" for g in gloss})
@@ -339,32 +503,39 @@ def main():
 
     shutil.rmtree(SITE, ignore_errors=True)
     SITE.mkdir()
-    pages = []  # (file, title, intro, cards)
+    pages = []  # (file, title, intro, cards, description)
     for lv in LEVELS:
         pages.append((f"{lv}.html", NAME[lv],
                       f"<p>{LEVEL_DESC[lv]} Use it for this input: {INPUT[lv]}.{'' if lv in none else ' ' + VERDICT}</p>",
-                      [c for c in cards if c[1]["level"] == lv and c[1]["lang"] == "core"]))
+                      [c for c in cards if c[1]["level"] == lv and c[1]["lang"] == "core"], LEVEL_DESC[lv]))
     for pk in packs:
         pages.append((f"pack-{pk}.html", f"{pk.capitalize()} pack",
                       f"<p>Cards specific to {pk}. Use them with the level page that matches your input. {VERDICT}</p>",
-                      [c for c in cards if c[1]["lang"] == pk]))
+                      [c for c in cards if c[1]["lang"] == pk], PACK_DESC.format(pk=pk)))
     pages.append(("concerns.html", "Concerns",
-                  f"<p>Every card on one page. Pick one or more concerns to scope a review, such as performance only. A card matches when it lists any picked concern. {VERDICT}</p>",
-                  cards))
-    for f, title, intro, cs in pages:
-        out = listing(title, intro, cs, ids, links, f, f[:-5] in none, f == "concerns.html")
-        if "<code></code>" in out or out.count("<strong>PASS</strong>") != sum(f != "concerns.html" or c[1]["status"] == "stable" for c in cs):
+                  f"<p>Every card's rule on one page, and each row links to the full card. Pick one or more concerns to scope a review, such as performance only. A card matches when it lists any picked concern. {VERDICT}</p>",
+                  cards, CONCERNS_DESC))
+    for f, title, intro, cs, desc in pages:
+        out = listing(title, intro, cs, ids, links, f, desc, f[:-5] in none, f == "concerns.html")
+        if "<code></code>" in out or out.count("<strong>PASS</strong>") != (0 if f == "concerns.html" else len(cs)):
             sys.exit(f"{f}: a card lost its FAIL or PASS code block in rendering")
         (SITE / f).write_text(out)
     g = "".join(f'<article id="{p.stem}">{md(p.read_text(), ids)}</article>' for p in gloss)
-    (SITE / "glossary.html").write_text(page("Glossary", g, links=links, cur="glossary.html"))
-    (SITE / "robots.txt").write_text("User-agent: *\nAllow: /\n")
-    (SITE / "404.html").write_text(page("Not found", '<p><a href="index.html">Back to the start</a></p>', links=links))
+    (SITE / "glossary.html").write_text(page("Glossary", g, links=links, cur="glossary.html", desc=GLOSSARY_DESC, slug="glossary"))
+    for slug, title, text, desc in (("about", "About", ABOUT, ABOUT_DESC), ("privacy", "Privacy", PRIVACY, PRIVACY_DESC)):
+        (SITE / f"{slug}.html").write_text(page(title, md(text, ids), links=links, desc=desc, slug=slug))
     npx = "npx skills add n0nuser/goodcodereview"
     plugin = "/plugin marketplace add n0nuser/goodcodereview\n/plugin install goodcodereview@goodcodereview"
     rows = '<ul class="idx">' + "".join(
         f'<li><a href="{lv}.html">{NAME[lv]}</a><span>{LEVEL_DESC[lv]} Input: {INPUT[lv]}.</span>'
         f'<span class="n">{cnt[lv][0]} stable, {cnt[lv][1]} draft{f" · {EMPTY_MARK}" if lv in none else ""}</span></li>' for lv in LEVELS) + "</ul>"
+    person = {"@type": "Person", "name": "Pablo González", "url": "https://pablogonzalez.me"}
+    ld = {"@context": "https://schema.org", "@graph": [
+        {"@type": "WebSite", "@id": f"{BASE}/#website", "url": f"{BASE}/", "name": SITE_NAME, "description": SITE_DESC, "inLanguage": "en",
+         "license": LICENCE_URL, "author": person, "dateModified": date},
+        {"@type": "CreativeWork", "@id": f"{BASE}/#checklist", "url": f"{BASE}/", "name": "Good Code Review checklist",
+         "description": "Rules for reviewing code, one card per rule, each with a FAIL example and a PASS example.", "inLanguage": "en",
+         "isPartOf": {"@id": f"{BASE}/#website"}, "license": LICENCE_URL, "author": person, "dateModified": date}]}
     (SITE / "index.html").write_text(page("Good Code Review", (
         "<p>A checklist for reviewing code, for people and for agents. A card is one rule that a reviewer marks <code>PASS</code>, <code>FAIL</code>, or <code>N/A</code>. Each card has a FAIL example and a PASS example.</p>"
         "<h2>Choose a review</h2>"
@@ -381,7 +552,7 @@ def main():
         "<h2>Report format</h2><p>" + VERDICT + "</p>" + EXAMPLE_HTML +
         "<h2>Packs</h2><p>A pack adds language-specific cards on top of the levels. Use one with the level that matches your input.</p>"
         "<p>" + (", ".join(f'<a href="pack-{p}.html">{p.capitalize()} pack</a>' for p in packs) or "No packs yet.") + "</p>"
-        '<p class="note">Writing CSS? <a href="https://good-css.com">good-css.com</a> has rules for reviewing CSS.</p>'), True, links, "index.html"))
+        '<p class="note">Writing CSS? <a href="https://good-css.com">good-css.com</a> has rules for reviewing CSS.</p>'), True, links, "index.html", SITE_DESC, "index", ld))
 
     stable = [c for c in cards if c[1]["status"] == "stable"]
     draft = [c for c in cards if c[1]["status"] != "stable"]
@@ -408,16 +579,18 @@ def main():
            "Each card lists its concerns in braces: " + ", ".join(f"`{c}`" for c in CONCERNS) + ".",
            "To review only some concerns, such as a performance-only review, check only the cards that list them.", ""]
     line = lambda fm, b: f"- `{fm['id']}` [{fm['severity']}] {{{', '.join(concerns(fm))}}}: {rule(b)}"
+    section = lambda fm, b: f"## {fm['id']}\n\nseverity: {fm['severity']}  \nconcerns: {', '.join(concerns(fm))}  \napplies_when: {fm['applies_when']}\n\n{b.strip()}"
     refs = {}
+    twins = {}  # slug -> (title, description, markdown body). Each gets frontmatter and is written to site/<slug>.md.
     for lv in LEVELS:
         cs = by_lv[lv]
         if not cs:
+            twins[lv] = (NAME[lv], LEVEL_DESC[lv], f"# {lv}\n\nNo vetted cards for this level yet. It gives no verdict.\n")
             continue
         sk += [f"## {lv}", ""] + [line(fm, b) for _, fm, b in cs] + [""]
-        refs[lv] = link(f"# {lv}\n\n" + "\n\n".join(f"## {fm['id']}\n\nseverity: {fm['severity']}  \nconcerns: {', '.join(concerns(fm))}  \napplies_when: {fm['applies_when']}\n\n{b.strip()}"
-                                                    for _, fm, b in cs) + "\n")
+        refs[lv] = link(f"# {lv}\n\n" + "\n\n".join(section(fm, b) for _, fm, b in cs) + "\n")
         (SKILL / "references" / f"{lv}.md").write_text(refs[lv])
-        (SITE / f"{lv}.md").write_text(refs[lv])
+        twins[lv] = (NAME[lv], LEVEL_DESC[lv], refs[lv])
     bad = check_routes(by_lv, SKILL / "references", "\n".join(sk), set(home))
     if bad:
         sys.exit("\n".join(bad))
@@ -425,24 +598,33 @@ def main():
     n = len("\n".join(sk).split("\n"))
     if n > SKILL_BUDGET:
         sys.exit(f"SKILL.md is {n} lines, budget {SKILL_BUDGET}")
-    # llms.txt = SKILL.md body (same routing, verdict, scope, stable cards), opened by the SKILL description, with a Severity
-    # section and a full-text URL per level added. Drafts live in llms-drafts.txt, never mixed into the vetted file.
+    # llms.txt = SKILL.md body (same routing, verdict, scope, stable cards), opened by the SKILL description as the summary, with a
+    # "when to use" paragraph, a Severity section and a described link to each level's Markdown file added.
+    # Drafts live in llms-drafts.txt, never mixed into the vetted file.
     url = lambda fm: f"{BASE}/pack-{fm['lang']}.html" if fm["lang"] != "core" else f"{BASE}/{fm['level']}.html"
     body = list(sk[5:])
     k = next(i for i, l in enumerate(body) if l.startswith("The full text"))
     del body[k:body.index("", k) + 1]  # the shared pointer lines; llms.txt has its own Glossary and Draft sections
-    llms = [body[0], "", sk[2][len("description: "):], ""]
+    llms = [body[0], "", "> " + sk[2][len("description: "):], "", "## When to use this site", "", WHEN_TO_USE, ""]
     seen_level = False
     for l in body[2:]:
         if l.startswith("## ") and l[3:] in LEVELS:
             if not seen_level:
                 llms += SEVERITY
                 seen_level = True
-            llms += [l, "", f"Full text: {BASE}/{l[3:]}.md"]
+            llms += [l, "", f"- [{NAME[l[3:]]}, full text]({BASE}/{l[3:]}.md): every stable {l[3:]} card with its FAIL and PASS examples."]
         else:
             llms.append(l)
-    llms += ["## Glossary", "", f"Terms the cards link to: {BASE}/glossary.html", "",
-             "## Draft cards", "", f"Not vetted. {DRAFT_RULE} List: {BASE}/llms-drafts.txt", ""]
+    llms += ["## Glossary", "", f"- [Glossary]({BASE}/glossary.md): terms the cards link to.", "",
+             "## Draft cards", "", f"- [Draft cards]({BASE}/llms-drafts.txt): not vetted. {DRAFT_RULE}", "",
+             "## Site", "",
+             f"- [About]({BASE}/about.html): who makes this and under which licence.",
+             f"- [Privacy]({BASE}/privacy.html): the site collects nothing.",
+             f"- [Sitemap]({BASE}/sitemap.xml): every page.",
+             f"- [Agent Skills index]({BASE}/.well-known/agent-skills/index.json): the skill, with a sha256 digest.",
+             f"- [AGENTS.md]({REPO}/blob/main/AGENTS.md): how to review code with this repo and how to contribute a card.",
+             f"- [Skill folder]({REPO}/tree/main/skills/good-code-review): `SKILL.md` and `references/` in the repository.",
+             f"- [Contact]({REPO}/issues): GitHub Issues.", ""]
     dr = ["# Draft cards", "", f"Not vetted. {DRAFT_RULE} Use them as notes only, never as `PASS` or `FAIL`.", ""]
     for lv in LEVELS:
         cs = [c for c in draft if c[1]["level"] == lv and c[1]["lang"] == "core"]
@@ -459,7 +641,50 @@ def main():
         sys.exit("llms-drafts.txt: ids differ from the draft cards")
     (SITE / "llms.txt").write_text(text)
     (SITE / "llms-drafts.txt").write_text(dtext)
-    print(f"site: {len(pages) + 3} pages; SKILL.md: {n} lines; stable cards: {len(stable)}")
+
+    # Markdown twins of the pages that have no level file, for agents that prefer Markdown (checklist items 22 and 23).
+    xlink = lambda t: re.sub(r"\[\[([^\]]+)\]\]", lambda m: f"[{m[1]}]({BASE}/{home[m[1]]}.md#{m[1]})" if m[1] in home
+                             else f"[{m[1]}]({BASE}/{ids[m[1]]})" if m[1] in ids else m[1], t)
+    twins["index"] = ("Good Code Review", SITE_DESC, INDEX_MD.format(
+        verdict=plain, example=EXAMPLE, npx=npx, plugin=plugin,
+        levels="\n".join(f"- [{NAME[lv]}]({BASE}/{lv}.md): {LEVEL_DESC[lv]} Input: {INPUT[lv]}. {cnt[lv][0]} stable, {cnt[lv][1]} draft." for lv in LEVELS if lv not in none)
+        + "".join(f"\n- {NAME[lv]}: {LEVEL_DESC[lv]} Input: {INPUT[lv]}. {EMPTY_MARK.capitalize()}." for lv in LEVELS if lv in none),
+        packs="\n".join(f"- [{pk.capitalize()} pack]({BASE}/pack-{pk}.md)" for pk in packs) or "No packs yet."))
+    by_concern = "\n\n".join(f"## {c}\n\n" + "\n".join(f"- [`{fm['id']}`]({BASE}/{fm['level']}.md#{fm['id']}) [{fm['severity']}]: {rule(b)}"
+                                                       for _, fm, b in stable if c in fm["tags"]) for c in CONCERNS if any(c in fm["tags"] for _, fm, _ in stable))
+    twins["concerns"] = ("Concerns", CONCERNS_DESC, f"# Concerns\n\nStable cards grouped by concern. A card appears under each concern it lists. {plain}\n\n{by_concern}\n\n"
+                         f"Draft cards are not vetted and are not listed here. See {BASE}/llms-drafts.txt.\n")
+    for pk in packs:
+        twins[f"pack-{pk}"] = (f"{pk.capitalize()} pack", PACK_DESC.format(pk=pk), xlink(
+            f"# {pk.capitalize()} pack\n\n{DRAFT_NOTE} {DRAFT_RULE}\n\n" + "\n\n".join(section(fm, b) for _, fm, b in cards if fm["lang"] == pk) + "\n"))
+    twins["glossary"] = ("Glossary", GLOSSARY_DESC, "# Glossary\n\n" + "\n\n".join(xlink(re.sub(r"^# ", "## ", p.read_text(), count=1).strip()) for p in gloss) + "\n")
+    twins["about"] = ("About", ABOUT_DESC, "# About\n\n" + ABOUT)
+    twins["privacy"] = ("Privacy", PRIVACY_DESC, "# Privacy\n\n" + PRIVACY)
+    for slug, (title, desc, md_text) in twins.items():
+        (SITE / f"{slug}.md").write_text(front(title, desc, slug, date) + md_text)
+
+    # 404: plain text a missing-page visitor or agent can act on. Root-relative links, because the host serves this file at any missing path.
+    nf = ("<p>No page exists at this address, and the server answered with status 404. The link may be old or mistyped.</p>"
+          "<p>These pages exist:</p><ul>" + "".join(f'<li><a href="{h}">{html.escape(t)}</a>: {d}</li>' for h, t, d in [
+              ("index.html", "Home", "choose a review level."), ("llms.txt", "llms.txt", "the entry point for agents: routing, verdict format, and every stable card."),
+              ("sitemap.xml", "Sitemap", "every page.")] + [(f"{lv}.html", NAME[lv], LEVEL_DESC[lv]) for lv in LEVELS]) + "</ul>")
+    (SITE / "404.html").write_text(re.sub(r'href="(?![a-z]+:|#|/)', 'href="/', page("Not found", nf, links=links)))
+
+    slugs = ["index", "concerns", *LEVELS, *[f"pack-{pk}" for pk in packs], "glossary", "about", "privacy"]
+    (SITE / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+                                      + "".join(f"<url><loc>{page_url(s)}</loc><lastmod>{date}</lastmod></url>\n" for s in slugs) + "</urlset>\n")
+    (SITE / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {BASE}/sitemap.xml\n")
+    (SITE / "_headers").write_text(headers_file(slugs))
+
+    # Agent Skills discovery: serve the skill and its references, and list it with the sha256 digest of the served SKILL.md.
+    wk = SITE / ".well-known" / "agent-skills"
+    shutil.copytree(SKILL, wk / "good-code-review")
+    digest = hashlib.sha256((wk / "good-code-review" / "SKILL.md").read_bytes()).hexdigest()
+    (wk / "index.json").write_text(json.dumps({
+        "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+        "skills": [{"name": "good-code-review", "type": "skill-md", "description": sk[2][len("description: "):],
+                    "url": f"{BASE}/.well-known/agent-skills/good-code-review/SKILL.md", "digest": f"sha256:{digest}"}]}, indent=2) + "\n")
+    print(f"site: {len(slugs) + 1} pages; SKILL.md: {n} lines; stable cards: {len(stable)}; llms.txt: {len(text)} chars; lastmod: {date}")
 
 
 if __name__ == "__main__":
