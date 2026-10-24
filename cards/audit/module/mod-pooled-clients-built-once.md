@@ -1,14 +1,17 @@
 ---
 id: mod-pooled-clients-built-once
 level: module
-tags: [resources]
+tags: [resources, performance]
 severity: should-fix
 status: draft
 lang: core
 applies_when: Code creates a network or database client.
 tool_gate: none
-borrowed_from: []
-note: from the author's own Python review guide
+borrowed_from:
+  - https://learn.microsoft.com/en-us/azure/architecture/antipatterns/improper-instantiation/
+  - https://pkg.go.dev/net/http#Client
+  - https://requests.readthedocs.io/en/latest/user/advanced/
+  - https://nodejs.org/api/http.html#class-httpagent
 ---
 
 **Rule.** Build pooled clients once at startup and reuse them.

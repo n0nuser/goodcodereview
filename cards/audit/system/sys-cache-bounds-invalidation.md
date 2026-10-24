@@ -1,14 +1,18 @@
 ---
 id: sys-cache-bounds-invalidation
 level: system
-tags: [caching, memory]
+tags: [caching, memory, performance]
 severity: should-fix
 status: draft
+note: bounds and expiry have 3 orgs (AWS, Redis, Caffeine); invalidation has one (IETF, HTTP only)
 lang: core
 applies_when: The code adds an in-process or shared cache.
 tool_gate: none
 borrowed_from:
-  - https://aws.amazon.com/builders-library/caching-challenges-and-strategies/
+  - https://builder.aws.com/content/3K9TeXp6strMiJ4vhakpRD7BQWO/caching-challenges-and-strategies
+  - https://redis.io/docs/latest/develop/reference/eviction/
+  - https://github.com/ben-manes/caffeine/wiki/Eviction
+  - https://www.rfc-editor.org/rfc/rfc9111.html#name-invalidating-stored-response
 ---
 
 **Rule.** Bound every cache and version its values.

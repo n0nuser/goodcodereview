@@ -4,11 +4,18 @@ level: system
 tags: [database, performance]
 severity: should-fix
 status: draft
-note: no source yet; first-hand reasoning
+note: N+1 half has 4 orgs (Django, Rails, SQLAlchemy, Microsoft); the bounded pool rests on 3 partial sources; the index clause has no source beyond topic level
 lang: core
 applies_when: Code loads related rows in a loop, or opens database connections per request.
 tool_gate: Query-count assertion in tests; ORM N+1 detector.
-borrowed_from: []
+borrowed_from:
+  - https://docs.djangoproject.com/en/stable/ref/models/querysets/
+  - https://guides.rubyonrails.org/active_record_querying.html
+  - https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html
+  - https://learn.microsoft.com/en-us/azure/architecture/antipatterns/chatty-io/
+  - https://nodejs.org/api/http.html#class-httpagent
+  - https://www.pgbouncer.org/features.html
+  - https://www.postgresql.org/docs/current/runtime-config-connection.html
 ---
 
 **Rule.** Fetch related rows in one query or batch, never one query per row.
