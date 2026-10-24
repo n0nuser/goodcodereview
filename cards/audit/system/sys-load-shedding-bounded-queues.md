@@ -10,6 +10,9 @@ tool_gate: Lint for unbounded queue constructors.
 borrowed_from:
   - https://aws.amazon.com/builders-library/avoiding-insurmountable-queue-backlogs/
   - https://aws.amazon.com/builders-library/fairness-in-multi-tenant-systems/
+  - https://sre.google/sre-book/addressing-cascading-failures/
+  - https://sre.google/sre-book/handling-overload/
+  - https://github.com/Netflix/concurrency-limits
 ---
 
 **Rule.** Bound every queue and reject excess work cheaply.

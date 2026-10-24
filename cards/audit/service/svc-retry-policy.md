@@ -11,6 +11,8 @@ tool_gate: none
 borrowed_from:
   - https://learn.microsoft.com/en-us/azure/architecture/patterns/retry
   - https://aws.amazon.com/builders-library/minimizing-correlated-failures-in-distributed-systems/
+  - https://sre.google/sre-book/addressing-cascading-failures/
+  - https://sre.google/sre-book/handling-overload/
 ---
 
 **Rule.** Retry only transient errors, with capped attempts and jittered exponential backoff.

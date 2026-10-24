@@ -10,6 +10,8 @@ tool_gate: none
 borrowed_from:
   - https://learn.microsoft.com/en-us/azure/architecture/patterns/retry
   - https://learn.microsoft.com/en-us/azure/architecture/patterns/saga
+  - https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/
+  - https://docs.stripe.com/api/idempotent_requests
 ---
 
 **Rule.** Make every retryable write idempotent: the caller sends a key and the server stores and replays the first result.

@@ -11,6 +11,7 @@ borrowed_from:
   - https://kentcdodds.com/blog/aha-programming
   - https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
+  - https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction
 ---
 
 **Rule.** Extract shared logic only once two or more real call sites exist today.
