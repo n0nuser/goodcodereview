@@ -446,3 +446,39 @@ Reserved ids with no card. Each line is the rule the card would check. All come 
 - `code-rule-has-enforcer`: FAIL if a repeated review correction or an instruction file rule that a type, lint or CI check could enforce has no enforcer, or a constraint comment guards what a check could.
 - `code-documented-setup-runs`: FAIL if a setup or run command in the README or contribution guide fails on a clean checkout.
 - `code-scoped-validation-loop`: FAIL if the only documented way to check a small change is the full-repo run.
+
+## Security pass
+
+Source: `docs/research/security-pass.md`. Row numbers are that file's.
+
+| Source | Item | Maps to | Status |
+|---|---|---|---|
+| security-pass | 1-2, 4 Check the caller's right to the specific record | `fn-object-level-authz` | draft |
+| security-pass | 1, 3-4 One authorization layer, deny by default | `svc-authz-central-deny-default` | draft |
+| security-pass | 5-6 Bind requests to a DTO or allowlist | `fn-no-mass-assignment` | draft |
+| security-pass | 5 Return listed fields, not the stored model | `fn-response-fields-explicit` | draft |
+| security-pass | 7 Slow salted password hash | `fn-password-slow-hash` | draft |
+| security-pass | 8 Session ID regeneration, cookie flags, server-side logout | `svc-session-lifecycle` | draft |
+| security-pass | 9 Pinned JWT algorithm, `iss`, `aud`, `exp` | `fn-jwt-verify-pinned` | draft |
+| security-pass | 10-11 Per-account throttle, uniform auth errors | `svc-auth-throttle-generic-errors` | draft |
+| security-pass | 11, 29 Cap client-controlled sizes and counts | `svc-bound-client-controlled-sizes` | draft |
+| security-pass | 12, 28 Encoding sinks, no raw HTML | `fn-no-raw-html-sink` | draft |
+| security-pass | 13, 28 Argument arrays, no shell string | `fn-no-shell-with-input` | draft |
+| security-pass | 14 Resolve and confine file paths | `fn-confine-file-path` | draft |
+| security-pass | 15 No native deserialisation of untrusted input | `fn-no-native-deserialise-untrusted` | draft |
+| security-pass | 16 Upload allowlist, size cap, generated name, outside web root | `svc-upload-validate-store` | draft |
+| security-pass | 17 Server-side allowlist validation, regex limits | `mod-validate-at-boundary-once` | draft |
+| security-pass | 18 CSRF token, no state change on GET | `svc-csrf-state-changing` | draft |
+| security-pass | 19 CORS origin allowlist | `svc-cors-allowlist` | draft |
+| security-pass | 20 HSTS, nosniff, frame-ancestors | `svc-security-headers` | draft |
+| security-pass | 21 Subresource Integrity for vendor scripts | dropped: one narrow front-end row, left for a later pass | dropped |
+| security-pass | 22 CSPRNG for tokens and keys | `fn-csprng-for-secrets` | draft |
+| security-pass | 22-23 Vetted AEAD, no home-made crypto, no nonce reuse | `mod-vetted-crypto-only` | draft |
+| security-pass | 23-24 TLS verification stays on | `fn-tls-verify-on` | draft |
+| security-pass | 23 Minimise and expire sensitive data | `sys-pii-minimise-retention` | draft |
+| security-pass | 25-26 Log security events, keep secrets out, encode untrusted values | `svc-security-event-logging` | draft |
+| security-pass | 27 Narrow agent tools, user-scoped credentials | `sys-agent-tool-least-privilege` | draft |
+| security-pass | 28 Treat model output as untrusted | `sys-prompt-injection` | draft |
+| security-pass | 30 LLM supply chain: verify sources, sign, inventory | `code-dependency-licence-sbom` | draft |
+| security-pass | 31 Invented package names from code models | `chg-agent-grounded-code` | draft |
+| security-pass | §8 NIST SSDF practices | dropped: page named no practice numbers; read the PDF in a later pass | dropped |
