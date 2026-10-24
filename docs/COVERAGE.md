@@ -463,3 +463,54 @@ Source: `docs/research/security-pass.md`. Row numbers are that file's.
 | security-pass | 30 LLM supply chain: verify sources, sign, inventory | `code-dependency-licence-sbom` | draft |
 | security-pass | 31 Invented package names from code models | `chg-agent-grounded-code` | draft |
 | security-pass | §8 NIST SSDF practices | dropped: page named no practice numbers; read the PDF in a later pass | dropped |
+
+- `chg-fix-root-cause-not-symptom`: FAIL if a fix adds a guard, retry, sleep, longer timeout, swallowed error, cast, skipped or weakened test, or a special case for the failing input, with no stated cause seen in evidence.
+- `chg-perf-claim-evidence`: FAIL if a performance claim lacks run count, spread, a named limiter, or a check that errors were counted and the work ran inside the timed region.
+- `chg-delete-legacy-after-migration`: FAIL if a change adds a new API or path and leaves the old one alive when no consumer outside the repo needs it (sibling of `chg-expand-contract`).
+- `chg-refactor-has-behaviour-pin`: FAIL if a refactor moves structure with no test, snapshot or equivalence check that pins current behaviour first.
+- `chg-approval-tied-to-patch`: FAIL if an approval or verification verdict older than the last push that changed non-test content is treated as current.
+- `fn-variants-as-tagged-union`: FAIL if state is a bag of optional fields or a set of booleans that must stay in sync, or a variant switch has no exhaustiveness check.
+- `fn-distinct-types-for-ids`: FAIL if two arguments with different meanings share one primitive type and nothing stops them being swapped.
+- `fn-test-oracle-independent`: FAIL if a test's expected value comes from the code under test, or a 'not called' assertion has no matching case where the call happens.
+- `fn-rerun-safe-after-crash`: FAIL if an operation gives a different result on a second run or after a crash halfway, or leaves a marker the next run cannot judge as stale.
+- `mod-single-writer-per-state`: FAIL if more than one module or worker writes the same state when each could own its own, or sharing is guarded only by convention.
+- `mod-internals-unreachable`: FAIL if a caller outside a module can import its internals and no check fails the build.
+- `mod-derive-dont-duplicate`: FAIL if a type, list or enum duplicates a shape owned by a schema or another list, with no derivation and no build check for disagreement.
+- `mod-no-wire-types-in-public-api`: FAIL if a public interface exposes transport, storage or framework types instead of domain types.
+- `mod-cli-non-interactive`: FAIL if a CLI command needs a prompt or menu for any input that has no flag, or hangs on a missing flag instead of exiting with an example.
+- `mod-cli-destructive-dry-run`: FAIL if a destructive CLI command has no preview flag or no non-interactive confirmation bypass.
+- `code-rule-has-enforcer`: FAIL if a repeated review correction or an instruction file rule that a type, lint or CI check could enforce has no enforcer, or a constraint comment guards what a check could.
+- `code-documented-setup-runs`: FAIL if a setup or run command in the README or contribution guide fails on a clean checkout.
+- `code-scoped-validation-loop`: FAIL if the only documented way to check a small change is the full-repo run.
+
+## API and contracts pass
+
+From `docs/research/api-pass.md`.
+
+| Source | Item | Maps to | Status |
+|---|---|---|---|
+| api-pass | RFC 9110 9.2: Safe and idempotent methods | `svc-api-safe-idempotent-methods` | draft |
+| api-pass | RFC 9110 9.3, 10.2, 15.3: 201 with Location, 405 with Allow, most specific status | `svc-api-specific-status-codes` | draft |
+| api-pass | RFC 9110 10.2.3, IETF ratelimit draft: Retry-After on 429 and 503; draft RateLimit fields not required | `svc-api-retry-after` | draft |
+| api-pass | RFC 9110 13.1.1, Azure guidelines: ETag and If-Match on shared writes, 412 on stale | `svc-api-conditional-writes` | draft |
+| api-pass | RFC 9111: Explicit Cache-Control, private for user data, Vary | `svc-api-cache-control` | draft |
+| api-pass | RFC 9457, Zalando 176: Errors as application/problem+json, no internals | `svc-api-problem-json` | draft |
+| api-pass | RFC 9457, AIP-193: Stable machine-readable error code | `svc-api-error-code-stable` | draft |
+| api-pass | OpenAPI 3.1, Zalando 100-101: Spec is the source of truth and matches the service | `svc-api-spec-matches-impl` | draft |
+| api-pass | OpenAPI 3.1, Zalando 101: Spec changes in the same diff as the route | `chg-api-spec-in-same-change` | draft |
+| api-pass | OpenAPI 3.1, Zalando 151: Error responses and examples documented per operation | `svc-api-documented-errors` | draft |
+| api-pass | RFC 9745, RFC 8594, Zalando 189: Deprecation and Sunset headers before removal | `svc-api-deprecation-sunset` | draft |
+| api-pass | Zalando 113-116, Azure, Stripe: One documented versioning scheme, no breaks inside a version | `svc-api-versioning-policy` | draft |
+| api-pass | Zalando 118, Azure: One naming convention per location | `svc-api-naming-consistent` | draft |
+| api-pass | protobuf.dev (RPC vs storage messages): Response built from an explicit type, no internal fields | `svc-api-no-internal-fields` | draft |
+| api-pass | W3C Trace Context: Forward traceparent with a new parent id per hop | `svc-api-trace-context` | draft |
+| api-pass | Pact docs: Consumer-derived contract tests across services | `svc-api-contract-tests` | draft |
+| api-pass | protobuf.dev: Reserve deleted field numbers and names | `chg-proto-reserve-removed-fields` | draft |
+| api-pass | protobuf.dev: No type, label or rename change on a field | `chg-proto-no-field-type-change` | draft |
+| api-pass | protobuf.dev: Enum zero value is UNSPECIFIED | `mod-proto-enum-zero-unspecified` | draft |
+| api-pass | AIP-193: Permission checked before existence (403 vs 404) | dropped: authorisation review, not a contract rule | dropped |
+| api-pass | Zalando 233: X-Flow-ID header | dropped: superseded by traceparent | dropped |
+| api-pass | IETF ratelimit draft: RateLimit and RateLimit-Policy header names | dropped: Internet-Draft, not a standard | dropped |
+| api-pass | Azure guidelines: 202 with status monitor for long-running operations | dropped: one vendor's pattern | dropped |
+| api-pass | protobuf.dev: No required fields | dropped: narrow, no card yet | dropped |
+| api-pass | protobuf.dev: Do not rely on identical serialised bytes | dropped: narrow | dropped |

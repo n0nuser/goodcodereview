@@ -30,4 +30,6 @@ limiter.check(tenant_id) -> 429 + Retry-After
 per-tenant semaphore on workers
 ```
 
+**See also.** [[svc-api-retry-after]] covers the `Retry-After` header the 429 must carry.
+
 **Counterpoint.** AWS notes that some of its older services use 503 for quota errors for historical reasons, so 429 is a convention, not law. The substance is per-tenant limits and distinguishable errors. Shuffle sharding (per-tenant worker subsets) is a stronger isolation option that this card does not require.
