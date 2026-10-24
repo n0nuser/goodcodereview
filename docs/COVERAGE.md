@@ -72,7 +72,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #64 | SLIs | glossary/slis | glossary |
 | 111-list #65 | Error Budgets | glossary/error-budgets | glossary |
 | 111-list #66 | Observability | `prod-wide-events-bounded-labels` | draft |
-| 111-list #67 | Secrets Management | `sys-secrets-and-errors` | stable |
+| 111-list #67 | Secrets Management | `code-secret-scan` | draft |
 | 111-list #68 | IAM | glossary/iam | glossary |
 | 111-list #69 | OAuth | glossary/oauth | glossary |
 | 111-list #70 | JWT Rotation | glossary/jwt-rotation | glossary |
@@ -404,7 +404,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 74 Reviewability: matching summary, core vs generated, no hidden behaviour change, split if too big | `chg-author-hygiene`, `chg-refactor-separate`, `chg-size-ceiling` | stable |
 | cursor-plugins | 75 Compare tree hash after history rewrite | dropped: author workflow | dropped |
 | cursor-plugins | 76 Review order correctness before style; severity groups; judge on all checks | `chg-review-signal`, `chg-review-comment-format`, `code-ci-gates` | draft |
-| cursor-plugins | 77 Verify-this: falsifiable claim, same-condition baseline and treatment, one verdict | `chg-verify-before-claim`, `chg-perf-claim-evidence` | draft |
+| cursor-plugins | 77 Verify-this: falsifiable claim, same-condition baseline and treatment, one verdict | `chg-verify-before-claim`, `chg-perf-claim-evidence` | stable |
 | cursor-plugins | 78 Fix CI one cause at a time; flaky retry once; unrelated fixes stay out | `chg-one-concern` | stable |
 | cursor-plugins | 79 Task runners and agent mechanics (team-kit) | dropped: no review rule | dropped |
 | cursor-plugins | 80 PR review canvas: core first, mechanical collapsed, callouts sparing | `chg-review-signal` | stable |
