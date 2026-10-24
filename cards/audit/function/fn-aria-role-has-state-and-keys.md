@@ -22,7 +22,8 @@ borrowed_from:
 **FAIL**
 
 ```jsx
-<div role="switch" onClick={toggle}>Dark mode</div>
+<button type="button" role="switch" onClick={toggle}>Dark mode</button>
+// no aria-checked: announced as a switch of unknown state
 ```
 
 **PASS**

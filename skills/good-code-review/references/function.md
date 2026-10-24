@@ -13,7 +13,8 @@ applies_when: A custom widget sets `role` or an `aria-*` attribute because no na
 **FAIL**
 
 ```jsx
-<div role="switch" onClick={toggle}>Dark mode</div>
+<button type="button" role="switch" onClick={toggle}>Dark mode</button>
+// no aria-checked: announced as a switch of unknown state
 ```
 
 **PASS**
@@ -42,7 +43,7 @@ applies_when: Styles or markup show an error, a required field, a status, or a l
 ```css
 .field.error { border-color: red; }
 .status-ok   { color: green; }
-a { color: #0a58ca; text-decoration: none; }
+a { color: #0a58ca; text-decoration: none; }   /* no underline, no hover or focus cue */
 ```
 
 **PASS**

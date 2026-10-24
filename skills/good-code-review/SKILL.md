@@ -88,7 +88,7 @@ To review only some concerns, such as a performance-only review, check only the 
 ## system
 
 - `sys-cache-bounds-invalidation` [should-fix] {performance}: Bound every cache by size and give its entries an expiry.
-- `sys-consistent-ui-terms` [discuss] {usability, accessibility}: Use one label, one icon, and one place for the same action and the same concept across all screens.
+- `sys-consistent-ui-terms` [discuss] {usability, accessibility}: Use one label and one icon for the same action and the same concept across all screens.
 - `sys-fanout-leg-deadlines` [should-fix] {performance, reliability}: Give every leg of a fan-out its own deadline, and decide in code what happens when a leg misses it: a partial result, a hedged request, or an error.
 - `sys-load-shedding-bounded-queues` [block] {reliability}: Bound every queue and reject excess work cheaply.
 - `sys-lock-fencing` [block] {reliability, correctness}: Check a correctness lock on the resource side (fencing token or compare-and-set), never by lock possession alone.

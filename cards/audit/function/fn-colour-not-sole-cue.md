@@ -23,7 +23,7 @@ borrowed_from:
 ```css
 .field.error { border-color: red; }
 .status-ok   { color: green; }
-a { color: #0a58ca; text-decoration: none; }
+a { color: #0a58ca; text-decoration: none; }   /* no underline, no hover or focus cue */
 ```
 
 **PASS**
