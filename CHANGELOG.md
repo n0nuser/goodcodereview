@@ -12,6 +12,6 @@ All notable changes to this project are recorded here. The format follows [Keep 
 - Performance cards at every review level (`rg -l '^tags:.*performance' cards | wc -l`).
 - Community files: code of conduct, security policy, support guide, issue forms, and a pull request template.
 - The site reads as a checklist: each level page lists its checklist first, and the build writes `llms.txt`, `llms-drafts.txt`, and one `<level>.md` per level from the same cards.
-- Frontend cards for usability and accessibility, 19 of them stable (`rg -l '^tags:.*(accessibility|usability)' cards | wc -l`).
+- Frontend cards for usability and accessibility.
 - `accessibility` and `usability` are concerns, so a review can be scoped to either one on the Concerns page.
 - Human path: the home page opens with "Choose a review" and shows each level's stable and draft counts. A level with no stable cards, such as incident, says so on its page, on the home page, and in the nav, and gives no verdict. The nav groups the audits under one menu with 44px targets. Each page has a skip link. Copy buttons cover the home code blocks and each checklist (as markdown).

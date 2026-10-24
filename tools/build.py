@@ -280,7 +280,7 @@ def listing(title, intro, cards, ids, links, cur, empty=False):
     topics = sorted(seen - set(CONCERNS))
     if topics:
         flt += "<details><summary>Topic tags</summary>" + buttons("Topics", "t", topics) + "</details>"
-    drafts = (f'<h2>Draft cards</h2>{"" if stable else "<p>No stable cards yet.</p>"}<details><summary id="dsum" data-n="{len(draft)}">{len(draft)} draft cards</summary>'
+    drafts = (f'<h2>Draft cards</h2>{"" if stable or empty else "<p>No stable cards yet.</p>"}<details><summary id="dsum" data-n="{len(draft)}">{len(draft)} draft cards</summary>'
               f"<p>{DRAFT_NOTE}</p>" + "".join(card_html(fm, b, ids) for _, fm, b in draft) + "</details>") if draft else ""
     if empty:
         return page(title, NONE_NOTE + intro + LEGEND + drafts, True, links, cur)
