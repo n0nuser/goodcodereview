@@ -134,7 +134,7 @@ db.update(row, where fence < token, set fence = token)
 
 **Counterpoint.** "Our lock library is safe, so holding the lock is enough." Whether a given algorithm such as Redlock is safe is disputed, but that a paused holder can still write is not. Locks used only for efficiency (avoiding duplicate work) may be loose. For correctness, state that it is a correctness lock and make the store reject stale writers, with a monotonically increasing token or a unique token checked by compare-and-set, whatever the lock implementation.
 
-**See also.** [[svc-idempotency-key]].
+**See also.** [svc-idempotency-key](service.md#svc-idempotency-key).
 
 ## sys-migration-expand-contract
 
@@ -144,7 +144,7 @@ applies_when: A change drops, renames, or retypes a column, or mixes schema chan
 
 **Rule.** Run data backfills in batches, in a migration separate from the schema change.
 
-**Why.** A large backfill in one transaction holds locks for its whole run, and a failure halfway rolls all of it back. Batches with a pause between them keep each lock short and let the backfill resume. [[chg-expand-contract]] covers the order of releases around it.
+**Why.** A large backfill in one transaction holds locks for its whole run, and a failure halfway rolls all of it back. Batches with a pause between them keep each lock short and let the backfill resume. [chg-expand-contract](change.md#chg-expand-contract) covers the order of releases around it.
 
 **FAIL**
 

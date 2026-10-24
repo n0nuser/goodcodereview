@@ -54,7 +54,7 @@ GET /v1/orders/9/summary -> 200
 spec: deprecated: true
 ```
 
-**Counterpoint.** "Our only callers are internal." Then the call count with the header gives you the list of owners to ask, and removal is cheap. [[chg-expand-contract]] covers the order of steps; this card covers what the response tells the caller. Both headers describe one resource, so send them on each deprecated route, not only on the API root.
+**Counterpoint.** "Our only callers are internal." Then the call count with the header gives you the list of owners to ask, and removal is cheap. [chg-expand-contract](change.md#chg-expand-contract) covers the order of steps; this card covers what the response tells the caller. Both headers describe one resource, so send them on each deprecated route, not only on the API root.
 
 ## svc-api-error-code-stable
 
@@ -108,7 +108,7 @@ GET /orders?api-version=2026-03-01 keeps returning "total"
 the rename ships under api-version=2026-09-01
 ```
 
-**Counterpoint.** "We will cross that bridge later." Later arrives with a customer on the old shape. The scheme can be minimal. A media type, a dated query parameter and a pinned header all work. Pick one and write it down. What counts as breaking is in [[chg-breaking-change-taxonomy]].
+**Counterpoint.** "We will cross that bridge later." Later arrives with a customer on the old shape. The scheme can be minimal. A media type, a dated query parameter and a pinned header all work. Pick one and write it down. What counts as breaking is in [chg-breaking-change-taxonomy](change.md#chg-breaking-change-taxonomy).
 
 ## svc-idempotency-key
 
@@ -134,7 +134,7 @@ POST /payments  Idempotency-Key: k-123
 INSERT ... ON CONFLICT (idem_key) DO UPDATE SET idem_key = EXCLUDED.idem_key RETURNING *
 ```
 
-**See also.** [[sys-lock-fencing]] shares the goal but uses a different mechanism (stale lock holders).
+**See also.** [sys-lock-fencing](system.md#sys-lock-fencing) shares the goal but uses a different mechanism (stale lock holders).
 
 **Counterpoint.** "Our retries are rare." Queues redeliver and sagas retry by design, so rare is not never. The cost is a unique key and a stored result. No standard fixes how long the server keeps a key. Pick a window and publish it.
 
@@ -234,7 +234,7 @@ applies_when: The code retries a failed call, or wraps a client that retries.
 
 **Rule.** Retry only transient errors, with capped attempts and jittered exponential backoff.
 
-**Why.** Immediate, unbounded, or synchronized retries turn a brief fault into a load spike on the struggling dependency. Retry at one layer only: three layers of three attempts is nine calls per user request. Make retried writes safe with [[svc-idempotency-key]].
+**Why.** Immediate, unbounded, or synchronized retries turn a brief fault into a load spike on the struggling dependency. Retry at one layer only: three layers of three attempts is nine calls per user request. Make retried writes safe with [svc-idempotency-key](service.md#svc-idempotency-key).
 
 **FAIL**
 
