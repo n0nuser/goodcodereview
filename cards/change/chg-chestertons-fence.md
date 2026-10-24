@@ -10,7 +10,8 @@ tool_gate: none
 borrowed_from:
   - https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/
   - https://michaelfeathers.silvrback.com/characterization-testing
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/why/SKILL.md
+  - https://github.com/cursor/plugins/blob/main/dyl-stack/skills/dyl-review/SKILL.md
 ---
 
 **Rule.** Add a characterization test before rewriting code you do not understand.

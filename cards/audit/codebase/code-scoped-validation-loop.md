@@ -9,7 +9,7 @@ applies_when: Auditing how a contributor checks a small change.
 tool_gate: A documented command that runs tests and lint for one path or package.
 note: one vendor's engineering guidance (opinion), from agent-compatibility validation-review
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/agent-compatibility/agents/validation-review.md
 ---
 
 **Rule.** Document a command that checks one package or path, with readable output, so a small change does not need the full-repo run.

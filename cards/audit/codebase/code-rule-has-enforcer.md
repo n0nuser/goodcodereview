@@ -9,7 +9,10 @@ applies_when: Auditing a repo's instruction files, review history or comments th
 tool_gate: The enforcer itself: a type, a lint rule or a CI check.
 note: one vendor's engineering guidance (opinion), from pstack correct, principle-encode-lessons-in-structure and no-comments
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-encode-lessons-in-structure/SKILL.md
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/correct/SKILL.md
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/no-comments/SKILL.md
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/interrogate/references/rubric.md
 ---
 
 **Rule.** Back each rule that a type, lint or CI check could enforce with that check, rather than with an instruction file line, a review comment or a "do not remove" comment.

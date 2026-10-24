@@ -9,7 +9,8 @@ applies_when: A schema, spec, enum or list owns a shape that other code restates
 tool_gate: Codegen from the schema, or a test that diffs the two lists.
 note: one vendor's engineering guidance (opinion), from pstack principle-type-system-discipline and architect/references/design-red-flags
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-type-system-discipline/SKILL.md
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/architect/references/design-red-flags.md
 ---
 
 **Rule.** Derive a type, list or enum from the schema or list that owns it, or add a build check that fails when the two disagree.

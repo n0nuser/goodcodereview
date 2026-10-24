@@ -9,7 +9,7 @@ applies_when: A module exposes a public function, class or re-export.
 tool_gate: none
 note: one vendor's engineering guidance (opinion), from pstack principle-boundary-discipline
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-boundary-discipline/SKILL.md
 ---
 
 **Rule.** Expose domain types in a module's public interface, and keep transport, storage and framework types behind it.

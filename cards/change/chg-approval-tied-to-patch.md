@@ -9,7 +9,7 @@ applies_when: A review approval or verification result exists and the branch has
 tool_gate: Branch protection that dismisses stale approvals on new commits.
 note: one vendor's engineering guidance (opinion), from poteto-mode/playbooks/shipping.md; patch-id comparison is the source's method
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/poteto-mode/playbooks/shipping.md
 ---
 
 **Rule.** Treat an approval or verification verdict as current only if no push since then changed non-test content, and compare patch ids after a rebase.

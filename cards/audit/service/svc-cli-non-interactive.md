@@ -9,7 +9,7 @@ applies_when: The code ships a command-line tool that scripts or agents may run.
 tool_gate: CLI test that runs every command with stdin closed.
 note: one vendor's engineering guidance (opinion), from cli-for-agent skills/cli-for-agents (the id was proposed as mod-cli-non-interactive; a CLI is a process boundary, so service level)
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/cli-for-agent/skills/cli-for-agents/SKILL.md
 ---
 
 **Rule.** Give every input a flag, use a prompt only as a fallback, and exit at once with an example call when a required flag is missing.

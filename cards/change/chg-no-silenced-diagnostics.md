@@ -11,7 +11,8 @@ note: extends Palantir (TODO without issue, red checks) and Go (discarded errors
 borrowed_from:
   - https://go.dev/wiki/CodeReviewComments
   - https://blog.palantir.com/code-review-best-practices-19e02780015f
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/correct/SKILL.md
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/no-comments/SKILL.md
 ---
 
 **Rule.** Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.

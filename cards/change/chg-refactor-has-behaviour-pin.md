@@ -9,7 +9,7 @@ applies_when: The change restructures code and claims to keep its behaviour.
 tool_gate: Snapshot or golden-file tests in CI.
 note: one vendor's engineering guidance (opinion), from poteto-mode/playbooks/refactoring.md; type checks and lint do not pin behaviour
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/poteto-mode/playbooks/refactoring.md
 ---
 
 **Rule.** Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.

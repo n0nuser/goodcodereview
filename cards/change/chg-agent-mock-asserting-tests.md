@@ -11,7 +11,8 @@ borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
   - https://go.dev/wiki/CodeReviewComments
   - https://michaelfeathers.silvrback.com/characterization-testing
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-test-behavior-not-implementation/SKILL.md
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/tdd/SKILL.md
 ---
 
 **Rule.** Write tests that fail when the behaviour breaks, and reject tests that mostly assert on mocks, copy the implementation, or were edited to match new output without explanation.

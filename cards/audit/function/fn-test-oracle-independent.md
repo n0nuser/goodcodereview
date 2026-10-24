@@ -9,7 +9,7 @@ applies_when: A test asserts on a computed value or asserts that something was n
 tool_gate: Mutation testing.
 note: one vendor's engineering guidance (opinion), from pstack principle-test-behavior-not-implementation
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-test-behavior-not-implementation/SKILL.md
 ---
 
 **Rule.** Take a test's expected value from the requirement, not from the code under test, and pair every "not called" assertion with a case where the call happens.

@@ -9,7 +9,8 @@ applies_when: A type or function models a value that is one of several variants 
 tool_gate: A type checker with exhaustiveness checking (`never` in TypeScript, `assert_never` in Python).
 note: one vendor's engineering guidance (opinion), from pstack principle-model-the-domain and typescript-best-practices
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-model-the-domain/SKILL.md
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/typescript-best-practices/SKILL.md
 ---
 
 **Rule.** Model variants as a tagged union, and make every switch over it fail the build when a variant is unhandled.

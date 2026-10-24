@@ -9,7 +9,9 @@ applies_when: The change adds a new API, path or config and every caller lives i
 tool_gate: Dead-code and unused-export checks.
 note: one vendor's engineering guidance (opinion), from principle-migrate-callers-then-delete-legacy-apis/SKILL.md; applies only without outside consumers
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/architect/references/design-red-flags.md
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/interrogate/references/rubric.md
 ---
 
 **Rule.** When no consumer sits outside the repo, move every caller to the new API and delete the old one, and the tests that pinned its internals, in the same change.

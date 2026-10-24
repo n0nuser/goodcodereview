@@ -9,7 +9,9 @@ applies_when: The change or its description claims a speed, throughput, memory o
 tool_gate: none
 note: one vendor's engineering guidance (opinion), from benchmark-checklist/SKILL.md; the seven questions are condensed
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-explain-the-number/SKILL.md
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/benchmark-checklist/SKILL.md
+  - https://github.com/cursor/plugins/blob/main/cursor-team-kit/skills/verify-this/SKILL.md
 ---
 
 **Rule.** Back a performance claim with the run count, the spread, the resource that limits further gain, and proof that errors were counted and the work ran inside the timed region.

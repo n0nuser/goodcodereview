@@ -9,7 +9,7 @@ applies_when: A function or job changes state and can be run twice, or can be ki
 tool_gate: none
 note: one vendor's engineering guidance (opinion), from pstack principle-make-operations-idempotent
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-make-operations-idempotent/SKILL.md
 ---
 
 **Rule.** Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.

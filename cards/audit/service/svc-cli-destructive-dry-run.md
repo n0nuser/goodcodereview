@@ -9,7 +9,7 @@ applies_when: A command-line tool has a command that deletes, overwrites or send
 tool_gate: CLI test that runs the command with the preview flag and checks nothing changed.
 note: one vendor's engineering guidance (opinion), from cli-for-agent skills/cli-for-agents (the id was proposed as mod-cli-destructive-dry-run; a CLI is a process boundary, so service level)
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/cli-for-agent/skills/cli-for-agents/SKILL.md
 ---
 
 **Rule.** Give a destructive command a preview flag that changes nothing and a flag that skips the confirmation prompt.

@@ -9,7 +9,9 @@ applies_when: A change fixes a bug, a failing test, or an incident.
 tool_gate: Lint rules for `as any`, `ts-ignore`, `.skip` and empty `catch`.
 note: one vendor's engineering guidance (opinion), from principle-fix-root-causes/SKILL.md; the symptom-fix list comes from several of its skills
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-fix-root-causes/SKILL.md
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/interrogate/references/rubric.md
+  - https://github.com/cursor/plugins/blob/main/dyl-stack/skills/dyl-mode/SKILL.md
 ---
 
 **Rule.** In a bug fix, state the cause you saw in evidence, and reject a guard, retry, sleep, longer timeout, swallowed error, cast, skipped or weakened test, or special case for the failing input that the cause does not justify.

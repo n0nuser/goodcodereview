@@ -9,7 +9,7 @@ applies_when: Auditing a repo's README or contribution guide.
 tool_gate: CI job that runs the documented setup on a clean checkout.
 note: one vendor's engineering guidance (opinion), from agent-compatibility docs-reliability-review
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/agent-compatibility/agents/docs-reliability-review.md
 ---
 
 **Rule.** Make every setup, build and run command in the README or contribution guide succeed on a clean checkout.

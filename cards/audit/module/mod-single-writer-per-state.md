@@ -9,7 +9,8 @@ applies_when: More than one module, worker or process writes the same state.
 tool_gate: none
 note: one vendor's engineering guidance (opinion), from pstack principle-separate-before-serializing-shared-state
 borrowed_from:
-  - https://github.com/cursor/plugins
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-separate-before-serializing-shared-state/SKILL.md
+  - https://github.com/cursor/plugins/blob/main/pstack/skills/architect/references/design-red-flags.md
 ---
 
 **Rule.** Give each writer its own state and merge on read, and where sharing is unavoidable, enforce one writer with a lock, a single owner or compare-and-swap.
