@@ -29,4 +29,6 @@ log.info("payment failed")                 # which request?
 log.info("payment failed", extra={"trace_id": ctx.trace_id})   # id set once by middleware
 ```
 
+**See also.** [[svc-api-trace-context]] covers the `traceparent` header that carries the id between services.
+
 **Counterpoint.** "Ids are high-cardinality and will blow up our metrics." Keep them out of metric labels ([[prod-wide-events-bounded-labels]]). Logs and events are where per-request ids belong.
