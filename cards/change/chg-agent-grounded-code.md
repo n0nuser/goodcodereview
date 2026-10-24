@@ -10,16 +10,17 @@ tool_gate: Compiler, type checker and dependency-resolution in CI catch non-exis
 borrowed_from:
   - https://www.kubernetes.dev/docs/guide/pull-requests/
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
+  - https://arxiv.org/abs/2406.10279
 ---
 
 **Rule.** Verify that every import and external call the agent wrote exists with that signature.
 
-**Why.** Agents invent plausible APIs and rewrite nearby utilities without searching. A green build proves only what the compiler sees. [[chg-reuse-before-write]] covers re-implemented helpers. The author must also be able to explain each hunk; see [[chg-agent-independent-review]].
+**Why.** Agents invent plausible APIs and rewrite nearby utilities without searching. A study of 16 code models found that at least about 5% of the packages they suggested (about 22% for open-source models) did not exist, and an attacker can publish a malicious package under a name that models keep inventing. A green build proves only what the compiler sees. [[chg-reuse-before-write]] covers re-implemented helpers. The author must also be able to explain each hunk; see [[chg-agent-independent-review]].
 
 **FAIL**
 
 ```python
-import requests_cache_pro                # package does not exist
+import requests_cache_pro                # package does not exist, or exists only because an attacker registered it
 total = sum_cents(items)                 # new helper; money.sum_cents() already exists
 resp = client.fetch_json(url, retries=3) # fetch_json has no retries param
 ```
