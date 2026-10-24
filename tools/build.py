@@ -60,6 +60,13 @@ FAIL [should-fix] chg-one-concern - src/b.py:7 - a logging rewrite rides along w
 PASS chg-breaking-change-taxonomy - src/c.py:15 - no signature or return shape changes
 N/A chg-perf-claim-evidence - the description makes no performance claim"""
 EXAMPLE_HTML = f'<pre class="wrap"><code>{html.escape(EXAMPLE)}</code></pre>'
+INCIDENT_RULE = ("An incident review also checks the stable cards of the level where the cause lived: `change` for a bad release or migration, "
+                 "`function`, `module`, `service`, or `system` for code and design, and `production` for rollout, alerting, and capacity. "
+                 "Quote the incident text as evidence in place of `file:line`. "
+                 "Those `FAIL` and `PASS` lines are real verdicts, and any `block` `FAIL` still means request changes.")
+INCIDENT_EXAMPLE = "\n".join([
+    'FAIL [block] chg-expand-contract - postmortem, Cause: "the deploy renamed the column and dropped the old one in one migration"',
+    'PASS inc-perf-fix-has-profile-evidence - postmortem, Fix: "CPU profile: 61% in json.Marshal; after the fix, p99 1.9 s -> 240 ms under the same load"'])
 EMPTY_MARK = "no vetted cards yet"
 EMPTY_RULE = (f'A level marked "{EMPTY_MARK}" has no stable cards. Give no verdict for it. Say that there are no vetted cards for that level yet. '
               "You may list its draft cards as notes, never as `PASS` or `FAIL`.")
@@ -447,7 +454,9 @@ def check_routes(by_lv, refs, skill_text, stable_ids):
             errs.append(f"routed level '{lv}' has stable cards but is marked '{EMPTY_MARK}'")
         if not by_lv[lv] and not (row and EMPTY_RULE in skill_text):
             errs.append(f"routed level '{lv}' has no stable cards and the routing text lacks the empty-level rule")
-    errs += [f"EXAMPLE names '{i}', which is not a stable card" for i in re.findall(r"^(?:FAIL \[[a-z-]+\]|PASS|N/A) ([a-z0-9-]+)", EXAMPLE, re.M) if i not in stable_ids]
+    if INCIDENT_RULE not in skill_text:
+        errs.append("the routing text lacks the incident rule")
+    errs += [f"EXAMPLE names '{i}', which is not a stable card" for i in re.findall(r"^(?:FAIL \[[a-z-]+\]|PASS|N/A) ([a-z0-9-]+)", EXAMPLE + "\n" + INCIDENT_EXAMPLE, re.M) if i not in stable_ids]
     return errs
 
 
@@ -508,6 +517,9 @@ def main():
         pages.append((f"{lv}.html", NAME[lv],
                       f"<p>{LEVEL_DESC[lv]} Use it for this input: {INPUT[lv]}.{'' if lv in none else ' ' + VERDICT}</p>",
                       [c for c in cards if c[1]["level"] == lv and c[1]["lang"] == "core"], LEVEL_DESC[lv]))
+    inc = next(i for i, pg in enumerate(pages) if pg[0] == "incident.html")
+    pages[inc] = (*pages[inc][:2], pages[inc][2] + f"<p>{inline(INCIDENT_RULE, {})}</p><p>An example:</p>"
+                  f'<pre class="wrap"><code>{html.escape(INCIDENT_EXAMPLE)}</code></pre>', *pages[inc][3:])
     for pk in packs:
         pages.append((f"pack-{pk}.html", f"{pk.capitalize()} pack",
                       f"<p>Cards specific to {pk}. Use them with the level page that matches your input. {VERDICT}</p>",
@@ -569,7 +581,7 @@ def main():
           "description: Review code against stable cards, from a diff up to an incident. Use when asked to review, audit, or check code.",
           "---", "", "# Good Code Review", "", "## Routing", "", "| Input | Entry point |", "|---|---|"]
     sk += [f"| {i} | {lv}{f' ({EMPTY_MARK})' if lv in empty else ''} |" for i, lv in ROUTES]
-    sk += [""] + ([EMPTY_RULE, ""] if empty else [])
+    sk += ["", INCIDENT_RULE, ""] + ([EMPTY_RULE, ""] if empty else [])
     sk += ["## Verdict format", ""] + plain.replace(". ", ".\n").split("\n") + ["", "```", EXAMPLE, "```", "", DRAFT_RULE, "",
            "The full text for each level is in `references/<level>.md`.",
            *[f"{pk.capitalize()} pack (draft cards, not vetted): {BASE}/pack-{pk}.html" for pk in packs],
@@ -591,6 +603,9 @@ def main():
         refs[lv] = link(f"# {lv}\n\n" + "\n\n".join(section(fm, b) for _, fm, b in cs) + "\n")
         (SKILL / "references" / f"{lv}.md").write_text(refs[lv])
         twins[lv] = (NAME[lv], LEVEL_DESC[lv], refs[lv])
+    if "incident" in twins:
+        t = twins["incident"]
+        twins["incident"] = (*t[:2], t[2].replace("# incident\n\n", f"# incident\n\n{INCIDENT_RULE}\n\n", 1))
     bad = check_routes(by_lv, SKILL / "references", "\n".join(sk), set(home))
     if bad:
         sys.exit("\n".join(bad))
