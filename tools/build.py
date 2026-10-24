@@ -80,7 +80,7 @@ def card_html(fm, body, ids):
 
 def listing(title, intro, cards, ids):
     tags = sorted({t for _, fm, _ in cards for t in fm["tags"]})
-    bar = "<p>" + "".join(f'<span class="tag" data-t="{html.escape(t)}">#{html.escape(t)}</span>' for t in tags) + "</p>"
+    bar = "<p>" + " ".join(f'<span class="tag" data-t="{html.escape(t)}">#{html.escape(t)}</span>' for t in tags) + "</p>"
     return page(title, intro + bar + ("".join(card_html(fm, b, ids) for _, fm, b in cards) or "<p>No cards yet.</p>"), True)
 
 
@@ -123,7 +123,7 @@ def main():
         "<p>What to check when reviewing code. Every check ends in PASS, FAIL or N/A with file:line evidence.</p>"
         f'<div class="doors"><div><a href="change.html"><strong>Review a change</strong><br>A diff or PR.</a></div>'
         f'<div><strong>Audit what exists</strong>{links(AUDIT)}</div></div>'
-        f"<p>Packs: {links('pack-' + p for p in packs) or 'none'}</p>")))
+        "<p>Packs: " + (" ".join(f'<a href="pack-{p}.html">{p}</a>' for p in packs) or "none") + "</p>")))
 
     stable = [c for c in cards if c[1]["status"] == "stable"]
     (SKILL / "references").mkdir(parents=True, exist_ok=True)
