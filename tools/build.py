@@ -42,7 +42,17 @@ SEVERITY = ["## Severity", "", "- `block`: must be fixed before merge or release
             "- `discuss`: raise it and decide together.", ""]
 BASE = "https://goodcodereview.com"
 NAME = {lv: "Change review" if lv == "change" else f"{lv.capitalize()} audit" for lv in LEVELS}
-VERDICT = "Report each check as <code>PASS</code>, <code>FAIL</code>, or <code>N/A</code> with <code>file:line</code> evidence. A <code>FAIL</code> carries the card's severity."
+VERDICT = ("Report each check as <code>PASS</code>, <code>FAIL</code>, or <code>N/A</code> with <code>file:line</code> evidence. A <code>FAIL</code> carries the card's severity. "
+           "Any <code>block</code> <code>FAIL</code> means request changes. A <code>should-fix</code> or <code>discuss</code> <code>FAIL</code> goes in the review but does not block.")
+EXAMPLE = """FAIL [block] chg-expand-contract - src/a.py:42 - renames the column and drops the old one in one migration
+FAIL [should-fix] chg-one-concern - src/b.py:7 - a logging rewrite rides along with the bug fix
+PASS chg-breaking-change-taxonomy - src/c.py:15 - no signature or return shape changes
+N/A chg-perf-claim-evidence - the description makes no performance claim"""
+EXAMPLE_HTML = f'<pre class="wrap"><code>{html.escape(EXAMPLE)}</code></pre>'
+EMPTY_MARK = "no vetted cards yet"
+EMPTY_RULE = (f'A level marked "{EMPTY_MARK}" has no stable cards. Give no verdict for it. Say that there are no vetted cards for that level yet. '
+              "You may list its draft cards as notes, never as `PASS` or `FAIL`.")
+DRAFT_RULE = "Draft cards are never verdicts."
 DRAFT_NOTE = "A draft card is not vetted. Read it for ideas, but do not use it for a verdict."
 CSS = """*,*::before,*::after{box-sizing:border-box;min-width:0}
 :root{color-scheme:light dark;
@@ -250,6 +260,7 @@ def listing(title, intro, cards, ids, links, cur):
         flt += "<details><summary>Topic tags</summary>" + buttons("Topics", "t", topics) + "</details>"
     drafts = (f'<h2>Draft cards</h2>{"" if stable else "<p>No stable cards yet.</p>"}<details><summary id="dsum" data-n="{len(draft)}">{len(draft)} draft cards</summary>'
               f"<p>{DRAFT_NOTE}</p>" + "".join(card_html(fm, b, ids) for _, fm, b in draft) + "</details>") if draft else ""
+    intro += EXAMPLE_HTML
     if not stable:
         return page(title, intro + LEGEND + drafts, True, links, cur)
     th = '<li class="th" aria-hidden="true"><span>Card</span><span>Severity</span><span>Concerns</span><span>Rule</span></li>'
@@ -262,6 +273,21 @@ def listing(title, intro, cards, ids, links, cur):
 def rule(body):
     m = re.search(r"\*\*Rule\.\*\*\s*(.*?)(?:\n\s*\n|$)", body, re.S)
     return " ".join(m.group(1).split()) if m else ""
+
+
+def check_routes(by_lv, refs, skill_text, stable_ids):
+    """Return an error per routed level whose stable cards, reference file, or empty-level text disagree."""
+    errs = []
+    for _, lv in ROUTES:
+        row = f"| {lv} ({EMPTY_MARK}) |" in skill_text
+        if by_lv[lv] and not (refs / f"{lv}.md").is_file():
+            errs.append(f"routed level '{lv}' has stable cards but no references/{lv}.md")
+        if by_lv[lv] and row:
+            errs.append(f"routed level '{lv}' has stable cards but is marked '{EMPTY_MARK}'")
+        if not by_lv[lv] and not (row and EMPTY_RULE in skill_text):
+            errs.append(f"routed level '{lv}' has no stable cards and the routing text lacks the empty-level rule")
+    errs += [f"EXAMPLE names '{i}', which is not a stable card" for i in re.findall(r"^(?:FAIL \[[a-z-]+\]|PASS|N/A) ([a-z0-9-]+)", EXAMPLE, re.M) if i not in stable_ids]
+    return errs
 
 
 def main():
@@ -309,7 +335,7 @@ def main():
     rows = lambda lvs: '<ul class="idx">' + "".join(f'<li><a href="{lv}.html">{NAME[lv]}</a><span>{LEVEL_DESC[lv]} Input: {INPUT[lv]}.</span></li>' for lv in lvs) + "</ul>"
     (SITE / "index.html").write_text(page("Good Code Review", (
         "<p>A checklist for reviewing code, for people and for agents. A card is one rule that a reviewer marks <code>PASS</code>, <code>FAIL</code>, or <code>N/A</code>. Each card has a FAIL example and a PASS example.</p>"
-        "<p>" + VERDICT + "</p>"
+        "<p>" + VERDICT + "</p>" + EXAMPLE_HTML +
         "<h2>Start a review</h2>"
         "<p>Paste this to your agent:</p>"
         "<pre class='wrap'><code>Read https://goodcodereview.com/llms.txt and use it to review my code.</code></pre>"
@@ -329,34 +355,49 @@ def main():
     (SKILL / "references").mkdir(parents=True, exist_ok=True)
     for f in (SKILL / "references").glob("*.md"):
         f.unlink()
+    by_lv = {lv: [c for c in stable if c[1]["level"] == lv] for lv in LEVELS}
+    empty = [lv for _, lv in ROUTES if not by_lv[lv]]
+    home = {fm["id"]: fm["level"] for _, fm, _ in stable}
+    # A stable card links only to another stable card, as a relative path inside references/. Any other target is plain text.
+    link = lambda t: re.sub(r"\[\[([^\]]+)\]\]", lambda m: f"[{m[1]}]({home[m[1]]}.md#{m[1]})" if m[1] in home else m[1], t)
+    plain = VERDICT.replace("<code>", "`").replace("</code>", "`")
     sk = ["---", "name: good-code-review",
           "description: Review code against stable cards, from a diff up to an incident. Use when asked to review, audit, or check code.",
           "---", "", "# Good Code Review", "", "## Routing", "", "| Input | Entry point |", "|---|---|"]
-    sk += [f"| {i} | {lv} |" for i, lv in ROUTES]
-    sk += ["", "## Verdict format", "", "Each check gets `PASS`, `FAIL`, or `N/A`, with `file:line` evidence.",
-           "A `FAIL` carries the card's severity: `block`, `should-fix`, or `discuss`.", "",
-           "The full text for each level is in `references/<level>.md`.", "",
+    sk += [f"| {i} | {lv}{f' ({EMPTY_MARK})' if lv in empty else ''} |" for i, lv in ROUTES]
+    sk += [""] + ([EMPTY_RULE, ""] if empty else [])
+    sk += ["## Verdict format", ""] + plain.replace(". ", ".\n").split("\n") + ["", "```", EXAMPLE, "```", "", DRAFT_RULE, "",
+           "The full text for each level is in `references/<level>.md`.",
+           *[f"{pk.capitalize()} pack (draft cards, not vetted): {BASE}/pack-{pk}.html" for pk in packs],
+           f"Glossary: {BASE}/glossary.html",
+           f"Draft cards (not vetted): {BASE}/llms-drafts.txt", "",
            "## Scope by concern", "",
            "Each card lists its concerns in braces: " + ", ".join(f"`{c}`" for c in CONCERNS) + ".",
            "To review only some concerns, such as a performance-only review, check only the cards that list them.", ""]
     line = lambda fm, b: f"- `{fm['id']}` [{fm['severity']}] {{{', '.join(concerns(fm))}}}: {rule(b)}"
+    refs = {}
     for lv in LEVELS:
-        cs = [c for c in stable if c[1]["level"] == lv]
+        cs = by_lv[lv]
         if not cs:
             continue
         sk += [f"## {lv}", ""] + [line(fm, b) for _, fm, b in cs] + [""]
-        (SKILL / "references" / f"{lv}.md").write_text(
-            f"# {lv}\n\n" + "\n\n".join(f"## {fm['id']}\n\nseverity: {fm['severity']}  \nconcerns: {', '.join(concerns(fm))}  \napplies_when: {fm['applies_when']}\n\n{b.strip()}"
-                                        for _, fm, b in cs) + "\n")
+        refs[lv] = link(f"# {lv}\n\n" + "\n\n".join(f"## {fm['id']}\n\nseverity: {fm['severity']}  \nconcerns: {', '.join(concerns(fm))}  \napplies_when: {fm['applies_when']}\n\n{b.strip()}"
+                                                    for _, fm, b in cs) + "\n")
+        (SKILL / "references" / f"{lv}.md").write_text(refs[lv])
+        (SITE / f"{lv}.md").write_text(refs[lv])
+    bad = check_routes(by_lv, SKILL / "references", "\n".join(sk), set(home))
+    if bad:
+        sys.exit("\n".join(bad))
     (SKILL / "SKILL.md").write_text("\n".join(sk))
-    if len(sk) > SKILL_BUDGET:
-        sys.exit(f"SKILL.md is {len(sk)} lines, budget {SKILL_BUDGET}")
+    n = len("\n".join(sk).split("\n"))
+    if n > SKILL_BUDGET:
+        sys.exit(f"SKILL.md is {n} lines, budget {SKILL_BUDGET}")
     # llms.txt = SKILL.md body (same routing, verdict, scope, stable cards), opened by the SKILL description, with a Severity
-    # section and a full-text URL per level added. Then the glossary, then drafts last, never mixed into the vetted sections.
+    # section and a full-text URL per level added. Drafts live in llms-drafts.txt, never mixed into the vetted file.
     url = lambda fm: f"{BASE}/pack-{fm['lang']}.html" if fm["lang"] != "core" else f"{BASE}/{fm['level']}.html"
     body = list(sk[5:])
     k = next(i for i, l in enumerate(body) if l.startswith("The full text"))
-    del body[k:k + 2]
+    del body[k:body.index("", k) + 1]  # the shared pointer lines; llms.txt has its own Glossary and Draft sections
     llms = [body[0], "", sk[2][len("description: "):], ""]
     seen_level = False
     for l in body[2:]:
@@ -364,25 +405,28 @@ def main():
             if not seen_level:
                 llms += SEVERITY
                 seen_level = True
-            llms += [l, "", f"Full text: {BASE}/{l[3:]}.html"]
+            llms += [l, "", f"Full text: {BASE}/{l[3:]}.md"]
         else:
             llms.append(l)
-    llms += ["## Glossary", "", f"Terms the cards link to: {BASE}/glossary.html", ""]
-    llms += ["## Draft cards (not vetted; do not use for a verdict)", ""]
+    llms += ["## Glossary", "", f"Terms the cards link to: {BASE}/glossary.html", "",
+             "## Draft cards", "", f"Not vetted. {DRAFT_RULE} List: {BASE}/llms-drafts.txt", ""]
+    dr = ["# Draft cards", "", f"Not vetted. {DRAFT_RULE} Use them as notes only, never as `PASS` or `FAIL`.", ""]
     for lv in LEVELS:
         cs = [c for c in draft if c[1]["level"] == lv and c[1]["lang"] == "core"]
         if cs:
-            llms += [f"### {lv}", "", f"Full text: {url(cs[0][1])}", ""] + [line(fm, b) for _, fm, b in cs] + [""]
+            dr += [f"## {lv}", "", f"Full text: {url(cs[0][1])}", ""] + [line(fm, b) for _, fm, b in cs] + [""]
     for pk in packs:
         cs = [c for c in draft if c[1]["lang"] == pk]
-        llms += [f"### pack {pk}", "", f"Full text: {url(cs[0][1])}", ""] + [line(fm, b) for _, fm, b in cs] + [""]
-    text = "\n".join(llms)
-    vetted, _, drafts = text.partition("## Draft cards")
+        dr += [f"## pack {pk}", "", f"Full text: {url(cs[0][1])}", ""] + [line(fm, b) for _, fm, b in cs] + [""]
+    text, dtext = "\n".join(llms), "\n".join(dr)
     idre = lambda t: re.findall(r"^- `([^`]+)` \[", t, re.M)
-    if idre(vetted) != idre("\n".join(sk)) or {fm["id"] for _, fm, _ in draft} & set(idre(vetted)) or "\n## " in drafts:
-        sys.exit("llms.txt: stable ids before the draft heading differ from SKILL.md, or a draft sits before it")
+    if idre(text) != idre("\n".join(sk)) or {fm["id"] for _, fm, _ in draft} & set(idre(text)):
+        sys.exit("llms.txt: stable ids differ from SKILL.md, or a draft id sits in it")
+    if sorted(idre(dtext)) != sorted(fm["id"] for _, fm, _ in draft):
+        sys.exit("llms-drafts.txt: ids differ from the draft cards")
     (SITE / "llms.txt").write_text(text)
-    print(f"site: {len(pages) + 3} pages; SKILL.md: {len(sk)} lines; stable cards: {len(stable)}")
+    (SITE / "llms-drafts.txt").write_text(dtext)
+    print(f"site: {len(pages) + 3} pages; SKILL.md: {n} lines; stable cards: {len(stable)}")
 
 
 if __name__ == "__main__":

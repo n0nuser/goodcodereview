@@ -16,14 +16,30 @@ description: Review code against stable cards, from a diff up to an incident. Us
 | cross-service design doc | system |
 | repo | codebase |
 | release / launch | production |
-| incident | incident |
+| incident | incident (no vetted cards yet) |
+
+A level marked "no vetted cards yet" has no stable cards. Give no verdict for it. Say that there are no vetted cards for that level yet. You may list its draft cards as notes, never as `PASS` or `FAIL`.
 
 ## Verdict format
 
-Each check gets `PASS`, `FAIL`, or `N/A`, with `file:line` evidence.
-A `FAIL` carries the card's severity: `block`, `should-fix`, or `discuss`.
+Report each check as `PASS`, `FAIL`, or `N/A` with `file:line` evidence.
+A `FAIL` carries the card's severity.
+Any `block` `FAIL` means request changes.
+A `should-fix` or `discuss` `FAIL` goes in the review but does not block.
+
+```
+FAIL [block] chg-expand-contract - src/a.py:42 - renames the column and drops the old one in one migration
+FAIL [should-fix] chg-one-concern - src/b.py:7 - a logging rewrite rides along with the bug fix
+PASS chg-breaking-change-taxonomy - src/c.py:15 - no signature or return shape changes
+N/A chg-perf-claim-evidence - the description makes no performance claim
+```
+
+Draft cards are never verdicts.
 
 The full text for each level is in `references/<level>.md`.
+Python pack (draft cards, not vetted): https://goodcodereview.com/pack-python.html
+Glossary: https://goodcodereview.com/glossary.html
+Draft cards (not vetted): https://goodcodereview.com/llms-drafts.txt
 
 ## Scope by concern
 

@@ -76,7 +76,7 @@ k6 stress run on the prod-sized env: ramp to 3x expected peak (6,000 rps)
 thresholds: p99 < 400 ms, errors < 0.1%; result linked in the launch doc
 ```
 
-**Counterpoint.** "A production-sized test environment costs too much." Size the test to the risk. A scaled-down environment is acceptable for a non-critical workload, and skipping the test is low risk for a small one. For a launch that could take down a shared dependency, the test is cheaper than the outage. Roll out in stages either way ([[prod-canary-staged-rollout]]).
+**Counterpoint.** "A production-sized test environment costs too much." Size the test to the risk. A scaled-down environment is acceptable for a non-critical workload, and skipping the test is low risk for a small one. For a launch that could take down a shared dependency, the test is cheaper than the outage. Roll out in stages either way ([prod-canary-staged-rollout](production.md#prod-canary-staged-rollout)).
 
 ## prod-profile-on-demand
 
