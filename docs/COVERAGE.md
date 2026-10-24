@@ -514,3 +514,33 @@ From `docs/research/api-pass.md`.
 | api-pass | Azure guidelines: 202 with status monitor for long-running operations | dropped: one vendor's pattern | dropped |
 | api-pass | protobuf.dev: No required fields | dropped: narrow, no card yet | dropped |
 | api-pass | protobuf.dev: Do not rely on identical serialised bytes | dropped: narrow | dropped |
+
+## Performance pass
+
+From `docs/research/performance-pass.md`. Every card here except `sys-load-shedding-bounded-queues` carries the `performance` tag. The org count is the number of independent organisations behind the Rule.
+
+| Source | Item | Maps to | Status |
+|---|---|---|---|
+| performance-pass | Attach the query plan for a new query on a growing table (3 orgs for EXPLAIN; attaching it is the card's practice) | `chg-new-query-has-plan` | draft |
+| performance-pass | Build strings with a builder or join, not `+=` in a loop (3 orgs) | `fn-join-dont-concat-in-loop` | draft |
+| performance-pass | Compile a regex once and reuse it (4 orgs) | `fn-regex-compiled-once` | draft |
+| performance-pass | No blocking I/O or long CPU work on an event loop (4 orgs) | `fn-no-blocking-call-in-async-code` | draft |
+| performance-pass | Filter, count, and aggregate in the query; select only used columns (4 orgs) | `fn-fetch-only-needed-data` | draft |
+| performance-pass | Start independent I/O together (2 orgs plus an opinion source) | `fn-independent-work-concurrent` | draft |
+| performance-pass | Build pooled clients once and reuse them (4 orgs) | `mod-pooled-clients-built-once` | draft |
+| performance-pass | Paginate every list endpoint, with a default and a maximum (5 orgs; 4 for the maximum) | `svc-list-endpoint-paginates` | draft |
+| performance-pass | Timeout on every remote call, from the caller's deadline (2 orgs for propagation) | `svc-timeouts` | draft |
+| performance-pass | One query or batch for related rows, never one per row (4 orgs) | `sys-n-plus-one-pooling` | draft |
+| performance-pass | Bound and expire every cache (3 orgs; invalidation 1) | `sys-cache-bounds-invalidation` | draft |
+| performance-pass | A deadline and a miss policy on every fan-out leg (5 orgs) | `sys-fanout-leg-deadlines` | draft |
+| performance-pass | Bounded queues and cheap rejection (5 orgs, corroboration only) | `sys-load-shedding-bounded-queues` | stable |
+| performance-pass | A CI check fails the build on the performance budget (7 orgs) | `code-perf-budget-in-ci` | draft |
+| performance-pass | Load test past peak on production-like infrastructure before launch (3 orgs) | `prod-load-test-before-launch` | draft |
+| performance-pass | Latency SLOs and alerts on histogram percentiles, not the mean (3 firm orgs) | `prod-latency-slo-percentile` | draft |
+| performance-pass | A production profile is obtainable without a redeploy (4 orgs) | `prod-profile-on-demand` | draft |
+| performance-pass | A performance fix names its bottleneck with a profile or trace (2 orgs) | `inc-perf-fix-has-profile-evidence` | draft |
+| performance-pass | A perf postmortem adds an automated regression guard (5 orgs) | `inc-perf-regression-guard` | draft |
+| performance-pass | Benchmark for every hot-path change | dropped: a reviewer cannot tell a hot path without a profile; covered by `chg-perf-claim-evidence` and `code-perf-budget-in-ci` | dropped |
+| performance-pass | Per-hop latency budget across a system | dropped: 2 orgs, and `svc-timeouts` already derives from the remaining deadline | dropped |
+| performance-pass | Cap fan-out width | dropped: 1 org (Google) | dropped |
+| performance-pass | Keep benchmarks runnable | dropped: the budget job runs them; Go, Rust, and JMH docs not read | dropped |

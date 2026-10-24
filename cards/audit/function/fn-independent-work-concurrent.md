@@ -4,12 +4,14 @@ level: function
 tags: [performance, concurrency]
 severity: should-fix
 status: draft
+note: 2 orgs with primary pages (Python, Mozilla) plus one vendor's review skill (opinion); a third org (Go errgroup) is needed before promotion
 lang: core
 applies_when: A function awaits or calls several I/O operations that do not depend on each other.
 tool_gate: none
-note: from one vendor's review skill (opinion); the cost is plain latency arithmetic
 borrowed_from:
   - https://github.com/cursor/plugins/blob/main/thermos/skills/thermo-nuclear-code-quality-review/SKILL.md
+  - https://docs.python.org/3/library/asyncio-task.html
+  - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
 ---
 
 **Rule.** Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.
