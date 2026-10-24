@@ -160,14 +160,14 @@ html{scroll-behavior:smooth}button{transition:transform 140ms var(--ease-out),ba
 JS = """const q=s=>[...document.querySelectorAll(s)],S={c:new Set(),t:new Set(),l:new Set()},E=document.getElementById('empty'),D=document.getElementById('dsum'),C=document.getElementById('count');
 function go(){q('[data-tags]').forEach(a=>{const g=a.dataset.tags.split(' ');
 a.hidden=(S.c.size>0&&![...S.c].some(x=>g.includes(x)))||[...S.t].some(x=>!g.includes(x))||(S.l.size>0&&!S.l.has(a.dataset.level))});
-const on=S.c.size+S.t.size+S.l.size>0,s=q('article[data-tags]:not([hidden])').filter(a=>!a.closest('details')).length,d=q('details article[data-tags]:not([hidden])').length;
+const on=S.c.size+S.t.size+S.l.size>0,s=q('article[data-tags]:not([hidden])').filter(a=>!a.closest('details')).length,d=q('details [data-tags]:not([hidden])').length;
 if(E){E.hidden=!on||s>0;E.textContent='No stable cards match.'+(d?' '+d+' draft '+(d>1?'cards match':'card matches')+' below.':'')}
 if(D)D.textContent=D.dataset.n+' draft cards'+(on?' ('+d+' match)':'')
 if(C)C.textContent=on?s+' stable and '+d+' draft '+(s+d==1?'card matches.':'cards match.'):''}
 q('button[data-k]').forEach(b=>b.onclick=()=>{const s=S[b.dataset.k],v=b.dataset.v;
 s.has(v)?s.delete(v):s.add(v);b.setAttribute('aria-pressed',s.has(v));go()});
 q('button[data-copy]').forEach(b=>{const l=b.textContent;b.hidden=false;b.onclick=()=>{
-const t=b.dataset.copy=='ck'?q('ul.ck li[data-tags]:not([hidden])').map(r=>'- `'+r.querySelector('a').textContent+'` ['+r.querySelector('.b').textContent+'] '+r.querySelector('.r').textContent+' PASS/FAIL/N/A: ').join('\\n'):b.previousElementSibling.textContent;
+const t=b.dataset.copy=='ck'?q('ul.ck li[data-tags]:not([hidden])').filter(r=>!r.closest('details')).map(r=>'- `'+r.querySelector('a').textContent+'` ['+r.querySelector('.b').textContent+'] '+r.querySelector('.r').textContent+' PASS/FAIL/N/A: ').join('\\n'):b.previousElementSibling.textContent;
 (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>b.textContent='Copied',()=>b.textContent='Copy failed');setTimeout(()=>b.textContent=l,1500)}});
 const op=()=>{const e=document.getElementById(location.hash.slice(1)),d=e&&e.closest('details');if(d){d.open=true;e.scrollIntoView()}};
 addEventListener('hashchange',op);op()"""
@@ -255,8 +255,8 @@ def card_html(fm, body, ids):
             f'<p><strong>Applies when:</strong> {inline(fm["applies_when"], ids)}</p>{md(body, ids)}{gate}{sources(fm)}</article>')
 
 
-def row(fm, body, ids):
-    return (f'<li data-tags="{html.escape(" ".join(fm["tags"]))}" data-level="{fm["level"]}"><a href="#{html.escape(fm["id"])}">{html.escape(fm["id"])}</a> '
+def row(fm, body, ids, href=""):
+    return (f'<li data-tags="{html.escape(" ".join(fm["tags"]))}" data-level="{fm["level"]}"><a href="{href}#{html.escape(fm["id"])}">{html.escape(fm["id"])}</a> '
             f'<span class="b {fm["severity"]}">{fm["severity"]}</span>{chips(fm)}<span class="r">{inline(rule(body), ids)}</span></li>')
 
 
@@ -269,7 +269,7 @@ def copy_pre(text, label):
     return f"<pre class='wrap'><code>{text}</code></pre>" + f'<button type="button" data-copy="pre" hidden>{label}</button>'
 
 
-def listing(title, intro, cards, ids, links, cur, empty=False):
+def listing(title, intro, cards, ids, links, cur, empty=False, compact=False):
     stable = [c for c in cards if c[1]["status"] == "stable"]
     draft = [c for c in cards if c[1]["status"] != "stable"]
     seen = {t for _, fm, _ in cards for t in fm["tags"]}
@@ -280,16 +280,19 @@ def listing(title, intro, cards, ids, links, cur, empty=False):
     topics = sorted(seen - set(CONCERNS))
     if topics:
         flt += "<details><summary>Topic tags</summary>" + buttons("Topics", "t", topics) + "</details>"
+    th = '<li class="th" aria-hidden="true"><span>Card</span><span>Severity</span><span>Concerns</span><span>Rule</span></li>'
+    # compact: one row per draft, linked to the page that holds the full card
+    dbody = ('<div class="ckw"><ul class="ck">' + th + "".join(row(fm, b, ids, f"pack-{fm['lang']}.html" if fm["lang"] != "core" else f"{fm['level']}.html") for _, fm, b in draft) + "</ul></div>"
+             if compact else "".join(card_html(fm, b, ids) for _, fm, b in draft))
     drafts = (f'<h2>Draft cards</h2>{"" if stable or empty else "<p>No stable cards yet.</p>"}<details><summary id="dsum" data-n="{len(draft)}">{len(draft)} draft cards</summary>'
-              f"<p>{DRAFT_NOTE}</p>" + "".join(card_html(fm, b, ids) for _, fm, b in draft) + "</details>") if draft else ""
+              f"<p>{DRAFT_NOTE}{' Each row links to the full card.' if compact else ''}</p>" + dbody + "</details>") if draft else ""
     if empty:
         return page(title, NONE_NOTE + intro + LEGEND + drafts, True, links, cur)
     intro += EXAMPLE_HTML
     if not stable:
         return page(title, intro + LEGEND + drafts, True, links, cur)
-    th = '<li class="th" aria-hidden="true"><span>Card</span><span>Severity</span><span>Concerns</span><span>Rule</span></li>'
     ck = '<button type="button" data-copy="ck" hidden>Copy checklist as markdown</button><div class="ckw"><ul class="ck">' + th + "".join(row(fm, b, ids) for _, fm, b in stable) + "</ul></div>"
-    body = (intro + f"<h2>Checklist</h2>{ck}" + LEGEND + f'<h2>Filters</h2>{flt}<p id="count" class="note" role="status"></p><p id="empty" hidden></p>'
+    body = (intro + f"<h2>Checklist</h2>{ck}" + LEGEND + f'<h2>Filters</h2>{"<noscript><p>The filters need JavaScript. Without it, the page lists every card.</p></noscript>" if compact else ""}{flt}<p id="count" class="note" role="status"></p><p id="empty" hidden></p>'
             "<h2>Cards</h2>" + "".join(card_html(fm, b, ids) for _, fm, b in stable) + drafts)
     return page(title, body, True, links, cur)
 
@@ -349,8 +352,8 @@ def main():
                   f"<p>Every card on one page. Pick one or more concerns to scope a review, such as performance only. A card matches when it lists any picked concern. {VERDICT}</p>",
                   cards))
     for f, title, intro, cs in pages:
-        out = listing(title, intro, cs, ids, links, f, f[:-5] in none)
-        if "<code></code>" in out or out.count("<strong>PASS</strong>") != len(cs):
+        out = listing(title, intro, cs, ids, links, f, f[:-5] in none, f == "concerns.html")
+        if "<code></code>" in out or out.count("<strong>PASS</strong>") != sum(f != "concerns.html" or c[1]["status"] == "stable" for c in cs):
             sys.exit(f"{f}: a card lost its FAIL or PASS code block in rendering")
         (SITE / f).write_text(out)
     g = "".join(f'<article id="{p.stem}">{md(p.read_text(), ids)}</article>' for p in gloss)
