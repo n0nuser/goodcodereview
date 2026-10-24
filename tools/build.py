@@ -38,6 +38,9 @@ LEGEND = ('<ul class="legend">'
           '<li><span class="b stable">stable</span><span>vetted; use for verdicts.</span></li>'
           '<li><span class="b draft">draft</span><span>not vetted; do not use for a verdict.</span></li>'
           '<li class="tg">Tool gate: what a linter or CI check could enforce instead of a reviewer.</li></ul>')
+LEGEND = f'<details><summary>What the badges mean</summary>{LEGEND}</details>'
+NONE_NOTE = (f'<p><strong>No vetted cards for this level yet.</strong> It gives no verdict. '
+             'For the code fix, use <a href="change.html">Change review</a>.</p>')
 SEVERITY = ["## Severity", "", "- `block`: must be fixed before merge or release.", "- `should-fix`: fix it, but it need not block.",
             "- `discuss`: raise it and decide together.", ""]
 BASE = "https://goodcodereview.com"
@@ -93,9 +96,15 @@ article>h2{font-size:var(--step-1)}
 h3{font:600 var(--step-0)/1.2 var(--mono)}
 a{color:var(--acc);text-decoration-thickness:.07em;text-underline-offset:.2em}
 :focus-visible{outline:max(2px,.08em) solid var(--acc);outline-offset:.2em}
-nav{display:flex;flex-wrap:wrap;gap:0 var(--space-m);padding-block:var(--space-s);border-block-end:1px solid var(--line);font:var(--step--1)/1.3 var(--ui)}
-nav a{padding-block:.5rem;color:var(--fg);text-decoration:none}
+nav{display:flex;flex-wrap:wrap;align-items:center;gap:0 var(--space-m);padding-block:var(--space-s);border-block-end:1px solid var(--line);font:var(--step--1)/1.3 var(--ui)}
+nav a,nav summary{display:flex;align-items:center;min-block-size:44px;padding-block:0;color:var(--fg);text-decoration:none}
 nav a[aria-current]{font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.35em}
+nav details{border:0}nav details[open]{flex:1 0 100%}nav details[open]>summary{border:0}
+nav details:has([aria-current])>summary{font-weight:700}
+nav details>div{display:flex;flex-wrap:wrap;gap:0 var(--space-m);padding-inline-start:var(--space-s)}
+.skip{position:absolute;inset-block-start:-100px;inset-inline-start:var(--space-s);z-index:1;display:flex;align-items:center;min-block-size:44px;padding-inline:var(--space-s);background:var(--bg);color:var(--fg);border:2px solid var(--acc);font:600 var(--step--1)/1.3 var(--ui)}
+.skip:focus{inset-block-start:var(--space-s)}
+main:focus{outline:none}
 code{font:.9em var(--mono);padding:.08em .3em;background:var(--code);border-radius:2px;overflow-wrap:anywhere}
 pre{padding:var(--space-s);overflow-x:auto;background:var(--code);border-radius:2px;font:var(--step--1)/1.5 var(--mono);tab-size:4}
 pre code{padding:0;background:none;font:inherit;overflow-wrap:normal}
@@ -130,7 +139,7 @@ ul.ck .th{display:grid;border-block-start:0;border-block-end:1px solid var(--edg
 }
 ul.idx{padding:0;list-style:none}
 ul.idx li{display:flex;flex-wrap:wrap;gap:0 var(--space-s);padding-block:.55rem;border-block-start:1px solid var(--line)}
-ul.idx a{flex:1 1 10rem;font:600 var(--step-0)/1.5 var(--ui)}ul.idx span{flex:3 1 22rem}
+ul.idx a{flex:1 1 10rem;font:600 var(--step-0)/1.5 var(--ui)}ul.idx span{flex:3 1 22rem}ul.idx span.n{flex:1 1 10rem;color:var(--mut);font:var(--step--1)/1.5 var(--ui);font-variant-numeric:tabular-nums}
 article{padding-block:var(--space-m);border-block-start:1px solid var(--line)}
 h2+article{border-block-start:0}
 .ch{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem var(--space-s)}
@@ -157,6 +166,9 @@ if(D)D.textContent=D.dataset.n+' draft cards'+(on?' ('+d+' match)':'')
 if(C)C.textContent=on?s+' stable and '+d+' draft '+(s+d==1?'card matches.':'cards match.'):''}
 q('button[data-k]').forEach(b=>b.onclick=()=>{const s=S[b.dataset.k],v=b.dataset.v;
 s.has(v)?s.delete(v):s.add(v);b.setAttribute('aria-pressed',s.has(v));go()});
+q('button[data-copy]').forEach(b=>{const l=b.textContent;b.hidden=false;b.onclick=()=>{
+const t=b.dataset.copy=='ck'?q('ul.ck li[data-tags]:not([hidden])').map(r=>'- `'+r.querySelector('a').textContent+'` ['+r.querySelector('.b').textContent+'] '+r.querySelector('.r').textContent+' PASS/FAIL/N/A: ').join('\\n'):b.previousElementSibling.textContent;
+(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>b.textContent='Copied',()=>b.textContent='Copy failed');setTimeout(()=>b.textContent=l,1500)}});
 const op=()=>{const e=document.getElementById(location.hash.slice(1)),d=e&&e.closest('details');if(d){d.open=true;e.scrollIntoView()}};
 addEventListener('hashchange',op);op()"""
 FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23006469'/%3E%3Cpath d='M3.5 8.5l3 3 6-6' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E"
@@ -209,10 +221,16 @@ def md(text, ids):
 
 
 def page(title, body, script=False, links=(), cur=""):
-    nav = '<header><nav aria-label="Site">' + "".join(f'<a href="{h}"{" aria-current=page" if h == cur else ""}>{html.escape(t)}</a>' for h, t in links) + "</nav></header>"
+    aud = {f"{lv}.html" for lv in AUDIT}
+    a = lambda h, t: f'<a href="{h}"{" aria-current=page" if h == cur else ""}>{html.escape(t)}</a>'
+    items = [a(h, t) for h, t in links if h not in aud]
+    menu = "".join(a(h, t) for h, t in links if h in aud)
+    if menu:
+        items.insert(next(i for i, (h, _) in enumerate(links) if h in aud), f'<details><summary>Audits</summary><div>{menu}</div></details>')
+    nav = '<header><nav aria-label="Site">' + "".join(items) + "</nav></header>"
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">'
             f'<link rel="icon" href="{FAVICON}">'
-            f"<title>{html.escape(title)}</title><style>{CSS}</style></head><body>{nav}<main><h1>{html.escape(title)}</h1>{body}</main>"
+            f"<title>{html.escape(title)}</title><style>{CSS}</style></head><body><a class=skip href=#main>Skip to content</a>{nav}<main id=main tabindex=-1><h1>{html.escape(title)}</h1>{body}</main>"
             f'<footer>Created and edited by <a href="https://pablogonzalez.me">Pablo González</a> · Content CC BY 4.0 · Code MIT · <a href="https://github.com/n0nuser/goodcodereview">Source</a> · Styled with <a href="https://good-css.com">good-css.com</a></footer>'
             f"{'<script>' + JS + '</script>' if script else ''}</body></html>")
 
@@ -247,7 +265,11 @@ def buttons(label, key, values):
             + "".join(f'<button type="button" data-k="{key}" data-v="{html.escape(v)}" aria-pressed="false">{html.escape(v)}</button>' for v in values) + "</div>")
 
 
-def listing(title, intro, cards, ids, links, cur):
+def copy_pre(text, label):
+    return f"<pre class='wrap'><code>{text}</code></pre>" + f'<button type="button" data-copy="pre" hidden>{label}</button>'
+
+
+def listing(title, intro, cards, ids, links, cur, empty=False):
     stable = [c for c in cards if c[1]["status"] == "stable"]
     draft = [c for c in cards if c[1]["status"] != "stable"]
     seen = {t for _, fm, _ in cards for t in fm["tags"]}
@@ -258,15 +280,17 @@ def listing(title, intro, cards, ids, links, cur):
     topics = sorted(seen - set(CONCERNS))
     if topics:
         flt += "<details><summary>Topic tags</summary>" + buttons("Topics", "t", topics) + "</details>"
-    drafts = (f'<h2>Draft cards</h2>{"" if stable else "<p>No stable cards yet.</p>"}<details><summary id="dsum" data-n="{len(draft)}">{len(draft)} draft cards</summary>'
+    drafts = (f'<h2>Draft cards</h2>{"" if stable or empty else "<p>No stable cards yet.</p>"}<details><summary id="dsum" data-n="{len(draft)}">{len(draft)} draft cards</summary>'
               f"<p>{DRAFT_NOTE}</p>" + "".join(card_html(fm, b, ids) for _, fm, b in draft) + "</details>") if draft else ""
+    if empty:
+        return page(title, NONE_NOTE + intro + LEGEND + drafts, True, links, cur)
     intro += EXAMPLE_HTML
     if not stable:
         return page(title, intro + LEGEND + drafts, True, links, cur)
     th = '<li class="th" aria-hidden="true"><span>Card</span><span>Severity</span><span>Concerns</span><span>Rule</span></li>'
-    ck = '<div class="ckw"><ul class="ck">' + th + "".join(row(fm, b, ids) for _, fm, b in stable) + "</ul></div>"
-    body = (intro + LEGEND + f'<h2>Filters</h2>{flt}<p id="count" class="note" role="status"></p><p id="empty" hidden></p>'
-            f"<h2>Checklist</h2>{ck}<h2>Cards</h2>" + "".join(card_html(fm, b, ids) for _, fm, b in stable) + drafts)
+    ck = '<button type="button" data-copy="ck" hidden>Copy checklist as markdown</button><div class="ckw"><ul class="ck">' + th + "".join(row(fm, b, ids) for _, fm, b in stable) + "</ul></div>"
+    body = (intro + f"<h2>Checklist</h2>{ck}" + LEGEND + f'<h2>Filters</h2>{flt}<p id="count" class="note" role="status"></p><p id="empty" hidden></p>'
+            "<h2>Cards</h2>" + "".join(card_html(fm, b, ids) for _, fm, b in stable) + drafts)
     return page(title, body, True, links, cur)
 
 
@@ -304,7 +328,10 @@ def main():
     ids = {fm["id"]: (f"pack-{fm['lang']}.html" if fm["lang"] != "core" else f"{fm['level']}.html") + f"#{fm['id']}"
            for _, fm, _ in cards}
     ids.update({g.stem: f"glossary.html#{g.stem}" for g in gloss})
-    links = ([("index.html", "Home"), ("concerns.html", "Concerns")] + [(f"{lv}.html", NAME[lv]) for lv in LEVELS]
+    cnt = {lv: [sum(c[1]["level"] == lv and c[1]["lang"] == "core" and (c[1]["status"] == "stable") == st for c in cards) for st in (True, False)] for lv in LEVELS}
+    none = {lv for lv in LEVELS if not cnt[lv][0]}
+    label = lambda lv: NAME[lv] + (f" ({EMPTY_MARK})" if lv in none else "")
+    links = ([("index.html", "Home"), ("concerns.html", "Concerns")] + [(f"{lv}.html", label(lv)) for lv in LEVELS]
              + [(f"pack-{pk}.html", f"{pk.capitalize()} pack") for pk in packs] + [("glossary.html", "Glossary")])
 
     shutil.rmtree(SITE, ignore_errors=True)
@@ -312,7 +339,7 @@ def main():
     pages = []  # (file, title, intro, cards)
     for lv in LEVELS:
         pages.append((f"{lv}.html", NAME[lv],
-                      f"<p>{LEVEL_DESC[lv]} Use it for this input: {INPUT[lv]}. {VERDICT}</p>",
+                      f"<p>{LEVEL_DESC[lv]} Use it for this input: {INPUT[lv]}.{'' if lv in none else ' ' + VERDICT}</p>",
                       [c for c in cards if c[1]["level"] == lv and c[1]["lang"] == "core"]))
     for pk in packs:
         pages.append((f"pack-{pk}.html", f"{pk.capitalize()} pack",
@@ -322,7 +349,7 @@ def main():
                   f"<p>Every card on one page. Pick one or more concerns to scope a review, such as performance only. A card matches when it lists any picked concern. {VERDICT}</p>",
                   cards))
     for f, title, intro, cs in pages:
-        out = listing(title, intro, cs, ids, links, f)
+        out = listing(title, intro, cs, ids, links, f, f[:-5] in none)
         if "<code></code>" in out or out.count("<strong>PASS</strong>") != len(cs):
             sys.exit(f"{f}: a card lost its FAIL or PASS code block in rendering")
         (SITE / f).write_text(out)
@@ -332,23 +359,26 @@ def main():
     (SITE / "404.html").write_text(page("Not found", '<p><a href="index.html">Back to the start</a></p>', links=links))
     npx = "npx skills add n0nuser/goodcodereview"
     plugin = "/plugin marketplace add n0nuser/goodcodereview\n/plugin install goodcodereview@goodcodereview"
-    rows = lambda lvs: '<ul class="idx">' + "".join(f'<li><a href="{lv}.html">{NAME[lv]}</a><span>{LEVEL_DESC[lv]} Input: {INPUT[lv]}.</span></li>' for lv in lvs) + "</ul>"
+    rows = '<ul class="idx">' + "".join(
+        f'<li><a href="{lv}.html">{NAME[lv]}</a><span>{LEVEL_DESC[lv]} Input: {INPUT[lv]}.</span>'
+        f'<span class="n">{cnt[lv][0]} stable, {cnt[lv][1]} draft{f" · {EMPTY_MARK}" if lv in none else ""}</span></li>' for lv in LEVELS) + "</ul>"
     (SITE / "index.html").write_text(page("Good Code Review", (
         "<p>A checklist for reviewing code, for people and for agents. A card is one rule that a reviewer marks <code>PASS</code>, <code>FAIL</code>, or <code>N/A</code>. Each card has a FAIL example and a PASS example.</p>"
-        "<p>" + VERDICT + "</p>" + EXAMPLE_HTML +
-        "<h2>Start a review</h2>"
-        "<p>Paste this to your agent:</p>"
-        "<pre class='wrap'><code>Read https://goodcodereview.com/llms.txt and use it to review my code.</code></pre>"
-        "<p>To install it as a skill (Claude Code, Codex, Cursor, and other tools that read <code>skills/&lt;name&gt;/SKILL.md</code>), run:</p>"
-        f"<pre class='wrap'><code>{npx}</code></pre>"
-        "<p>To install it as a Claude Code plugin, run:</p>"
-        f"<pre class='wrap'><code>{plugin}</code></pre>"
-        "<p>To review by hand, pick a level below and work through its checklist.</p>"
-        f"<h2>Choose a review</h2>{rows(LEVELS)}"
+        "<h2>Choose a review</h2>"
+        "<p>To review by hand, pick the level that matches your input and work through its checklist. Only stable cards are vetted.</p>"
+        f"{rows}"
         "<h2>Scope a review</h2><p>To review only some concerns, such as performance, use the <a href=\"concerns.html\">Concerns</a> page.</p>"
+        "<h2>Start a review with an agent</h2>"
+        "<p>Paste this to your agent:</p>"
+        + copy_pre("Read https://goodcodereview.com/llms.txt and use it to review my code.", "Copy prompt") +
+        "<p>To install it as a skill (Claude Code, Codex, Cursor, and other tools that read <code>skills/&lt;name&gt;/SKILL.md</code>), run:</p>"
+        + copy_pre(npx, "Copy install command") +
+        "<p>To install it as a Claude Code plugin, run:</p>"
+        + copy_pre(plugin, "Copy plugin commands") +
+        "<h2>Report format</h2><p>" + VERDICT + "</p>" + EXAMPLE_HTML +
         "<h2>Packs</h2><p>A pack adds language-specific cards on top of the levels. Use one with the level that matches your input.</p>"
         "<p>" + (", ".join(f'<a href="pack-{p}.html">{p.capitalize()} pack</a>' for p in packs) or "No packs yet.") + "</p>"
-        '<p class="note">Writing CSS? <a href="https://good-css.com">good-css.com</a> has the rules this site\'s CSS follows.</p>'), links=links, cur="index.html"))
+        '<p class="note">Writing CSS? <a href="https://good-css.com">good-css.com</a> has the rules this site\'s CSS follows.</p>'), True, links, "index.html"))
 
     stable = [c for c in cards if c[1]["status"] == "stable"]
     draft = [c for c in cards if c[1]["status"] != "stable"]
