@@ -273,7 +273,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Resource lifecycle: Per-key caches bounded | `mod-bounded-caches` | draft |
 | core-python | Resource lifecycle: Pooled clients built once | `mod-pooled-clients-built-once`, `py-httpx-client-lifespan` | draft |
 | core-python | Resource lifecycle: Timeouts on both legs | `svc-timeouts`, `py-httpx-client-lifespan` | draft |
-| core-python | Resource lifecycle: Stream, don't materialise; bound background tasks | `svc-stream-dont-materialise` | draft |
+| core-python | Resource lifecycle: Stream, don't materialise; bound background tasks | `svc-stream-dont-materialise`, `svc-bounded-background-tasks` | draft |
 | core-python | Change discipline: Never silence a diagnostic | `py-no-silenced-diagnostics` | draft |
 | core-python | Change discipline: No paths relative to the working directory | `py-paths-from-file` | draft |
 | core-python | Change discipline: Verify before claiming; delete workarounds; stay in scope; Chesterton; measure | `chg-verify-before-claim`, `chg-matches-spec`, `chg-chestertons-fence` | draft |
