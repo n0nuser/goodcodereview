@@ -368,8 +368,9 @@ def main():
     sk += [""] + ([EMPTY_RULE, ""] if empty else [])
     sk += ["## Verdict format", ""] + plain.replace(". ", ".\n").split("\n") + ["", "```", EXAMPLE, "```", "", DRAFT_RULE, "",
            "The full text for each level is in `references/<level>.md`.",
-           "Python pack: `packs/python/`. Its cards are drafts until marked stable.",
-           "Glossary: `glossary/`, one file per term.", "",
+           *[f"{pk.capitalize()} pack (draft cards, not vetted): {BASE}/pack-{pk}.html" for pk in packs],
+           f"Glossary: {BASE}/glossary.html",
+           f"Draft cards (not vetted): {BASE}/llms-drafts.txt", "",
            "## Scope by concern", "",
            "Each card lists its concerns in braces: " + ", ".join(f"`{c}`" for c in CONCERNS) + ".",
            "To review only some concerns, such as a performance-only review, check only the cards that list them.", ""]
@@ -396,7 +397,7 @@ def main():
     url = lambda fm: f"{BASE}/pack-{fm['lang']}.html" if fm["lang"] != "core" else f"{BASE}/{fm['level']}.html"
     body = list(sk[5:])
     k = next(i for i, l in enumerate(body) if l.startswith("The full text"))
-    del body[k:k + 4]
+    del body[k:body.index("", k) + 1]  # the shared pointer lines; llms.txt has its own Glossary and Draft sections
     llms = [body[0], "", sk[2][len("description: "):], ""]
     seen_level = False
     for l in body[2:]:

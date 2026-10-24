@@ -37,8 +37,9 @@ N/A chg-perf-claim-evidence - the description makes no performance claim
 Draft cards are never verdicts.
 
 The full text for each level is in `references/<level>.md`.
-Python pack: `packs/python/`. Its cards are drafts until marked stable.
-Glossary: `glossary/`, one file per term.
+Python pack (draft cards, not vetted): https://goodcodereview.com/pack-python.html
+Glossary: https://goodcodereview.com/glossary.html
+Draft cards (not vetted): https://goodcodereview.com/llms-drafts.txt
 
 ## Scope by concern
 
