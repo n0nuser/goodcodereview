@@ -7,12 +7,16 @@ status: draft
 lang: core
 applies_when: The repo builds a web UI with a CI pipeline.
 tool_gate: This card is the gate: `eslint-plugin-jsx-a11y` in the lint step, and axe against rendered pages in the test step, both set to fail the build.
-note: 3 orgs (jsx-eslint, Deque weak on CI, GOV.UK); GDS found the best of 13 automated tools caught 40% of planted barriers, so the gate does not replace the manual pass in chg-ui-change-screenshots-and-keyboard-pass
+note: 5 orgs (jsx-eslint, Deque, GOV.UK, USWDS, Microsoft Playwright); only USWDS states CI that blocks merges; GDS found the best of 13 automated tools caught 40% of planted barriers, so the gate does not replace the manual pass in chg-ui-change-screenshots-and-keyboard-pass
 borrowed_from:
   - https://github.com/jsx-eslint/eslint-plugin-jsx-a11y
   - https://www.deque.com/axe/core-documentation/
   - https://alphagov.github.io/accessibility-tool-audit/
   - https://www.gov.uk/service-manual/helping-people-to-use-your-service/making-your-service-accessible-an-introduction
+  - https://designsystem.digital.gov/documentation/accessibility/
+  - https://www.gov.uk/service-manual/helping-people-to-use-your-service/testing-for-accessibility
+  - https://playwright.dev/docs/accessibility-testing
+  - https://github.com/dequelabs/axe-core
 ---
 
 **Rule.** Run an automated accessibility check in CI, a JSX lint and an axe run on rendered pages, and fail the build on a violation.

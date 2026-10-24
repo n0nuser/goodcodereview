@@ -7,12 +7,14 @@ status: draft
 lang: core
 applies_when: An app serves several pages or client-side routes under one HTML shell.
 tool_gate: none; a test that navigates each route and asserts `document.title` changes.
-note: 2 orgs for the core rule (W3C, A11y Project); the "Error:" prefix is GOV.UK and USWDS guidance and is shown as the PASS example
+note: 4 orgs for the core rule (W3C, Mozilla, A11y Project, Deque); Deque backs only that a non-empty title exists; the "Error:" prefix is GOV.UK and USWDS guidance and is shown as the PASS example
 borrowed_from:
   - https://www.w3.org/WAI/WCAG22/Understanding/page-titled.html
   - https://www.a11yproject.com/checklist/
   - https://design-system.service.gov.uk/components/error-summary/
   - https://designsystem.digital.gov/components/form/
+  - https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/title
+  - https://dequeuniversity.com/rules/axe/html/4.10/document-title
 ---
 
 **Rule.** Give every page and every client-side route its own `<title>` that describes it, and update the title when the route changes.

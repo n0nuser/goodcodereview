@@ -7,11 +7,13 @@ status: draft
 lang: core
 applies_when: Styles size a button, icon button, checkbox, or link that a pointer or finger operates.
 tool_gate: axe `target-size` (WCAG 2.2); a rendered check for the spacing exception.
-note: 2 orgs (W3C for CSS pixels, Apple for the same idea in points); the Material 48 dp page was not readable
+note: 4 orgs (W3C, Deque, Mozilla for the 24 CSS px floor and spacing exception; Apple for the same idea in points); the Material 48 dp page was not readable; web.dev advises 48 px, stricter than this floor
 borrowed_from:
   - https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html
   - https://developer.apple.com/tutorials/data/design/human-interface-guidelines/accessibility.json
   - https://www.a11yproject.com/checklist/
+  - https://dequeuniversity.com/rules/axe/html/4.10/target-size
+  - https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Understanding_WCAG/Operable
 ---
 
 **Rule.** Make each pointer target at least 24 by 24 CSS pixels, or leave enough space around it that a 24 px circle on it overlaps no other target.

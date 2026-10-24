@@ -7,12 +7,14 @@ status: draft
 lang: core
 applies_when: A new UI service or a major redesign is about to open to the public.
 tool_gate: none; a launch checklist item that links the audit report.
-note: 3 orgs (GOV.UK, W3C, Section508.gov weak); the GOV.UK duty is a UK legal duty, so this card names WCAG 2.2 AA as the standard and claims no law elsewhere
+note: 3 orgs for audit with assistive technology and a report (GOV.UK, W3C, Deque); only GOV.UK ties it to before public launch; Section508.gov weak; the GOV.UK duty is a UK legal duty, so this card names WCAG 2.2 AA as the standard and claims no law elsewhere
 borrowed_from:
   - https://www.gov.uk/service-manual/helping-people-to-use-your-service/making-your-service-accessible-an-introduction
   - https://www.w3.org/WAI/test-evaluate/preliminary/
   - https://alphagov.github.io/accessibility-tool-audit/
   - https://www.section508.gov/test/
+  - https://www.w3.org/WAI/test-evaluate/
+  - https://www.deque.com/web-accessibility-beginners-guide/
 ---
 
 **Rule.** Before a public launch, run an accessibility audit against WCAG 2.2 AA that includes assistive technology, and link the report in the launch checklist.
