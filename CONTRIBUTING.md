@@ -9,7 +9,7 @@ A card is accepted when it has:
 - A why, and the best counterpoint with an answer.
 - A source in `borrowed_from`, or a note of first-hand experience.
 - Exactly one `level`.
-- At least one concern in `tags`: `correctness`, `security`, `performance`, `reliability`, `compatibility`, `testing`, `maintainability`, `observability`, or `process`. Add topic tags such as `postgres` after it.
+- At least one concern in `tags`: `correctness`, `security`, `performance`, `reliability`, `compatibility`, `testing`, `maintainability`, `accessibility`, `usability`, `observability`, or `process`. Add topic tags such as `postgres` after it.
 - Your own words. Distil sources; never paste their text.
 
 New cards start as `status: draft`. Only `stable` cards ship in `SKILL.md`.

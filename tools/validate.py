@@ -12,7 +12,7 @@ SEVERITIES = ["block", "should-fix", "discuss"]
 STATUSES = ["draft", "stable"]
 # Closed list. Every card's tags include one or more of these, so a review can be scoped to one concern.
 CONCERNS = ["correctness", "security", "performance", "reliability", "compatibility",
-            "testing", "maintainability", "observability", "process"]
+            "testing", "maintainability", "accessibility", "usability", "observability", "process"]
 BODY_MARKS = ["**Rule.**", "**Why.**", "**FAIL**", "**PASS**", "**Counterpoint.**"]
 
 

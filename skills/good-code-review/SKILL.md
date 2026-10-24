@@ -27,7 +27,7 @@ The full text for each level is in `references/<level>.md`.
 
 ## Scope by concern
 
-Each card lists its concerns in braces: `correctness`, `security`, `performance`, `reliability`, `compatibility`, `testing`, `maintainability`, `observability`, `process`.
+Each card lists its concerns in braces: `correctness`, `security`, `performance`, `reliability`, `compatibility`, `testing`, `maintainability`, `accessibility`, `usability`, `observability`, `process`.
 To review only some concerns, such as a performance-only review, check only the cards that list them.
 
 ## change
