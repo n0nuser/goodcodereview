@@ -46,7 +46,7 @@ def inline(s, ids):
 
 def md(text, ids):
     out = []
-    for i, part in enumerate(re.split(r"^```.*\n(.*?)^```\s*$", text, flags=re.S | re.M)):
+    for i, part in enumerate(re.split(r"^```[^\n]*\n(.*?)^```[ \t]*$", text, flags=re.S | re.M)):
         if i % 2:
             out.append(f"<pre><code>{html.escape(part)}</code></pre>")
             continue
@@ -115,7 +115,10 @@ def main():
     for pk in packs:
         pages.append((f"pack-{pk}.html", f"Pack: {pk}", [c for c in cards if c[1]["lang"] == pk]))
     for f, title, cs in pages:
-        (SITE / f).write_text(listing(title, "", cs, ids))
+        out = listing(title, "", cs, ids)
+        if "<pre><code></code></pre>" in out or out.count("<strong>PASS</strong>") != len(cs):
+            sys.exit(f"{f}: a card lost its FAIL or PASS code block in rendering")
+        (SITE / f).write_text(out)
         llms += [f"## {title} ({f})"] + [f"- {fm['id']} {{{', '.join(concerns(fm))}}}: {rule(b)}" for _, fm, b in cs] + [""]
     g = "".join(f'<article id="{p.stem}">{md(p.read_text(), ids)}</article>' for p in gloss)
     (SITE / "glossary.html").write_text(page("Glossary", g))
