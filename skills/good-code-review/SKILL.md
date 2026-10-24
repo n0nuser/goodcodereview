@@ -18,6 +18,8 @@ description: Review code against stable cards, from a diff up to an incident. Us
 | release / launch | production |
 | incident | incident |
 
+An incident review also checks the stable cards of the level where the cause lived: `change` for a bad release or migration, `function`, `module`, `service`, or `system` for code and design, and `production` for rollout, alerting, and capacity. Quote the incident text as evidence in place of `file:line`. Those `FAIL` and `PASS` lines are real verdicts, and any `block` `FAIL` still means request changes.
+
 ## Verdict format
 
 Report each check as `PASS`, `FAIL`, or `N/A` with `file:line` evidence.
