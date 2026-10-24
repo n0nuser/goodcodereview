@@ -14,6 +14,7 @@ borrowed_from:
   - https://grpc.io/docs/guides/deadlines/
   - https://sre.google/sre-book/addressing-cascading-failures/
   - https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter
+  - https://learn.microsoft.com/en-us/aspnet/core/grpc/deadlines-cancellation
 ---
 
 **Rule.** Set an explicit timeout on every remote call, and derive it from the caller's remaining deadline.
