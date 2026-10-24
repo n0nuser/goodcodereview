@@ -3,7 +3,7 @@ id: sys-n-plus-one-pooling
 level: system
 tags: [performance, database]
 severity: should-fix
-status: draft
+status: stable
 note: N+1 half has 4 orgs (Django, Rails, SQLAlchemy, Microsoft); the bounded pool rests on 3 partial sources; the index clause has no source beyond topic level
 lang: core
 applies_when: Code loads related rows in a loop, or opens database connections per request.
@@ -24,16 +24,16 @@ borrowed_from:
 
 **FAIL**
 
-```text
-for o in orders: o.user = db.get_user(o.user_id)    # N+1
-db = connect()  # per request
+```python
+for o in Order.objects.all():
+    print(o.user.email)                              # one query per order
 ```
 
 **PASS**
 
-```text
-users = db.get_users(ids=[o.user_id for o in orders])
-pool = Pool(max=20)
+```python
+for o in Order.objects.select_related("user"):
+    print(o.user.email)                              # one query with a join
 ```
 
 **Counterpoint.** "Measure first." Yes, for micro-optimizations, but a query inside a loop over unbounded input is a defect by shape.

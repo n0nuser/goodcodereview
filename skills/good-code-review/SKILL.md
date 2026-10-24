@@ -46,9 +46,15 @@ To review only some concerns, such as a performance-only review, check only the 
 ## function
 
 - `fn-comments-explain-why` [should-fix] {maintainability}: Write comments that give a reason, a constraint, or a trade-off; rename before commenting, and never restate what the next line does.
+- `fn-fetch-only-needed-data` [should-fix] {performance}: Filter, count, and aggregate in the query, and select only the columns the code uses.
+- `fn-independent-work-concurrent` [should-fix] {performance, correctness}: Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.
+- `fn-join-dont-concat-in-loop` [should-fix] {performance}: Build a string from a loop with a builder or a join, never with repeated `+=`.
+- `fn-no-blocking-call-in-async-code` [block] {performance, correctness}: Never make a blocking I/O call or run long CPU work directly in async code; use the async API or hand the work to a thread or worker.
+- `fn-regex-compiled-once` [should-fix] {performance}: Compile a regular expression once, at module or startup level, and reuse it.
 
 ## module
 
+- `mod-pooled-clients-built-once` [should-fix] {performance}: Build pooled clients once at startup and reuse them.
 - `mod-yagni` [should-fix] {maintainability, process}: Add an abstraction only when the logic is reused, non-trivial, or clutters the main flow; do not build for a need that does not exist yet.
 
 ## service
@@ -58,13 +64,17 @@ To review only some concerns, such as a performance-only review, check only the 
 - `svc-api-error-code-stable` [should-fix] {compatibility}: Give each error a stable machine-readable code that callers branch on, and never make them parse the message text.
 - `svc-api-versioning-policy` [should-fix] {compatibility}: Write down one versioning scheme for the API, and ship no breaking change inside a version it has published.
 - `svc-idempotency-key` [block] {reliability, correctness}: Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.
+- `svc-list-endpoint-paginates` [should-fix] {performance}: Paginate every list endpoint, with a default page size and a server-side maximum.
 - `svc-retry-policy` [block] {reliability}: Retry only transient errors, with capped attempts and jittered exponential backoff.
 
 ## system
 
+- `sys-cache-bounds-invalidation` [should-fix] {performance}: Bound every cache by size and give its entries an expiry.
+- `sys-fanout-leg-deadlines` [should-fix] {performance, reliability}: Give every leg of a fan-out its own deadline, and decide in code what happens when a leg misses it: a partial result, a hedged request, or an error.
 - `sys-load-shedding-bounded-queues` [block] {reliability}: Bound every queue and reject excess work cheaply.
 - `sys-lock-fencing` [block] {reliability, correctness}: Check a correctness lock on the resource side (fencing token or compare-and-set), never by lock possession alone.
 - `sys-migration-expand-contract` [block] {reliability, compatibility}: Run data backfills in batches, in a migration separate from the schema change.
+- `sys-n-plus-one-pooling` [should-fix] {performance}: Fetch related rows in one query or batch, never one query per row.
 - `sys-secrets-and-errors` [block] {security, correctness}: Fail closed: a validation or auth error must deny, never continue, and an error response must not carry internals such as stack traces, SQL or tokens.
 
 ## codebase
@@ -72,7 +82,11 @@ To review only some concerns, such as a performance-only review, check only the 
 - `code-ci-gates` [should-fix] {process}: Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
 - `code-dead-code` [should-fix] {maintainability}: Remove unreferenced functions, commented-out code, expired flags, and orphaned files; history keeps them.
 - `code-dependency-pinning` [block] {security}: Commit a lockfile with hashes and install from it in CI.
+- `code-perf-budget-in-ci` [should-fix] {performance, process}: Write the performance budget down as a CI check that fails the build when it is exceeded.
 
 ## production
 
 - `prod-canary-staged-rollout` [block] {reliability}: Roll out in stages behind a canary, and abort by rule, not by judgment.
+- `prod-latency-slo-percentile` [should-fix] {performance, observability}: Define latency SLOs and alerts on high percentiles, never on the mean.
+- `prod-load-test-before-launch` [should-fix] {performance, reliability}: Load test before launch, past the expected peak, with pass and fail thresholds written down.
+- `prod-profile-on-demand` [discuss] {performance, observability}: Make a CPU and memory profile of a production instance obtainable, through a continuous profiler or a private profile endpoint.

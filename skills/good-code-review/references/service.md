@@ -138,6 +138,32 @@ INSERT ... ON CONFLICT (idem_key) DO UPDATE SET idem_key = EXCLUDED.idem_key RET
 
 **Counterpoint.** "Our retries are rare." Queues redeliver and sagas retry by design, so rare is not never. The cost is a unique key and a stored result. No standard fixes how long the server keeps a key. Pick a window and publish it.
 
+## svc-list-endpoint-paginates
+
+severity: should-fix  
+concerns: performance  
+applies_when: The service exposes an endpoint or RPC that returns a collection.
+
+**Rule.** Paginate every list endpoint, with a default page size and a server-side maximum.
+
+**Why.** A list that returns everything grows with the data until one request exhausts memory or the timeout. Adding pagination later breaks clients, so start with it. Without a maximum, a caller can ask for a page as big as the table.
+
+**FAIL**
+
+```text
+GET /orders          -> every order the user ever placed
+GET /orders?limit=1000000   (server honours it)
+```
+
+**PASS**
+
+```text
+GET /orders?page_size=50&page_token=abc   (default 25, values above 100 clamped to 100)
+response: { "items": [...], "next_page_token": "def" }
+```
+
+**Counterpoint.** "This list is always small." Say so with a bounded type or a documented limit, since data tends to outgrow its first estimate. Cursors cost more than offsets to build, but they stay stable while rows change.
+
 ## svc-retry-policy
 
 severity: block  

@@ -3,7 +3,7 @@ id: fn-no-blocking-call-in-async-code
 level: function
 tags: [performance, correctness, concurrency, io]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: Code runs on an event loop or an async runtime (asyncio, Node.js, Tokio, ASP.NET async handlers).
 tool_gate: Linter rule for blocking calls in async functions (for example ruff ASYNC); asyncio debug mode flags slow callbacks.
@@ -34,4 +34,4 @@ async def handler(req):
     digest = await asyncio.to_thread(hashlib.pbkdf2_hmac, "sha256", pw, salt, 600_000)
 ```
 
-**Counterpoint.** "This call is fast enough." Microsoft notes that a short read from a local SSD can be quicker synchronously. Measure it with asyncio debug mode or the runtime's equivalent. A call that crosses the network, or that waits on anything outside the process, is never in that class.
+**Counterpoint.** "This call is fast enough." A short read from a local SSD can be quicker synchronously. Measure it with asyncio debug mode or the runtime's equivalent. A call that crosses the network, or that waits on anything outside the process, is never in that class.

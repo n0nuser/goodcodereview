@@ -3,7 +3,7 @@ id: fn-fetch-only-needed-data
 level: function
 tags: [performance, database]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: A function queries a database or an API and then filters, counts, or sums the result in application code.
 tool_gate: none
@@ -25,6 +25,7 @@ borrowed_from:
 ```python
 total = sum(o.amount for o in Order.objects.all() if o.status == "paid")
 n = len(Order.objects.filter(user=u))        # loads every row
+emails = [u.email for u in User.objects.all()]   # loads every column
 ```
 
 **PASS**
@@ -32,6 +33,7 @@ n = len(Order.objects.filter(user=u))        # loads every row
 ```python
 total = Order.objects.filter(status="paid").aggregate(Sum("amount"))["amount__sum"]
 n = Order.objects.filter(user=u).count()
+emails = User.objects.values_list("email", flat=True)
 ```
 
-**Counterpoint.** "Pushing logic into the database makes it the bottleneck." Microsoft's busy-database guidance agrees for formatting and business rules. Filtering and aggregation are what the database is built for, and moving them out usually ships far more data than it saves.
+**Counterpoint.** "Pushing logic into the database makes it the bottleneck." It does for formatting and business rules. Filtering and aggregation are what the database is built for, and moving them out usually ships far more data than it saves.

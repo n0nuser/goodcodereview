@@ -3,10 +3,10 @@ id: fn-join-dont-concat-in-loop
 level: function
 tags: [performance, strings]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: A function builds a string from pieces in a loop whose length depends on input.
-tool_gate: Linter rule for string concatenation in a loop (for example ruff PERF or a .NET analyzer).
+tool_gate: Linter rule for string concatenation in a loop (for example pylint `consider-using-join`).
 borrowed_from:
   - https://docs.python.org/3/faq/programming.html
   - https://pkg.go.dev/strings#Builder
@@ -31,4 +31,4 @@ for row in rows:
 out = "".join(f"{row.id},{row.name}\n" for row in rows)
 ```
 
-**Counterpoint.** "CPython optimises `+=` in place." Sometimes, and only in CPython, and the language FAQ still says to join. A small fixed number of pieces is fine with `+` or an f-string, which read better. The rule covers loops over input-sized data.
+**Counterpoint.** "CPython optimises `+=` in place." Sometimes: only in CPython, and only while nothing else holds a reference to the string. Code that leans on it turns quadratic on other runtimes. A small fixed number of pieces is fine with `+` or an f-string, which read better. The rule covers loops over input-sized data.
