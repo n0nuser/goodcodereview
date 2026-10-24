@@ -14,7 +14,7 @@ borrowed_from:
   - https://slack.engineering/how-about-code-reviews/
 ---
 
-**Rule.** Give each review comment one finding and a severity label (block, should-fix, nit).
+**Rule.** Give each review comment one finding and a severity label: block, should-fix, or discuss.
 
 **Why.** Bundled or unlabelled comments leave the author unable to tell what blocks merge, and wording that blames the person stalls the discussion. Phrase comments as a question or a fact, not a verdict on the person.
 
@@ -28,7 +28,7 @@ borrowed_from:
 
 ```text
 "[block] items[i+1] reads past the end when len==1. Repro: ..."
-"[nit] could this be named `retry_count`?"
+"[discuss] could this be named `retry_count`?"
 ```
 
-**Counterpoint.** Labels add ceremony for tiny reviews. Two labels are enough, and unlabelled comments default to non-blocking so the author is never guessing. Slack stresses people and tone over mechanics, and Palantir bans absolute wording. Google's tool is "Nit:" only. Take the common core.
+**Counterpoint.** Labels add ceremony for tiny reviews. Use the same three severities the cards use, and treat an unlabelled comment as non-blocking, so the author never has to guess. Slack stresses people and tone over mechanics, and Palantir bans absolute wording. Google's tool is "Nit:" only. Take the common core.
