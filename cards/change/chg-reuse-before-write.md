@@ -10,6 +10,7 @@ tool_gate: Clone-detection in CI (jscpd, PMD CPD, or similar) can flag near-dupl
 borrowed_from:
   - https://blog.pragmaticengineer.com/good-code-reviews-better-code-reviews/
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
+  - https://www.kernel.org/doc/html/latest/process/coding-style.html
 ---
 
 **Rule.** Search the repo for an existing helper before adding a new one.

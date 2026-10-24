@@ -11,6 +11,8 @@ tool_gate: none
 borrowed_from:
   - https://docs.python.org/3/library/asyncio-task.html
   - https://learn.microsoft.com/en-us/azure/architecture/patterns/retry
+  - https://grpc.io/docs/guides/deadlines/
+  - https://sre.google/sre-book/addressing-cascading-failures/
 ---
 
 **Rule.** Set an explicit timeout on every remote call, and derive it from the caller's remaining deadline.

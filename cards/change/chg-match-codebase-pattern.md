@@ -10,6 +10,7 @@ tool_gate: Repeated style nits mean a missing linter or formatter rule; add the 
 borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/standard.html
   - https://blog.pragmaticengineer.com/good-code-reviews-better-code-reviews/
+  - https://peps.python.org/pep-0008/
 ---
 
 **Rule.** Follow the established pattern nearby.
