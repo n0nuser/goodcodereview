@@ -55,7 +55,7 @@ def md(text, ids):
             if not blk.strip():
                 continue
             if all(re.match(r"\s*[-*] ", l) for l in lines):
-                out.append("<ul>" + "".join(f"<li>{inline(re.sub(r'^\s*[-*] ', '', l), ids)}</li>" for l in lines) + "</ul>")
+                out.append("<ul>" + "".join("<li>" + inline(re.sub(r"^\s*[-*] ", "", l), ids) + "</li>" for l in lines) + "</ul>")
             elif m := re.match(r"(#+) (.*)", blk):
                 out.append(f"<h{len(m[1]) + 1}>{inline(m[2], ids)}</h{len(m[1]) + 1}>")
             else:
