@@ -7,4 +7,6 @@ authors:
     given-names: Pablo
 url: https://goodcodereview.com
 repository-code: https://github.com/n0nuser/goodcodereview
-license: CC-BY-4.0
+license:
+  - CC-BY-4.0
+  - MIT
