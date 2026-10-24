@@ -10,6 +10,8 @@ tool_gate: Migration linter for DROP/RENAME COLUMN.
 borrowed_from:
   - https://docs.gitlab.com/development/database/avoiding_downtime_in_migrations/
   - https://docs.gitlab.com/development/migration_style_guide/
+  - https://stripe.com/blog/online-migrations
+  - https://github.com/ankane/strong_migrations
 ---
 
 **Rule.** Run data backfills in batches, in a migration separate from the schema change.

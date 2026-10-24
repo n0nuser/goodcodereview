@@ -11,6 +11,10 @@ tool_gate: Secret scanner in CI; log-redaction tests.
 borrowed_from:
   - https://raw.githubusercontent.com/OWASP/ASVS/master/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md
   - https://owasp.org/Top10/2025/
+  - https://cwe.mitre.org/data/definitions/636.html
+  - https://cwe.mitre.org/data/definitions/209.html
+  - https://12factor.net/config
+  - https://web.mit.edu/Saltzer/www/publications/protection/Basic.html
 ---
 
 **Rule.** Fail closed: a validation or auth error must deny, never continue.
