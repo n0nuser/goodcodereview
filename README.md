@@ -38,6 +38,15 @@ Send one card per pull request. See [CONTRIBUTING.md](CONTRIBUTING.md). Agents: 
 
 See also [docs/COVERAGE.md](docs/COVERAGE.md), which maps sources to cards, and [docs/deploy.md](docs/deploy.md).
 
+## Find what you need
+
+- To report a wrong card, use the [card correction form](https://github.com/n0nuser/goodcodereview/issues/new?template=card-correction.yml).
+- To propose a card, use the [card proposal form](https://github.com/n0nuser/goodcodereview/issues/new?template=card-proposal.yml), then follow [CONTRIBUTING.md](CONTRIBUTING.md).
+- To report a security issue, follow [SECURITY.md](SECURITY.md).
+- To get help, see [SUPPORT.md](SUPPORT.md).
+- To see what changed, read [CHANGELOG.md](CHANGELOG.md). To cite this project, use [CITATION.cff](CITATION.cff).
+- Everyone who takes part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## Licence
 
 Code (`tools/`, workflows) is under the [MIT licence](LICENSE). Content (`cards/`, `packs/`, `glossary/`, `docs/`) is under [CC BY 4.0](LICENSE-CONTENT).
