@@ -32,34 +32,112 @@ LEVEL_DESC = {
 }
 INPUT = {lv: i for i, lv in ROUTES}
 LEGEND = ('<ul class="legend">'
-          '<li><span class="b block">block</span>: must be fixed before merge or release.</li>'
-          '<li><span class="b should-fix">should-fix</span>: fix it, but it need not block.</li>'
-          '<li><span class="b discuss">discuss</span>: raise it and decide together.</li>'
-          '<li><span class="b stable">stable</span>: vetted; use for verdicts.</li>'
-          '<li><span class="b draft">draft</span>: not vetted; do not use for a verdict.</li>'
-          '<li>Tool gate: what a linter or CI check could enforce instead of a reviewer.</li></ul>')
+          '<li><span class="b block">block</span><span>must be fixed before merge or release.</span></li>'
+          '<li><span class="b should-fix">should-fix</span><span>fix it, but it need not block.</span></li>'
+          '<li><span class="b discuss">discuss</span><span>raise it and decide together.</span></li>'
+          '<li><span class="b stable">stable</span><span>vetted; use for verdicts.</span></li>'
+          '<li><span class="b draft">draft</span><span>not vetted; do not use for a verdict.</span></li>'
+          '<li class="tg">Tool gate: what a linter or CI check could enforce instead of a reviewer.</li></ul>')
 SEVERITY = ["## Severity", "", "- `block`: must be fixed before merge or release.", "- `should-fix`: fix it, but it need not block.",
             "- `discuss`: raise it and decide together.", ""]
 BASE = "https://goodcodereview.com"
 NAME = {lv: "Change review" if lv == "change" else f"{lv.capitalize()} audit" for lv in LEVELS}
 VERDICT = "Report each check as <code>PASS</code>, <code>FAIL</code>, or <code>N/A</code> with <code>file:line</code> evidence. A <code>FAIL</code> carries the card's severity."
 DRAFT_NOTE = "A draft card is not vetted. Read it for ideas, but do not use it for a verdict."
-CSS = """:root{--bg:#fff;--fg:#1a1a1a;--mut:#666;--line:#ddd;--acc:#0b5fff;--red:#c22;--grn:#1a7f1a;--amb:#a60}
-@media(prefers-color-scheme:dark){:root{--bg:#121212;--fg:#e8e8e8;--mut:#9a9a9a;--line:#333;--acc:#6ea0ff;--red:#f06a6a;--grn:#5cc85c;--amb:#e0a040}}
+CSS = """*,*::before,*::after{box-sizing:border-box;min-width:0}
+:root{color-scheme:light dark;
+--bg:light-dark(oklch(.985 0 none),oklch(.18 0 none));--fg:light-dark(oklch(.2 0 none),oklch(.93 0 none));
+--mut:light-dark(oklch(.45 0 none),oklch(.76 0 none));--line:light-dark(oklch(.88 0 none),oklch(.32 0 none));
+--edge:light-dark(oklch(.58 0 none),oklch(.58 0 none));
+--acc:light-dark(oklch(.45 .09 190),oklch(.8 .08 180));--bad:light-dark(oklch(.48 .17 27),oklch(.78 .13 25));
+--warn:light-dark(oklch(.47 .1 70),oklch(.8 .12 80));--good:light-dark(oklch(.45 .11 150),oklch(.78 .12 150));
+--code:color-mix(in oklch,var(--fg) 6%,var(--bg));
+--text:Charter,"Bitstream Charter","Sitka Text",Cambria,"Iowan Old Style","Palatino Linotype","Noto Serif",serif;
+--ui:Seravek,"Gill Sans Nova",Ubuntu,Calibri,"DejaVu Sans","Noto Sans",sans-serif;
+--mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,"DejaVu Sans Mono",monospace;
+--narrow:20;--wide:77.5;--size-narrow:1;--size-wide:1.125;--ratio-narrow:1.2;--ratio-wide:1.25;
+--fluid:clamp(0rem,(100vw - var(--narrow)*1rem)/(var(--wide) - var(--narrow)),1rem);
+--at-narrow:calc(var(--size-narrow)*(1rem - var(--fluid)));--at-wide:calc(var(--size-wide)*var(--fluid));
+--step-0:calc(var(--at-narrow) + var(--at-wide));--step--1:calc(var(--step-0)/var(--ratio-narrow));
+--step-1:calc(var(--at-narrow)*var(--ratio-narrow) + var(--at-wide)*var(--ratio-wide));
+--step-3:calc(var(--at-narrow)*pow(var(--ratio-narrow),3) + var(--at-wide)*pow(var(--ratio-wide),3));
+--space-s:var(--step-0);--space-m:calc(1.5*var(--step-0));--space-l:calc(2*var(--step-0));--gutter:clamp(1rem,4vw,2rem);
+--ease-out:cubic-bezier(.23,1,.32,1);
+scrollbar-gutter:stable;scroll-padding-block-start:var(--space-m);text-wrap:pretty;overflow-wrap:break-word;font-synthesis:none;
+-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
-body{margin:0 auto;max-width:48rem;padding:1rem;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,sans-serif;overflow-wrap:anywhere}
-a{color:var(--acc)}nav{display:flex;flex-wrap:wrap;gap:.2rem .8rem;padding-bottom:.5rem;border-bottom:1px solid var(--line)}
-pre{overflow-x:auto;background:var(--line);padding:.6rem;border-radius:4px}
-code{font-family:ui-monospace,monospace;font-size:.9em}article{border-top:1px solid var(--line);padding:.5rem 0}
-.b{display:inline-block;font-size:.75rem;padding:0 .5rem;border:1px solid var(--mut);border-radius:1rem;margin:0 .3rem .2rem 0}
-.block{border-color:var(--red);color:var(--red)}.should-fix{border-color:var(--amb);color:var(--amb)}.stable{border-color:var(--grn);color:var(--grn)}
-p.fail{border-left:4px solid var(--red);padding-left:.6rem;margin-bottom:0}p.pass{border-left:4px solid var(--grn);padding-left:.6rem;margin-bottom:0}
-pre.fail{border-left:4px solid var(--red)}pre.pass{border-left:4px solid var(--grn)}
-.flt{margin:.4rem 0}.flt b{margin-right:.4rem}
-button{font:inherit;font-size:.85rem;cursor:pointer;color:var(--acc);background:none;border:1px solid var(--line);border-radius:1rem;padding:.1rem .6rem;margin:0 .3rem .3rem 0}
-button[aria-pressed=true]{background:var(--acc);color:var(--bg);font-weight:bold}
-ul.ck{list-style:none;padding:0}ul.ck li{border-top:1px solid var(--line);padding:.4rem 0}
-ul.legend{list-style:none;padding:0;font-size:.9rem}ul.legend li{margin:.1rem 0}ul.legend .b{margin-right:0}pre.wrap{white-space:pre-wrap}footer{color:var(--mut);margin-top:2rem}"""
+h1,h2,h3,h4{text-wrap:balance}
+input,textarea,select{font-size:max(16px,1rem)}
+button,a,summary{touch-action:manipulation}button{user-select:none;-webkit-user-select:none}
+body{margin:0;min-block-size:100svh;display:grid;grid-template-rows:auto 1fr auto;align-content:start;
+grid-template-columns:minmax(var(--gutter),1fr) minmax(0,62rem) minmax(var(--gutter),1fr);
+background:var(--bg);color:var(--fg);font:var(--step-0)/1.55 var(--text)}
+body>*{grid-column:2}
+:where(h1,h2,h3,p,ul,pre,figure){margin:0}
+:is(main,article)>*+*{margin-block-start:var(--space-s)}
+p{max-inline-size:68ch}ul:not([class]){padding-inline-start:1.25em;max-inline-size:68ch}
+h1,h2,h3{font-family:var(--ui);line-height:1.2}
+main>h1{margin-block-start:var(--space-l);font-size:var(--step-3);font-weight:700;letter-spacing:-.01em}
+main>h2{margin-block-start:var(--space-l);padding-block-start:var(--space-s);border-block-start:2px solid var(--fg);font-size:var(--step-1)}
+article>h2{font-size:var(--step-1)}
+h3{font:600 var(--step-0)/1.2 var(--mono)}
+a{color:var(--acc);text-decoration-thickness:.07em;text-underline-offset:.2em}
+:focus-visible{outline:max(2px,.08em) solid var(--acc);outline-offset:.2em}
+nav{display:flex;flex-wrap:wrap;gap:0 var(--space-m);padding-block:var(--space-s);border-block-end:1px solid var(--line);font:var(--step--1)/1.3 var(--ui)}
+nav a{padding-block:.5rem;color:var(--fg);text-decoration:none}
+nav a[aria-current]{font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.35em}
+code{font:.9em var(--mono);padding:.08em .3em;background:var(--code);border-radius:2px;overflow-wrap:anywhere}
+pre{padding:var(--space-s);overflow-x:auto;background:var(--code);border-radius:2px;font:var(--step--1)/1.5 var(--mono);tab-size:4}
+pre code{padding:0;background:none;font:inherit;overflow-wrap:normal}
+pre.wrap{max-inline-size:68ch;white-space:pre-wrap;overflow-wrap:anywhere}pre.wrap code{overflow-wrap:anywhere}
+.b{display:inline-block;padding:.05em .45em;border:1px solid currentColor;border-radius:2px;color:var(--mut);font:600 var(--step--1)/1.3 var(--ui);white-space:nowrap}
+.block{color:var(--bad)}.should-fix{color:var(--warn)}.stable{color:var(--fg)}.draft{border-style:dashed}
+.tags{display:flex;flex-wrap:wrap;gap:0 .7em;color:var(--mut);font:var(--step--1)/1.4 var(--ui)}
+.note{color:var(--mut);font:var(--step--1)/1.5 var(--ui)}
+.legend{display:grid;grid-template-columns:max-content 1fr;gap:.4rem var(--space-s);padding:0;list-style:none;font:var(--step--1)/1.4 var(--ui)}
+.legend li{grid-column:1/-1;display:grid;grid-template-columns:subgrid;align-items:baseline}.legend .b{justify-self:start}.legend li.tg{display:block}
+.flt{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem .5rem}
+.lab{flex:none;inline-size:6.5rem;color:var(--mut);font:600 var(--step--1)/1.3 var(--ui)}
+button{position:relative;padding:.4rem .7rem;color:var(--fg);background:none;border:1px solid var(--edge);border-radius:3px;font:500 var(--step--1)/1.2 var(--ui);cursor:pointer;transition:background-color .15s,border-color .15s}
+button::after{content:"";position:absolute;inset:min(0px,(100% - 44px)/2)}
+button[aria-pressed=true]{font-weight:700;background:var(--acc);border-color:var(--acc);color:var(--bg)}
+button:active{transform:scale(.97)}
+details{border-block-start:1px solid var(--line)}
+summary{padding-block:.75rem;cursor:pointer;font:600 var(--step--1)/1.3 var(--ui)}
+details[open]>summary{border-block-end:1px solid var(--line)}
+#dsum,#empty{font-variant-numeric:tabular-nums}
+.ckw{container-type:inline-size}
+ul.ck{padding:0;list-style:none}
+ul.ck li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem var(--space-s);padding-block:.6rem;border-block-start:1px solid var(--line)}
+ul.ck a{font:600 var(--step--1)/1.4 var(--mono)}
+ul.ck .r{flex:1 0 100%;max-inline-size:68ch}
+ul.ck .th{display:none}
+@container (min-width:46rem){
+ul.ck{display:grid;grid-template-columns:max-content max-content fit-content(11rem) minmax(0,1fr);column-gap:var(--space-m)}
+ul.ck li{grid-column:1/-1;display:grid;grid-template-columns:subgrid}
+ul.ck .r{flex:none}
+ul.ck .th{display:grid;border-block-start:0;border-block-end:1px solid var(--edge);padding-block:.25rem;color:var(--mut);font:600 var(--step--1)/1.3 var(--ui)}
+}
+ul.idx{padding:0;list-style:none}
+ul.idx li{display:flex;flex-wrap:wrap;gap:0 var(--space-s);padding-block:.55rem;border-block-start:1px solid var(--line)}
+ul.idx a{flex:1 1 10rem;font:600 var(--step-0)/1.5 var(--ui)}ul.idx span{flex:3 1 22rem}
+article{padding-block:var(--space-m);border-block-start:1px solid var(--line)}
+h2+article{border-block-start:0}
+.ch{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem var(--space-s)}
+.ex{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,24rem),1fr));gap:var(--space-s)}
+figure{--tone:var(--mut);border-block-start:2px solid var(--tone)}
+figure.fail{--tone:var(--bad)}figure.pass{--tone:var(--good)}
+figcaption{padding-block:.3rem;color:var(--tone);font:700 var(--step--1)/1.3 var(--ui)}
+figure pre{background:color-mix(in oklch,var(--tone) 7%,var(--bg));border-radius:0;white-space:pre-wrap;overflow-wrap:anywhere}figure pre code{overflow-wrap:anywhere}
+article:target>.ch h3{text-decoration:underline;text-decoration-color:var(--acc);text-decoration-thickness:.15em;text-underline-offset:.2em}
+footer{margin-block-start:var(--space-l);padding-block:var(--space-s) var(--space-m);border-block-start:1px solid var(--line);color:var(--mut);font:var(--step--1)/1.5 var(--ui)}
+@media(hover:hover) and (pointer:fine){
+a:hover{text-decoration-thickness:.16em}nav a:hover,summary:hover{color:var(--acc)}
+button:hover{border-color:var(--fg)}ul.ck li:not(.th):hover{background:color-mix(in oklch,var(--fg) 4%,transparent)}
+}
+@media(prefers-reduced-motion:no-preference){
+html{scroll-behavior:smooth}button{transition:transform 140ms var(--ease-out),background-color .15s,border-color .15s}
+}"""
 JS = """const q=s=>[...document.querySelectorAll(s)],S={c:new Set(),t:new Set(),l:new Set()},E=document.getElementById('empty'),D=document.getElementById('dsum');
 function go(){q('[data-tags]').forEach(a=>{const g=a.dataset.tags.split(' ');
 a.hidden=(S.c.size>0&&![...S.c].some(x=>g.includes(x)))||[...S.t].some(x=>!g.includes(x))||(S.l.size>0&&!S.l.has(a.dataset.level))});
@@ -70,7 +148,7 @@ q('button[data-k]').forEach(b=>b.onclick=()=>{const s=S[b.dataset.k],v=b.dataset
 s.has(v)?s.delete(v):s.add(v);b.setAttribute('aria-pressed',s.has(v));go()});
 const op=()=>{const e=document.getElementById(location.hash.slice(1)),d=e&&e.closest('details');if(d){d.open=true;e.scrollIntoView()}};
 addEventListener('hashchange',op);op()"""
-FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b5fff'/%3E%3Cpath d='M3.5 8.5l3 3 6-6' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E"
+FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23006469'/%3E%3Cpath d='M3.5 8.5l3 3 6-6' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E"
 # Markdown features md() cannot render. The build fails if a source file uses one outside a code fence.
 UNSUPPORTED = {"numbered list": r"\s*\d+[.)] ", "table": r"\s*\|", "quote": r"\s*>", "nested bullet": r"\s{2,}[-*] ", "rule": r"-{3,}\s*$"}
 
@@ -99,7 +177,8 @@ def md(text, ids):
     out, mark = [], ""
     for i, part in enumerate(re.split(r"^```[^\n]*\n(.*?)^```[ \t]*$", text, flags=re.S | re.M)):
         if i % 2:
-            out.append(f'<pre class="{mark}"><code>{html.escape(part)}</code></pre>')
+            pre = f"<pre><code>{html.escape(part)}</code></pre>"
+            out.append(f'<figure class="{mark}"><figcaption>{inline(f"**{mark.upper()}**", ids)}</figcaption>{pre}</figure>' if mark else pre)
             mark = ""
             continue
         for blk in re.split(r"\n\s*\n", part.strip()):
@@ -112,18 +191,18 @@ def md(text, ids):
                 out.append(f"<h{len(m[1]) + 1}>{inline(m[2], ids)}</h{len(m[1]) + 1}>")
             elif blk.strip() in ("**FAIL**", "**PASS**"):
                 mark = blk.strip()[2:-2].lower()
-                out.append(f'<p class="{mark}">{inline(blk.strip(), ids)}</p>')
             else:
                 out.append(f"<p>{inline(' '.join(lines), ids)}</p>")
-    return "\n".join(out)
+    fig = lambda c: rf'(<figure class="{c}">(?:(?!</figure>).)*</figure>)'
+    return re.sub(fig("fail") + "\n" + fig("pass"), r'<div class="ex">\1\2</div>', "\n".join(out), flags=re.S)
 
 
-def page(title, body, script=False, links=()):
-    nav = "<nav>" + "".join(f'<a href="{h}">{html.escape(t)}</a>' for h, t in links) + "</nav>"
-    return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+def page(title, body, script=False, links=(), cur=""):
+    nav = '<header><nav aria-label="Site">' + "".join(f'<a href="{h}"{" aria-current=page" if h == cur else ""}>{html.escape(t)}</a>' for h, t in links) + "</nav></header>"
+    return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">'
             f'<link rel="icon" href="{FAVICON}">'
-            f"<title>{html.escape(title)}</title><style>{CSS}</style></head><body>{nav}<h1>{html.escape(title)}</h1>{body}"
-            f'<footer>Created and edited by <a href="https://pablogonzalez.me">Pablo González</a> · Content CC BY 4.0 · Code MIT · <a href="https://github.com/n0nuser/goodcodereview">Source</a></footer>'
+            f"<title>{html.escape(title)}</title><style>{CSS}</style></head><body>{nav}<main><h1>{html.escape(title)}</h1>{body}</main>"
+            f'<footer>Created and edited by <a href="https://pablogonzalez.me">Pablo González</a> · Content CC BY 4.0 · Code MIT · <a href="https://github.com/n0nuser/goodcodereview">Source</a> · Styled with <a href="https://good-css.com">good-css.com</a></footer>'
             f"{'<script>' + JS + '</script>' if script else ''}</body></html>")
 
 
@@ -132,32 +211,32 @@ def concerns(fm):
 
 
 def chips(fm):
-    return "".join(f'<span class="b">{c}</span>' for c in concerns(fm))
+    return '<span class="tags">' + "".join(f"<span>{c}</span>" for c in concerns(fm)) + "</span>"
 
 
 def sources(fm):
     urls = fm["borrowed_from"]
-    return ("<p>Sources: " + ", ".join(f'<a href="{html.escape(u)}">{html.escape(urlparse(u).netloc)}</a>' for u in urls) + "</p>") if urls else ""
+    return ('<p class="note">Sources: ' + ", ".join(f'<a href="{html.escape(u)}">{html.escape(urlparse(u).netloc)}</a>' for u in urls) + "</p>") if urls else ""
 
 
 def card_html(fm, body, ids):
     b = f'<span class="b {fm["severity"]}">{fm["severity"]}</span><span class="b {fm["status"]}">{fm["status"]}</span>{chips(fm)}'
-    gate = "" if fm["tool_gate"] == "none" else f'<p>Tool gate: {inline(fm["tool_gate"], ids)}</p>'
-    return (f'<article id="{html.escape(fm["id"])}" data-tags="{html.escape(" ".join(fm["tags"]))}" data-level="{fm["level"]}"><h3>{html.escape(fm["id"])}</h3>{b}'
+    gate = "" if fm["tool_gate"] == "none" else f'<p class="note">Tool gate: {inline(fm["tool_gate"], ids)}</p>'
+    return (f'<article id="{html.escape(fm["id"])}" data-tags="{html.escape(" ".join(fm["tags"]))}" data-level="{fm["level"]}"><div class="ch"><h3>{html.escape(fm["id"])}</h3>{b}</div>'
             f'<p><strong>Applies when:</strong> {inline(fm["applies_when"], ids)}</p>{md(body, ids)}{gate}{sources(fm)}</article>')
 
 
 def row(fm, body, ids):
     return (f'<li data-tags="{html.escape(" ".join(fm["tags"]))}" data-level="{fm["level"]}"><a href="#{html.escape(fm["id"])}">{html.escape(fm["id"])}</a> '
-            f'<span class="b {fm["severity"]}">{fm["severity"]}</span>{chips(fm)}<br>{inline(rule(body), ids)}</li>')
+            f'<span class="b {fm["severity"]}">{fm["severity"]}</span>{chips(fm)}<span class="r">{inline(rule(body), ids)}</span></li>')
 
 
 def buttons(label, key, values):
-    return (f'<div class="flt" role="group" aria-label="{label}"><b>{label}</b>'
+    return (f'<div class="flt" role="group" aria-label="{label}"><span class="lab">{label}</span>'
             + "".join(f'<button type="button" data-k="{key}" data-v="{html.escape(v)}" aria-pressed="false">{html.escape(v)}</button>' for v in values) + "</div>")
 
 
-def listing(title, intro, cards, ids, links):
+def listing(title, intro, cards, ids, links, cur):
     stable = [c for c in cards if c[1]["status"] == "stable"]
     draft = [c for c in cards if c[1]["status"] != "stable"]
     seen = {t for _, fm, _ in cards for t in fm["tags"]}
@@ -171,11 +250,12 @@ def listing(title, intro, cards, ids, links):
     drafts = (f'<h2>Draft cards</h2>{"" if stable else "<p>No stable cards yet.</p>"}<details><summary id="dsum" data-n="{len(draft)}">{len(draft)} draft cards</summary>'
               f"<p>{DRAFT_NOTE}</p>" + "".join(card_html(fm, b, ids) for _, fm, b in draft) + "</details>") if draft else ""
     if not stable:
-        return page(title, intro + LEGEND + drafts, True, links)
-    ck = '<ul class="ck">' + "".join(row(fm, b, ids) for _, fm, b in stable) + "</ul>"
+        return page(title, intro + LEGEND + drafts, True, links, cur)
+    th = '<li class="th" aria-hidden="true"><span>Card</span><span>Severity</span><span>Concerns</span><span>Rule</span></li>'
+    ck = '<div class="ckw"><ul class="ck">' + th + "".join(row(fm, b, ids) for _, fm, b in stable) + "</ul></div>"
     body = (intro + LEGEND + f'<h2>Filters</h2>{flt}<p id="empty" hidden></p>'
             f"<h2>Checklist</h2>{ck}<h2>Cards</h2>" + "".join(card_html(fm, b, ids) for _, fm, b in stable) + drafts)
-    return page(title, body, True, links)
+    return page(title, body, True, links, cur)
 
 
 def rule(body):
@@ -215,17 +295,17 @@ def main():
                   f"<p>Every card on one page. Pick one or more concerns to scope a review, such as performance only. A card matches when it lists any picked concern. {VERDICT}</p>",
                   cards))
     for f, title, intro, cs in pages:
-        out = listing(title, intro, cs, ids, links)
+        out = listing(title, intro, cs, ids, links, f)
         if "<code></code>" in out or out.count("<strong>PASS</strong>") != len(cs):
             sys.exit(f"{f}: a card lost its FAIL or PASS code block in rendering")
         (SITE / f).write_text(out)
     g = "".join(f'<article id="{p.stem}">{md(p.read_text(), ids)}</article>' for p in gloss)
-    (SITE / "glossary.html").write_text(page("Glossary", g, links=links))
+    (SITE / "glossary.html").write_text(page("Glossary", g, links=links, cur="glossary.html"))
     (SITE / "robots.txt").write_text("User-agent: *\nAllow: /\n")
     (SITE / "404.html").write_text(page("Not found", '<p><a href="index.html">Back to the start</a></p>', links=links))
     npx = "npx skills add n0nuser/goodcodereview"
     plugin = "/plugin marketplace add n0nuser/goodcodereview\n/plugin install goodcodereview@goodcodereview"
-    rows = lambda lvs: "<ul>" + "".join(f'<li><a href="{lv}.html">{NAME[lv]}</a>: {LEVEL_DESC[lv]} Input: {INPUT[lv]}.</li>' for lv in lvs) + "</ul>"
+    rows = lambda lvs: '<ul class="idx">' + "".join(f'<li><a href="{lv}.html">{NAME[lv]}</a><span>{LEVEL_DESC[lv]} Input: {INPUT[lv]}.</span></li>' for lv in lvs) + "</ul>"
     (SITE / "index.html").write_text(page("Good Code Review", (
         "<p>A checklist for reviewing code, for people and for agents. A card is one rule that a reviewer marks <code>PASS</code>, <code>FAIL</code>, or <code>N/A</code>. Each card has a FAIL example and a PASS example.</p>"
         "<p>" + VERDICT + "</p>"
@@ -240,7 +320,8 @@ def main():
         f"<h2>Choose a review</h2>{rows(LEVELS)}"
         "<h2>Scope a review</h2><p>To review only some concerns, such as performance, use the <a href=\"concerns.html\">Concerns</a> page.</p>"
         "<h2>Packs</h2><p>A pack adds language-specific cards on top of the levels. Use one with the level that matches your input.</p>"
-        "<p>" + (", ".join(f'<a href="pack-{p}.html">{p.capitalize()} pack</a>' for p in packs) or "No packs yet.") + "</p>"), links=links))
+        "<p>" + (", ".join(f'<a href="pack-{p}.html">{p.capitalize()} pack</a>' for p in packs) or "No packs yet.") + "</p>"
+        '<p class="note">Writing CSS? <a href="https://good-css.com">good-css.com</a> has the rules this site\'s CSS follows.</p>'), links=links, cur="index.html"))
 
     stable = [c for c in cards if c[1]["status"] == "stable"]
     draft = [c for c in cards if c[1]["status"] != "stable"]
