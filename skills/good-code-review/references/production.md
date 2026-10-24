@@ -22,6 +22,5 @@ deploy: all hosts at once, no comparison, rollback = "ask someone"
 5% canary 30m -> compare error rate, p99 -> auto-rollback if worse -> 25% -> 100%
 ```
 
-**See also.** [[chg-rollback-path]] (describe the undo), [[inc-rollback-path-tested]] (drill it).
 
 **Counterpoint.** "Hotfixes can't wait." Then keep the canary short, not absent. Fleet tools should also have velocity limits. A hermetic, reproducible build tied to one revision is the precondition for rollback to mean anything.

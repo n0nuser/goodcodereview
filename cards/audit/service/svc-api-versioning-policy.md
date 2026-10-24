@@ -3,7 +3,7 @@ id: svc-api-versioning-policy
 level: service
 tags: [api, versioning]
 severity: should-fix
-status: draft
+status: stable
 note: the three sources pick three different mechanisms; the card requires only that one is chosen and documented
 lang: core
 applies_when: A service offers an HTTP API to callers you do not deploy together with it.
@@ -33,4 +33,4 @@ GET /orders?api-version=2026-03-01 keeps returning "total"
 the rename ships under api-version=2026-09-01
 ```
 
-**Counterpoint.** "We will cross that bridge later." Later arrives with a customer on the old shape. The scheme can be minimal. Zalando prefers media types, Microsoft a dated query parameter, Stripe a pinned header; the card does not pick one. What counts as breaking is in [[chg-breaking-change-taxonomy]] and [[svc-api-compat-pagination]].
+**Counterpoint.** "We will cross that bridge later." Later arrives with a customer on the old shape. The scheme can be minimal. A media type, a dated query parameter and a pinned header all work. Pick one and write it down. What counts as breaking is in [[chg-breaking-change-taxonomy]].

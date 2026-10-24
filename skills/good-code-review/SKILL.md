@@ -31,6 +31,7 @@ The full text for each level is in `references/<level>.md`.
 - `chg-breaking-change-taxonomy` [block]: Treat any observable difference in signature, return shape, error type, ordering, timing, defaults, or side effects as breaking until a consumer check says otherwise.
 - `chg-expand-contract` [block]: Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.
 - `chg-one-concern` [should-fix]: Make each change do one logical thing; if the description needs "and" between unrelated outcomes, split it.
+- `chg-perf-claim-evidence` [should-fix]: Back a performance claim with measured before-and-after numbers.
 - `chg-refactor-separate` [should-fix]: Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
 - `chg-review-signal` [discuss]: Do not comment on what a tool enforces or on taste with no written rule; spend comments on a few high-conviction findings, and if there are many, talk to the author.
 - `chg-size-ceiling` [discuss]: Split a change past about 400 changed lines or about 20 files, or say in the description why not; aim for about 200.
@@ -44,6 +45,13 @@ The full text for each level is in `references/<level>.md`.
 ## module
 
 - `mod-yagni` [should-fix]: Add an abstraction only when the logic is reused, non-trivial, or clutters the main flow; do not build for a need that does not exist yet.
+
+## service
+
+- `svc-api-conditional-writes` [should-fix]: Return an `ETag` on reads and honour `If-Match` on writes, answering 412 when the entity tag is stale.
+- `svc-api-deprecation-sunset` [should-fix]: Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers, with the `Sunset` date no earlier than the `Deprecation` date.
+- `svc-api-error-code-stable` [should-fix]: Give each error a stable machine-readable code that callers branch on, and never make them parse the message text.
+- `svc-api-versioning-policy` [should-fix]: Write down one versioning scheme for the API, and ship no breaking change inside a version it has published.
 
 ## system
 

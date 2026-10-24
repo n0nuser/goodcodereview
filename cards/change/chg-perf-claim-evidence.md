@@ -3,25 +3,27 @@ id: chg-perf-claim-evidence
 level: change
 tags: [performance, verification]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: The change or its description claims a speed, throughput, memory or cost improvement.
 tool_gate: none
-note: one vendor's engineering guidance (opinion), from benchmark-checklist/SKILL.md; the seven questions are condensed
+note: the kernel and Phabricator back the Rule (numbers for an optimisation claim); the run count, spread and limiter in the Why come from benchmark-checklist/SKILL.md
 borrowed_from:
   - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-explain-the-number/SKILL.md
   - https://github.com/cursor/plugins/blob/main/pstack/skills/benchmark-checklist/SKILL.md
   - https://github.com/cursor/plugins/blob/main/cursor-team-kit/skills/verify-this/SKILL.md
+  - https://docs.kernel.org/process/submitting-patches.html
+  - https://secure.phabricator.com/book/phabflavor/article/writing_reviewable_code/
 ---
 
-**Rule.** Back a performance claim with the run count, the spread, the resource that limits further gain, and proof that errors were counted and the work ran inside the timed region.
+**Rule.** Back a performance claim with measured before-and-after numbers.
 
-**Why.** A single fast run can measure noise, a cached result, an error path that returns early, or a step that is a tenth of the total. A piece that is 10% of the run caps the gain near 11% however well it is tuned.
+**Why.** A single fast run can measure noise, a cached result, an error path that returns early, or a step that is a tenth of the total. A piece that is 10% of the run caps the gain near 11% however well it is tuned. So a useful number comes with the run count, the spread, the resource that limits further gain, and a check that errors were counted and the work ran inside the timed region.
 
 **FAIL**
 
 ```text
-"Parse is 3x faster." (one run, no spread; 4% of requests now return 500 early)
+"Parse is much faster now." (no numbers; 4% of requests now return 500 early)
 ```
 
 **PASS**

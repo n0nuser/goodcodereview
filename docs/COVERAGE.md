@@ -349,7 +349,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 22 Verify the real thing, not a proxy; re-runnable script as artifact | `chg-verify-before-claim`, `chg-agent-independent-review` | draft |
 | cursor-plugins | 23 Test must fail when behaviour breaks and survive an internals refactor | `chg-agent-mock-asserting-tests`, `mod-mock-at-boundaries-only`, `py-no-init-or-model-tests` | draft |
 | cursor-plugins | 24 Independent test oracle; pair a negative assertion with a positive case | `fn-test-oracle-independent` | draft |
-| cursor-plugins | 25 A performance number needs run count, spread and a named limiter | `chg-perf-claim-evidence` | draft |
+| cursor-plugins | 25 A performance number needs run count, spread and a named limiter | `chg-perf-claim-evidence` | stable |
 | cursor-plugins | 26 Verify each unit before the next; failing test first | `chg-tests-ship-with-change` | stable |
 | cursor-plugins | 26b Commit order tells the story | dropped: history shape is not visible in a diff | dropped |
 | cursor-plugins | 27 Redesign instead of bolting on | dropped: posture; visible symptom is chg-no-special-case-branches | dropped |
@@ -388,7 +388,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 59b Spot-check renames against strings and prose | dropped: manual step, not visible in a diff | dropped |
 | cursor-plugins | 60 Refactor must lower reader load or be reverted | `chg-refactor-separate` | stable |
 | cursor-plugins | 61 Perf fixes tie to a measurement; cheap options in order | glossary/performance-mantras | glossary |
-| cursor-plugins | 62 Benchmark checklist: seven questions for a performance claim | `chg-perf-claim-evidence` | draft |
+| cursor-plugins | 62 Benchmark checklist: seven questions for a performance claim | `chg-perf-claim-evidence` | stable |
 | cursor-plugins | 63 verify-this listed under pstack by mistake | dropped: duplicate of row 77 | dropped |
 | cursor-plugins | 64 PR body as a one-minute briefing; narrow PRs; one primary perf number | `chg-author-hygiene`, `chg-size-ceiling` | stable |
 | cursor-plugins | 65 A verdict covers one patch; recheck after rebase by patch id | `chg-approval-tied-to-patch` | draft |
@@ -465,7 +465,7 @@ Source: `docs/research/security-pass.md`. Row numbers are that file's.
 | security-pass | §8 NIST SSDF practices | dropped: page named no practice numbers; read the PDF in a later pass | dropped |
 
 - `chg-fix-root-cause-not-symptom`: FAIL if a fix adds a guard, retry, sleep, longer timeout, swallowed error, cast, skipped or weakened test, or a special case for the failing input, with no stated cause seen in evidence.
-- `chg-perf-claim-evidence`: FAIL if a performance claim lacks run count, spread, a named limiter, or a check that errors were counted and the work ran inside the timed region.
+- `chg-perf-claim-evidence`: FAIL if a performance claim has no measured before-and-after numbers.
 - `chg-delete-legacy-after-migration`: FAIL if a change adds a new API or path and leaves the old one alive when no consumer outside the repo needs it (sibling of `chg-expand-contract`).
 - `chg-refactor-has-behaviour-pin`: FAIL if a refactor moves structure with no test, snapshot or equivalence check that pins current behaviour first.
 - `chg-approval-tied-to-patch`: FAIL if an approval or verification verdict older than the last push that changed non-test content is treated as current.
@@ -492,15 +492,15 @@ From `docs/research/api-pass.md`.
 | api-pass | RFC 9110 9.2: Safe and idempotent methods | `svc-api-safe-idempotent-methods` | draft |
 | api-pass | RFC 9110 9.3, 10.2, 15.3: 201 with Location, 405 with Allow, most specific status | `svc-api-specific-status-codes` | draft |
 | api-pass | RFC 9110 10.2.3, IETF ratelimit draft: Retry-After on 429 and 503; draft RateLimit fields not required | `svc-api-retry-after` | draft |
-| api-pass | RFC 9110 13.1.1, Azure guidelines: ETag and If-Match on shared writes, 412 on stale | `svc-api-conditional-writes` | draft |
+| api-pass | RFC 9110 13.1.1, Azure guidelines: ETag and If-Match on shared writes, 412 on stale | `svc-api-conditional-writes` | stable |
 | api-pass | RFC 9111: Explicit Cache-Control, private for user data, Vary | `svc-api-cache-control` | draft |
 | api-pass | RFC 9457, Zalando 176: Errors as application/problem+json, no internals | `svc-api-problem-json` | draft |
-| api-pass | RFC 9457, AIP-193: Stable machine-readable error code | `svc-api-error-code-stable` | draft |
+| api-pass | RFC 9457, AIP-193: Stable machine-readable error code | `svc-api-error-code-stable` | stable |
 | api-pass | OpenAPI 3.1, Zalando 100-101: Spec is the source of truth and matches the service | `svc-api-spec-matches-impl` | draft |
 | api-pass | OpenAPI 3.1, Zalando 101: Spec changes in the same diff as the route | `chg-api-spec-in-same-change` | draft |
 | api-pass | OpenAPI 3.1, Zalando 151: Error responses and examples documented per operation | `svc-api-documented-errors` | draft |
-| api-pass | RFC 9745, RFC 8594, Zalando 189: Deprecation and Sunset headers before removal | `svc-api-deprecation-sunset` | draft |
-| api-pass | Zalando 113-116, Azure, Stripe: One documented versioning scheme, no breaks inside a version | `svc-api-versioning-policy` | draft |
+| api-pass | RFC 9745, RFC 8594, Zalando 189: Deprecation and Sunset headers before removal | `svc-api-deprecation-sunset` | stable |
+| api-pass | Zalando 113-116, Azure, Stripe: One documented versioning scheme, no breaks inside a version | `svc-api-versioning-policy` | stable |
 | api-pass | Zalando 118, Azure: One naming convention per location | `svc-api-naming-consistent` | draft |
 | api-pass | protobuf.dev (RPC vs storage messages): Response built from an explicit type, no internal fields | `svc-api-no-internal-fields` | draft |
 | api-pass | W3C Trace Context: Forward traceparent with a new parent id per hop | `svc-api-trace-context` | draft |
