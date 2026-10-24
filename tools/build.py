@@ -105,7 +105,7 @@ button:active{transform:scale(.97)}
 details{border-block-start:1px solid var(--line)}
 summary{padding-block:.75rem;cursor:pointer;font:600 var(--step--1)/1.3 var(--ui)}
 details[open]>summary{border-block-end:1px solid var(--line)}
-#dsum,#empty{font-variant-numeric:tabular-nums}
+#dsum,#empty,#count{font-variant-numeric:tabular-nums}
 .ckw{container-type:inline-size}
 ul.ck{padding:0;list-style:none}
 ul.ck li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem var(--space-s);padding-block:.6rem;border-block-start:1px solid var(--line)}
@@ -138,12 +138,13 @@ button:hover{border-color:var(--fg)}ul.ck li:not(.th):hover{background:color-mix
 @media(prefers-reduced-motion:no-preference){
 html{scroll-behavior:smooth}button{transition:transform 140ms var(--ease-out),background-color .15s,border-color .15s}
 }"""
-JS = """const q=s=>[...document.querySelectorAll(s)],S={c:new Set(),t:new Set(),l:new Set()},E=document.getElementById('empty'),D=document.getElementById('dsum');
+JS = """const q=s=>[...document.querySelectorAll(s)],S={c:new Set(),t:new Set(),l:new Set()},E=document.getElementById('empty'),D=document.getElementById('dsum'),C=document.getElementById('count');
 function go(){q('[data-tags]').forEach(a=>{const g=a.dataset.tags.split(' ');
 a.hidden=(S.c.size>0&&![...S.c].some(x=>g.includes(x)))||[...S.t].some(x=>!g.includes(x))||(S.l.size>0&&!S.l.has(a.dataset.level))});
 const on=S.c.size+S.t.size+S.l.size>0,s=q('article[data-tags]:not([hidden])').filter(a=>!a.closest('details')).length,d=q('details article[data-tags]:not([hidden])').length;
 if(E){E.hidden=!on||s>0;E.textContent='No stable cards match.'+(d?' '+d+' draft '+(d>1?'cards match':'card matches')+' below.':'')}
-if(D)D.textContent=D.dataset.n+' draft cards'+(on?' ('+d+' match)':'')}
+if(D)D.textContent=D.dataset.n+' draft cards'+(on?' ('+d+' match)':'')
+if(C)C.textContent=on?s+' stable and '+d+' draft '+(s+d==1?'card matches.':'cards match.'):''}
 q('button[data-k]').forEach(b=>b.onclick=()=>{const s=S[b.dataset.k],v=b.dataset.v;
 s.has(v)?s.delete(v):s.add(v);b.setAttribute('aria-pressed',s.has(v));go()});
 const op=()=>{const e=document.getElementById(location.hash.slice(1)),d=e&&e.closest('details');if(d){d.open=true;e.scrollIntoView()}};
@@ -253,7 +254,7 @@ def listing(title, intro, cards, ids, links, cur):
         return page(title, intro + LEGEND + drafts, True, links, cur)
     th = '<li class="th" aria-hidden="true"><span>Card</span><span>Severity</span><span>Concerns</span><span>Rule</span></li>'
     ck = '<div class="ckw"><ul class="ck">' + th + "".join(row(fm, b, ids) for _, fm, b in stable) + "</ul></div>"
-    body = (intro + LEGEND + f'<h2>Filters</h2>{flt}<p id="empty" hidden></p>'
+    body = (intro + LEGEND + f'<h2>Filters</h2>{flt}<p id="count" class="note" role="status"></p><p id="empty" hidden></p>'
             f"<h2>Checklist</h2>{ck}<h2>Cards</h2>" + "".join(card_html(fm, b, ids) for _, fm, b in stable) + drafts)
     return page(title, body, True, links, cur)
 
