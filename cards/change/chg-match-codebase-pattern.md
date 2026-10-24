@@ -11,6 +11,7 @@ borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/standard.html
   - https://blog.pragmaticengineer.com/good-code-reviews-better-code-reviews/
   - https://peps.python.org/pep-0008/
+  - https://microsoft.github.io/code-with-engineering-playbook/code-reviews/process-guidance/reviewer-guidance/
 ---
 
 **Rule.** Follow the established pattern nearby.

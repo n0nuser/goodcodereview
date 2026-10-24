@@ -11,6 +11,7 @@ borrowed_from:
   - https://blog.pragmaticengineer.com/good-code-reviews-better-code-reviews/
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
   - https://www.kernel.org/doc/html/latest/process/coding-style.html
+  - https://refactoring.guru/smells/duplicate-code
 ---
 
 **Rule.** Search the repo for an existing helper before adding a new one.
