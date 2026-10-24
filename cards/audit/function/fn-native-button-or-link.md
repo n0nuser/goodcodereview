@@ -37,4 +37,4 @@ borrowed_from:
 <a href="/billing">Billing</a>
 ```
 
-**Counterpoint.** "Native buttons are hard to style." They are not: reset `border`, `background`, and `font` on the element. Rebuilding the keyboard, role, and focus behaviour by hand costs more and fails more often. Where a custom widget is unavoidable, see `fn-aria-role-has-state-and-keys`.
+**Counterpoint.** "Native buttons are hard to style." They are not: reset `border`, `background`, and `font` on the element. Rebuilding the keyboard, role, and focus behaviour by hand costs more and fails more often. Where a custom widget is unavoidable, follow the WAI-ARIA Authoring Practices pattern for it.

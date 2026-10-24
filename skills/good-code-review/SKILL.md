@@ -45,7 +45,6 @@ To review only some concerns, such as a performance-only review, check only the 
 
 ## function
 
-- `fn-aria-role-has-state-and-keys` [should-fix] {accessibility}: When a native element cannot do the job, give the custom widget its name, its state attribute, and the keys its role promises.
 - `fn-colour-not-sole-cue` [should-fix] {accessibility, usability}: Pair every colour that carries meaning with a second cue: text, an icon, a shape, or an underline.
 - `fn-comments-explain-why` [should-fix] {maintainability}: Write comments that give a reason, a constraint, or a trade-off; rename before commenting, and never restate what the next line does.
 - `fn-destructive-confirm-or-undo` [should-fix] {usability}: Make a destructive action reversible with undo, or ask the user to confirm it before it runs.

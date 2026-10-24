@@ -1,33 +1,5 @@
 # function
 
-## fn-aria-role-has-state-and-keys
-
-severity: should-fix  
-concerns: accessibility  
-applies_when: A custom widget sets `role` or an `aria-*` attribute because no native element fits.
-
-**Rule.** When a native element cannot do the job, give the custom widget its name, its state attribute, and the keys its role promises.
-
-**Why.** A role only tells assistive technology what the element is. It adds no keyboard behaviour, and it says nothing about state. A `role="switch"` with no `aria-checked` is announced as a switch of unknown state. Wrong ARIA is worse than none, because it gives a screen-reader user a false picture.
-
-**FAIL**
-
-```jsx
-<button type="button" role="switch" onClick={toggle}>Dark mode</button>
-// no aria-checked: announced as a switch of unknown state
-```
-
-**PASS**
-
-```jsx
-<button type="button" role="switch" aria-checked={on} onClick={toggle}>
-  Dark mode
-</button>
-// a native <button> already takes Tab, Enter, and Space
-```
-
-**Counterpoint.** "ARIA patterns are in the guide, so we copy them." Copy the keyboard table as well as the attributes. For a plain toggle, a `button` with `aria-pressed` is enough, and the label should stay the same when the state changes.
-
 ## fn-colour-not-sole-cue
 
 severity: should-fix  
@@ -421,7 +393,7 @@ applies_when: A component handles a click or tap, or navigates.
 <a href="/billing">Billing</a>
 ```
 
-**Counterpoint.** "Native buttons are hard to style." They are not: reset `border`, `background`, and `font` on the element. Rebuilding the keyboard, role, and focus behaviour by hand costs more and fails more often. Where a custom widget is unavoidable, see `fn-aria-role-has-state-and-keys`.
+**Counterpoint.** "Native buttons are hard to style." They are not: reset `border`, `background`, and `font` on the element. Rebuilding the keyboard, role, and focus behaviour by hand costs more and fails more often. Where a custom widget is unavoidable, follow the WAI-ARIA Authoring Practices pattern for it.
 
 ## fn-no-blocking-call-in-async-code
 
