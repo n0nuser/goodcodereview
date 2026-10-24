@@ -11,6 +11,7 @@ note: extends Palantir (TODO without issue, red checks) and Go (discarded errors
 borrowed_from:
   - https://go.dev/wiki/CodeReviewComments
   - https://blog.palantir.com/code-review-best-practices-19e02780015f
+  - https://github.com/cursor/plugins
 ---
 
 **Rule.** Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
@@ -34,4 +35,4 @@ try: sync()
 except SyncTimeout as e: log.warning("sync timeout", exc_info=e); retry()
 ```
 
-**Counterpoint.** Sometimes a warning is a false positive. Then suppress narrowly with a reason, which keeps the gate useful. Palantir's list covers TODOs without issue references and merging with checks red. The Go list covers discarded errors. This card extends both to suppressions.
+**Counterpoint.** Sometimes a warning is a false positive. Then suppress narrowly with a reason and an expiry date, which keeps the gate useful. A suppression of a rule that guards correctness or safety should be removed, not documented. Palantir's list covers TODOs without issue references and merging with checks red. The Go list covers discarded errors. This card extends both to suppressions.
