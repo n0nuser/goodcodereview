@@ -1,5 +1,5 @@
-# Long Polling
+# Long polling
 
-The client asks, and the server holds the request open until data or a timeout.
+The client sends a request, and the server holds it open until data arrives or a timeout expires.
 
-**Why a reviewer cares.** Timeouts on both ends and reconnect behaviour are the reviewable parts.
+**Why a reviewer cares.** Review the timeouts on both ends and the reconnect behaviour.

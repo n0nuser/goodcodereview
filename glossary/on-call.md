@@ -1,7 +1,7 @@
 # On-Call
 
-Engineers taking turns to respond to alerts.
+Engineers who take turns responding to alerts.
 
-**Why a reviewer cares.** Alerts that page on non-symptoms burn the people on call.
+**Why a reviewer cares.** Alerts that page on non-symptoms wear out the people on call.
 
 **Checks.** `prod-alerts-symptoms-golden-signals`

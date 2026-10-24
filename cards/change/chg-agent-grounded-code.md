@@ -14,7 +14,7 @@ borrowed_from:
 
 **Rule.** Verify that every import and external call the agent wrote exists with that signature.
 
-**Why.** Agents invent plausible APIs and rewrite nearby utilities without searching. A green build only proves what the compiler sees. Re-implemented helpers are covered by [[chg-reuse-before-write]]. The author must also be able to explain each hunk; see [[chg-agent-independent-review]].
+**Why.** Agents invent plausible APIs and rewrite nearby utilities without searching. A green build proves only what the compiler sees. [[chg-reuse-before-write]] covers re-implemented helpers. The author must also be able to explain each hunk; see [[chg-agent-independent-review]].
 
 **FAIL**
 
@@ -31,4 +31,4 @@ from money import sum_cents
 resp = client.fetch_json(url)   # signature checked against source
 ```
 
-**Counterpoint.** "Humans make the same mistakes." True, but agents make them fluently and at volume, and disclosure alone does not catch them. Kubernetes requires disclosure and an author who can explain the change; a compiler and a dependency check catch the mechanical part, so keep this card for calls that resolve but behave differently than assumed.
+**Counterpoint.** "Humans make the same mistakes." True, but agents make them fluently and at volume, and disclosure alone does not catch them. Kubernetes requires disclosure and an author who can explain the change. A compiler and a dependency check catch the mechanical part, so use this card for calls that resolve but behave differently than assumed.

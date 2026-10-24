@@ -11,9 +11,9 @@ borrowed_from:
   - https://www.postgresql.org/docs/current/sql-altertable.html
 ---
 
-**Rule.** Add the column nullable or with a constant default; fill volatile, computed or identity values in batches afterwards.
+**Rule.** Add the column nullable or with a constant default, then fill volatile, computed, or identity values in batches.
 
-**Why.** A constant or NULL default is a metadata change. A volatile default, a stored generated column or an identity column rewrites the whole table, and the default lock (ACCESS EXCLUSIVE) blocks every query on it for the duration.
+**Why.** A constant or NULL default is a metadata change. A volatile default, a stored generated column, or an identity column rewrites the whole table, and the default lock (ACCESS EXCLUSIVE) blocks every query on it for the duration.
 
 **FAIL**
 
@@ -28,4 +28,4 @@ ALTER TABLE events ADD COLUMN token uuid;                 -- no rewrite
 -- backfill in batches, then SET DEFAULT for new rows only
 ```
 
-**Counterpoint.** "The table is small." Then the rewrite is cheap and the one-step form is fine; state the row count in the description. Locking and timeouts are in [[sys-migration-lock-timeout]].
+**Counterpoint.** "The table is small." Then the rewrite is cheap and the one-step form is fine. State the row count in the description. [[sys-migration-lock-timeout]] covers locking and timeouts.

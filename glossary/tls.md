@@ -2,4 +2,4 @@
 
 Encryption and server authentication for network connections.
 
-**Why a reviewer cares.** Disabled verification is a classic reviewable defect.
+**Why a reviewer cares.** Disabled certificate verification is a classic defect to catch in review.

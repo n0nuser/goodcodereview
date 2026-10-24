@@ -1,5 +1,5 @@
-# Distributed Transactions
+# Distributed transactions
 
-One logical operation spanning several services or stores, with no single commit.
+One logical operation that spans several services or stores and has no single commit.
 
-**Why a reviewer cares.** Without a saga or equivalent, partial failure leaves inconsistent data.
+**Why a reviewer cares.** Without a saga or an equivalent, a partial failure leaves the data inconsistent.

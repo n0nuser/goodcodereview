@@ -1,5 +1,5 @@
-# Thread Safety
+# Thread safety
 
-Code that stays correct when called from several threads at once.
+Code that stays correct when several threads call it at once.
 
-**Why a reviewer cares.** Reviewers should ask which state is shared and what protects it.
+**Why a reviewer cares.** Ask which state is shared and what protects it.

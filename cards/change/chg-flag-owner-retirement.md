@@ -12,9 +12,9 @@ borrowed_from:
   - https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to
 ---
 
-**Rule.** A new flag names an owner, a default, and a removal condition or date; the removal is ticketed.
+**Rule.** Give every new flag an owner, a default, and a removal condition or date, and ticket the removal.
 
-**Why.** Flags without owners become permanent forks of behaviour that nobody dares delete and that multiply test paths.
+**Why.** A flag without an owner becomes a permanent fork of behaviour that nobody dares delete and that multiplies test paths.
 
 **FAIL**
 
@@ -31,4 +31,4 @@ if flags.get("new_checkout"):   # who owns it? when does it go?
 if flags.get("new_checkout"): ...
 ```
 
-**Counterpoint.** Some flags are permanent (kill switches, entitlements). Label them as such with an owner; the check is that the intent is explicit.
+**Counterpoint.** Some flags are permanent (kill switches, entitlements). Label them as permanent, with an owner. The check is that the intent is explicit.

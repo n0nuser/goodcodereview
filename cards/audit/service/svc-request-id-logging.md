@@ -15,7 +15,7 @@ borrowed_from:
 
 **Rule.** Put the request or trace id on every log line written during a request.
 
-**Why.** Concurrent requests interleave in one log. Without a shared id you cannot pull one request's lines together, or match them with other services' logs and the trace.
+**Why.** Concurrent requests interleave in one log. Without a shared id, you cannot pull one request's lines together or match them with other services' logs and the trace.
 
 **FAIL**
 
@@ -29,4 +29,4 @@ log.info("payment failed")                 # which request?
 log.info("payment failed", extra={"trace_id": ctx.trace_id})   # id set once by middleware
 ```
 
-**Counterpoint.** "Ids are high-cardinality and will blow up our metrics." Keep them out of metric labels ([[prod-wide-events-bounded-labels]]); logs and events are where per-request ids belong.
+**Counterpoint.** "Ids are high-cardinality and will blow up our metrics." Keep them out of metric labels ([[prod-wide-events-bounded-labels]]). Logs and events are where per-request ids belong.

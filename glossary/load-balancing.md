@@ -1,5 +1,5 @@
-# Load Balancing
+# Load balancing
 
-Spreading requests across several backends, using health signals to skip bad ones.
+Spreading requests across several backends and using health signals to skip unhealthy ones.
 
-**Why a reviewer cares.** A health check wired to the balancer decides which hosts live or die; a check that probes a shared dependency can empty the whole pool.
+**Why a reviewer cares.** The health check wired to the balancer decides which hosts stay in rotation. A check that probes a shared dependency can empty the whole pool.

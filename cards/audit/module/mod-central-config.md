@@ -11,7 +11,7 @@ borrowed_from: []
 note: from the author's own Python review guide
 ---
 
-**Rule.** Read configuration in one settings module and pass it in. Business code does not read the environment or hold knobs.
+**Rule.** Read configuration in one settings module and pass it in; business code must not read the environment or hold knobs.
 
 **Why.** Scattered reads hide what the app depends on and make tests mutate the process environment.
 
@@ -27,4 +27,4 @@ timeout = float(os.environ.get("TIMEOUT", "5"))   # inside a service
 settings.request_timeout_s    # defined once in settings.py, injected
 ```
 
-**Counterpoint.** "One more env read is harmless." Each hides a deployment dependency from review and from the docs. One module is also where you add validation.
+**Counterpoint.** "One more env read is harmless." Each one hides a deployment dependency from review and from the docs. One module is also where you add validation.

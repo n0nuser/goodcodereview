@@ -5,7 +5,7 @@ tags: [concurrency, resilience, async]
 severity: block
 status: draft
 lang: core
-applies_when: The code starts a task, goroutine or thread per item, request or message.
+applies_when: The code starts a task, goroutine, or thread per item, request, or message.
 tool_gate: none
 note: the docs give the limiting tools; pairing a semaphore with every spawn site is our inference from them
 borrowed_from:
@@ -15,9 +15,9 @@ borrowed_from:
   - https://docs.rs/tokio/latest/tokio/sync/struct.Semaphore.html
 ---
 
-**Rule.** Cap how many background tasks run at once; never spawn one per input with no limit.
+**Rule.** Cap how many background tasks run at once, and never spawn one per input with no limit.
 
-**Why.** Input size is not under your control. One task per item works for ten items and exhausts memory, connections or the downstream service at ten thousand, and the failure lands on everything else in the process. Go's `errgroup.SetLimit`, asyncio's `Semaphore` and Tokio's `Semaphore` exist for exactly this.
+**Why.** Input size is not under your control. One task per item works for ten items and exhausts memory, connections, or the downstream service at ten thousand, and the failure lands on everything else in the process. Go's `errgroup.SetLimit`, asyncio's `Semaphore` and Tokio's `Semaphore` exist for exactly this.
 
 **FAIL**
 
@@ -40,4 +40,4 @@ async with asyncio.TaskGroup() as tg:
         tg.create_task(bounded(msg))
 ```
 
-**Counterpoint.** "Tasks are cheap." Creating them is; what each one holds (a socket, a buffer, a database connection) is not. A worker pool or bounded channel works as well as a semaphore. This card is about work a service starts for itself; refusing incoming requests under load is [[sys-load-shedding-bounded-queues]], and task lifetime is [[fn-resource-lifetime]].
+**Counterpoint.** "Tasks are cheap." Creating them is, but what each one holds (a socket, a buffer, a database connection) is not. A worker pool or bounded channel works as well as a semaphore. This card covers work that a service starts for itself. [[sys-load-shedding-bounded-queues]] covers refusing incoming requests under load, and [[fn-resource-lifetime]] covers task lifetime.

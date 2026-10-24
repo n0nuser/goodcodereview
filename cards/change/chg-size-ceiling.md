@@ -15,7 +15,7 @@ borrowed_from:
   - https://newsletter.pragmaticengineer.com/p/stacked-diffs
 ---
 
-**Rule.** Past about 400 changed lines or about 20 files, split the change or say in the description why not; aim for about 200.
+**Rule.** Split a change past about 400 changed lines or about 20 files, or say in the description why not; aim for about 200.
 
 **Why.** Review usefulness falls as changes grow, so big diffs get skimmed and approved on trust.
 
@@ -31,4 +31,4 @@ borrowed_from:
 Stack of 6 changes of 150-300 lines, each builds and passes tests alone.
 ```
 
-**Counterpoint.** "Line counts are arbitrary." The exact numbers are rough; the direction is not: larger changes get fewer useful comments per file and are approved on trust. Treat 400 as a prompt to split or explain, not a hard gate, and exclude generated code and pure moves.
+**Counterpoint.** "Line counts are arbitrary." The exact numbers are rough, but the direction is not: larger changes get fewer useful comments per file and are approved on trust. Treat 400 as a prompt to split or explain, not a hard gate, and exclude generated code and pure moves.

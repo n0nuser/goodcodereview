@@ -14,7 +14,7 @@ borrowed_from:
 
 **Rule.** Add a characterization test before rewriting code you do not understand.
 
-**Why.** Strange code often carries a fix for a bug that is no longer visible. Removing it re-ships the bug. Check the history first (blame, linked incidents) and, for a rewrite, name the defect that justifies it.
+**Why.** Strange code often carries a fix for a bug that is no longer visible. Removing it re-ships the bug. Check the history first (blame, linked incidents). For a rewrite, name the defect that justifies it.
 
 **FAIL**
 
@@ -30,4 +30,4 @@ git blame shows sleep added for rate-limit incident INC-17.
 PR keeps it with a comment, adds a characterization test first.
 ```
 
-**Counterpoint.** Joel Spolsky's anti-rewrite case rests on anecdotes (Netscape, Borland), and Hickey argues for restating the problem, which may mean a new design. Rethinking is allowed; a big-bang rewrite needs small shippable steps, the old path working meanwhile, and a named defect.
+**Counterpoint.** Joel Spolsky's anti-rewrite case rests on anecdotes (Netscape, Borland), and Hickey argues for restating the problem, which may mean a new design. Rethinking is allowed. A big-bang rewrite needs small shippable steps, the old path working meanwhile, and a named defect.

@@ -5,7 +5,7 @@
 severity: should-fix  
 applies_when: Auditing which checks must pass before a change merges.
 
-**Rule.** The default branch requires review and passing build, tests, lint and type checks before merge; nothing mechanical is left to reviewer vigilance.
+**Rule.** Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
 
 **Why.** Any rule that depends on someone remembering will be skipped. Components where changes merge unreviewed or without discussion tend to ship more post-release defects.
 
@@ -21,16 +21,16 @@ Default branch: no protection. Force-push allowed. CI optional.
 Protected main: 1 approval + required checks (build, test, lint, types).
 ```
 
-**Counterpoint.** Gates slow small teams and flaky tests train people to override. Answer: keep gates few and reliable, fix flakes instead of overriding them, and let the gates own the mechanical checks so review time goes to design.
+**Counterpoint.** Gates slow small teams, and flaky tests train people to override. Keep gates few and reliable, fix flakes instead of overriding them, and let the gates own the mechanical checks so review time goes to design.
 
 ## code-dead-code
 
 severity: should-fix  
 applies_when: Auditing for code, flags and files that nothing uses.
 
-**Rule.** Remove unreferenced functions, commented-out code, expired flags and orphaned files; history keeps them.
+**Rule.** Remove unreferenced functions, commented-out code, expired flags, and orphaned files; history keeps them.
 
-**Why.** Dead code costs reading time, misleads searches and gets "fixed" and tested for no benefit.
+**Why.** Dead code costs reading time, misleads searches, and gets "fixed" and tested for no benefit.
 
 **FAIL**
 
@@ -46,7 +46,7 @@ Code deleted; git log -S shows where it went. Detector reports 0 unused symbols
 or each is allowlisted with a reason.
 ```
 
-**Counterpoint.** Code may be called by reflection, plugins or external users. Answer: check with the detector's config and a grep of consumers; for public API use deprecation first (see `chg-expand-contract`).
+**Counterpoint.** Code may be called by reflection, plugins, or external users. Check with the detector's config and a grep of consumers. For public API, deprecate first (see `chg-expand-contract`).
 
 ## code-dependency-pinning
 
@@ -55,7 +55,7 @@ applies_when: Auditing how the repo resolves third-party packages.
 
 **Rule.** Commit a lockfile with hashes and install from it in CI.
 
-**Why.** Unpinned versions make builds non-reproducible and let a compromised release flow straight into production. Updates should arrive as reviewed changes, staged, not silently. Action pins and token scope are in [[code-workflow-supply-chain]].
+**Why.** Unpinned versions make builds non-reproducible and let a compromised release flow straight into production. Updates should arrive as reviewed, staged changes, not silently. [[code-workflow-supply-chain]] covers action pins and token scope.
 
 **FAIL**
 
@@ -70,4 +70,4 @@ requirements.lock with hashes; CI: pip install --require-hashes -r requirements.
 Update bot opens PRs; changes are rolled out in stages.
 ```
 
-**Counterpoint.** Pinning delays security patches. Answer: pin plus an update bot with a defined cadence beats floating versions; the lock makes the update visible and revertable.
+**Counterpoint.** Pinning delays security patches. A pin plus an update bot with a defined cadence beats floating versions, because the lock makes the update visible and revertable.

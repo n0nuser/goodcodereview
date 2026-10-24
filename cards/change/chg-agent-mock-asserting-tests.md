@@ -13,9 +13,9 @@ borrowed_from:
   - https://michaelfeathers.silvrback.com/characterization-testing
 ---
 
-**Rule.** A test must fail when the behaviour breaks; reject tests that mostly assert on mocks, copy the implementation, or were edited to match new output without explanation.
+**Rule.** Write tests that fail when the behaviour breaks, and reject tests that mostly assert on mocks, copy the implementation, or were edited to match new output without explanation.
 
-**Why.** Generated tests tend to confirm what the code does, passing against a bug. A suite that cannot fail gives false confidence. Mock only at real boundaries; see [[mod-mock-at-boundaries-only]].
+**Why.** Generated tests tend to confirm what the code does, so they pass against a bug. A suite that cannot fail gives false confidence. Mock only at real boundaries; see [[mod-mock-at-boundaries-only]].
 
 **FAIL**
 
@@ -33,4 +33,4 @@ svc.create(u)
 assert svc.get(u.id).email == u.email   # fails if create loses data
 ```
 
-**Counterpoint.** Mocks isolate slow dependencies. Answer: mock at real boundaries and still assert on observable outcomes. Break the code deliberately once: if the test stays green, it fails this card. Test messages should show input, actual and expected.
+**Counterpoint.** Mocks isolate slow dependencies. Mock at real boundaries and still assert on observable outcomes. To check a test, break the code deliberately once: if the test stays green, it fails this card. Test messages should show the input, the actual value, and the expected value.

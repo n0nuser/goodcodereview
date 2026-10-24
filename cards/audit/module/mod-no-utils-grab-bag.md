@@ -5,7 +5,7 @@ tags: [architecture, naming]
 severity: should-fix
 status: draft
 lang: core
-applies_when: The diff adds or grows a module named `utils`, `helpers`, `common` or `misc`.
+applies_when: The diff adds or grows a module named `utils`, `helpers`, `common`, or `misc`.
 tool_gate: none
 borrowed_from:
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
@@ -27,4 +27,4 @@ utils.py: parse_date, send_email, price_with_tax, retry
 dates.py, notifications.py, pricing.py, retry.py
 ```
 
-**Counterpoint.** "Tiny helpers do not deserve a file." Then inline them where used (YAGNI applies). When one is shared, naming its concept is the work that makes it findable.
+**Counterpoint.** "Tiny helpers do not deserve a file." Then inline them where they are used (YAGNI applies). When one is shared, naming its concept is the work that makes it findable.

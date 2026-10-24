@@ -29,4 +29,4 @@ import numpy_stubs  # type: ignore[import-untyped]  # no stubs published upstrea
 except Exception:  # noqa: BLE001  # process boundary: log and continue
 ```
 
-**Counterpoint.** "A reason on every line is noise." Only the suppressions need one, and they should be rare; a pile of them is the finding.
+**Counterpoint.** "A reason on every line is noise." Only suppressions need one, and they should be rare. A pile of them is the finding.

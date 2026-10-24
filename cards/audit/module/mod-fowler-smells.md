@@ -5,7 +5,7 @@ tags: [design, refactoring]
 severity: discuss
 status: draft
 lang: core
-applies_when: A reviewer sees long methods, feature envy, data clumps, primitive obsession, speculative generality or divergent change.
+applies_when: A reviewer sees long methods, feature envy, data clumps, primitive obsession, speculative generality, or divergent change.
 tool_gate: none
 borrowed_from:
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
@@ -29,4 +29,4 @@ review: "This is messy."
 review: "should-fix: price_total reads only Order fields (feature envy). Move it to Order."
 ```
 
-**Counterpoint.** "Smells are subjective." Yes: they signal, they do not prove. That is why the comment names the smell, the line and the refactoring; "this is messy" gives the author nothing to act on.
+**Counterpoint.** "Smells are subjective." Yes: they signal; they do not prove. That is why the comment names the smell, the line, and the refactoring. "This is messy" gives the author nothing to act on.

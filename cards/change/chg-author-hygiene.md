@@ -16,7 +16,7 @@ borrowed_from:
 
 **Rule.** Self-review the diff and write the description before requesting review.
 
-**Why.** Reviewer time spent on stray debug lines, red builds or a missing "why" is wasted and teaches reviewers to skim. The description gives the reason, the impact and how it was verified; CI is green, or a failing job is shown to fail on the base branch too.
+**Why.** Reviewer time spent on stray debug lines, red builds, or a missing "why" is wasted and teaches reviewers to skim. The description gives the reason, the impact, and how the author verified the change. CI is green, or a failing job is shown to fail on the base branch too.
 
 **FAIL**
 
@@ -32,4 +32,4 @@ Body: why (bug link), what changed, test plan, risk. CI green.
 Author left inline notes on the two non-obvious hunks.
 ```
 
-**Counterpoint.** Templates breed boilerplate no one reads. Answer: the check is substance, not headings; a one-line change needs one line of reason. Performance claims need numbers.
+**Counterpoint.** Templates breed boilerplate that no one reads. The check is for substance, not headings: a one-line change needs one line of reason. Performance claims need numbers.

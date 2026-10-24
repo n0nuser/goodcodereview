@@ -13,7 +13,7 @@ note: from the author's own Python review guide
 
 **Rule.** Chain the original cause when you translate an exception.
 
-**Why.** Dropping the cause removes the only trace of why it failed. A translated error without the original traceback sends the on-call person to the wrong place. Never swallow an error silently.
+**Why.** Dropping the cause removes the only trace of why the call failed. A translated error without the original traceback sends the on-call person to the wrong place. Never swallow an error silently.
 
 **FAIL**
 
@@ -31,4 +31,4 @@ except GatewayError as err:
     raise PaymentDeclined(order.id) from err
 ```
 
-**Counterpoint.** "Chaining leaks internals to the caller." Chaining stays in logs and tracebacks; what the client sees is a separate mapping (see [[sys-secrets-and-errors]]).
+**Counterpoint.** "Chaining leaks internals to the caller." Chaining stays in logs and tracebacks. What the client sees is a separate mapping (see [[sys-secrets-and-errors]]).

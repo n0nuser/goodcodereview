@@ -13,7 +13,7 @@ borrowed_from:
 
 **Rule.** Re-raise `CancelledError` (do not catch it via bare `except` or `BaseException`), and catch `TimeoutError` outside the `asyncio.timeout()` block.
 
-**Why.** TaskGroup and timeouts are built on cancellation; swallowing it makes shutdown hang and timeouts silently not fire. The conversion to `TimeoutError` happens at context exit, so a handler inside the block never sees it.
+**Why.** TaskGroup and timeouts are built on cancellation, so swallowing it makes shutdown hang and timeouts silently not fire. The conversion to `TimeoutError` happens at context exit, so a handler inside the block never sees it.
 
 **FAIL**
 
@@ -34,4 +34,4 @@ except TimeoutError:
     handle_timeout()
 ```
 
-**Counterpoint.** "Cleanup code must run even on cancel." Clean up in `finally`, then re-raise; never suppress. (`uncancel()` is task bookkeeping, not permission to swallow.)
+**Counterpoint.** "Cleanup code must run even on cancel." Clean up in `finally`, then re-raise, and never suppress. `uncancel()` is task bookkeeping, not permission to swallow.

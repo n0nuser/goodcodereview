@@ -13,7 +13,7 @@ borrowed_from:
   - https://blog.palantir.com/code-review-best-practices-19e02780015f
 ---
 
-**Rule.** A suppression names the rule, the reason and a ticket; a swallowed error, skipped test or disabled check is a FAIL unless justified.
+**Rule.** Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
 
 **Why.** Silencing a diagnostic hides the problem it reports and removes the safety net for the next author.
 
@@ -34,4 +34,4 @@ try: sync()
 except SyncTimeout as e: log.warning("sync timeout", exc_info=e); retry()
 ```
 
-**Counterpoint.** Sometimes a warning is a false positive. Then suppress narrowly with a reason, which keeps the gate useful. Palantir's list covers TODOs without issue references and merging with checks red; the Go list covers discarded errors. Applying both to suppressions extends them.
+**Counterpoint.** Sometimes a warning is a false positive. Then suppress narrowly with a reason, which keeps the gate useful. Palantir's list covers TODOs without issue references and merging with checks red. The Go list covers discarded errors. This card extends both to suppressions.

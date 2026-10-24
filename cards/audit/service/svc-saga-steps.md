@@ -11,7 +11,7 @@ borrowed_from:
   - https://learn.microsoft.com/en-us/azure/architecture/patterns/saga
 ---
 
-**Rule.** Make steps after the pivot idempotent and retryable, and every compensation idempotent with a failure path.
+**Rule.** Make steps after the pivot idempotent and retryable, and make every compensation idempotent with a failure path.
 
 **Why.** After the pivot there is no undo, only retry until done. A compensation can itself fail, and unhandled it leaves the system inconsistent with nobody told.
 
@@ -29,4 +29,4 @@ step 4: charge_card(order, idempotency_key=order.id)   # safe to retry
 compensate: release_stock(order) retried; on exhaustion -> alert + manual queue
 ```
 
-**Counterpoint.** "Use a distributed transaction." Often unavailable across services. A saga has no isolation, so also guard against reading half-done data (semantic locks, re-reading values before acting). Keys are in [[svc-idempotency-key]]; failed messages in [[svc-dlq]].
+**Counterpoint.** "Use a distributed transaction." Often unavailable across services. A saga has no isolation, so also guard against reading half-done data (semantic locks, re-reading values before acting). [[svc-idempotency-key]] covers keys, and [[svc-dlq]] covers failed messages.

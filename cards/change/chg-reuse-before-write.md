@@ -30,4 +30,4 @@ def _parse_date(s):  # new, in billing/invoice.py
 from utils.dates import parse_iso
 ```
 
-**Counterpoint.** "Searching costs more than writing ten lines." For tiny code, true; then the dup is tolerable and `chg-abstraction-needs-two-callers` governs extraction. The cost flips once the logic holds a rule (parsing, money, auth) that must stay in one place.
+**Counterpoint.** "Searching costs more than writing ten lines." For tiny code that is true. Then the duplicate is tolerable and `chg-abstraction-needs-two-callers` governs extraction. The cost flips once the logic holds a rule (parsing, money, auth) that must stay in one place.

@@ -12,9 +12,9 @@ borrowed_from:
   - https://aws.amazon.com/builders-library/caching-challenges-and-strategies/
 ---
 
-**Rule.** A risky feature can be turned off without a deploy, and every fallback path is exercised in test or in production on a schedule.
+**Rule.** Make a risky feature switchable off without a deploy, and exercise every fallback path in test or in production on a schedule.
 
-**Why.** An untested fallback fails exactly when needed (AWS suggests testing with the cache disabled).
+**Why.** An untested fallback fails exactly when you need it (AWS suggests testing with the cache disabled).
 
 **FAIL**
 
@@ -29,4 +29,4 @@ new_checkout() # no flag, rollback needs a deploy
 flag.checkout_v2 (default off, runtime toggle) ; chaos test disables redis weekly
 ```
 
-**Counterpoint.** "Flags add branches." True; delete them after rollout.
+**Counterpoint.** "Flags add branches." True. Delete them after rollout.

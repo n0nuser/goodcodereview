@@ -13,7 +13,7 @@ note: from the author's own Python review guide
 
 **Rule.** Enable the Ruff rule sets E, F, I, B, UP, SIM, BLE, TID and D in CI.
 
-**Why.** Formatting, import order, `Optional` vs `X | None`, bare `except` and relative imports belong to the tool. Human review time goes to what tools cannot see. `D1xx` stays ignored: the gate checks docstring format, not presence. Anything the gate decides is not a review comment; the comment is "add the gate".
+**Why.** The tool owns formatting, import order, the choice between `Optional` and `X | None`, bare `except`, and relative imports. Human review time goes to what tools cannot see. `D1xx` stays ignored: the gate checks docstring format, not presence. Anything the gate decides is not a review comment; the comment is "add the gate".
 
 **FAIL**
 

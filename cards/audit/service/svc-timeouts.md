@@ -15,7 +15,7 @@ borrowed_from:
 
 **Rule.** Set an explicit timeout on every remote call, and derive it from the caller's remaining deadline.
 
-**Why.** A call without a bound holds a thread, connection and caller indefinitely; one slow dependency becomes an outage. A per-hop timeout that ignores the caller's budget keeps working for a client that already gave up.
+**Why.** A call without a bound holds a thread, a connection, and a caller indefinitely, so one slow dependency becomes an outage. A per-hop timeout that ignores the caller's budget keeps working for a client that already gave up.
 
 **FAIL**
 
@@ -32,4 +32,4 @@ resp = client.get(url)
 def handle(req): return backend.call(x, timeout=min(2.0, req.deadline - now()))
 ```
 
-**Counterpoint.** "Defaults are fine, the library will time out eventually." Many defaults are infinite, and an eventual timeout longer than the caller's own deadline is wasted work. Configure the client's timeout once at construction (connect and read separately), then shrink it per call to the caller's remaining deadline. Pick numbers from measured latency, not folklore. Python specifics: [[py-cancellation]] (catching `TimeoutError` outside `asyncio.timeout()`).
+**Counterpoint.** "Defaults are fine; the library will time out eventually." Many defaults are infinite, and an eventual timeout longer than the caller's own deadline is wasted work. Configure the client's timeout once at construction (connect and read separately), then shrink it per call to the caller's remaining deadline. Pick numbers from measured latency, not folklore. For Python specifics, see [[py-cancellation]] (catching `TimeoutError` outside `asyncio.timeout()`).

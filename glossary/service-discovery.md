@@ -1,4 +1,4 @@
-# Service Discovery
+# Service discovery
 
 How a service finds the current addresses of its dependencies.
 

@@ -12,7 +12,7 @@ borrowed_from:
   - https://github.com/johnousterhout/aposd-vs-clean-code/blob/main/README.md
 ---
 
-**Rule.** Delete a method that only forwards. Keep wrappers that validate, adapt or narrow.
+**Rule.** Delete a method that only forwards, and keep wrappers that validate, adapt, or narrow.
 
 **Why.** A pass-through adds an interface to learn and a hop to step over, and gives no abstraction. Changing the signature now means editing two places.
 
@@ -30,4 +30,4 @@ class UserService:
 # or the service adds something: check access, map to a domain error
 ```
 
-**Counterpoint.** "The service layer should expose everything for uniformity." Uniform emptiness is still emptiness. If a layer boundary is the goal, say what the layer adds. The Clean Code side of the Ousterhout debate favours small forwarding methods more readily, so treat this as a design call, not a law.
+**Counterpoint.** "The service layer should expose everything for uniformity." Uniformity does not make an empty layer useful. If a layer boundary is the goal, say what the layer adds. The Clean Code side of the Ousterhout debate favours small forwarding methods more readily, so treat this as a design call, not a law.

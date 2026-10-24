@@ -1,5 +1,5 @@
-# Eventual Consistency
+# Eventual consistency
 
-Replicas converge given time with no new writes, but may disagree meanwhile.
+Replicas converge if no new writes arrive, but they can disagree until then.
 
-**Why a reviewer cares.** Code that assumes read-your-writes can break silently.
+**Why a reviewer cares.** Code that assumes read-your-writes can break without any error.

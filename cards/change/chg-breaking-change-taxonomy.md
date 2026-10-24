@@ -13,7 +13,7 @@ borrowed_from:
   - https://devguide.python.org/getting-started/pull-request-lifecycle/
 ---
 
-**Rule.** Classify the change against what callers can see: signature, return shape, error type, ordering, timing, defaults, side effects. Any observable difference is breaking until a consumer check says otherwise.
+**Rule.** Treat any observable difference in signature, return shape, error type, ordering, timing, defaults, or side effects as breaking until a consumer check says otherwise.
 
 **Why.** With enough users, every observable behaviour is depended on, so "undocumented" does not mean "safe to change".
 
@@ -31,4 +31,4 @@ PR states: "ordering changes, known consumers A and B checked,
 flag orders_newest_first defaults off for one release".
 ```
 
-**Counterpoint.** Treating everything as breaking freezes the code. Answer: weigh by known consumers and blast radius, and use staged rollout rather than a ban. Optional parameters with defaults are the safe way to add.
+**Counterpoint.** Treating everything as breaking freezes the code. Weigh each change by known consumers and blast radius, and use a staged rollout instead of a ban. Optional parameters with defaults are the safe way to add.

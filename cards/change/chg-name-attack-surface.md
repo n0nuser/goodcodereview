@@ -15,7 +15,7 @@ borrowed_from:
 
 **Rule.** List any new attack surface in the description.
 
-**Why.** A generalist reviewing a diff will not spot an exposed route the author never mentioned. New input, trust boundary, credential or dependency counts, and security-relevant changes go to a qualified reviewer.
+**Why.** A generalist reviewing a diff will not spot an exposed route the author never mentioned. A new input, trust boundary, credential, or dependency counts, and security-relevant changes go to a qualified reviewer.
 
 **FAIL**
 
@@ -31,4 +31,4 @@ Description: "new endpoint, admin-only via role X, rate limited, no PII".
 Security reviewer tagged. Randomness uses a crypto source.
 ```
 
-**Counterpoint.** Naming threats on every PR is theatre. Only changes that add one of the listed surfaces need the section; most PRs write "none".
+**Counterpoint.** Naming threats on every PR is theatre. Only changes that add one of the listed surfaces need the section, and most PRs write "none".

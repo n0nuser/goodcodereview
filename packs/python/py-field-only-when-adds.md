@@ -11,7 +11,7 @@ borrowed_from: []
 note: from the author's own Python review guide
 ---
 
-**Rule.** Use `Field()` only when it adds something: a constraint, an alias or API docs. Set plain defaults directly.
+**Rule.** Use `Field()` only when it adds something (a constraint, an alias, or API docs), and set plain defaults directly.
 
 **Why.** `Field(default=5.0)` is noise that hides which fields are constrained.
 

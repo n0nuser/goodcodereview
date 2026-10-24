@@ -1,5 +1,5 @@
-# Multi-Region Deployment
+# Multi-region deployment
 
 Running a service in several geographic regions.
 
-**Why a reviewer cares.** Isolation limits blast radius, but data and config shared across regions can still fail together.
+**Why a reviewer cares.** Isolation limits the blast radius, but data and config shared across regions can still fail together.

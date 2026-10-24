@@ -31,4 +31,4 @@ borrowed_from:
 + .env.example updated
 ```
 
-**Counterpoint.** "It is an internal repo; people will ask." Each person who asks costs more than the note, and CI and deploy environments cannot ask. For published configuration, [[chg-breaking-change-taxonomy]] covers the wider rules.
+**Counterpoint.** "It is an internal repo; people will ask." Each person who asks costs more than the note, and CI and deploy environments cannot ask. For published configuration, [[chg-breaking-change-taxonomy]] has the wider rules.

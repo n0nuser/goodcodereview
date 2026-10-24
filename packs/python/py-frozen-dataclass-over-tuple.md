@@ -13,7 +13,7 @@ note: from the author's own Python review guide
 
 **Rule.** Return a `@dataclass(frozen=True, slots=True)` instead of a positional tuple.
 
-**Why.** Core rule: [[fn-no-anonymous-tuples]]. In Python the frozen dataclass also gives hashing, immutability and a compact `slots` layout.
+**Why.** Core rule: [[fn-no-anonymous-tuples]]. In Python, the frozen dataclass also gives hashing, immutability, and a compact `slots` layout.
 
 **FAIL**
 

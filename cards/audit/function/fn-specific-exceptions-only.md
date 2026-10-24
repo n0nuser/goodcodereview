@@ -14,7 +14,7 @@ borrowed_from:
 
 **Rule.** Catch only the specific exception you can handle in business code.
 
-**Why.** A blanket catch treats a typo'd attribute the same as a network blip. Real bugs get swallowed, logged as a warning and retried. Enforced by [[py-ruff-gate]].
+**Why.** A blanket catch treats a mistyped attribute the same as a network blip. Real bugs get swallowed, logged as a warning, and retried. [[py-ruff-gate]] enforces this.
 
 **FAIL**
 
@@ -34,4 +34,4 @@ except CardDeclined as err:
     raise PaymentDeclined(order.id) from err
 ```
 
-**Counterpoint.** "A worker loop must not die on one bad message." That is the one legitimate blanket catch, once, at the process boundary, with the traceback logged, playing the role a web framework's error middleware plays for routes. Everywhere else it stays specific. The other exception is a security boundary: catch broadly there, log redacted and deny (fail closed); see [[sys-secrets-and-errors]].
+**Counterpoint.** "A worker loop must not die on one bad message." That is the one legitimate blanket catch: once, at the process boundary, with the traceback logged, playing the role that a web framework's error middleware plays for routes. Everywhere else, catch specific exceptions. The other exception is a security boundary: catch broadly there, log redacted, and deny (fail closed). See [[sys-secrets-and-errors]].

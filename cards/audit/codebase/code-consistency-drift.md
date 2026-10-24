@@ -13,9 +13,9 @@ borrowed_from:
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
 ---
 
-**Rule.** For each recurring concern (errors, config, HTTP clients, logging), one pattern is the standard and older variants are tracked for migration, not left as equal peers.
+**Rule.** For each recurring concern (errors, config, HTTP clients, logging), make one pattern the standard and track older variants for migration instead of leaving them as equal peers.
 
-**Why.** Each extra variant is another thing to learn, test and secure, and drift accumulates through changes that each looked locally fine.
+**Why.** Each extra variant is another thing to learn, test, and secure, and drift accumulates through changes that each looked locally fine.
 
 **FAIL**
 
@@ -31,4 +31,4 @@ docs: "use httpx via net/client.py". Lint bans direct requests imports;
 legacy sites listed in MIGRATION.md.
 ```
 
-**Counterpoint.** Forcing one way can block a better tool. Answer: allow change through a proposal that updates the standard and migration list, not by a quiet second pattern. Leaning on Google: consistency is a tie-breaker, not a trump card.
+**Counterpoint.** Forcing one way can block a better tool. Allow change through a proposal that updates the standard and the migration list, not through a quiet second pattern. Following Google, consistency is a tie-breaker, not a trump card.

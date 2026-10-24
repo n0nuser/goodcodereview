@@ -11,9 +11,9 @@ borrowed_from: []
 note: from the author's own Python review guide
 ---
 
-**Rule.** Give a fixed key set a record type (model, dataclass or typed dict). Use a generic map only for open keys.
+**Rule.** Give a fixed key set a record type (model, dataclass, or typed dict), and use a generic map only for open keys.
 
-**Why.** A bag of keys hides the contract. A typo'd key is a runtime `KeyError` or, worse, a silently absent value.
+**Why.** A bag of keys hides the contract. A mistyped key is a runtime `KeyError` or, worse, a silently absent value.
 
 **FAIL**
 

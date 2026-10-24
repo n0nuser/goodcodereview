@@ -2,4 +2,4 @@
 
 Work completed per unit of time.
 
-**Why a reviewer cares.** A change can raise one while hurting latency.
+**Why a reviewer cares.** A change can raise throughput and hurt latency.

@@ -1,4 +1,4 @@
-# Tail Latency
+# Tail latency
 
 The slow end of the latency distribution.
 

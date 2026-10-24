@@ -5,7 +5,7 @@ tags: [health, availability]
 severity: block
 status: draft
 lang: core
-applies_when: A service exposes a health endpoint used by a load balancer, orchestrator or auto-replacement.
+applies_when: A service exposes a health endpoint used by a load balancer, an orchestrator, or auto-replacement.
 tool_gate: none
 borrowed_from:
   - https://aws.amazon.com/builders-library/implementing-health-checks/

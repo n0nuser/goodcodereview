@@ -15,7 +15,7 @@ borrowed_from:
 
 **Rule.** Extract shared logic only once two or more real call sites exist today.
 
-**Why.** An abstraction guessed from one use encodes the wrong seams. Callers then bend it with flags and conditionals, and the shared code becomes harder to change than copies would have been; when that happens, inline it and re-split.
+**Why.** An abstraction guessed from one use encodes the wrong seams. Callers then bend it with flags and conditionals, and the shared code becomes harder to change than copies would have been. When that happens, inline it and re-split.
 
 **FAIL**
 
@@ -35,4 +35,4 @@ def render_total(items):
 # do not add render_total(items, legacy=True, skip_tax=True)
 ```
 
-**Counterpoint.** Ousterhout's red-flag list counts repetition as a smell, while Dodds and Metz prefer duplication over the wrong abstraction. They reconcile: repeated knowledge (a format, a rule) must live in one place; repeated code shape is cheap to leave until the pattern is proven. Neither side has data. Dodds and Metz point to the third copy as the moment to ask; this card takes two real call sites as the earliest point to extract. See also [[mod-no-wrong-abstraction]].
+**Counterpoint.** Ousterhout's red-flag list counts repetition as a smell, while Dodds and Metz prefer duplication over the wrong abstraction. They reconcile: repeated knowledge (a format, a rule) must live in one place, and repeated code shape is cheap to leave until the pattern is proven. Neither side has data. Dodds and Metz point to the third copy as the moment to ask. This card takes two real call sites as the earliest point to extract. See also [[mod-no-wrong-abstraction]].

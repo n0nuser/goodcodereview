@@ -1,7 +1,7 @@
-# Cold Starts
+# Cold starts
 
-Slow first requests after a deploy, restart or scale-up, when caches and runtimes are empty.
+Slow first requests after a deploy, restart, or scale-up, while caches and runtimes are empty.
 
-**Why a reviewer cares.** Cold caches can stampede the dependency.
+**Why a reviewer cares.** Cold caches can flood the dependency with requests.
 
 **Checks.** `sys-cache-cold-start`

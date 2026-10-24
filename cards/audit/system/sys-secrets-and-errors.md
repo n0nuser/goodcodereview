@@ -15,7 +15,7 @@ borrowed_from:
 
 **Rule.** Fail closed: a validation or auth error must deny, never continue.
 
-**Why.** Also keep secrets out of source, logs and error responses. Stack traces, SQL and tokens in responses or logs leak; a catch-and-continue around a validation step grants access when the check crashes (OWASP A10:2025, ASVS V16).
+**Why.** Keep secrets out of source, logs, and error responses. Stack traces, SQL, and tokens in responses or logs leak, and a catch-and-continue around a validation step grants access when the check crashes (OWASP A10:2025, ASVS V16).
 
 **FAIL**
 

@@ -30,4 +30,4 @@ pools = {"billing": asyncio.Semaphore(10), "search": asyncio.Semaphore(20)}
 # pseudocode: breaker logs and counts every state change; half-open allows 1 probe
 ```
 
-**Counterpoint.** "More moving parts than a timeout." True; start with the timeout and the per-dependency limit, add the breaker where retries are demonstrably harmful. Retry and breaker have opposite aims, so do not present one as a substitute for the other.
+**Counterpoint.** "More moving parts than a timeout." True. Start with the timeout and the per-dependency limit, and add the breaker where retries are demonstrably harmful. Retry and breaker have opposite aims, so do not present one as a substitute for the other.

@@ -11,7 +11,7 @@ borrowed_from: []
 note: from the author's own Python review guide
 ---
 
-**Rule.** Make check-and-write one atomic operation where the state lives. Never split it across a suspension point.
+**Rule.** Make check-and-write one atomic operation where the state lives, and never split it across a suspension point.
 
 **Why.** Another task runs at every yield. Two withdrawals both read 100, both pass the check, and the balance goes negative.
 
@@ -31,4 +31,4 @@ if not await repo.debit_if_sufficient(acct, amount):
     raise InsufficientFunds(acct)
 ```
 
-**Counterpoint.** "A lock fixes it." A process-local lock covers one process. With two workers or two hosts you need a transaction, an atomic statement, an idempotency key or optimistic concurrency. Every reviewer should name the other readers and writers of that state.
+**Counterpoint.** "A lock fixes it." A process-local lock covers one process. With two workers or two hosts, you need a transaction, an atomic statement, an idempotency key, or optimistic concurrency. Name the other readers and writers of that state.
