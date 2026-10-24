@@ -8,6 +8,7 @@ lang: core
 applies_when: A shared helper or base class has gained flags or conditionals so different callers can bend it.
 tool_gate: none
 borrowed_from:
+  - https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction
   - https://kentcdodds.com/blog/aha-programming
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
 ---

@@ -11,6 +11,6 @@ Count after: `chg-reuse-before-write` 3 -> 4 orgs (Orosz, kernel, Ousterhout via
 
 Not useful (read, no claim): Fowler's Beck Design Rules page (no-duplication rule only, no reuse or wait-to-abstract); Go Code Review Comments (nothing on consistency or reuse); refactoring.com catalog (index only). Go proverbs list "a little copying is better than a little dependency", not read as a rule source for a call-site count.
 
-Findings: no source states the number "two" in `chg-abstraction-needs-two-callers`; the Rule's count is the card's own choice (see near-miss-sources.md). No source describes how to search for an existing helper.
+Findings: no source states the number "two" in `chg-abstraction-needs-two-callers` (card since deleted); the Rule's count is the card's own choice (see near-miss-sources.md). No source describes how to search for an existing helper.
 
 Dedupe: `mod-bounded-caches` (draft, no sources) deleted. Its Rule (bound per-key caches by LRU or TTL) is covered by `sys-cache-bounds-invalidation` (size plus expiry). Its owner-end eviction line was Why-level only.

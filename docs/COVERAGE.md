@@ -188,7 +188,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | research-gap | Reviewer conduct | `chg-review-comment-format` | draft |
 | change-codebase | Consistency with codebase unless pattern is bad; improve what you touch | `chg-match-codebase-pattern` | stable |
 | change-codebase | Reuse: search for an existing helper first | `chg-reuse-before-write` | draft |
-| change-codebase | Move logic to shared module with 2+ call sites; wrong-abstraction | `mod-yagni` | stable |
+| change-codebase | Move logic to shared module with 2+ call sites; wrong-abstraction | `mod-yagni`, `mod-no-wrong-abstraction` | draft |
 | change-codebase | Scope: one concern per change | `chg-one-concern` | stable |
 | change-codebase | Size spread, SmartBear/Cisco single vendor study | `chg-size-ceiling` | stable |
 | change-codebase | Refactors separate; moves not edited | `chg-refactor-separate` | stable |
@@ -440,7 +440,7 @@ Source: `docs/research/security-pass.md`. Row numbers are that file's.
 | security-pass | 5 Return listed fields, not the stored model | `fn-response-fields-explicit` | stable |
 | security-pass | 7 Slow salted password hash | `fn-password-slow-hash` | stable |
 | security-pass | 8 Session ID regeneration, cookie flags, server-side logout | `svc-session-lifecycle` | stable |
-| security-pass | 9 Pinned JWT algorithm, `iss`, `aud`, `exp` | `fn-jwt-verify-pinned` | draft |
+| security-pass | 9 Pinned JWT algorithm, `iss`, `aud`, `exp` | `fn-jwt-verify-pinned` | stable |
 | security-pass | 10-11 Per-account throttle, uniform auth errors | `svc-auth-throttle-generic-errors` | draft |
 | security-pass | 11, 29 Cap client-controlled sizes and counts | `svc-bound-client-controlled-sizes` | stable |
 | security-pass | 12, 28 Encoding sinks, no raw HTML | `fn-no-raw-html-sink` | stable |
@@ -451,13 +451,13 @@ Source: `docs/research/security-pass.md`. Row numbers are that file's.
 | security-pass | 17 Server-side allowlist validation, regex limits | `mod-validate-at-boundary-once` | draft |
 | security-pass | 18 CSRF token, no state change on GET | `svc-csrf-state-changing` | stable |
 | security-pass | 19 CORS origin allowlist | `svc-cors-allowlist` | stable |
-| security-pass | 20 HSTS, nosniff, frame-ancestors | `svc-security-headers` | stable |
+| security-pass | 20 HSTS, nosniff, frame-ancestors | `svc-security-headers` | draft |
 | security-pass | 21 Subresource Integrity for vendor scripts | dropped: one narrow front-end row, left for a later pass | dropped |
 | security-pass | 22 CSPRNG for tokens and keys | `fn-csprng-for-secrets` | stable |
 | security-pass | 22-23 Vetted AEAD, no home-made crypto, no nonce reuse | `mod-vetted-crypto-only` | stable |
 | security-pass | 23-24 TLS verification stays on | `fn-tls-verify-on` | stable |
 | security-pass | 23 Minimise and expire sensitive data | `sys-pii-minimise-retention` | stable |
-| security-pass | 25-26 Log security events, keep secrets out, encode untrusted values | `svc-security-event-logging` | stable |
+| security-pass | 25-26 Log security events, keep secrets out, encode untrusted values | `svc-security-event-logging` | draft |
 | security-pass | 27 Narrow agent tools, user-scoped credentials | `sys-agent-tool-least-privilege` | stable |
 | security-pass | 28 Treat model output as untrusted | `sys-prompt-injection` | stable |
 | security-pass | 30 LLM supply chain: verify sources, sign, inventory | `code-dependency-licence-sbom` | draft |
@@ -571,9 +571,9 @@ From `docs/research/frontend-pass.md`. Every card here carries the `accessibilit
 | frontend-pass | Feedback past 1 s, progress and cancel past 10 s (4 orgs) | `svc-slow-operation-shows-progress` | stable |
 | frontend-pass | Reserve space for late content (1 firm org, 2 indirect) | `svc-async-content-reserves-space` | draft |
 | frontend-pass | Usable at 320 CSS px and 200% text zoom; zoom not blocked (2 orgs) | `svc-reflow-and-zoom` | stable |
-| frontend-pass | A unique `<title>` per page and client-side view (3 orgs) | `svc-page-title-per-route` | stable |
+| frontend-pass | A unique `<title>` per page and client-side view (3 orgs) | `svc-page-title-per-route` | draft |
 | frontend-pass | One label, icon, and place per action across screens (4 orgs) | `sys-consistent-ui-terms` | stable |
-| frontend-pass | An automated accessibility check in the tests fails on a violation (3 orgs; tools find a minority) | `code-a11y-check-in-ci` | stable |
+| frontend-pass | An automated accessibility check in the tests fails on a violation (3 orgs; tools find a minority) | `code-a11y-check-in-ci` | draft |
 | frontend-pass | A UI change ships screenshots and a keyboard and zoom pass (3 orgs; screenshots unsourced) | `chg-ui-change-screenshots-and-keyboard-pass` | draft |
 | frontend-pass | Audit with assistive technology before a public launch (3 orgs, one weak) | `prod-a11y-audit-before-launch` | draft |
 | frontend-pass | Empty states say what is missing and offer a next action | dropped: 1 org (NN/g) | dropped |
