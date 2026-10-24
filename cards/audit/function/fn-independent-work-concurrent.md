@@ -4,11 +4,12 @@ level: function
 tags: [performance, correctness, concurrency]
 severity: should-fix
 status: stable
-note: Python and Mozilla docs plus the cursor/plugins review skill back the Rule; the cursor skill is opinion, counted as an org as in earlier passes
+note: Python, Mozilla, and Go (errgroup) docs back the Rule; the cursor/plugins skill is opinion and supports it
 lang: core
 applies_when: A function awaits or calls several I/O operations that do not depend on each other.
 tool_gate: none
 borrowed_from:
+  - https://pkg.go.dev/golang.org/x/sync/errgroup
   - https://github.com/cursor/plugins/blob/main/thermos/skills/thermo-nuclear-code-quality-review/SKILL.md
   - https://docs.python.org/3/library/asyncio-task.html
   - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
