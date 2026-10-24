@@ -31,11 +31,17 @@ LEVEL_DESC = {
     "incident": "Checks an incident and its follow-up: evidence, guards, and owned actions.",
 }
 INPUT = {lv: i for i, lv in ROUTES}
-LEGEND = ('<p class="legend">Severity: <span class="b block">block</span> a FAIL blocks the change or release; '
-          '<span class="b should-fix">should-fix</span> fix it, but it need not block; '
-          '<span class="b discuss">discuss</span> raise it with the author. '
-          'Status: <span class="b stable">stable</span> vetted, used for verdicts; '
-          '<span class="b draft">draft</span> not vetted yet.</p>')
+LEGEND = ('<ul class="legend">'
+          '<li><span class="b block">block</span>: must be fixed before merge or release.</li>'
+          '<li><span class="b should-fix">should-fix</span>: fix it, but it need not block.</li>'
+          '<li><span class="b discuss">discuss</span>: raise it and decide together.</li>'
+          '<li><span class="b stable">stable</span>: vetted; use for verdicts.</li>'
+          '<li><span class="b draft">draft</span>: not vetted; do not use for a verdict.</li>'
+          '<li>Tool gate: what a linter or CI check could enforce instead of a reviewer.</li></ul>')
+SEVERITY = ["## Severity", "", "- `block`: must be fixed before merge or release.", "- `should-fix`: fix it, but it need not block.",
+            "- `discuss`: raise it and decide together.", ""]
+BASE = "https://goodcodereview.com"
+NAME = {lv: "Change review" if lv == "change" else f"{lv.capitalize()} audit" for lv in LEVELS}
 VERDICT = "Report each check as <code>PASS</code>, <code>FAIL</code>, or <code>N/A</code> with <code>file:line</code> evidence. A <code>FAIL</code> carries the card's severity."
 DRAFT_NOTE = "A draft card is not vetted. Read it for ideas, but do not use it for a verdict."
 CSS = """:root{--bg:#fff;--fg:#1a1a1a;--mut:#666;--line:#ddd;--acc:#0b5fff;--red:#c22;--grn:#1a7f1a;--amb:#a60}
@@ -53,11 +59,13 @@ pre.fail{border-left:4px solid var(--red)}pre.pass{border-left:4px solid var(--g
 button{font:inherit;font-size:.85rem;cursor:pointer;color:var(--acc);background:none;border:1px solid var(--line);border-radius:1rem;padding:.1rem .6rem;margin:0 .3rem .3rem 0}
 button[aria-pressed=true]{background:var(--acc);color:var(--bg);font-weight:bold}
 ul.ck{list-style:none;padding:0}ul.ck li{border-top:1px solid var(--line);padding:.4rem 0}
-.doors a{display:block;border:1px solid var(--line);padding:1rem;margin:.6rem 0;border-radius:6px}footer{color:var(--mut);margin-top:2rem}"""
-JS = """const q=s=>[...document.querySelectorAll(s)],S={c:new Set(),t:new Set(),l:new Set()};
+ul.legend{list-style:none;padding:0;font-size:.9rem}ul.legend li{margin:.1rem 0}ul.legend .b{margin-right:0}pre.wrap{white-space:pre-wrap}footer{color:var(--mut);margin-top:2rem}"""
+JS = """const q=s=>[...document.querySelectorAll(s)],S={c:new Set(),t:new Set(),l:new Set()},E=document.getElementById('empty'),D=document.getElementById('dsum');
 function go(){q('[data-tags]').forEach(a=>{const g=a.dataset.tags.split(' ');
 a.hidden=(S.c.size>0&&![...S.c].some(x=>g.includes(x)))||[...S.t].some(x=>!g.includes(x))||(S.l.size>0&&!S.l.has(a.dataset.level))});
-document.getElementById('empty').hidden=q('article[data-tags]:not([hidden])').length>0}
+const on=S.c.size+S.t.size+S.l.size>0,s=q('article[data-tags]:not([hidden])').filter(a=>!a.closest('details')).length,d=q('details article[data-tags]:not([hidden])').length;
+if(E){E.hidden=!on||s>0;E.textContent='No stable cards match.'+(d?' '+d+' draft '+(d>1?'cards match':'card matches')+' below.':'')}
+if(D)D.textContent=D.dataset.n+' draft cards'+(on?' ('+d+' match)':'')}
 q('button[data-k]').forEach(b=>b.onclick=()=>{const s=S[b.dataset.k],v=b.dataset.v;
 s.has(v)?s.delete(v):s.add(v);b.setAttribute('aria-pressed',s.has(v));go()});
 const op=()=>{const e=document.getElementById(location.hash.slice(1)),d=e&&e.closest('details');if(d){d.open=true;e.scrollIntoView()}};
@@ -70,8 +78,10 @@ UNSUPPORTED = {"numbered list": r"\s*\d+[.)] ", "table": r"\s*\|", "quote": r"\s
 def check_md(path, text):
     """Return an error per source line md() would render wrongly."""
     prose = re.sub(r"^```[^\n]*\n.*?^```[ \t]*$", "", text, flags=re.S | re.M)
-    return [f"{path}: unsupported markdown ({k}): {l.strip()[:50]}"
-            for l in prose.split("\n") for k, r in UNSUPPORTED.items() if re.match(r, l)]
+    return ([f"{path}: unsupported markdown ({k}): {l.strip()[:50]}"
+             for l in prose.split("\n") for k, r in UNSUPPORTED.items() if re.match(r, l)]
+            + [f"{path}: heading with text on the next line: {b.strip()[:50]}"
+               for b in re.split(r"\n\s*\n", prose) if re.match(r"#+ ", b) and "\n" in b.strip()])
 
 
 def inline(s, ids):
@@ -79,6 +89,7 @@ def inline(s, ids):
     codes = []
     s = re.sub(r"`([^`]+)`", lambda m: codes.append(m.group(1)) or f"\0{len(codes) - 1}\0", s)
     s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
+    s = re.sub(r"(?<![*\w])\*(?!\s)([^*\n]+?)(?<!\s)\*(?![*\w])", r"<em>\1</em>", s)
     s = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", r'<a href="\2">\1</a>', s)
     s = re.sub(r"\[\[([^\]]+)\]\]", lambda m: f'<a href="{ids.get(m.group(1), "#")}">{m.group(1)}</a>', s)
     return re.sub(r"\0(\d+)\0", lambda m: f"<code>{codes[int(m.group(1))]}</code>", s)
@@ -132,12 +143,12 @@ def sources(fm):
 def card_html(fm, body, ids):
     b = f'<span class="b {fm["severity"]}">{fm["severity"]}</span><span class="b {fm["status"]}">{fm["status"]}</span>{chips(fm)}'
     gate = "" if fm["tool_gate"] == "none" else f'<p>Tool gate: {inline(fm["tool_gate"], ids)}</p>'
-    return (f'<article id="{fm["id"]}" data-tags="{html.escape(" ".join(fm["tags"]))}" data-level="{fm["level"]}"><h3>{fm["id"]}</h3>{b}'
+    return (f'<article id="{html.escape(fm["id"])}" data-tags="{html.escape(" ".join(fm["tags"]))}" data-level="{fm["level"]}"><h3>{html.escape(fm["id"])}</h3>{b}'
             f'<p><strong>Applies when:</strong> {inline(fm["applies_when"], ids)}</p>{md(body, ids)}{gate}{sources(fm)}</article>')
 
 
 def row(fm, body, ids):
-    return (f'<li data-tags="{html.escape(" ".join(fm["tags"]))}" data-level="{fm["level"]}"><a href="#{fm["id"]}">{fm["id"]}</a> '
+    return (f'<li data-tags="{html.escape(" ".join(fm["tags"]))}" data-level="{fm["level"]}"><a href="#{html.escape(fm["id"])}">{html.escape(fm["id"])}</a> '
             f'<span class="b {fm["severity"]}">{fm["severity"]}</span>{chips(fm)}<br>{inline(rule(body), ids)}</li>')
 
 
@@ -157,12 +168,13 @@ def listing(title, intro, cards, ids, links):
     topics = sorted(seen - set(CONCERNS))
     if topics:
         flt += "<details><summary>Topic tags</summary>" + buttons("Topics", "t", topics) + "</details>"
-    ck = ('<ul class="ck">' + "".join(row(fm, b, ids) for _, fm, b in stable) + "</ul>") if stable else "<p>No stable cards yet. Draft cards are below.</p>"
-    body = (intro + LEGEND + f"<h2>Filters</h2>{flt}<p id=\"empty\" hidden>No cards match these filters.</p>"
-            f"<h2>Checklist</h2>{ck}<h2>Cards</h2>"
-            + ("".join(card_html(fm, b, ids) for _, fm, b in stable) or "<p>No stable cards yet.</p>")
-            + (f"<h2>Draft cards</h2><details><summary>{len(draft)} draft cards</summary><p>{DRAFT_NOTE}</p>"
-               + "".join(card_html(fm, b, ids) for _, fm, b in draft) + "</details>" if draft else ""))
+    drafts = (f'<h2>Draft cards</h2>{"" if stable else "<p>No stable cards yet.</p>"}<details><summary id="dsum" data-n="{len(draft)}">{len(draft)} draft cards</summary>'
+              f"<p>{DRAFT_NOTE}</p>" + "".join(card_html(fm, b, ids) for _, fm, b in draft) + "</details>") if draft else ""
+    if not stable:
+        return page(title, intro + LEGEND + drafts, True, links)
+    ck = '<ul class="ck">' + "".join(row(fm, b, ids) for _, fm, b in stable) + "</ul>"
+    body = (intro + LEGEND + f'<h2>Filters</h2>{flt}<p id="empty" hidden></p>'
+            f"<h2>Checklist</h2>{ck}<h2>Cards</h2>" + "".join(card_html(fm, b, ids) for _, fm, b in stable) + drafts)
     return page(title, body, True, links)
 
 
@@ -185,18 +197,18 @@ def main():
     ids = {fm["id"]: (f"pack-{fm['lang']}.html" if fm["lang"] != "core" else f"{fm['level']}.html") + f"#{fm['id']}"
            for _, fm, _ in cards}
     ids.update({g.stem: f"glossary.html#{g.stem}" for g in gloss})
-    links = ([("index.html", "Home"), ("concerns.html", "Concerns")] + [(f"{lv}.html", lv) for lv in LEVELS]
-             + [(f"pack-{pk}.html", f"pack: {pk}") for pk in packs] + [("glossary.html", "Glossary")])
+    links = ([("index.html", "Home"), ("concerns.html", "Concerns")] + [(f"{lv}.html", NAME[lv]) for lv in LEVELS]
+             + [(f"pack-{pk}.html", f"{pk.capitalize()} pack") for pk in packs] + [("glossary.html", "Glossary")])
 
     shutil.rmtree(SITE, ignore_errors=True)
     SITE.mkdir()
     pages = []  # (file, title, intro, cards)
     for lv in LEVELS:
-        pages.append((f"{lv}.html", f"Level: {lv}",
+        pages.append((f"{lv}.html", NAME[lv],
                       f"<p>{LEVEL_DESC[lv]} Use it for this input: {INPUT[lv]}. {VERDICT}</p>",
                       [c for c in cards if c[1]["level"] == lv and c[1]["lang"] == "core"]))
     for pk in packs:
-        pages.append((f"pack-{pk}.html", f"Pack: {pk}",
+        pages.append((f"pack-{pk}.html", f"{pk.capitalize()} pack",
                       f"<p>Cards specific to {pk}. Use them with the level page that matches your input. {VERDICT}</p>",
                       [c for c in cards if c[1]["lang"] == pk]))
     pages.append(("concerns.html", "Concerns",
@@ -213,21 +225,22 @@ def main():
     (SITE / "404.html").write_text(page("Not found", '<p><a href="index.html">Back to the start</a></p>', links=links))
     npx = "npx skills add n0nuser/goodcodereview"
     plugin = "/plugin marketplace add n0nuser/goodcodereview\n/plugin install goodcodereview@goodcodereview"
-    rows = lambda lvs: "<ul>" + "".join(f'<li><a href="{lv}.html">{lv}</a>: {LEVEL_DESC[lv]} Input: {INPUT[lv]}.</li>' for lv in lvs) + "</ul>"
+    rows = lambda lvs: "<ul>" + "".join(f'<li><a href="{lv}.html">{NAME[lv]}</a>: {LEVEL_DESC[lv]} Input: {INPUT[lv]}.</li>' for lv in lvs) + "</ul>"
     (SITE / "index.html").write_text(page("Good Code Review", (
-        "<p>A checklist for reviewing code, for people and for agents. " + VERDICT + "</p>"
+        "<p>A checklist for reviewing code, for people and for agents. A card is one rule that a reviewer marks <code>PASS</code>, <code>FAIL</code>, or <code>N/A</code>. Each card has a FAIL example and a PASS example.</p>"
+        "<p>" + VERDICT + "</p>"
         "<h2>Start a review</h2>"
         "<p>Paste this to your agent:</p>"
-        "<pre><code>Read https://goodcodereview.com/llms.txt and use it to review my code.</code></pre>"
+        "<pre class='wrap'><code>Read https://goodcodereview.com/llms.txt and use it to review my code.</code></pre>"
         "<p>To install it as a skill (Claude Code, Codex, Cursor, and other tools that read <code>skills/&lt;name&gt;/SKILL.md</code>), run:</p>"
-        f"<pre><code>{npx}</code></pre>"
+        f"<pre class='wrap'><code>{npx}</code></pre>"
         "<p>To install it as a Claude Code plugin, run:</p>"
-        f"<pre><code>{plugin}</code></pre>"
+        f"<pre class='wrap'><code>{plugin}</code></pre>"
         "<p>To review by hand, pick a level below and work through its checklist.</p>"
-        f"<h2>Review a change</h2>{rows(['change'])}<h2>Audit existing code</h2>{rows(AUDIT)}"
+        f"<h2>Choose a review</h2>{rows(LEVELS)}"
         "<h2>Scope a review</h2><p>To review only some concerns, such as performance, use the <a href=\"concerns.html\">Concerns</a> page.</p>"
         "<h2>Packs</h2><p>A pack adds language-specific cards on top of the levels. Use one with the level that matches your input.</p>"
-        "<p>" + (", ".join(f'<a href="pack-{p}.html">{p}</a>' for p in packs) or "No packs yet.") + "</p>"), links=links))
+        "<p>" + (", ".join(f'<a href="pack-{p}.html">{p.capitalize()} pack</a>' for p in packs) or "No packs yet.") + "</p>"), links=links))
 
     stable = [c for c in cards if c[1]["status"] == "stable"]
     draft = [c for c in cards if c[1]["status"] != "stable"]
@@ -256,19 +269,37 @@ def main():
     (SKILL / "SKILL.md").write_text("\n".join(sk))
     if len(sk) > SKILL_BUDGET:
         sys.exit(f"SKILL.md is {len(sk)} lines, budget {SKILL_BUDGET}")
-    # llms.txt = SKILL.md body (same routing, verdict, scope, stable cards) with the reference pointer aimed at the site,
-    # then the glossary, then drafts last. Drafts are never mixed into the vetted sections.
-    llms = [("The full text of each card is at https://goodcodereview.com/<level>.html." if l.startswith("The full text") else l)
-            for l in sk[5:]]
-    llms += ["## Glossary (glossary.html)", ""] + [f"- {p.stem}" for p in gloss] + [""]
+    # llms.txt = SKILL.md body (same routing, verdict, scope, stable cards), opened by the SKILL description, with a Severity
+    # section and a full-text URL per level added. Then the glossary, then drafts last, never mixed into the vetted sections.
+    url = lambda fm: f"{BASE}/pack-{fm['lang']}.html" if fm["lang"] != "core" else f"{BASE}/{fm['level']}.html"
+    body = list(sk[5:])
+    k = next(i for i, l in enumerate(body) if l.startswith("The full text"))
+    del body[k:k + 2]
+    llms = [body[0], "", sk[2][len("description: "):], ""]
+    seen_level = False
+    for l in body[2:]:
+        if l.startswith("## ") and l[3:] in LEVELS:
+            if not seen_level:
+                llms += SEVERITY
+                seen_level = True
+            llms += [l, "", f"Full text: {BASE}/{l[3:]}.html"]
+        else:
+            llms.append(l)
+    llms += ["## Glossary", "", f"Terms the cards link to: {BASE}/glossary.html", ""]
     llms += ["## Draft cards (not vetted; do not use for a verdict)", ""]
     for lv in LEVELS:
         cs = [c for c in draft if c[1]["level"] == lv and c[1]["lang"] == "core"]
         if cs:
-            llms += [f"### {lv}", ""] + [line(fm, b) for _, fm, b in cs] + [""]
+            llms += [f"### {lv}", "", f"Full text: {url(cs[0][1])}", ""] + [line(fm, b) for _, fm, b in cs] + [""]
     for pk in packs:
-        llms += [f"### pack {pk}", ""] + [line(fm, b) for _, fm, b in draft if fm["lang"] == pk] + [""]
-    (SITE / "llms.txt").write_text("\n".join(llms))
+        cs = [c for c in draft if c[1]["lang"] == pk]
+        llms += [f"### pack {pk}", "", f"Full text: {url(cs[0][1])}", ""] + [line(fm, b) for _, fm, b in cs] + [""]
+    text = "\n".join(llms)
+    vetted, _, drafts = text.partition("## Draft cards")
+    idre = lambda t: re.findall(r"^- `([^`]+)` \[", t, re.M)
+    if idre(vetted) != idre("\n".join(sk)) or {fm["id"] for _, fm, _ in draft} & set(idre(vetted)) or "\n## " in drafts:
+        sys.exit("llms.txt: stable ids before the draft heading differ from SKILL.md, or a draft sits before it")
+    (SITE / "llms.txt").write_text(text)
     print(f"site: {len(pages) + 3} pages; SKILL.md: {len(sk)} lines; stable cards: {len(stable)}")
 
 

@@ -88,6 +88,8 @@ def validate(root):
         tags = fm.get("tags", [])
         if not any(t in CONCERNS for t in tags):
             err(f"tags need at least one concern: {', '.join(CONCERNS)}")
+        if cid and not re.fullmatch(r"[a-z0-9-]+", cid):
+            err(f"id '{cid}' must match [a-z0-9-]+")
         if len(ids.get(cid, [])) > 1:
             err(f"duplicate id '{cid}'")
         if lang == "core" and level in LEVEL_PREFIX and not cid.startswith(LEVEL_PREFIX[level] + "-"):
