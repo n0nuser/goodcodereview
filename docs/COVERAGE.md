@@ -31,7 +31,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #24 | Server-Sent Events | glossary/server-sent-events | glossary |
 | 111-list #25 | Database Indexing | `sys-index-concurrently` | draft |
 | 111-list #26 | Query Optimization | glossary/query-optimization | glossary |
-| 111-list #27 | N+1 Queries | `sys-n-plus-one-pooling` | draft |
+| 111-list #27 | N+1 Queries | `sys-n-plus-one-pooling` | stable |
 | 111-list #28 | Connection Pooling | `svc-circuit-breaker-bulkhead` | draft |
 | 111-list #29 | Read Replicas | glossary/read-replicas | glossary |
 | 111-list #30 | Sharding | glossary/sharding | glossary |
@@ -54,7 +54,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #47 | Vertical Scaling | glossary/vertical-scaling | glossary |
 | 111-list #48 | CDN | glossary/cdn | glossary |
 | 111-list #49 | Edge Caching | glossary/edge-caching | glossary |
-| 111-list #50 | Cache Invalidation | `sys-cache-bounds-invalidation` | draft |
+| 111-list #50 | Cache Invalidation | `sys-cache-bounds-invalidation` | stable |
 | 111-list #51 | Feature Flags | `prod-kill-switch-fallback` | draft |
 | 111-list #51b | Feature Flags (telemetry) | `prod-wide-events-bounded-labels` | draft |
 | 111-list #52 | Blue-Green Deployment | glossary/blue-green-deployment | glossary |
@@ -156,7 +156,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | thermo-nuclear | P4 Magic, thin wrappers, identity helpers | `fn-no-pass-through-wrapper` | draft |
 | thermo-nuclear | P5 Needless optionality, any/unknown, casts, loose object shapes | `py-no-cast`, `fn-known-keys-get-a-type` | draft |
 | thermo-nuclear | P6 Logic in the wrong layer; bespoke helper beside a canonical one | `mod-layers-point-inward`, `chg-reuse-before-write` | draft |
-| thermo-nuclear | P7a Independent async work run sequentially | `fn-independent-work-concurrent` | draft |
+| thermo-nuclear | P7a Independent async work run sequentially | `fn-independent-work-concurrent` | stable |
 | thermo-nuclear | P7b Related updates that can leave state half applied | `fn-atomic-related-updates` | draft |
 | thermo-nuclear | Copy-pasted logic | `chg-reuse-before-write` | draft |
 | thermo-nuclear | Temporary branching likely to stay | `chg-flag-owner-retirement` | draft |
@@ -293,7 +293,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | AWS queues: bounded queue, sideline, cheap shedding | `sys-load-shedding-bounded-queues` | stable |
 | service-system | Kleppmann / antirez: fencing, check-and-set, disagreement | `sys-lock-fencing` | stable |
 | service-system | AWS leader election: two leaders, lease check | `sys-leader-two-leaders` | draft |
-| service-system | AWS caching: TTL, size, metrics, versioned values | `sys-cache-bounds-invalidation` | draft |
+| service-system | AWS caching: TTL, size, metrics, versioned values | `sys-cache-bounds-invalidation` | stable |
 | service-system | AWS caching: cold start, stampede, cache-off test | `sys-cache-cold-start` | draft |
 | service-system | AWS health checks: liveness vs dependency, self-eviction | `sys-health-liveness-readiness` | draft |
 | service-system | PG config + altertable: lock_timeout | `sys-migration-lock-timeout` | draft |
@@ -311,7 +311,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | AWS cache-off test, ASVS degradation path | `prod-kill-switch-fallback` | draft |
 | service-system | Canary / health-check fail-open caution | `inc-rollback-path-tested` | draft |
 | service-system | First-hand card, no research source | `svc-api-compat-pagination` | draft |
-| service-system | First-hand card, no research source | `sys-n-plus-one-pooling` | draft |
+| service-system | First-hand card, no research source | `sys-n-plus-one-pooling` | stable |
 | service-system | First-hand card, no research source | `prod-slo-error-budget` | draft |
 | service-system | First-hand card, no research source | `inc-postmortem-owned-actions` | draft |
 | service-system | Glossary candidate: Shuffle sharding (tenant-to-shard assignment; reviewable only as "exists") | dropped: glossary candidate, no entry written | dropped |
@@ -522,22 +522,22 @@ From `docs/research/performance-pass.md`. Every card here except `sys-load-shedd
 | Source | Item | Maps to | Status |
 |---|---|---|---|
 | performance-pass | Attach the query plan for a new query on a growing table (3 orgs for EXPLAIN; attaching it is the card's practice) | `chg-new-query-has-plan` | draft |
-| performance-pass | Build strings with a builder or join, not `+=` in a loop (3 orgs) | `fn-join-dont-concat-in-loop` | draft |
-| performance-pass | Compile a regex once and reuse it (4 orgs) | `fn-regex-compiled-once` | draft |
-| performance-pass | No blocking I/O or long CPU work on an event loop (4 orgs) | `fn-no-blocking-call-in-async-code` | draft |
-| performance-pass | Filter, count, and aggregate in the query; select only used columns (4 orgs) | `fn-fetch-only-needed-data` | draft |
-| performance-pass | Start independent I/O together (2 orgs plus an opinion source) | `fn-independent-work-concurrent` | draft |
-| performance-pass | Build pooled clients once and reuse them (4 orgs) | `mod-pooled-clients-built-once` | draft |
-| performance-pass | Paginate every list endpoint, with a default and a maximum (5 orgs; 4 for the maximum) | `svc-list-endpoint-paginates` | draft |
+| performance-pass | Build strings with a builder or join, not `+=` in a loop (3 orgs) | `fn-join-dont-concat-in-loop` | stable |
+| performance-pass | Compile a regex once and reuse it (4 orgs) | `fn-regex-compiled-once` | stable |
+| performance-pass | No blocking I/O or long CPU work on an event loop (4 orgs) | `fn-no-blocking-call-in-async-code` | stable |
+| performance-pass | Filter, count, and aggregate in the query; select only used columns (4 orgs) | `fn-fetch-only-needed-data` | stable |
+| performance-pass | Start independent I/O together (2 orgs plus an opinion source) | `fn-independent-work-concurrent` | stable |
+| performance-pass | Build pooled clients once and reuse them (4 orgs) | `mod-pooled-clients-built-once` | stable |
+| performance-pass | Paginate every list endpoint, with a default and a maximum (5 orgs; 4 for the maximum) | `svc-list-endpoint-paginates` | stable |
 | performance-pass | Timeout on every remote call, from the caller's deadline (2 orgs for propagation) | `svc-timeouts` | draft |
-| performance-pass | One query or batch for related rows, never one per row (4 orgs) | `sys-n-plus-one-pooling` | draft |
-| performance-pass | Bound and expire every cache (3 orgs; invalidation 1) | `sys-cache-bounds-invalidation` | draft |
-| performance-pass | A deadline and a miss policy on every fan-out leg (5 orgs) | `sys-fanout-leg-deadlines` | draft |
+| performance-pass | One query or batch for related rows, never one per row (4 orgs) | `sys-n-plus-one-pooling` | stable |
+| performance-pass | Bound and expire every cache (3 orgs; invalidation 1) | `sys-cache-bounds-invalidation` | stable |
+| performance-pass | A deadline and a miss policy on every fan-out leg (5 orgs) | `sys-fanout-leg-deadlines` | stable |
 | performance-pass | Bounded queues and cheap rejection (5 orgs, corroboration only) | `sys-load-shedding-bounded-queues` | stable |
-| performance-pass | A CI check fails the build on the performance budget (7 orgs) | `code-perf-budget-in-ci` | draft |
-| performance-pass | Load test past peak on production-like infrastructure before launch (3 orgs) | `prod-load-test-before-launch` | draft |
-| performance-pass | Latency SLOs and alerts on histogram percentiles, not the mean (3 firm orgs) | `prod-latency-slo-percentile` | draft |
-| performance-pass | A production profile is obtainable without a redeploy (4 orgs) | `prod-profile-on-demand` | draft |
+| performance-pass | A CI check fails the build on the performance budget (7 orgs) | `code-perf-budget-in-ci` | stable |
+| performance-pass | Load test past peak on production-like infrastructure before launch (3 orgs) | `prod-load-test-before-launch` | stable |
+| performance-pass | Latency SLOs and alerts on histogram percentiles, not the mean (3 firm orgs) | `prod-latency-slo-percentile` | stable |
+| performance-pass | A production profile is obtainable without a redeploy (4 orgs) | `prod-profile-on-demand` | stable |
 | performance-pass | A performance fix names its bottleneck with a profile or trace (2 orgs) | `inc-perf-fix-has-profile-evidence` | draft |
 | performance-pass | A perf postmortem adds an automated regression guard (5 orgs) | `inc-perf-regression-guard` | draft |
 | performance-pass | Benchmark for every hot-path change | dropped: a reviewer cannot tell a hot path without a profile; covered by `chg-perf-claim-evidence` and `code-perf-budget-in-ci` | dropped |
