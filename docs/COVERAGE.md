@@ -23,7 +23,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #16 | Pub/Sub | glossary/pub-sub | glossary |
 | 111-list #17 | Event-Driven Architecture | glossary/event-driven-architecture | glossary |
 | 111-list #18 | Distributed Transactions | glossary/distributed-transactions | glossary |
-| 111-list #19 | Saga Pattern | `svc-saga-steps` | gap |
+| 111-list #19 | Saga Pattern | `svc-saga-steps` | draft |
 | 111-list #20 | Dead Letter Queues | `svc-dlq` | draft |
 | 111-list #21 | Cron Jobs | `sys-leader-two-leaders` | draft |
 | 111-list #22 | WebSockets | glossary/websockets | glossary |
@@ -45,7 +45,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #38 | Distributed Locks | `sys-lock-fencing` | draft |
 | 111-list #39 | Race Conditions | glossary/race-conditions | glossary |
 | 111-list #40 | Deadlocks | glossary/deadlocks | glossary |
-| 111-list #41 | Memory Leaks | `fn-resource-lifetime` | gap |
+| 111-list #41 | Memory Leaks | `fn-resource-lifetime` | draft |
 | 111-list #42 | Garbage Collection | glossary/garbage-collection | glossary |
 | 111-list #43 | Thread Safety | glossary/thread-safety | glossary |
 | 111-list #44 | Backpressure | `sys-load-shedding-bounded-queues` | draft |
@@ -88,7 +88,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #80 | SSRF | `sys-ssrf` | draft |
 | 111-list #81 | Database Migrations | `sys-migration-lock-timeout` | draft |
 | 111-list #81b | Database Migrations (constraints) | `sys-constraint-not-valid` | draft |
-| 111-list #81c | Database Migrations (rewrite) | `chg-migration-add-column-rewrite` | gap |
+| 111-list #81c | Database Migrations (rewrite) | `chg-migration-add-column-rewrite` | draft |
 | 111-list #81d | Database Migrations (backfill) | `sys-migration-expand-contract` | draft |
 | 111-list #82 | Schema Versioning | `sys-migration-expand-contract` | draft |
 | 111-list #83 | Disaster Recovery | glossary/disaster-recovery | glossary |
@@ -115,7 +115,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #104 | Infrastructure as Code | glossary/infrastructure-as-code | glossary |
 | 111-list #105 | Terraform | glossary/terraform | glossary |
 | 111-list #106 | Helm Charts | glossary/helm-charts | glossary |
-| 111-list #107 | Build Caching | `code-build-hermetic` | gap |
+| 111-list #107 | Build Caching | `code-build-hermetic` | draft |
 | 111-list #108 | Dependency Hell | `code-dependency-pinning` | draft |
 | 111-list #109 | Production Incidents | glossary/production-incidents | glossary |
 | 111-list #110 | On-Call | glossary/on-call | glossary |
@@ -124,12 +124,12 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #X2 | Concurrency (cancellation) | `py-cancellation` | draft |
 | 111-list #X3 | Concurrency (timeout handler) | `py-cancellation` | draft |
 | 111-list #X4 | Concurrency (bounded await) | `svc-timeouts` | draft |
-| 111-list #X5 | Async vs Sync | `mod-prefer-sync-api` | gap |
+| 111-list #X5 | Async vs Sync | `mod-prefer-sync-api` | draft |
 | 111-list #X6 | Clean Code | glossary/clean-code | glossary |
 | 111-list #X7 | YAGNI | `mod-yagni` | draft |
 | 111-list #X8 | Grug | glossary/grug | glossary |
 | 111-list #X9 | SOLID | glossary/solid | glossary |
-| 111-list #X9b | SOLID (Liskov) | `mod-subtype-passes-parent-tests` | gap |
+| 111-list #X9b | SOLID (Liskov) | `mod-subtype-passes-parent-tests` | draft |
 | 111-list #X10 | TDD | glossary/tdd | glossary |
 | 111-list #X11 | DDD | glossary/ddd | glossary |
 | 111-list #X13 | Pocock Standards axis | `chg-match-codebase-pattern` | draft |
@@ -145,25 +145,25 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | pocock-smells | Speculative Generality | `mod-yagni` | draft |
 | pocock-smells | Message Chains | `mod-fowler-smells` | draft |
 | pocock-smells | Middle Man | `fn-no-pass-through-wrapper` | draft |
-| pocock-smells | Refused Bequest | `mod-subtype-passes-parent-tests` | gap |
+| pocock-smells | Refused Bequest | `mod-subtype-passes-parent-tests` | draft |
 | pocock-smells | Smells are judgement calls; the repo's own standard overrides the baseline | `mod-fowler-smells` | draft |
 | pocock-smells | Skip what tooling already enforces | `py-ruff-gate` | draft |
 | pocock-smells | Axes reported separately, never reranked; worst finding per axis | dropped: output format of one skill | dropped |
 | thermo-nuclear | P0 Ambition: restructure to delete whole layers (code judo) | dropped: reviewer posture, nothing to FAIL | dropped |
 | thermo-nuclear | P1 File crosses 1000 lines | `code-file-lines-ceiling` | draft |
-| thermo-nuclear | P2 Ad-hoc conditionals, one-off flags in unrelated flows | `chg-no-special-case-branches` | gap |
+| thermo-nuclear | P2 Ad-hoc conditionals, one-off flags in unrelated flows | `chg-no-special-case-branches` | draft |
 | thermo-nuclear | P3 Working code is not enough; prefer removing moving parts | dropped: reviewer posture, see chg-review-signal | dropped |
 | thermo-nuclear | P4 Magic, thin wrappers, identity helpers | `fn-no-pass-through-wrapper` | draft |
 | thermo-nuclear | P5 Needless optionality, any/unknown, casts, loose object shapes | `py-no-cast`, `fn-known-keys-get-a-type` | draft |
 | thermo-nuclear | P6 Logic in the wrong layer; bespoke helper beside a canonical one | `mod-layers-point-inward`, `chg-reuse-before-write` | draft |
-| thermo-nuclear | P7a Independent async work run sequentially | `fn-independent-work-concurrent` | gap |
-| thermo-nuclear | P7b Related updates that can leave state half applied | `fn-atomic-related-updates` | gap |
+| thermo-nuclear | P7a Independent async work run sequentially | `fn-independent-work-concurrent` | draft |
+| thermo-nuclear | P7b Related updates that can leave state half applied | `fn-atomic-related-updates` | draft |
 | thermo-nuclear | Copy-pasted logic | `chg-reuse-before-write` | draft |
 | thermo-nuclear | Temporary branching likely to stay | `chg-flag-owner-retirement` | draft |
 | thermo-nuclear | Few high-conviction comments; direct tone; approval bar | `chg-review-signal`, `chg-review-comment-format` | draft |
 | thermo-nuclear | Review: only report added or modified code | `chg-review-signal` | draft |
 | thermo-nuclear | Review: trace side effects before claiming breakage; no unfinished research | `chg-verify-before-claim` | draft |
-| thermo-nuclear | Review: developer-experience breaks (env vars, ports, secret sources, new scripts) | `chg-devex-breaking-config` | gap |
+| thermo-nuclear | Review: developer-experience breaks (env vars, ports, secret sources, new scripts) | `chg-devex-breaking-config` | draft |
 | thermo-nuclear | Review: feature-gate leaks | `chg-flag-owner-retirement` | draft |
 | thermo-nuclear | Review: do not report an intended breakage | dropped: reviewer posture | dropped |
 | thermo-nuclear | Review: do not over-report priority | `chg-review-signal` | draft |
@@ -181,10 +181,10 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | research-gap | an except or catch swallows an error and continues, leaving a | `fn-propagate-dont-swallow` | draft |
 | research-gap | release artifacts have no provenance. | `code-workflow-supply-chain` | draft |
 | research-gap | model output or retrieved text is acted on without validation, | `sys-prompt-injection` | draft |
-| research-gap | an AI-assisted PR lacks disclosure or an author able to explai | `code-ai-pr-disclosure` | gap |
+| research-gap | an AI-assisted PR lacks disclosure or an author able to explai | `code-ai-pr-disclosure` | draft |
 | research-gap | Release tied to a reviewed revision | dropped: duplicate of code-build-hermetic | dropped |
 | research-gap | Incident response/postmortems | `inc-postmortem-owned-actions`, `inc-rollback-path-tested` | draft |
-| research-gap | a credential is committed to the repo. Not backed by the notes | `code-secret-scan` | gap |
+| research-gap | a credential is committed to the repo. Sources added in second pass | `code-secret-scan` | draft |
 | research-gap | Reviewer conduct | `chg-review-comment-format` | draft |
 | change-codebase | Consistency with codebase unless pattern is bad; improve what you touch | `chg-match-codebase-pattern` | draft |
 | change-codebase | Reuse: search for an existing helper first | `chg-reuse-before-write` | draft |
@@ -243,7 +243,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Naming and classes: Name intermediate conditions | `fn-name-intermediate-conditions` | draft |
 | core-python | Naming and classes: Bool argument at call site | `fn-bool-arg-at-callsite` | draft |
 | core-python | Naming and classes: Code explains itself; rename before commenting | `fn-comments-explain-why` | draft |
-| core-python | Naming and classes: English everywhere | `fn-english-identifiers` | gap |
+| core-python | Naming and classes: English everywhere | `fn-english-identifiers` | draft |
 | core-python | Naming and classes: No codenames or ticket numbers in code | `fn-comments-survive-context` | draft |
 | core-python | Naming and classes: A class earns its instance; Protocol needs two implementations | `py-class-earns-its-instance` | draft |
 | core-python | Naming and classes: Field names over indexes; no getattr/setattr | `fn-no-getattr-for-known-names` | draft |
@@ -256,7 +256,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Error handling: Base exception per package, errors module | `py-error-hierarchy` | draft |
 | core-python | Error handling: Retry only transient failures on idempotent operations | `svc-retry-policy` | draft |
 | core-python | Error handling: Error responses don't leak internals | `sys-secrets-and-errors` | draft |
-| core-python | Error handling: Log the branches that matter with a request ID | `svc-request-id-logging` | gap |
+| core-python | Error handling: Log the branches that matter with a request ID | `svc-request-id-logging` | draft |
 | core-python | Security: Validate every input; name new attack surface; secrets from settings | `mod-validate-at-boundary-once`, `chg-name-attack-surface`, `sys-secrets-and-errors` | draft |
 | core-python | Docstrings and comments: Comments explain why | `fn-comments-explain-why` | draft |
 | core-python | Docstrings and comments: Comments survive loss of context | `fn-comments-survive-context` | draft |
@@ -273,7 +273,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Resource lifecycle: Per-key caches bounded | `mod-bounded-caches` | draft |
 | core-python | Resource lifecycle: Pooled clients built once | `mod-pooled-clients-built-once`, `py-httpx-client-lifespan` | draft |
 | core-python | Resource lifecycle: Timeouts on both legs | `svc-timeouts`, `py-httpx-client-lifespan` | draft |
-| core-python | Resource lifecycle: Stream, don't materialise; bound background tasks | `svc-stream-dont-materialise` | gap |
+| core-python | Resource lifecycle: Stream, don't materialise; bound background tasks | `svc-stream-dont-materialise` | draft |
 | core-python | Change discipline: Never silence a diagnostic | `py-no-silenced-diagnostics` | draft |
 | core-python | Change discipline: No paths relative to the working directory | `py-paths-from-file` | draft |
 | core-python | Change discipline: Verify before claiming; delete workarounds; stay in scope; Chesterton; measure | `chg-verify-before-claim`, `chg-matches-spec`, `chg-chestertons-fence` | draft |
@@ -328,20 +328,5 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 
 ## Gaps
 
-Reserved ids with no card. Each line is the rule the card would check.
+None remaining.
 
-- `chg-migration-add-column-rewrite`: FAIL if ADD COLUMN with a volatile default, generated stored column or identity on a large table.
-- `chg-devex-breaking-config`: FAIL if a change renames env vars, remaps ports, moves secret sources or adds a required script with no migration note.
-- `chg-no-special-case-branches`: FAIL if a change adds a one-off conditional, flag or nullable mode into an unrelated flow instead of a dedicated abstraction.
-- `code-ai-pr-disclosure`: FAIL if an AI-assisted PR lacks disclosure or an author able to explain it.
-- `code-build-hermetic`: FAIL if build depends on host tools or floating versions, or a release is not tied to one revision.
-- `code-secret-scan`: FAIL if a credential is committed to the repo (unsourced).
-- `fn-english-identifiers`: FAIL if identifiers or comments are not in English.
-- `fn-atomic-related-updates`: FAIL if related updates can leave state half applied when one step fails.
-- `fn-independent-work-concurrent`: FAIL if independent awaits or calls run one after another with no reason.
-- `fn-resource-lifetime`: FAIL if a task, goroutine, thread or handle has no owner or stop path, or is not released on the error path.
-- `mod-prefer-sync-api`: FAIL if a module exposes an async-only API where a synchronous one would let callers add concurrency.
-- `mod-subtype-passes-parent-tests`: FAIL if a subclass breaks the parent's black-box tests (stricter inputs, weaker outputs, broken invariants).
-- `svc-saga-steps`: FAIL if a step after the pivot is not idempotent and retryable, or a compensation can fail unhandled.
-- `svc-request-id-logging`: FAIL if a log line on a request path carries no request id.
-- `svc-stream-dont-materialise`: FAIL if a large result is materialised in memory, or background tasks are unbounded.
