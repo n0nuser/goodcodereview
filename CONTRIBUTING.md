@@ -16,4 +16,6 @@ New cards start as `status: draft`. Only `stable` cards ship in `SKILL.md`.
 
 Run `python3 tools/validate.py` to lint the cards. Run `python3 tools/build.py` to build the site and the skill.
 
+After a build, run `python3 tools/agent_ready_check.py` to check `site/` against the agent-readiness items in `docs/research/agent-readiness-gaps.md`. It reads files only and exits 1 on any failure. CI does not run it.
+
 To propose or correct a card, use the [issue templates](.github/ISSUE_TEMPLATE). Before you open a pull request, read the [pull request template](.github/pull_request_template.md).
