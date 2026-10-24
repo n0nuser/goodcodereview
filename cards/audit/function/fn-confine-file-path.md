@@ -3,10 +3,10 @@ id: fn-confine-file-path
 level: function
 tags: [security, path-traversal, files]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: Code opens, reads, writes or deletes a file whose name or path includes request data.
-tool_gate: SAST rule for `open(`, `send_file(` and `os.path.join` with a request-tainted argument.
+tool_gate: CodeQL `py/path-injection` (CWE-22) or the equivalent query for your language.
 borrowed_from:
   - https://community.owasp.org/attacks/Path_Traversal
   - https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html
@@ -32,4 +32,4 @@ if not p.is_relative_to(UPLOADS.resolve()): abort(400)
 return send_file(p)
 ```
 
-**Counterpoint.** "We already strip `..`." String stripping is a blocklist and gets bypassed. Resolve first, compare second. Symlinks inside the base directory can still escape, so do not follow them for untrusted trees.
+**Counterpoint.** "We already strip `..`." String stripping is a blocklist and gets bypassed. Resolve first, compare second. Resolving catches a symlink that already points outside, but a symlink swapped in between the check and the open still escapes. For trees that untrusted users can write to, use a rooted open such as Go's `os.OpenInRoot`, which refuses any escape at open time.

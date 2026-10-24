@@ -3,7 +3,7 @@ id: svc-rate-limit-quota
 level: service
 tags: [security, reliability, multi-tenant, overload]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: A shared API or queue serves several tenants or callers.
 tool_gate: none
@@ -22,8 +22,8 @@ borrowed_from:
 **FAIL**
 
 ```text
-every tenant shares one worker pool, no limit
-if over_limit: return 503
+every tenant shares one worker pool and one request budget
+no per-tenant limit: one tenant's batch job starves the rest
 ```
 
 **PASS**
@@ -33,6 +33,4 @@ limiter.check(tenant_id) -> 429 + Retry-After
 per-tenant semaphore on workers
 ```
 
-**See also.** [[svc-api-retry-after]] covers the `Retry-After` header the 429 must carry.
-
-**Counterpoint.** AWS notes that some of its older services use 503 for quota errors for historical reasons, so 429 is a convention, not law. The substance is per-tenant limits and distinguishable errors. Shuffle sharding (per-tenant worker subsets) is a stronger isolation option that this card does not require.
+**Counterpoint.** "One global rate limit is simpler." A global limit protects the service, but one tenant can use all of it, and then every other tenant gets errors. A per-tenant limit costs one key per tenant in the limiter. Some older services return 503 for quota errors, so the status code is a convention; what matters is that a client can tell a quota error from a capacity error. Shuffle sharding (per-tenant worker subsets) isolates tenants further, and this card does not require it.

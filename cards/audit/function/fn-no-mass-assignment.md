@@ -3,10 +3,10 @@ id: fn-no-mass-assignment
 level: function
 tags: [security, authz, api]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: A handler copies request fields into a model, ORM entity or settings object.
-tool_gate: Lint rule against `**request.json` or `Model(**data)`; schema tests that post extra fields.
+tool_gate: A custom Semgrep rule for `Model(**request.json)`; tests that post extra fields such as `is_admin` and assert they are ignored or rejected.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html
   - https://api-security.owasp.org/editions/2023/en/0xa3-broken-object-property-level-authorization

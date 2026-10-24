@@ -3,10 +3,10 @@ id: fn-no-native-deserialise-untrusted
 level: function
 tags: [security, deserialisation]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: Code turns bytes or text from outside the process into objects.
-tool_gate: SAST rules for `pickle.load`, `yaml.load`, `ObjectInputStream`, `BinaryFormatter`, `unserialize`.
+tool_gate: Bandit B301 (`pickle`) and B506 (`yaml_load`), CodeQL `py/unsafe-deserialization`; a grep for `ObjectInputStream`, `BinaryFormatter` and `unserialize` elsewhere.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html
   - https://docs.python.org/3/library/pickle.html
@@ -15,9 +15,9 @@ borrowed_from:
   - https://codeql.github.com/codeql-query-help/python/py-unsafe-deserialization/
 ---
 
-**Rule.** Parse untrusted input with a data-only format and a schema, never with a native object deserialiser.
+**Rule.** Parse untrusted input with a data-only format, never with a native object deserialiser.
 
-**Why.** `pickle`, `ObjectInputStream`, `BinaryFormatter` and full-power YAML loaders can run attacker-chosen code while they load, so validating after the call is too late. JSON or a schema-checked format cannot instantiate arbitrary classes.
+**Why.** `pickle`, `ObjectInputStream`, `BinaryFormatter` and full-power YAML loaders can run attacker-chosen code while they load, so validating after the call is too late. JSON cannot instantiate arbitrary classes. Validate the parsed data against a schema afterwards, as the PASS does.
 
 **FAIL**
 
@@ -33,4 +33,4 @@ obj = Model.model_validate_json(request.data)
 cfg = yaml.safe_load(body)
 ```
 
-**Counterpoint.** "The data comes from our own queue." Anyone who can write to the queue can run code on every consumer. If native serialisation stays, sign the payload and verify the signature before reading it.
+**Counterpoint.** "The data comes from our own queue." Anyone who can write to the queue can run code on every consumer, so the queue is a trust boundary. Signing the payload, or a Java serialisation filter that allowlists classes, narrows the risk while you migrate. The call still fails this check until it reads a data-only format.

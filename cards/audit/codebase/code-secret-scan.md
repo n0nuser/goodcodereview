@@ -3,7 +3,7 @@ id: code-secret-scan
 level: codebase
 tags: [security, process, secrets, ci]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: Any repository, including its history, issues and pull requests.
 tool_gate: Secret scanning on push (provider or pre-commit hook) with push protection on.
@@ -11,6 +11,7 @@ borrowed_from:
   - https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning
   - https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html
   - https://www.cisa.gov/resources-tools/resources/product-security-bad-practices
+  - https://docs.gitlab.com/user/application_security/secret_detection/
 ---
 
 **Rule.** Scan for committed credentials, and treat any hit as leaked: revoke and replace it first.

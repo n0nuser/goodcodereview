@@ -3,7 +3,7 @@ id: svc-session-lifecycle
 level: service
 tags: [security, authn, sessions]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: The service sets a session cookie or session ID after login.
 tool_gate: Header test on the login response; session fixation test in the end-to-end suite.
@@ -13,18 +13,18 @@ borrowed_from:
   - https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/Cookies
   - https://pages.nist.gov/800-63-4/sp800-63b/session/
   - https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html
+  - https://guides.rubyonrails.org/security.html
 ---
 
-**Rule.** Issue a new session ID at login, set `Secure`, `HttpOnly` and `SameSite` on the cookie, and end the session on the server at logout.
+**Rule.** Issue a new session ID at login, and set `Secure`, `HttpOnly` and `SameSite` on the session cookie.
 
-**Why.** A session ID that survives login can be planted by an attacker beforehand (fixation). A cookie without `HttpOnly` is readable by any injected script. A logout that only clears the browser leaves the stolen cookie valid. Also enforce an idle and an absolute timeout on the server.
+**Why.** A session ID that survives login can be planted by an attacker beforehand (fixation). A cookie without `HttpOnly` is readable by any injected script, and one without `Secure` travels over plain HTTP. Also end the session on the server at logout, because clearing only the browser cookie leaves a stolen copy valid, and enforce idle and absolute timeouts on the server.
 
 **FAIL**
 
 ```text
 Set-Cookie: sid=abc123
 login():  keep the pre-login session id
-logout(): response.delete_cookie("sid")      # server session still valid
 ```
 
 **PASS**
@@ -32,7 +32,6 @@ logout(): response.delete_cookie("sid")      # server session still valid
 ```text
 Set-Cookie: __Host-sid=<new random>; Secure; HttpOnly; SameSite=Lax; Path=/
 login():  session.regenerate()
-logout(): sessions.destroy(sid)             # then clear the cookie
 ```
 
-**Counterpoint.** "JWT sessions are stateless, so there is nothing to destroy." Then keep the token short-lived and add a server-side revocation list for logout; see [[fn-jwt-verify-pinned]].
+**Counterpoint.** "The framework already does this." Some do: Spring Security changes the session ID at login by default, and Rails gives you `reset_session`. Hand-written login code and custom session stores often skip it, and cookie flags depend on configuration. Check the login handler and the real `Set-Cookie` header, not the framework's reputation.

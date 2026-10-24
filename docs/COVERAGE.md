@@ -5,7 +5,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 
 | Source | Item | Maps to | Status |
 |---|---|---|---|
-| 111-list #1 | Rate Limiting | `svc-rate-limit-quota` | draft |
+| 111-list #1 | Rate Limiting | `svc-rate-limit-quota` | stable |
 | 111-list #2 | Caching | `sys-cache-cold-start` | draft |
 | 111-list #3 | Load Balancing | glossary/load-balancing | glossary |
 | 111-list #4 | Reverse Proxies | glossary/reverse-proxies | glossary |
@@ -72,7 +72,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #64 | SLIs | glossary/slis | glossary |
 | 111-list #65 | Error Budgets | glossary/error-budgets | glossary |
 | 111-list #66 | Observability | `prod-wide-events-bounded-labels` | draft |
-| 111-list #67 | Secrets Management | `code-secret-scan` | draft |
+| 111-list #67 | Secrets Management | `code-secret-scan` | stable |
 | 111-list #68 | IAM | glossary/iam | glossary |
 | 111-list #69 | OAuth | glossary/oauth | glossary |
 | 111-list #70 | JWT Rotation | glossary/jwt-rotation | glossary |
@@ -83,9 +83,9 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #75 | DDoS Protection | glossary/ddos-protection | glossary |
 | 111-list #76 | CORS | glossary/cors | glossary |
 | 111-list #77 | CSRF | glossary/csrf | glossary |
-| 111-list #78 | SQL Injection | `svc-sqli-authn` | draft |
-| 111-list #79 | XSS | `svc-sqli-authn` | draft |
-| 111-list #80 | SSRF | `sys-ssrf` | draft |
+| 111-list #78 | SQL Injection | `svc-sqli-authn` | stable |
+| 111-list #79 | XSS | `fn-no-raw-html-sink` | stable |
+| 111-list #80 | SSRF | `sys-ssrf` | stable |
 | 111-list #81 | Database Migrations | `sys-migration-lock-timeout` | draft |
 | 111-list #81b | Database Migrations (constraints) | `sys-constraint-not-valid` | draft |
 | 111-list #81c | Database Migrations (rewrite) | `chg-migration-add-column-rewrite` | draft |
@@ -180,11 +180,11 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | research-gap | a comment restates the code or is stale. | `fn-comments-explain-why` | stable |
 | research-gap | an except or catch swallows an error and continues, leaving a | `fn-propagate-dont-swallow` | draft |
 | research-gap | release artifacts have no provenance. | `code-workflow-supply-chain` | draft |
-| research-gap | model output or retrieved text is acted on without validation, | `sys-prompt-injection` | draft |
+| research-gap | model output or retrieved text is acted on without validation, | `sys-prompt-injection` | stable |
 | research-gap | an AI-assisted PR lacks disclosure or an author able to explai | `code-ai-pr-disclosure` | draft |
 | research-gap | Release tied to a reviewed revision | dropped: duplicate of code-build-hermetic | dropped |
 | research-gap | Incident response/postmortems | `inc-postmortem-owned-actions`, `inc-rollback-path-tested` | draft |
-| research-gap | a credential is committed to the repo. Sources added in second pass | `code-secret-scan` | draft |
+| research-gap | a credential is committed to the repo. Sources added in second pass | `code-secret-scan` | stable |
 | research-gap | Reviewer conduct | `chg-review-comment-format` | draft |
 | change-codebase | Consistency with codebase unless pattern is bad; improve what you touch | `chg-match-codebase-pattern` | draft |
 | change-codebase | Reuse: search for an existing helper first | `chg-reuse-before-write` | draft |
@@ -289,7 +289,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | Azure retry/saga: idempotency, unique saga id | `svc-idempotency-key` | stable |
 | service-system | Azure circuit breaker and bulkhead | `svc-circuit-breaker-bulkhead` | draft |
 | service-system | AWS queues: DLQ, visibility timeout, queue age | `svc-dlq` | draft |
-| service-system | AWS fairness / shuffle sharding: per-tenant quota, 429 vs 503 | `svc-rate-limit-quota` | draft |
+| service-system | AWS fairness / shuffle sharding: per-tenant quota, 429 vs 503 | `svc-rate-limit-quota` | stable |
 | service-system | AWS queues: bounded queue, sideline, cheap shedding | `sys-load-shedding-bounded-queues` | stable |
 | service-system | Kleppmann / antirez: fencing, check-and-set, disagreement | `sys-lock-fencing` | stable |
 | service-system | AWS leader election: two leaders, lease check | `sys-leader-two-leaders` | draft |
@@ -301,10 +301,10 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | PG createindex: CONCURRENTLY, INVALID leftovers | `sys-index-concurrently` | draft |
 | service-system | GitLab migration style + avoiding downtime | `sys-migration-expand-contract` | stable |
 | service-system | OWASP A03:2025, Scorecard, SLSA | `code-dependency-pinning`, `code-workflow-supply-chain`, `code-dependency-licence-sbom` | draft |
-| service-system | OWASP LLM01 | `sys-prompt-injection` | draft |
+| service-system | OWASP LLM01 | `sys-prompt-injection` | stable |
 | service-system | OWASP A10:2025, ASVS V16 (error leaks, fail open, log data) | `sys-secrets-and-errors` | stable |
-| service-system | OWASP A01 (SSRF folded in) | `sys-ssrf` | draft |
-| service-system | OWASP A05 / A07 / A01 (index only) | `svc-sqli-authn` | draft |
+| service-system | OWASP A01 (SSRF folded in) | `sys-ssrf` | stable |
+| service-system | OWASP A05 / A07 / A01 (index only) | `svc-sqli-authn` | stable |
 | service-system | SRE monitoring | `prod-alerts-symptoms-golden-signals` | draft |
 | service-system | Honeycomb wide events, cardinality, deploy markers | `prod-wide-events-bounded-labels` | draft |
 | service-system | SRE canary + release engineering, AWS velocity control | `prod-canary-staged-rollout` | stable |
@@ -434,32 +434,32 @@ Source: `docs/research/security-pass.md`. Row numbers are that file's.
 
 | Source | Item | Maps to | Status |
 |---|---|---|---|
-| security-pass | 1-2, 4 Check the caller's right to the specific record | `fn-object-level-authz` | draft |
-| security-pass | 1, 3-4 One authorization layer, deny by default | `svc-authz-central-deny-default` | draft |
-| security-pass | 5-6 Bind requests to a DTO or allowlist | `fn-no-mass-assignment` | draft |
-| security-pass | 5 Return listed fields, not the stored model | `fn-response-fields-explicit` | draft |
-| security-pass | 7 Slow salted password hash | `fn-password-slow-hash` | draft |
-| security-pass | 8 Session ID regeneration, cookie flags, server-side logout | `svc-session-lifecycle` | draft |
+| security-pass | 1-2, 4 Check the caller's right to the specific record | `fn-object-level-authz` | stable |
+| security-pass | 1, 3-4 One authorization layer, deny by default | `svc-authz-central-deny-default` | stable |
+| security-pass | 5-6 Bind requests to a DTO or allowlist | `fn-no-mass-assignment` | stable |
+| security-pass | 5 Return listed fields, not the stored model | `fn-response-fields-explicit` | stable |
+| security-pass | 7 Slow salted password hash | `fn-password-slow-hash` | stable |
+| security-pass | 8 Session ID regeneration, cookie flags, server-side logout | `svc-session-lifecycle` | stable |
 | security-pass | 9 Pinned JWT algorithm, `iss`, `aud`, `exp` | `fn-jwt-verify-pinned` | draft |
 | security-pass | 10-11 Per-account throttle, uniform auth errors | `svc-auth-throttle-generic-errors` | draft |
-| security-pass | 11, 29 Cap client-controlled sizes and counts | `svc-bound-client-controlled-sizes` | draft |
-| security-pass | 12, 28 Encoding sinks, no raw HTML | `fn-no-raw-html-sink` | draft |
-| security-pass | 13, 28 Argument arrays, no shell string | `fn-no-shell-with-input` | draft |
-| security-pass | 14 Resolve and confine file paths | `fn-confine-file-path` | draft |
-| security-pass | 15 No native deserialisation of untrusted input | `fn-no-native-deserialise-untrusted` | draft |
-| security-pass | 16 Upload allowlist, size cap, generated name, outside web root | `svc-upload-validate-store` | draft |
+| security-pass | 11, 29 Cap client-controlled sizes and counts | `svc-bound-client-controlled-sizes` | stable |
+| security-pass | 12, 28 Encoding sinks, no raw HTML | `fn-no-raw-html-sink` | stable |
+| security-pass | 13, 28 Argument arrays, no shell string | `fn-no-shell-with-input` | stable |
+| security-pass | 14 Resolve and confine file paths | `fn-confine-file-path` | stable |
+| security-pass | 15 No native deserialisation of untrusted input | `fn-no-native-deserialise-untrusted` | stable |
+| security-pass | 16 Upload allowlist, size cap, generated name, outside web root | `svc-upload-validate-store` | stable |
 | security-pass | 17 Server-side allowlist validation, regex limits | `mod-validate-at-boundary-once` | draft |
-| security-pass | 18 CSRF token, no state change on GET | `svc-csrf-state-changing` | draft |
-| security-pass | 19 CORS origin allowlist | `svc-cors-allowlist` | draft |
-| security-pass | 20 HSTS, nosniff, frame-ancestors | `svc-security-headers` | draft |
+| security-pass | 18 CSRF token, no state change on GET | `svc-csrf-state-changing` | stable |
+| security-pass | 19 CORS origin allowlist | `svc-cors-allowlist` | stable |
+| security-pass | 20 HSTS, nosniff, frame-ancestors | `svc-security-headers` | stable |
 | security-pass | 21 Subresource Integrity for vendor scripts | dropped: one narrow front-end row, left for a later pass | dropped |
-| security-pass | 22 CSPRNG for tokens and keys | `fn-csprng-for-secrets` | draft |
-| security-pass | 22-23 Vetted AEAD, no home-made crypto, no nonce reuse | `mod-vetted-crypto-only` | draft |
-| security-pass | 23-24 TLS verification stays on | `fn-tls-verify-on` | draft |
-| security-pass | 23 Minimise and expire sensitive data | `sys-pii-minimise-retention` | draft |
-| security-pass | 25-26 Log security events, keep secrets out, encode untrusted values | `svc-security-event-logging` | draft |
-| security-pass | 27 Narrow agent tools, user-scoped credentials | `sys-agent-tool-least-privilege` | draft |
-| security-pass | 28 Treat model output as untrusted | `sys-prompt-injection` | draft |
+| security-pass | 22 CSPRNG for tokens and keys | `fn-csprng-for-secrets` | stable |
+| security-pass | 22-23 Vetted AEAD, no home-made crypto, no nonce reuse | `mod-vetted-crypto-only` | stable |
+| security-pass | 23-24 TLS verification stays on | `fn-tls-verify-on` | stable |
+| security-pass | 23 Minimise and expire sensitive data | `sys-pii-minimise-retention` | stable |
+| security-pass | 25-26 Log security events, keep secrets out, encode untrusted values | `svc-security-event-logging` | stable |
+| security-pass | 27 Narrow agent tools, user-scoped credentials | `sys-agent-tool-least-privilege` | stable |
+| security-pass | 28 Treat model output as untrusted | `sys-prompt-injection` | stable |
 | security-pass | 30 LLM supply chain: verify sources, sign, inventory | `code-dependency-licence-sbom` | draft |
 | security-pass | 31 Invented package names from code models | `chg-agent-grounded-code` | draft |
 | security-pass | §8 NIST SSDF practices | dropped: page named no practice numbers; read the PDF in a later pass | dropped |
@@ -502,7 +502,7 @@ From `docs/research/api-pass.md`.
 | api-pass | RFC 9745, RFC 8594, Zalando 189: Deprecation and Sunset headers before removal | `svc-api-deprecation-sunset` | stable |
 | api-pass | Zalando 113-116, Azure, Stripe: One documented versioning scheme, no breaks inside a version | `svc-api-versioning-policy` | stable |
 | api-pass | Zalando 118, Azure: One naming convention per location | `svc-api-naming-consistent` | draft |
-| api-pass | protobuf.dev (RPC vs storage messages): Response built from an explicit type, no internal fields | `svc-api-no-internal-fields` | draft |
+| api-pass | protobuf.dev (RPC vs storage messages): Response built from an explicit type, no internal fields | `fn-response-fields-explicit` | stable |
 | api-pass | W3C Trace Context: Forward traceparent with a new parent id per hop | `svc-api-trace-context` | draft |
 | api-pass | Pact docs: Consumer-derived contract tests across services | `svc-api-contract-tests` | draft |
 | api-pass | protobuf.dev: Reserve deleted field numbers and names | `chg-proto-reserve-removed-fields` | draft |

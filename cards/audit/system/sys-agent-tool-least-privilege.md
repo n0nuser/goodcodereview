@@ -3,7 +3,7 @@ id: sys-agent-tool-least-privilege
 level: system
 tags: [security, process, llm, agents]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: An LLM agent can call tools, run code, or act on external systems.
 tool_gate: Tool registry reviewed in code; downstream credentials scoped in IAM and tested as the agent identity.
@@ -14,9 +14,9 @@ borrowed_from:
   - https://www.microsoft.com/en-us/msrc/blog/2025/07/how-microsoft-defends-against-indirect-prompt-injection-attacks
 ---
 
-**Rule.** Give the agent only narrow tools, run them with the requesting user's own minimal credentials, and enforce authorization in the downstream system.
+**Rule.** Give the agent only the narrow tools and the minimal credentials its task needs.
 
-**Why.** Hallucination or an injected instruction can drive any tool the model holds. An open-ended shell or URL fetch hands over everything the service account can do. [[sys-prompt-injection]] covers validating model output and human approval; this card covers how much the agent can reach in the first place.
+**Why.** Hallucination or an injected instruction can drive any tool the model holds. An open-ended shell or URL fetch hands over everything the service account can do. Where you can, run each tool as the requesting user rather than a shared admin identity, and let the downstream system check that user's rights on every call. [[sys-prompt-injection]] covers validating model output and human approval; this card covers how much the agent can reach in the first place.
 
 **FAIL**
 

@@ -3,11 +3,10 @@ id: fn-tls-verify-on
 level: function
 tags: [security, tls, network]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: Code makes an outbound HTTPS, database or message-broker connection.
-tool_gate: SAST rules for `verify=False`, `rejectUnauthorized: false`, `InsecureSkipVerify`.
-note: the TLS cheat sheet does not forbid disabling verification outright; the rule rests on the Top 10 A04 checklist item to validate certificates
+tool_gate: Bandit B501 (`request_with_no_cert_validation`), CodeQL `py/request-without-cert-validation`; a grep for `rejectUnauthorized: false` and `InsecureSkipVerify: true`.
 borrowed_from:
   - https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures
   - https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html
@@ -23,9 +22,9 @@ borrowed_from:
 
 **FAIL**
 
-```python
-requests.get(url, verify=False)
-https.request({ rejectUnauthorized: false })
+```text
+requests.get(url, verify=False)                  # Python
+https.request({ rejectUnauthorized: false })     // Node.js
 ```
 
 **PASS**

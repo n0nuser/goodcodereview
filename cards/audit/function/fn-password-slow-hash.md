@@ -3,7 +3,7 @@ id: fn-password-slow-hash
 level: function
 tags: [security, authn, crypto]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: Code stores or verifies a user password.
 tool_gate: Grep or SAST rule for `md5`, `sha1`, `sha256` near a `password` identifier.
@@ -16,7 +16,7 @@ borrowed_from:
 
 **Rule.** Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.
 
-**Why.** A fast hash such as SHA-256 lets an attacker with the database try billions of guesses a second. A slow, salted, memory-hard hash makes each guess cost real time. OWASP lists Argon2id with at least 19 MiB memory and 2 iterations as the baseline; check the current numbers when you review.
+**Why.** A fast hash such as SHA-256 lets an attacker with the database try billions of guesses a second. A slow, salted, memory-hard hash makes each guess cost real time. A common baseline is Argon2id with at least 19 MiB of memory and 2 iterations. Check the current numbers when you review.
 
 **FAIL**
 

@@ -22,14 +22,13 @@ borrowed_from:
 **FAIL**
 
 ```text
-No SBOM step, no scanner in CI, GPL-3.0 package pulled into a proprietary build
-unnoticed.
+No SBOM step and no vulnerability scanner in CI.
 ```
 
 **PASS**
 
 ```text
-CI: generate SBOM, run scanner, run licence check against allowlist;
+CI: generate SBOM, run vulnerability scanner, fail on high severity;
 release artifacts attach the SBOM.
 ```
 
