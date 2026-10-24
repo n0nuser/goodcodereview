@@ -3,7 +3,7 @@ id: code-perf-budget-in-ci
 level: codebase
 tags: [performance, process, ci]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: The repo has a performance target (bundle size, page metrics, latency under load, or a benchmark) that matters to users.
 tool_gate: Lighthouse CI assert, size-limit, k6 thresholds, Gatling assertions, or a benchstat comparison in CI.
@@ -25,7 +25,7 @@ borrowed_from:
 **FAIL**
 
 ```text
-lighthouserc.json: "assert": { "preset": "lighthouse:recommended", "level": "warn" }
+lighthouserc.json: "assertions": { "categories:performance": ["warn", { "minScore": 0.9 }] }
 k6 script with no thresholds block
 ```
 
@@ -36,4 +36,4 @@ size-limit: [{ "path": "dist/app.js", "limit": "180 kB" }]   # npm run size in C
 k6: thresholds: { http_req_duration: ["p(95)<300"] }        # non-zero exit fails the job
 ```
 
-**Counterpoint.** "Benchmarks in CI are noisy and flake." They are when a gate trusts one run. Gate on a stable budget, compare repeated runs (benchstat wants 10 to 20), and keep the threshold above the noise. Lighthouse CI warns against tight assertions on a site with much room to improve. Set the budget at today's level and lower it later.
+**Counterpoint.** "Benchmarks in CI are noisy and flake." They are when a gate trusts one run. Gate on a stable budget, compare repeated runs (benchstat wants 10 to 20), and keep the threshold above the noise. On a site with much room to improve, a tight budget only turns every build red, so set it at today's level and lower it later.

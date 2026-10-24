@@ -8,7 +8,7 @@ lang: core
 applies_when: Code keeps a cache, map or queue keyed by request, session, user or similar.
 tool_gate: none
 borrowed_from: []
-note: from the author's own Python review guide
+note: from the author's own Python review guide; duplicates stable sys-cache-bounds-invalidation, so merge or delete it
 ---
 
 **Rule.** Bound every per-key cache with LRU or TTL.

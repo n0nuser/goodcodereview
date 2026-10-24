@@ -3,7 +3,7 @@ id: svc-list-endpoint-paginates
 level: service
 tags: [performance, api]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: The service exposes an endpoint or RPC that returns a collection.
 tool_gate: Contract test that calls the list with a huge page size and asserts the clamp or a 400.
@@ -18,7 +18,7 @@ borrowed_from:
 
 **Rule.** Paginate every list endpoint, with a default page size and a server-side maximum.
 
-**Why.** A list that returns everything grows with the data until one request exhausts memory or the timeout. Adding pagination later breaks clients, so start with it. Without a maximum, a caller can ask for a page as big as the table. See [[svc-api-compat-pagination]] for compatibility and [[svc-bound-client-controlled-sizes]] for the security cap.
+**Why.** A list that returns everything grows with the data until one request exhausts memory or the timeout. Adding pagination later breaks clients, so start with it. Without a maximum, a caller can ask for a page as big as the table.
 
 **FAIL**
 

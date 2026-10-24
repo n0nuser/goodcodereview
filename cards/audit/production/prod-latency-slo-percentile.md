@@ -3,7 +3,7 @@ id: prod-latency-slo-percentile
 level: production
 tags: [performance, observability, slo]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: A latency SLO, dashboard, or alert is defined for a service.
 tool_gate: Lint alert rules for avg() over latency or over pre-computed quantiles.
@@ -15,9 +15,9 @@ borrowed_from:
   - https://opentelemetry.io/docs/specs/otel/metrics/api/
 ---
 
-**Rule.** Define latency SLOs and alerts on high percentiles computed from histograms, never on the mean.
+**Rule.** Define latency SLOs and alerts on high percentiles, never on the mean.
 
-**Why.** A mean can look healthy while 1 request in 100 takes seconds, and those are the users who leave. Averaging per-instance quantiles is also wrong: quantiles do not add, so only a histogram aggregates correctly across replicas.
+**Why.** A mean can look healthy while 1 request in 100 takes seconds, and those are the users who leave. Averaging per-instance quantiles is also wrong: quantiles do not add, so compute the percentile from a histogram, the one form that aggregates correctly across replicas.
 
 **FAIL**
 

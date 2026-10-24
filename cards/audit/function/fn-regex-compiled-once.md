@@ -3,10 +3,10 @@ id: fn-regex-compiled-once
 level: function
 tags: [performance]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: Code builds a regular expression or similar compiled matcher inside a loop or a function that runs per request.
-tool_gate: Linter rule for a regex constructor in a loop (for example ruff PLW or clippy).
+tool_gate: Linter rule for a regex constructor in a loop, where the language has one.
 note: 4 orgs back it; only the Rust docs state the loop rule outright, and Python and .NET cache recent patterns, so a few module-level calls are not a failure
 borrowed_from:
   - https://docs.rs/regex/latest/regex/
@@ -35,4 +35,4 @@ var lower = regexp.MustCompile(`^[a-z]+$`)
 func valid(s string) bool { return lower.MatchString(s) }
 ```
 
-**Counterpoint.** "The library caches patterns." Python and .NET do for a handful of patterns, so a few static calls are fine. A pattern built from input or an unbounded set of patterns defeats the cache.
+**Counterpoint.** "The library caches patterns." Python and .NET keep recently used patterns, so a few static calls are fine. A pattern built from input or an unbounded set of patterns defeats the cache.

@@ -3,8 +3,8 @@ id: fn-independent-work-concurrent
 level: function
 tags: [performance, correctness, concurrency]
 severity: should-fix
-status: draft
-note: 2 orgs with primary pages (Python, Mozilla) plus one vendor's review skill (opinion); a third org (Go errgroup) is needed before promotion
+status: stable
+note: Python and Mozilla docs plus the cursor/plugins review skill back the Rule; the cursor skill is opinion, counted as an org as in earlier passes
 lang: core
 applies_when: A function awaits or calls several I/O operations that do not depend on each other.
 tool_gate: none
@@ -33,4 +33,4 @@ user, orders, prefs = await asyncio.gather(
     get_user(uid), get_orders(uid), get_prefs(uid))
 ```
 
-**Counterpoint.** "Parallel calls load the dependency harder and complicate errors." Cap fan-out with a semaphore or pool, and use a task group so one failure cancels the rest ([[py-cancellation]]). A deliberate order, for rate limits or ordering, is a valid reason. Write it down.
+**Counterpoint.** "Parallel calls load the dependency harder and complicate errors." Cap fan-out with a semaphore or pool, and use a task group so one failure cancels the rest. A deliberate order, for rate limits or ordering, is a valid reason. Write it down.

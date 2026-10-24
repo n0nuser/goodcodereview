@@ -74,3 +74,29 @@ Update bot opens PRs; changes are rolled out in stages.
 ```
 
 **Counterpoint.** Pinning delays security patches. A pin plus an update bot with a defined cadence beats floating versions, because the lock makes the update visible and revertable.
+
+## code-perf-budget-in-ci
+
+severity: should-fix  
+concerns: performance, process  
+applies_when: The repo has a performance target (bundle size, page metrics, latency under load, or a benchmark) that matters to users.
+
+**Rule.** Write the performance budget down as a CI check that fails the build when it is exceeded.
+
+**Why.** Performance regresses a few percent at a time, and no reviewer sees a 3% slowdown in a diff. A budget that only warns becomes a log line nobody reads.
+
+**FAIL**
+
+```text
+lighthouserc.json: "assertions": { "categories:performance": ["warn", { "minScore": 0.9 }] }
+k6 script with no thresholds block
+```
+
+**PASS**
+
+```text
+size-limit: [{ "path": "dist/app.js", "limit": "180 kB" }]   # npm run size in CI
+k6: thresholds: { http_req_duration: ["p(95)<300"] }        # non-zero exit fails the job
+```
+
+**Counterpoint.** "Benchmarks in CI are noisy and flake." They are when a gate trusts one run. Gate on a stable budget, compare repeated runs (benchstat wants 10 to 20), and keep the threshold above the noise. On a site with much room to improve, a tight budget only turns every build red, so set it at today's level and lower it later.

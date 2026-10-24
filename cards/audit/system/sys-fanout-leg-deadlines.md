@@ -3,7 +3,7 @@ id: sys-fanout-leg-deadlines
 level: system
 tags: [performance, reliability, latency, resilience]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: A request fans out to several backends, shards, or replicas and combines the answers.
 tool_gate: none
@@ -29,9 +29,11 @@ results = await gather(*[shard.search(q) for shard in shards])   # waits for the
 **PASS**
 
 ```text
-results = await gather(*[with_timeout(shard.search(q), 80ms) for shard in shards],
-                       return_exceptions=True)
-return merge(ok(results), partial=any_timed_out(results))
+results = await asyncio.gather(
+    *[asyncio.wait_for(shard.search(q), 0.08) for shard in shards],
+    return_exceptions=True)
+hits = [r for r in results if not isinstance(r, Exception)]
+return merge(hits, partial=len(hits) < len(shards))
 ```
 
-**Counterpoint.** "Hedging doubles the load." Sent at once to every replica, it does, which is why the sources hedge only after a wait past about the 95th percentile, cap the attempts, and cancel the twin. Hedge only idempotent reads. A partial result needs a product decision. The deadline does not.
+**Counterpoint.** "Hedging doubles the load." Sent at once to every replica, it does. Send the hedge only after a wait past about the 95th percentile, cap the attempts, and cancel the twin, and the extra load stays near 5%. Hedge only idempotent reads. A partial result needs a product decision. The deadline does not.
