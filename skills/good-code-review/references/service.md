@@ -300,39 +300,6 @@ applies_when: A multi-step flow, such as checkout or signup, asks for data in mo
 
 **Counterpoint.** "Retyping a new password confirms it." That is a fair exception. So is data that is no longer valid, and re-entry that is the point of the task, such as a memory test. Browser autofill does not count: the page itself must supply the value.
 
-## svc-page-title-per-route
-
-severity: should-fix  
-concerns: accessibility, usability  
-applies_when: An app serves several pages or client-side routes under one HTML shell.
-
-**Rule.** Give every page and every client-side view its own `<title>` that says what it is.
-
-**Why.** The title labels the browser tab, the history, search results, and bookmarks, and it helps users find where they are. If every route says "My App", a user cannot tell the pages apart. In a single-page app the shell's title stays put unless the code changes it, so it goes on describing the first view.
-
-**FAIL**
-
-```html
-<title>My App</title>
-<!-- the same title on /billing, /settings, and /billing/error -->
-```
-
-**PASS**
-
-```jsx
-function usePageTitle(title) {
-  useEffect(() => { document.title = `${title} - My App`; }, [title]);
-}
-
-function Settings() { usePageTitle("Settings"); /* ... */ }
-function Billing({ hasErrors }) {
-  usePageTitle(hasErrors ? "Error: Billing details" : "Billing details");
-  /* ... */
-}
-```
-
-**Counterpoint.** "The router library sets it." Then test that it does for each route. A router that changes the URL and the view but not the title is the common failure.
-
 ## svc-rate-limit-quota
 
 severity: should-fix  
@@ -427,61 +394,6 @@ for i in range(3):
 ```
 
 **Counterpoint.** "Retries make us more reliable." Only for transient faults and only within a budget. Past that they hurt, so a non-transient error should fail at once. A retry budget (retries capped as a share of traffic) helps further. This card leaves its size to the team.
-
-## svc-security-event-logging
-
-severity: should-fix  
-concerns: security, observability  
-applies_when: The service authenticates users.
-
-**Rule.** Log every failed authentication with the account name and a timestamp.
-
-**Why.** Without these events, password guessing in progress is invisible and an incident cannot be reconstructed. Log authorization denials and validation failures the same way, and add a correlation ID so one request can be followed across services. Never log passwords, tokens or session IDs, because the log then becomes a second leak. Untrusted values with CR or LF can forge log lines, so use structured output.
-
-**FAIL**
-
-```python
-except AuthError:
-    return 401                                   # nothing logged
-```
-
-**PASS**
-
-```python
-except AuthError:
-    log.warning("auth_failed", account=username, ip=ip, at=utc_now(), req=req_id)
-    return 401
-```
-
-**Counterpoint.** "Logging every failed login is noisy." Log them as one event type, count them, and alert on the rate, not on each line. Without the events, nobody sees the attack.
-
-## svc-security-headers
-
-severity: should-fix  
-concerns: security  
-applies_when: The service serves HTML pages or sets cookies for browsers over HTTPS.
-
-**Rule.** Send `Strict-Transport-Security` on every HTTPS response.
-
-**Why.** Without HSTS, the first plain-HTTP request can be downgraded by anyone on the path, and a user can click through a certificate warning. With it, the browser rewrites `http` to `https` and refuses the click-through. Two more one-line headers belong next to it: `X-Content-Type-Options: nosniff`, so a browser does not run an upload as script, and CSP `frame-ancestors` (or `X-Frame-Options: DENY`), so a hostile page cannot frame yours for clickjacking.
-
-**FAIL**
-
-```text
-HTTP/1.1 200 OK
-Content-Type: text/html
-(no Strict-Transport-Security)
-```
-
-**PASS**
-
-```text
-Strict-Transport-Security: max-age=31536000; includeSubDomains
-X-Content-Type-Options: nosniff
-Content-Security-Policy: frame-ancestors 'none'
-```
-
-**Counterpoint.** "HSTS can lock users out if the certificate lapses." True, so ramp `max-age` up and check the preload rules before you submit the domain. A lockout from an expired certificate is an outage you fix, while a downgrade is a breach.
 
 ## svc-session-lifecycle
 

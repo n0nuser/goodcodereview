@@ -3,7 +3,7 @@ id: svc-security-headers
 level: service
 tags: [security, http, headers]
 severity: should-fix
-status: stable
+status: draft
 lang: core
 applies_when: The service serves HTML pages or sets cookies for browsers over HTTPS.
 tool_gate: Header check in CI against a staging URL; framework middleware that sets defaults.

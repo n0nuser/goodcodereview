@@ -3,7 +3,7 @@ id: code-a11y-check-in-ci
 level: codebase
 tags: [accessibility, testing, frontend, ci]
 severity: should-fix
-status: stable
+status: draft
 lang: core
 applies_when: The repo builds a web UI and has an automated test suite.
 tool_gate: This card is the gate: axe (through `@axe-core/playwright` or similar) against rendered pages in the test step; `eslint-plugin-jsx-a11y` in the lint step for JSX code.

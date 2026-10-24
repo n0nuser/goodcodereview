@@ -115,12 +115,9 @@ To review only some concerns, such as a performance-only review, check only the 
 - `svc-idempotency-key` [block] {reliability, correctness}: Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.
 - `svc-list-endpoint-paginates` [should-fix] {performance}: Paginate every list endpoint, with a default page size and a server-side maximum.
 - `svc-no-redundant-entry` [should-fix] {usability, accessibility}: Do not ask for information the user already gave in the same flow. Fill it in, or let the user pick it.
-- `svc-page-title-per-route` [should-fix] {accessibility, usability}: Give every page and every client-side view its own `<title>` that says what it is.
 - `svc-rate-limit-quota` [should-fix] {security, reliability}: Enforce a per-tenant quota on shared APIs and queues.
 - `svc-reflow-and-zoom` [should-fix] {accessibility, usability}: Make the page usable at 320 CSS pixels wide and at 200% text zoom, with no sideways scrolling, no clipped content, and no blocked pinch-zoom.
 - `svc-retry-policy` [block] {reliability}: Retry only transient errors, with capped attempts and jittered exponential backoff.
-- `svc-security-event-logging` [should-fix] {security, observability}: Log every failed authentication with the account name and a timestamp.
-- `svc-security-headers` [should-fix] {security}: Send `Strict-Transport-Security` on every HTTPS response.
 - `svc-session-lifecycle` [block] {security}: Issue a new session ID at login, and set `Secure`, `HttpOnly` and `SameSite` on the session cookie.
 - `svc-slow-operation-shows-progress` [should-fix] {usability, accessibility}: Show that a slow action is under way, and show its progress when it runs long.
 - `svc-sqli-authn` [block] {security}: Pass untrusted data to queries as bound parameters, never by string concatenation or formatting.
@@ -144,7 +141,6 @@ To review only some concerns, such as a performance-only review, check only the 
 
 ## codebase
 
-- `code-a11y-check-in-ci` [should-fix] {accessibility, testing}: Run an automated accessibility check, such as axe on rendered pages, in the automated tests, and fail the test on a violation.
 - `code-ci-gates` [should-fix] {process}: Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
 - `code-dead-code` [should-fix] {maintainability}: Remove unreferenced functions, commented-out code, expired flags, and orphaned files; history keeps them.
 - `code-dependency-pinning` [block] {security}: Commit a lockfile with hashes and install from it in CI.

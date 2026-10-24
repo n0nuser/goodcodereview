@@ -3,7 +3,7 @@ id: svc-page-title-per-route
 level: service
 tags: [accessibility, usability, frontend, routing]
 severity: should-fix
-status: stable
+status: draft
 lang: core
 applies_when: An app serves several pages or client-side routes under one HTML shell.
 tool_gate: axe `document-title` catches a missing or empty title only; a test that navigates each route and asserts its `document.title`.

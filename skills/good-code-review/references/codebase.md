@@ -1,33 +1,5 @@
 # codebase
 
-## code-a11y-check-in-ci
-
-severity: should-fix  
-concerns: accessibility, testing  
-applies_when: The repo builds a web UI and has an automated test suite.
-
-**Rule.** Run an automated accessibility check, such as axe on rendered pages, in the automated tests, and fail the test on a violation.
-
-**Why.** A violation that nobody sees at review ships. A failing test catches the missing label or `alt` on the pull request that adds it, and run in CI on every change it blocks the merge. A JSX lint such as `jsx-a11y` catches some of the same problems earlier, in the editor. Either way it is a floor: tools find only part of the problems, so a person still tests with a keyboard.
-
-**FAIL**
-
-```js
-// e2e: axe runs, but nothing fails on what it finds
-const results = await new AxeBuilder({ page }).analyze();
-console.log(results.violations.length);
-```
-
-**PASS**
-
-```js
-// e2e: fail on any axe violation
-const results = await new AxeBuilder({ page }).analyze();
-expect(results.violations).toEqual([]);
-```
-
-**Counterpoint.** "Tools only catch a minority, and we have a backlog, so a failing check would turn every build red." The check catches the cheap failures at no review cost, which frees the manual pass for what only a person can judge. For the backlog, exclude the known violations by name (`disableRules`, `exclude`, or a fingerprint of each known issue) and fail on anything new. Remove each exclusion once it is fixed.
-
 ## code-ci-gates
 
 severity: should-fix  

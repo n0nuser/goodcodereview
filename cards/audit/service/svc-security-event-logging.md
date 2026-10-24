@@ -3,7 +3,7 @@ id: svc-security-event-logging
 level: service
 tags: [security, observability, logging]
 severity: should-fix
-status: stable
+status: draft
 lang: core
 applies_when: The service authenticates users.
 tool_gate: Test that a failed login produces one structured log line with the account and a timestamp.
