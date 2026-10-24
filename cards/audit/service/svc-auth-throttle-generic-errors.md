@@ -29,8 +29,8 @@ if not check(pw): return "Wrong password", 401      # no attempt limit
 **PASS**
 
 ```text
+if too_many_failures(account_key): return "Try again later", 429   # checked before the password
 if not (user and check(pw)): record_failure(account_key); return "Invalid credentials", 401
-if too_many_failures(account_key): return "Try again later", 429   # same shape, unlock by email
 ```
 
 **Counterpoint.** "A lockout lets attackers lock out real users." Use a rising delay, not a permanent lock, and keep the recovery flow reachable. Log every lockout so abuse shows up.

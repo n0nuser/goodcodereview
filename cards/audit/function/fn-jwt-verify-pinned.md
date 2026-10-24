@@ -3,11 +3,10 @@ id: fn-jwt-verify-pinned
 level: function
 tags: [security, authn, jwt]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: Code accepts a JWT as proof of identity or permission.
-tool_gate: SAST rule for `decode(..., verify=False)` and for a missing `algorithms=` argument.
-note: RFC 8725 used; OWASP's JWT cheat sheet URLs returned 404 during the fetch
+tool_gate: CodeQL `js/jwt-missing-verification`; a grep for `verify_signature": False` and for `jwt.decode(` calls with no `algorithms=`.
 borrowed_from:
   - https://www.rfc-editor.org/rfc/rfc8725
   - https://top10.owasp.org/2025/A01_2025-Broken_Access_Control
@@ -15,11 +14,12 @@ borrowed_from:
   - https://learn.microsoft.com/en-us/entra/identity-platform/access-tokens
   - https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
   - https://codeql.github.com/codeql-query-help/javascript/js-jwt-missing-verification/
+  - https://pyjwt.readthedocs.io/en/stable/api.html
 ---
 
-**Rule.** Verify the signature against a fixed algorithm list, then check `exp`, `iss` and `aud` before reading any claim.
+**Rule.** Verify the signature against a fixed list of accepted algorithms, and check `iss` and `aud`, before reading any claim.
 
-**Why.** If the verifier takes the algorithm from the token header, an attacker picks `none` or turns an RSA public key into an HMAC secret. Claims read before verification are attacker text. Pinning the algorithm and binding each key to one algorithm closes both.
+**Why.** If the verifier takes the algorithm from the token header, an attacker picks `none` or turns an RSA public key into an HMAC secret. Claims read before verification are attacker text. Pinning the algorithm and binding each key to one algorithm closes both. Also require `exp`, so a stolen token stops working.
 
 **FAIL**
 

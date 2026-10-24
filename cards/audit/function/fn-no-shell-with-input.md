@@ -3,10 +3,10 @@ id: fn-no-shell-with-input
 level: function
 tags: [security, injection, command]
 severity: block
-status: draft
+status: stable
 lang: core
-applies_when: Code starts a process or evaluates a string as code and some part of it comes from a request, a file or model output.
-tool_gate: SAST rule for `shell=True`, `os.system`, `exec` and `eval` with tainted arguments.
+applies_when: Code starts a process and some part of the command comes from a request, a file or model output.
+tool_gate: Bandit B602 (`subprocess_popen_with_shell_equals_true`) and B605 (`start_process_with_a_shell`) for Python.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html
   - https://genai.owasp.org/llmrisk/llm052025-improper-output-handling/
@@ -29,7 +29,7 @@ subprocess.run(f"git log {branch}", shell=True)
 **PASS**
 
 ```python
-subprocess.run(["convert", "--", upload_path, "out.png"], check=True)
+subprocess.run(["convert", upload_path, "out.png"], check=True)   # upload_path is a server-generated name
 subprocess.run(["git", "log", branch], check=True)   # branch checked against an allowlist
 ```
 

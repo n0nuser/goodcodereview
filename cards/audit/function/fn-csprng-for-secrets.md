@@ -3,10 +3,10 @@ id: fn-csprng-for-secrets
 level: function
 tags: [security, crypto]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: Code generates a token, session ID, password-reset code, API key, nonce or IV.
-tool_gate: Lint rule banning `random`, `Math.random` and `rand()` in files that mention token or key.
+tool_gate: Bandit B311 (`random`) for Python; elsewhere a grep for `Math.random` and `rand()` in code that builds tokens or keys.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html
   - https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures
@@ -31,7 +31,7 @@ reset = str(int(time.time()))
 
 ```python
 token = secrets.token_urlsafe(32)           # os.urandom under the hood
-// JS: crypto.getRandomValues(new Uint8Array(32))
+# JavaScript: crypto.getRandomValues(new Uint8Array(32))
 ```
 
 **Counterpoint.** "Math.random is fine for a short-lived code." Short-lived codes still get brute-forced, and predictable ones need no brute force. Use the CSPRNG for anything an attacker gains from guessing.

@@ -3,7 +3,7 @@ id: fn-object-level-authz
 level: function
 tags: [security, authz]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: A handler loads, changes or deletes a record by an ID that comes from the request.
 tool_gate: Authorization tests that call each endpoint as a second user; no static gate catches a missing check.
@@ -18,7 +18,7 @@ borrowed_from:
 
 **Rule.** Check that the caller may act on the specific record before returning or changing it.
 
-**Why.** A login proves who the caller is, not which records they own. Without a per-object check, changing `id=41` to `id=42` reads or edits another user's data (IDOR, called BOLA in the API Top 10). Random IDs only hide the problem.
+**Why.** A login proves who the caller is, not which records they own. Without a per-object check, changing `id=41` to `id=42` reads or edits another user's data (IDOR, also called BOLA). Random IDs only hide the problem.
 
 **FAIL**
 

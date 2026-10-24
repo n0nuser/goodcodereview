@@ -1,9 +1,9 @@
 ---
 id: fn-response-fields-explicit
 level: function
-tags: [security, api, data]
+tags: [security, compatibility, api, data]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: A handler returns a stored object or entity to the client.
 tool_gate: Response-schema tests that fail on unlisted fields.
@@ -16,7 +16,7 @@ borrowed_from:
 
 **Rule.** Return a response type that lists each field, never the stored model or a generic dump of it.
 
-**Why.** A model gains `password_hash`, `internal_notes` or `email` and every endpoint that serialises it leaks the new field silently. An explicit response type makes each exposed field a decision someone reviewed. The write side is [[fn-no-mass-assignment]].
+**Why.** A model gains `password_hash`, `internal_notes` or `email` and every endpoint that serialises it leaks the new field silently. Callers also start to depend on whatever is sent, so removing a field later is a breaking change. An explicit response type makes each exposed field a decision someone reviewed. The write side is [[fn-no-mass-assignment]].
 
 **FAIL**
 

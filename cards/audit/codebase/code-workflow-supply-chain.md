@@ -40,4 +40,4 @@ steps:
     env: { TITLE: ${{ github.event.pull_request.title }} }
 ```
 
-**Counterpoint.** SHA pinning blocks automatic fixes and adds update churn. Let an update bot propose SHA bumps. SLSA levels are a scale: L1 means provenance exists, L2 means signed from a hosted platform, and L3 means a hardened build platform.
+**Counterpoint.** "SHA pinning blocks automatic fixes and adds update churn." Let an update bot propose SHA bumps, so fixes still arrive as reviewed changes. Where the platform offers a lockfile for workflow dependencies, that lockfile is stronger than SHA pins and meets this check.

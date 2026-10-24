@@ -3,7 +3,7 @@ id: svc-authz-central-deny-default
 level: service
 tags: [security, authz]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: The service exposes routes or functions that different roles may call.
 tool_gate: Router that denies routes with no policy; a test that lists every route and its required role.
@@ -18,7 +18,7 @@ borrowed_from:
 
 **Rule.** Route every request through one authorization layer that denies when no rule allows it.
 
-**Why.** Per-handler checks drift: one admin route ships without its decorator and any user can call it. A central layer with deny as the fallback turns a forgotten check into a 403 instead of a hole. [[svc-sqli-authn]] names the default-deny idea; this card is the structure that enforces it.
+**Why.** Per-handler checks drift: one admin route ships without its decorator and any user can call it. A central layer with deny as the fallback turns a forgotten check into a 403 instead of a hole.
 
 **FAIL**
 
@@ -30,9 +30,9 @@ def export(): ...
 **PASS**
 
 ```text
-policy = {"/admin/export": {"admin"}}      # one table, reviewed in one place
+policy = {"export": {"admin"}}             # endpoint -> roles, reviewed in one place
 @app.before_request
-def gate(): require_role(policy.get(request.path))   # missing entry -> 403
+def gate(): require_role(policy.get(request.endpoint))   # missing entry -> 403
 ```
 
 **Counterpoint.** "A central policy is a bottleneck for feature teams." Keep the engine central and let each team own its rows. The cost of a one-line policy entry is small next to an unguarded admin route.

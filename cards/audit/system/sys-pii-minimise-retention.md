@@ -3,7 +3,7 @@ id: sys-pii-minimise-retention
 level: system
 tags: [security, privacy, data]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: The system stores, copies or logs personal or otherwise sensitive data.
 tool_gate: Retention jobs with a TTL on tables and buckets; a data inventory checked in CI.
@@ -15,9 +15,9 @@ borrowed_from:
   - https://gdpr-info.eu/art-5-gdpr/
 ---
 
-**Rule.** Store sensitive data only as long and as fully as the feature needs, and give every store a delete or expiry rule.
+**Rule.** Give every store of personal or sensitive data a retention period, and delete or anonymise the data when it ends.
 
-**Why.** Data you do not keep cannot leak. Full card numbers, national IDs and raw request bodies pile up in logs, analytics tables and backups, and nobody owns their deletion. Tokenise or truncate when the full value is not needed, and encrypt what you keep. This is a technical check, not a legal opinion.
+**Why.** Data you do not keep cannot leak. Keep only the fields the feature needs, too. Full card numbers, national IDs and raw request bodies pile up in logs, analytics tables and backups, and nobody owns their deletion. Tokenise or truncate when the full value is not needed, and encrypt what you keep. This is a technical check, not a legal opinion.
 
 **FAIL**
 

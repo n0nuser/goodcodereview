@@ -3,7 +3,7 @@ id: sys-prompt-injection
 level: system
 tags: [security, llm]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: An LLM reads untrusted text (user input, web pages, documents) and can call tools or produce output that code acts on.
 tool_gate: none
@@ -16,7 +16,7 @@ borrowed_from:
 
 **Rule.** Validate model output deterministically before code acts on it.
 
-**Why.** Injected instructions in retrieved text can steer tool calls. OWASP says no fool-proof prevention exists and RAG or fine-tuning do not fully fix it, so the goal is limiting impact. Also keep credentials in code, not in the model, and require human approval for high-risk actions.
+**Why.** Injected instructions in retrieved text can steer tool calls. No known prevention is fool-proof, and RAG or fine-tuning do not fully fix it, so the goal is to limit what a fooled model can make the code do. Also keep credentials in code, not in the model, and require human approval for high-risk actions.
 
 **FAIL**
 

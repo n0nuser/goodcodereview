@@ -153,3 +153,14 @@ JWT cheat sheet location: the OWASP sheet is now https://cheatsheetseries.owasp.
 84. https://wiki.mozilla.org/Security/Reviews. Security review is optional but strongly encouraged for features touching sensitive data or browser security mechanisms. -> `chg-name-attack-surface` (routing clause only).
 
 Not found or too weak: `chg-name-attack-surface` has no source for "list new attack surface in the description" as such; items 83 and 84 back the trigger and the routing, and the card's own `note:` already says the rest is synthesis.
+
+## 10. Stable pass 5 additions (2026-10-24)
+
+Opened through WebFetch (small-model summary, so each row is a paraphrase). Rows 85 to 88 each give a card its third org for one Rule clause. Rows 89 and 90 only check `tool_gate` names.
+
+85. https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html. Match a user-supplied host against an allowlist and build the request yourself. A domain allowlist alone does not stop DNS rebinding, so validate the resolved IP against permitted networks and connect only to that address. Turn off redirect following. -> `sys-ssrf`.
+86. https://pyjwt.readthedocs.io/en/stable/api.html. Do not compute `algorithms` from the token's `alg` or from other attacker-influenced data (cites RFC 8725 2.1). Hard-code it, or configure it next to the key. Do not mix HS* and RS* for one key. -> `fn-jwt-verify-pinned` (algorithm-list clause; PyJWT project, a third org).
+87. https://guides.rubyonrails.org/security.html. Section 3.7: after a successful login, issue a new session identifier and invalidate the old one (`reset_session`). Section 3.8: expire sessions on the server, not by cookie expiry. No dedicated logout section. -> `svc-session-lifecycle` (new-ID clause).
+88. https://docs.gitlab.com/user/application_security/secret_detection/. Pipeline secret detection scans commits; push protection scans commits on push. Revoke and replace exposed secrets as soon as possible. -> `code-secret-scan`.
+89. https://bandit.readthedocs.io/en/latest/plugins/index.html. Test ids: B501 `request_with_no_cert_validation`, B506 `yaml_load`, B602 `subprocess_popen_with_shell_equals_true`, B605 `start_process_with_a_shell`, B608 `hardcoded_sql_expressions`. -> tool_gate names.
+90. https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html. B301 `pickle` (pickle, dill, shelve, jsonpickle loads), B311 `random` (pseudo-random generators unfit for security). -> tool_gate names.
