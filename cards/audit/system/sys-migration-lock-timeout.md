@@ -1,7 +1,7 @@
 ---
 id: sys-migration-lock-timeout
 level: system
-tags: [database, migrations, postgres]
+tags: [database, migration, postgres]
 severity: block
 status: draft
 note: lock-queue consequence is inference, not stated in the Postgres page read

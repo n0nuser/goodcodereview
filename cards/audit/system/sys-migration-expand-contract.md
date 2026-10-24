@@ -1,7 +1,7 @@
 ---
 id: sys-migration-expand-contract
 level: system
-tags: [database, migrations, deploys]
+tags: [database, migration, deploys]
 severity: block
 status: draft
 lang: core

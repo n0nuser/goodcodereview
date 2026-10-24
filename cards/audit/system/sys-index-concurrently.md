@@ -1,7 +1,7 @@
 ---
 id: sys-index-concurrently
 level: system
-tags: [database, migrations, postgres]
+tags: [database, migration, postgres]
 severity: block
 status: draft
 lang: core
