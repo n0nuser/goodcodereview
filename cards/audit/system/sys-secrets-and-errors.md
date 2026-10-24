@@ -3,8 +3,8 @@ id: sys-secrets-and-errors
 level: system
 tags: [security, secrets, errors]
 severity: block
-status: draft
-note: ASVS V16 covers errors/logging only; the secrets-in-source side is first-hand. Fail-closed exception to [[fn-specific-exceptions-only]] lives here
+status: stable
+note: Rule backed by OWASP, MITRE CWE-636/209, Saltzer and Schroeder, and RFC 9457 (security section); secrets in source rest on 12factor and OWASP only, so they stay in the Why
 lang: core
 applies_when: The code handles credentials, logs data, or returns errors to clients.
 tool_gate: Secret scanner in CI; log-redaction tests.
@@ -15,11 +15,12 @@ borrowed_from:
   - https://cwe.mitre.org/data/definitions/209.html
   - https://12factor.net/config
   - https://web.mit.edu/Saltzer/www/publications/protection/Basic.html
+  - https://www.rfc-editor.org/rfc/rfc9457.html
 ---
 
-**Rule.** Fail closed: a validation or auth error must deny, never continue.
+**Rule.** Fail closed: a validation or auth error must deny, never continue, and an error response must not carry internals such as stack traces, SQL or tokens.
 
-**Why.** Keep secrets out of source, logs, and error responses. Stack traces, SQL, and tokens in responses or logs leak, and a catch-and-continue around a validation step grants access when the check crashes (OWASP A10:2025, ASVS V16).
+**Why.** A catch-and-continue around a validation step grants access when the check crashes. Stack traces and SQL in a response show an attacker how the system is built, and a token there can be reused. Keep secrets out of source and logs too: read them from the environment or a secrets manager.
 
 **FAIL**
 
@@ -27,7 +28,6 @@ borrowed_from:
 return {"error": traceback.format_exc()}
 try: check_token(t)
 except Exception: pass            # continues as authorized
-API_KEY = "sk_live_..."
 ```
 
 **PASS**
@@ -37,7 +37,6 @@ return {"error": "internal", "id": err_id}   # details to logs, redacted
 try: check_token(t)
 except Exception as err:
     log.warning("auth failed: %s", redact(err)); deny()
-API_KEY = env["API_KEY"]
 ```
 
-**Counterpoint.** "A broad `except Exception` breaks the specific-exceptions rule." At a security boundary, [[fn-specific-exceptions-only]] yields to fail-closed: catch broadly, log redacted, deny, and never use a bare `except:`. "We need detail to debug." Log it server-side with a correlation id.
+**Counterpoint.** "A broad `except Exception` breaks the specific-exceptions rule." At a security boundary, fail-closed wins: catch broadly, log redacted, deny, and never use a bare `except:`. "We need detail to debug." Log it server-side with a correlation id.

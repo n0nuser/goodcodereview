@@ -105,3 +105,63 @@ the rename ships under api-version=2026-09-01
 ```
 
 **Counterpoint.** "We will cross that bridge later." Later arrives with a customer on the old shape. The scheme can be minimal. A media type, a dated query parameter and a pinned header all work. Pick one and write it down. What counts as breaking is in [[chg-breaking-change-taxonomy]].
+
+## svc-idempotency-key
+
+severity: block  
+applies_when: A non-idempotent operation (charge, create, send) can be retried by a client, a queue, or a saga.
+
+**Rule.** Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.
+
+**Why.** A timeout does not say whether the first attempt ran. Retrying without a key charges twice or sends two emails. A common way to answer the retry is to store the first result and return it again.
+
+**FAIL**
+
+```text
+POST /payments {amount: 10}          # retried on timeout
+INSERT INTO payment(amount) VALUES (10)
+```
+
+**PASS**
+
+```text
+POST /payments  Idempotency-Key: k-123
+INSERT ... ON CONFLICT (idem_key) DO UPDATE SET idem_key = EXCLUDED.idem_key RETURNING *
+```
+
+**See also.** [[sys-lock-fencing]] shares the goal but uses a different mechanism (stale lock holders).
+
+**Counterpoint.** "Our retries are rare." Queues redeliver and sagas retry by design, so rare is not never. The cost is a unique key and a stored result. No standard fixes how long the server keeps a key. Pick a window and publish it.
+
+## svc-retry-policy
+
+severity: block  
+applies_when: The code retries a failed call, or wraps a client that retries.
+
+**Rule.** Retry only transient errors, with capped attempts and jittered exponential backoff.
+
+**Why.** Immediate, unbounded, or synchronized retries turn a brief fault into a load spike on the struggling dependency. Retry at one layer only: three layers of three attempts is nine calls per user request. Make retried writes safe with [[svc-idempotency-key]].
+
+**FAIL**
+
+```text
+while True:
+    try: return client.call()
+    except Exception: sleep(1)        # no cap, no jitter, retries 4xx too
+```
+
+**PASS**
+
+```python
+import random, time
+for i in range(3):
+    try:
+        return client.call()
+    except TransientError:
+        if i == 2:
+            raise
+        time.sleep(random.uniform(0, min(CAP_S, BASE_S * 2**i)))
+# retry at one layer only: the client's own retries are off
+```
+
+**Counterpoint.** "Retries make us more reliable." Only for transient faults and only within a budget. Past that they hurt, so a non-transient error should fail at once. A retry budget (retries capped as a share of traffic) helps further. This card leaves its size to the team.

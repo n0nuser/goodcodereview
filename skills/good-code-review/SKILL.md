@@ -52,10 +52,15 @@ The full text for each level is in `references/<level>.md`.
 - `svc-api-deprecation-sunset` [should-fix]: Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers, with the `Sunset` date no earlier than the `Deprecation` date.
 - `svc-api-error-code-stable` [should-fix]: Give each error a stable machine-readable code that callers branch on, and never make them parse the message text.
 - `svc-api-versioning-policy` [should-fix]: Write down one versioning scheme for the API, and ship no breaking change inside a version it has published.
+- `svc-idempotency-key` [block]: Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.
+- `svc-retry-policy` [block]: Retry only transient errors, with capped attempts and jittered exponential backoff.
 
 ## system
 
+- `sys-load-shedding-bounded-queues` [block]: Bound every queue and reject excess work cheaply.
 - `sys-lock-fencing` [block]: Check a correctness lock on the resource side (fencing token or compare-and-set), never by lock possession alone.
+- `sys-migration-expand-contract` [block]: Run data backfills in batches, in a migration separate from the schema change.
+- `sys-secrets-and-errors` [block]: Fail closed: a validation or auth error must deny, never continue, and an error response must not carry internals such as stack traces, SQL or tokens.
 
 ## codebase
 

@@ -16,9 +16,9 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #9 | Service Discovery | glossary/service-discovery | glossary |
 | 111-list #10 | Circuit Breakers | `svc-circuit-breaker-bulkhead` | draft |
 | 111-list #11 | Timeouts | `svc-timeouts` | draft |
-| 111-list #12 | Retries | `svc-retry-policy` | draft |
-| 111-list #13 | Exponential Backoff | `svc-retry-policy` | draft |
-| 111-list #14 | Idempotency | `svc-idempotency-key` | draft |
+| 111-list #12 | Retries | `svc-retry-policy` | stable |
+| 111-list #13 | Exponential Backoff | `svc-retry-policy` | stable |
+| 111-list #14 | Idempotency | `svc-idempotency-key` | stable |
 | 111-list #15 | Message Queues | `svc-dlq` | draft |
 | 111-list #16 | Pub/Sub | glossary/pub-sub | glossary |
 | 111-list #17 | Event-Driven Architecture | glossary/event-driven-architecture | glossary |
@@ -48,7 +48,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #41 | Memory Leaks | `fn-resource-lifetime` | draft |
 | 111-list #42 | Garbage Collection | glossary/garbage-collection | glossary |
 | 111-list #43 | Thread Safety | glossary/thread-safety | glossary |
-| 111-list #44 | Backpressure | `sys-load-shedding-bounded-queues` | draft |
+| 111-list #44 | Backpressure | `sys-load-shedding-bounded-queues` | stable |
 | 111-list #45 | Autoscaling | glossary/autoscaling | glossary |
 | 111-list #46 | Horizontal Scaling | glossary/horizontal-scaling | glossary |
 | 111-list #47 | Vertical Scaling | glossary/vertical-scaling | glossary |
@@ -64,7 +64,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #56 | Health Checks | `sys-health-liveness-readiness` | draft |
 | 111-list #57 | Liveness & Readiness Probes | glossary/liveness-readiness-probes | glossary |
 | 111-list #58 | Monitoring | `prod-alerts-symptoms-golden-signals` | draft |
-| 111-list #59 | Logging | `sys-secrets-and-errors` | draft |
+| 111-list #59 | Logging | `sys-secrets-and-errors` | stable |
 | 111-list #60 | Distributed Tracing | glossary/distributed-tracing | glossary |
 | 111-list #61 | Metrics | `prod-wide-events-bounded-labels` | draft |
 | 111-list #62 | Alerts | `prod-alerts-symptoms-golden-signals` | draft |
@@ -72,7 +72,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #64 | SLIs | glossary/slis | glossary |
 | 111-list #65 | Error Budgets | glossary/error-budgets | glossary |
 | 111-list #66 | Observability | `prod-wide-events-bounded-labels` | draft |
-| 111-list #67 | Secrets Management | `sys-secrets-and-errors` | draft |
+| 111-list #67 | Secrets Management | `sys-secrets-and-errors` | stable |
 | 111-list #68 | IAM | glossary/iam | glossary |
 | 111-list #69 | OAuth | glossary/oauth | glossary |
 | 111-list #70 | JWT Rotation | glossary/jwt-rotation | glossary |
@@ -89,8 +89,8 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #81 | Database Migrations | `sys-migration-lock-timeout` | draft |
 | 111-list #81b | Database Migrations (constraints) | `sys-constraint-not-valid` | draft |
 | 111-list #81c | Database Migrations (rewrite) | `chg-migration-add-column-rewrite` | draft |
-| 111-list #81d | Database Migrations (backfill) | `sys-migration-expand-contract` | draft |
-| 111-list #82 | Schema Versioning | `sys-migration-expand-contract` | draft |
+| 111-list #81d | Database Migrations (backfill) | `sys-migration-expand-contract` | stable |
+| 111-list #82 | Schema Versioning | `sys-migration-expand-contract` | stable |
 | 111-list #83 | Disaster Recovery | glossary/disaster-recovery | glossary |
 | 111-list #84 | Backups | glossary/backups | glossary |
 | 111-list #85 | Failover | glossary/failover | glossary |
@@ -254,8 +254,8 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Error handling: Specific exceptions only | `fn-specific-exceptions-only` | draft |
 | core-python | Error handling: Propagate, translate with `from` | `fn-propagate-dont-swallow` | draft |
 | core-python | Error handling: Base exception per package, errors module | `py-error-hierarchy` | draft |
-| core-python | Error handling: Retry only transient failures on idempotent operations | `svc-retry-policy` | draft |
-| core-python | Error handling: Error responses don't leak internals | `sys-secrets-and-errors` | draft |
+| core-python | Error handling: Retry only transient failures on idempotent operations | `svc-retry-policy` | stable |
+| core-python | Error handling: Error responses don't leak internals | `sys-secrets-and-errors` | stable |
 | core-python | Error handling: Log the branches that matter with a request ID | `svc-request-id-logging` | draft |
 | core-python | Security: Validate every input; name new attack surface; secrets from settings | `mod-validate-at-boundary-once`, `chg-name-attack-surface`, `sys-secrets-and-errors` | draft |
 | core-python | Docstrings and comments: Comments explain why | `fn-comments-explain-why` | stable |
@@ -285,12 +285,12 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | asyncio: discarded create_task, TaskGroup, shield | `py-task-reference` | draft |
 | service-system | asyncio: swallowed CancelledError, TimeoutError inside timeout block | `py-cancellation` | draft |
 | service-system | asyncio: await without timeout bound; Azure retry/timeouts | `svc-timeouts` | draft |
-| service-system | Azure retry: backoff, attempts, non-transient, stacked layers; AWS correlated: jitter | `svc-retry-policy` | draft |
-| service-system | Azure retry/saga: idempotency, unique saga id | `svc-idempotency-key` | draft |
+| service-system | Azure retry: backoff, attempts, non-transient, stacked layers; AWS correlated: jitter | `svc-retry-policy` | stable |
+| service-system | Azure retry/saga: idempotency, unique saga id | `svc-idempotency-key` | stable |
 | service-system | Azure circuit breaker and bulkhead | `svc-circuit-breaker-bulkhead` | draft |
 | service-system | AWS queues: DLQ, visibility timeout, queue age | `svc-dlq` | draft |
 | service-system | AWS fairness / shuffle sharding: per-tenant quota, 429 vs 503 | `svc-rate-limit-quota` | draft |
-| service-system | AWS queues: bounded queue, sideline, cheap shedding | `sys-load-shedding-bounded-queues` | draft |
+| service-system | AWS queues: bounded queue, sideline, cheap shedding | `sys-load-shedding-bounded-queues` | stable |
 | service-system | Kleppmann / antirez: fencing, check-and-set, disagreement | `sys-lock-fencing` | stable |
 | service-system | AWS leader election: two leaders, lease check | `sys-leader-two-leaders` | draft |
 | service-system | AWS caching: TTL, size, metrics, versioned values | `sys-cache-bounds-invalidation` | draft |
@@ -299,10 +299,10 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | PG config + altertable: lock_timeout | `sys-migration-lock-timeout` | draft |
 | service-system | PG altertable: NOT VALID / VALIDATE | `sys-constraint-not-valid` | draft |
 | service-system | PG createindex: CONCURRENTLY, INVALID leftovers | `sys-index-concurrently` | draft |
-| service-system | GitLab migration style + avoiding downtime | `sys-migration-expand-contract` | draft |
+| service-system | GitLab migration style + avoiding downtime | `sys-migration-expand-contract` | stable |
 | service-system | OWASP A03:2025, Scorecard, SLSA | `code-dependency-pinning`, `code-workflow-supply-chain`, `code-dependency-licence-sbom` | draft |
 | service-system | OWASP LLM01 | `sys-prompt-injection` | draft |
-| service-system | OWASP A10:2025, ASVS V16 (error leaks, fail open, log data) | `sys-secrets-and-errors` | draft |
+| service-system | OWASP A10:2025, ASVS V16 (error leaks, fail open, log data) | `sys-secrets-and-errors` | stable |
 | service-system | OWASP A01 (SSRF folded in) | `sys-ssrf` | draft |
 | service-system | OWASP A05 / A07 / A01 (index only) | `svc-sqli-authn` | draft |
 | service-system | SRE monitoring | `prod-alerts-symptoms-golden-signals` | draft |
