@@ -325,8 +325,124 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | Glossary candidate: Lock mode conflict table; `ADD CONSTRAINT ... USING INDEX` (not verified) | dropped: glossary candidate, no entry written | dropped |
 | service-system | Glossary candidate: Cheap load shedding and slowed fast errors | dropped: glossary candidate, no entry written | dropped |
 | service-system | Glossary candidate: Unread: OWASP LLM10 Unbounded Consumption, ASVS V1-V15, Azure DLQ page | dropped: glossary candidate, no entry written | dropped |
+| cursor-plugins | 1 Fix the fault, not where it surfaced; guards, retries, swallowed errors hide bugs | `chg-fix-root-cause-not-symptom` | gap |
+| cursor-plugins | 2 Fails only after restart: suspect persisted state | dropped: investigation tip, nothing to FAIL | dropped |
+| cursor-plugins | 3 Attack the premise after two failed fixes | dropped: author process, not visible in a diff | dropped |
+| cursor-plugins | 4 Validate at the boundary; pure logic, thin shell | `mod-validate-at-boundary-once`, `mod-thin-entry-point` | draft |
+| cursor-plugins | 5 No transport, storage or wire types in the public surface | `mod-no-wire-types-in-public-api` | gap |
+| cursor-plugins | 6 Distinct types for semantic primitives (ids) | `fn-distinct-types-for-ids` | gap |
+| cursor-plugins | 7 Derive types from the owning schema | `mod-derive-dont-duplicate` | gap |
+| cursor-plugins | 8 External data untyped until parsed at the boundary | `mod-validate-at-boundary-once` | draft |
+| cursor-plugins | 9 State machine or tagged union over synced booleans and growing chains | `fn-variants-as-tagged-union`, `chg-no-special-case-branches` | gap |
+| cursor-plugins | 10 Organise by domain knowledge, not execution order | `mod-cohesive-unit` | draft |
+| cursor-plugins | 11 Keep boring code; abstraction must remove branches or invalid states | `mod-no-wrong-abstraction` | draft |
+| cursor-plugins | 12 Data shape first; DRY structure not lines; three similar lines beat early abstraction | `chg-abstraction-needs-two-callers`, `mod-no-wrong-abstraction` | draft |
+| cursor-plugins | 13 Scaffold first; small single-purpose commits | `chg-one-concern`, `code-ci-gates` | stable |
+| cursor-plugins | 14 Reader load: layers to trace, state to hold; inline one-caller wrappers | `fn-no-pass-through-wrapper`, `mod-no-module-mutable-state`, `mod-deep-modules` | draft |
+| cursor-plugins | 15 30-second reader-load test | glossary/reader-load | glossary |
+| cursor-plugins | 16 One source of truth for a decision; smallest diff | `mod-central-config`, `chg-one-concern` | draft |
+| cursor-plugins | 17 Subtract first; no speculative validators or stubs | `mod-yagni` | stable |
+| cursor-plugins | 18 Operations converge on rerun and after a crash; stale markers recognisable | `fn-rerun-safe-after-crash`, `svc-idempotency-key` | gap |
+| cursor-plugins | 19 Separate before serialising shared state; single writer; convention is not a lock | `mod-single-writer-per-state` | gap |
+| cursor-plugins | 20 Migrate callers and delete the legacy API in one change (no outside consumers) | `chg-delete-legacy-after-migration` | gap |
+| cursor-plugins | 21 Accept planned, scoped breakage between rewrite phases | dropped: planning posture; conflicts with per-commit green | dropped |
+| cursor-plugins | 22 Verify the real thing, not a proxy; re-runnable script as artifact | `chg-verify-before-claim`, `chg-agent-independent-review` | draft |
+| cursor-plugins | 23 Test must fail when behaviour breaks and survive an internals refactor | `chg-agent-mock-asserting-tests`, `mod-mock-at-boundaries-only`, `py-no-init-or-model-tests` | draft |
+| cursor-plugins | 24 Independent test oracle; pair a negative assertion with a positive case | `fn-test-oracle-independent` | gap |
+| cursor-plugins | 25 A performance number needs run count, spread and a named limiter | `chg-perf-claim-evidence` | gap |
+| cursor-plugins | 26 Verify each unit before the next; failing test first | `chg-tests-ship-with-change` | stable |
+| cursor-plugins | 26b Commit order tells the story | dropped: history shape is not visible in a diff | dropped |
+| cursor-plugins | 27 Redesign instead of bolting on | dropped: posture; visible symptom is chg-no-special-case-branches | dropped |
+| cursor-plugins | 28 Prefer the structural fix over a repeated instruction | `code-rule-has-enforcer` | gap |
+| cursor-plugins | 29 Build the codemod or script so a reviewer can re-run it | dropped: author workflow, not failable from the diff | dropped |
+| cursor-plugins | 30 Exhaust design space, experience first, guard context, never block on human | dropped: design-process posture, product taste, agent runtime | dropped |
+| cursor-plugins | 31 Classify repeated corrections; fix at the highest level; lint message names the replacement | `code-rule-has-enforcer` | gap |
+| cursor-plugins | 32 Fail only when a change adds more of a common pattern; exceptions carry reason, expiry, approver | `code-ci-gates`, `chg-no-silenced-diagnostics` | draft |
+| cursor-plugins | 33 Comment exceptions: legal, forced by vendor or protocol, API contract, link; our surprises get a rename or type | `fn-comments-explain-why`, `fn-comments-survive-context` | draft |
+| cursor-plugins | 34 Constraint and 'do not remove' comments become a type, lint or test; correctness suppressions go | `chg-no-silenced-diagnostics`, `code-rule-has-enforcer` | gap |
+| cursor-plugins | 35 Blast radius beyond grep: JSON, DB column, wire format, flags, library source | `chg-breaking-change-taxonomy` | stable |
+| cursor-plugins | 36 Prove the one fact the change is safe because of; mark unproven | `chg-verify-before-claim` | stable |
+| cursor-plugins | 37 TDD bug fix: failing test first, confirm cause, never bend a test to a wrong implementation | `chg-tests-ship-with-change`, `chg-agent-mock-asserting-tests`, `chg-verify-before-claim` | draft |
+| cursor-plugins | 38 TypeScript: tagged unions, exhaustive default, unknown over any, no as, honest type guards | `py-no-cast`, `fn-variants-as-tagged-union` | gap |
+| cursor-plugins | 39 Object arguments over positional | `fn-bool-arg-at-callsite` | draft |
+| cursor-plugins | 40 Do not mock what you can run; no console.log in shipped code | dropped: mock half is mod-mock-at-boundaries-only; logging is linter-owned | dropped |
+| cursor-plugins | 41 Red flag: shallow module | `mod-deep-modules` | draft |
+| cursor-plugins | 42 Red flag: information leakage | `mod-fowler-smells`, `mod-no-wire-types-in-public-api` | gap |
+| cursor-plugins | 43 Red flag: temporal decomposition | `mod-cohesive-unit` | draft |
+| cursor-plugins | 44 Red flag: pass-through method | `fn-no-pass-through-wrapper` | draft |
+| cursor-plugins | 45 Red flag: split ownership of state | `mod-single-writer-per-state` | gap |
+| cursor-plugins | 46 Red flag: two ways to do one task | `chg-delete-legacy-after-migration`, `code-consistency-drift` | gap |
+| cursor-plugins | 47 Red flag: importable internals | `mod-internals-unreachable` | gap |
+| cursor-plugins | 48 Red flag: hand-synced list | `mod-derive-dont-duplicate` | gap |
+| cursor-plugins | 49 Signs the architecture is wrong: repeated workarounds, escape hatches, special-case branches | `chg-no-special-case-branches`, `mod-deep-modules` | draft |
+| cursor-plugins | 50 Design twice; usage sketch first | dropped: design process, not visible in a diff | dropped |
+| cursor-plugins | 51 Root cause vs symptom: masking guard, retry over broken contract, silencing cast | `chg-fix-root-cause-not-symptom` | gap |
+| cursor-plugins | 52 A 'don't do X' comment should be a type, lint or runtime check | `code-rule-has-enforcer` | gap |
+| cursor-plugins | 53 Legacy dual-paths with no external consumer | `chg-delete-legacy-after-migration` | gap |
+| cursor-plugins | 54 Trace the call chain or input path before claiming a bug or security issue | `chg-verify-before-claim` | stable |
+| cursor-plugins | 55 Reviewer judgement: nit inflation, unreachable hypotheticals, preference, independent agreement | `chg-review-signal`, `chg-agent-independent-review` | draft |
+| cursor-plugins | 56 State intent first; findings bucketed by action and severity | `chg-matches-spec`, `chg-review-comment-format` | draft |
+| cursor-plugins | 57 Bug fix: each line traces to runtime evidence; repro before fix | `chg-fix-root-cause-not-symptom`, `chg-verify-before-claim` | gap |
+| cursor-plugins | 58 Refactor: pin behaviour with a characterization test before moving structure | `chg-refactor-has-behaviour-pin` | gap |
+| cursor-plugins | 59 Refactor API reshape: migrate callers, delete old API, no shim | `chg-delete-legacy-after-migration` | gap |
+| cursor-plugins | 59b Spot-check renames against strings and prose | dropped: manual step, not visible in a diff | dropped |
+| cursor-plugins | 60 Refactor must lower reader load or be reverted | `chg-refactor-separate` | stable |
+| cursor-plugins | 61 Perf fixes tie to a measurement; cheap options in order | glossary/performance-mantras | glossary |
+| cursor-plugins | 62 Benchmark checklist: seven questions for a performance claim | `chg-perf-claim-evidence` | gap |
+| cursor-plugins | 63 verify-this listed under pstack by mistake | dropped: duplicate of row 77 | dropped |
+| cursor-plugins | 64 PR body as a one-minute briefing; narrow PRs; one primary perf number | `chg-author-hygiene`, `chg-size-ceiling` | stable |
+| cursor-plugins | 65 A verdict covers one patch; recheck after rebase by patch id | `chg-approval-tied-to-patch` | gap |
+| cursor-plugins | 66 Bot findings: fix, dismiss with reason, or ask; never dismiss data or security class | `chg-review-signal` | stable |
+| cursor-plugins | 67 Append-only decision log and audit of the trail | dropped: agent audit trail; cross-model idea is chg-agent-independent-review | dropped |
+| cursor-plugins | 68 Falsifiable definition of done; baseline before work; inconclusive is not a pass | `chg-verify-before-claim` | stable |
+| cursor-plugins | 69 Prose rules (unslop, technical-writing) | dropped: prose style, already followed by this repo's writing rules | dropped |
+| cursor-plugins | 70 No confirmed repro, no fix; symptom twice through real use; verify existing fix first | `chg-verify-before-claim` | stable |
+| cursor-plugins | 70b Bot Slack and credential safety rules | dropped: bot-specific safety, not code review | dropped |
+| cursor-plugins | 71 Trace history (blame, PR, ticket, postmortem) before judging defensive code | `chg-chestertons-fence` | draft |
+| cursor-plugins | 72 Prompting and exploration helpers | dropped: not code review | dropped |
+| cursor-plugins | 73 Deslop: extra comments, abnormal defensive try/catch, any casts, deep nesting | `chg-agent-grounded-code`, `chg-match-codebase-pattern`, `py-no-cast`, `mod-validate-at-boundary-once` | draft |
+| cursor-plugins | 74 Reviewability: matching summary, core vs generated, no hidden behaviour change, split if too big | `chg-author-hygiene`, `chg-refactor-separate`, `chg-size-ceiling` | stable |
+| cursor-plugins | 75 Compare tree hash after history rewrite | dropped: author workflow | dropped |
+| cursor-plugins | 76 Review order correctness before style; severity groups; judge on all checks | `chg-review-signal`, `chg-review-comment-format`, `code-ci-gates` | draft |
+| cursor-plugins | 77 Verify-this: falsifiable claim, same-condition baseline and treatment, one verdict | `chg-verify-before-claim`, `chg-perf-claim-evidence` | gap |
+| cursor-plugins | 78 Fix CI one cause at a time; flaky retry once; unrelated fixes stay out | `chg-one-concern` | stable |
+| cursor-plugins | 79 Task runners and agent mechanics (team-kit) | dropped: no review rule | dropped |
+| cursor-plugins | 80 PR review canvas: core first, mechanical collapsed, callouts sparing | `chg-review-signal` | stable |
+| cursor-plugins | 81 Root-cause gate and symptom-fix tells (guard, swallow, cast, retry, skip, weakened assertion, hard-code) | `chg-fix-root-cause-not-symptom` | gap |
+| cursor-plugins | 82 Merge-ready definition: green review, ready, no conflicts, all checks, threads resolved | `chg-author-hygiene` | stable |
+| cursor-plugins | 83 Review priority order; no factoring before second caller; understand before deleting | `chg-review-signal`, `chg-abstraction-needs-two-callers`, `chg-chestertons-fence` | draft |
+| cursor-plugins | 84 Keep real, in-diff, worthwhile findings; cap list; one ask each; no praise | `chg-review-signal`, `chg-review-comment-format` | draft |
+| cursor-plugins | 85 Re-review context; PR text and CI logs are untrusted data | `chg-review-comment-format`, `sys-prompt-injection`, `code-workflow-supply-chain` | draft |
+| cursor-plugins | 86 The Algorithm: question requirement, delete, optimise, accelerate, automate | `mod-yagni` | stable |
+| cursor-plugins | 87 dyl-ready-pr loop and build-figma | dropped: platform workflow | dropped |
+| cursor-plugins | 88 CLI: every input a flag; prompts only fallback; fail fast with example | `mod-cli-non-interactive` | gap |
+| cursor-plugins | 89 CLI: --dry-run and confirmation bypass for destructive commands | `mod-cli-destructive-dry-run` | gap |
+| cursor-plugins | 90 CLI: safe to rerun | `svc-idempotency-key`, `fn-rerun-safe-after-crash` | gap |
+| cursor-plugins | 91 CLI help examples, consistent verbs, structured output | dropped: usability preference, one vendor's view | dropped |
+| cursor-plugins | 92 Documented setup path runs on a clean checkout | `code-documented-setup-runs` | gap |
+| cursor-plugins | 92a Scoped validation loop for a small change | `code-scoped-validation-loop` | gap |
+| cursor-plugins | 92b Cold-start attempt, published scanner and blended score | dropped: scoring method and vendor CLI, not a rule | dropped |
+| cursor-plugins | 93 Orchestrate, ralph-loop, continual-learning, advisor: agent machinery | dropped: agent runtime, no rule for code under review | dropped |
 
 ## Gaps
 
-None remaining.
+Reserved ids with no card. Each line is the rule the card would check. All come from the cursor-plugins pass (`docs/research/cursor-plugins.md`), backed by that one source only.
 
+- `chg-fix-root-cause-not-symptom`: FAIL if a fix adds a guard, retry, sleep, longer timeout, swallowed error, cast, skipped or weakened test, or a special case for the failing input, with no stated cause seen in evidence.
+- `chg-perf-claim-evidence`: FAIL if a performance claim lacks run count, spread, a named limiter, or a check that errors were counted and the work ran inside the timed region.
+- `chg-delete-legacy-after-migration`: FAIL if a change adds a new API or path and leaves the old one alive when no consumer outside the repo needs it (sibling of `chg-expand-contract`).
+- `chg-refactor-has-behaviour-pin`: FAIL if a refactor moves structure with no test, snapshot or equivalence check that pins current behaviour first.
+- `chg-approval-tied-to-patch`: FAIL if an approval or verification verdict older than the last push that changed non-test content is treated as current.
+- `fn-variants-as-tagged-union`: FAIL if state is a bag of optional fields or a set of booleans that must stay in sync, or a variant switch has no exhaustiveness check.
+- `fn-distinct-types-for-ids`: FAIL if two arguments with different meanings share one primitive type and nothing stops them being swapped.
+- `fn-test-oracle-independent`: FAIL if a test's expected value comes from the code under test, or a 'not called' assertion has no matching case where the call happens.
+- `fn-rerun-safe-after-crash`: FAIL if an operation gives a different result on a second run or after a crash halfway, or leaves a marker the next run cannot judge as stale.
+- `mod-single-writer-per-state`: FAIL if more than one module or worker writes the same state when each could own its own, or sharing is guarded only by convention.
+- `mod-internals-unreachable`: FAIL if a caller outside a module can import its internals and no check fails the build.
+- `mod-derive-dont-duplicate`: FAIL if a type, list or enum duplicates a shape owned by a schema or another list, with no derivation and no build check for disagreement.
+- `mod-no-wire-types-in-public-api`: FAIL if a public interface exposes transport, storage or framework types instead of domain types.
+- `mod-cli-non-interactive`: FAIL if a CLI command needs a prompt or menu for any input that has no flag, or hangs on a missing flag instead of exiting with an example.
+- `mod-cli-destructive-dry-run`: FAIL if a destructive CLI command has no preview flag or no non-interactive confirmation bypass.
+- `code-rule-has-enforcer`: FAIL if a repeated review correction or an instruction file rule that a type, lint or CI check could enforce has no enforcer, or a constraint comment guards what a check could.
+- `code-documented-setup-runs`: FAIL if a setup or run command in the README or contribution guide fails on a clean checkout.
+- `code-scoped-validation-loop`: FAIL if the only documented way to check a small change is the full-repo run.
