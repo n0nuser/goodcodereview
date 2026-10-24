@@ -1,7 +1,7 @@
 ---
 id: code-ci-gates
 level: codebase
-tags: [ci, quality-gates]
+tags: [process, ci, quality-gates]
 severity: should-fix
 status: stable
 lang: core

@@ -1,7 +1,7 @@
 ---
 id: fn-atomic-related-updates
 level: function
-tags: [consistency, errors]
+tags: [correctness, consistency, errors]
 severity: block
 status: draft
 lang: core

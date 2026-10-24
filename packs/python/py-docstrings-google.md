@@ -1,7 +1,7 @@
 ---
 id: py-docstrings-google
 level: function
-tags: [python, docs]
+tags: [maintainability, python, docs]
 severity: discuss
 status: draft
 lang: python

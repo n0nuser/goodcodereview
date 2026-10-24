@@ -1,7 +1,7 @@
 ---
 id: py-init-py-empty
 level: module
-tags: [python, structure]
+tags: [maintainability, python, structure]
 severity: should-fix
 status: draft
 lang: python

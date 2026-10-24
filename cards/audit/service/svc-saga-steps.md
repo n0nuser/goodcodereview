@@ -1,7 +1,7 @@
 ---
 id: svc-saga-steps
 level: service
-tags: [distributed, consistency]
+tags: [reliability, correctness, distributed, consistency]
 severity: block
 status: draft
 lang: core

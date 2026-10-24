@@ -1,7 +1,7 @@
 ---
 id: mod-pooled-clients-built-once
 level: module
-tags: [resources, performance]
+tags: [performance, resources]
 severity: should-fix
 status: draft
 lang: core

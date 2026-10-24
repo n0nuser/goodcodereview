@@ -1,7 +1,7 @@
 ---
 id: inc-postmortem-owned-actions
 level: incident
-tags: [incident, learning]
+tags: [reliability, process, incident, learning]
 severity: should-fix
 status: draft
 note: no source yet; first-hand reasoning

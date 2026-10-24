@@ -1,7 +1,7 @@
 ---
 id: fn-rerun-safe-after-crash
 level: function
-tags: [idempotency, reliability]
+tags: [reliability, idempotency]
 severity: block
 status: draft
 lang: core

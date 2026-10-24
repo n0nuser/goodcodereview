@@ -1,7 +1,7 @@
 ---
 id: fn-specific-exceptions-only
 level: function
-tags: [errors]
+tags: [correctness, errors]
 severity: block
 status: draft
 lang: core

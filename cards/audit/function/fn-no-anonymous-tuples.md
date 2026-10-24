@@ -1,7 +1,7 @@
 ---
 id: fn-no-anonymous-tuples
 level: function
-tags: [readability, types]
+tags: [maintainability, readability, types]
 severity: should-fix
 status: draft
 lang: core

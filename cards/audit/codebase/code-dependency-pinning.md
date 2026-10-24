@@ -1,7 +1,7 @@
 ---
 id: code-dependency-pinning
 level: codebase
-tags: [supply-chain, dependencies]
+tags: [security, supply-chain, dependencies]
 severity: block
 status: stable
 lang: core

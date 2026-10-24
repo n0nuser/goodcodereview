@@ -1,7 +1,7 @@
 ---
 id: chg-devex-breaking-config
 level: change
-tags: [compatibility, config, process]
+tags: [compatibility, process, config]
 severity: should-fix
 status: draft
 lang: core

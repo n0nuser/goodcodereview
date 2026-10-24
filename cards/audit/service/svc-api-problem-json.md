@@ -1,7 +1,7 @@
 ---
 id: svc-api-problem-json
 level: service
-tags: [api, errors]
+tags: [compatibility, api, errors]
 severity: should-fix
 status: draft
 lang: core

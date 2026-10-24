@@ -1,7 +1,7 @@
 ---
 id: chg-flag-owner-retirement
 level: change
-tags: [feature-flags, release]
+tags: [reliability, feature-flags, release]
 severity: should-fix
 status: draft
 lang: core

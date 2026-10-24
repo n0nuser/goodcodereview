@@ -1,7 +1,7 @@
 ---
 id: fn-no-pass-through-wrapper
 level: function
-tags: [design, readability]
+tags: [maintainability, design, readability]
 severity: should-fix
 status: draft
 lang: core

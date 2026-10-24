@@ -1,7 +1,7 @@
 ---
 id: inc-rollback-path-tested
 level: incident
-tags: [incident, rollback]
+tags: [reliability, incident, rollback]
 severity: should-fix
 status: draft
 lang: core

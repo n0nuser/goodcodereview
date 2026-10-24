@@ -1,7 +1,7 @@
 ---
 id: code-consistency-drift
 level: codebase
-tags: [consistency, architecture]
+tags: [correctness, maintainability, consistency, architecture]
 severity: discuss
 status: draft
 lang: core

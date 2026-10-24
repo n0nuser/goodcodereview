@@ -1,7 +1,7 @@
 ---
 id: svc-api-no-internal-fields
 level: service
-tags: [api, security, contracts]
+tags: [security, compatibility, api, contracts]
 severity: block
 status: draft
 note: protobuf.dev gives the separate-messages rule for RPC versus storage; applying it to REST responses is inference

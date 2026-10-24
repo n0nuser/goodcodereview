@@ -1,7 +1,7 @@
 ---
 id: code-adr
 level: codebase
-tags: [documentation, decisions]
+tags: [maintainability, process, documentation, decisions]
 severity: discuss
 status: draft
 lang: core

@@ -1,7 +1,7 @@
 ---
 id: chg-review-comment-format
 level: change
-tags: [reviewer, etiquette]
+tags: [process, reviewer, etiquette]
 severity: discuss
 status: draft
 lang: core

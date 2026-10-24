@@ -1,7 +1,7 @@
 ---
 id: inc-perf-fix-has-profile-evidence
 level: incident
-tags: [performance, verification]
+tags: [performance, testing, verification]
 severity: should-fix
 status: draft
 lang: core

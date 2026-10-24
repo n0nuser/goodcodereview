@@ -1,7 +1,7 @@
 ---
 id: chg-review-signal
 level: change
-tags: [reviewer, etiquette, signal]
+tags: [process, reviewer, etiquette, signal]
 severity: discuss
 status: stable
 lang: core

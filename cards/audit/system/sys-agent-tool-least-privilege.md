@@ -1,7 +1,7 @@
 ---
 id: sys-agent-tool-least-privilege
 level: system
-tags: [security, llm, agents]
+tags: [security, process, llm, agents]
 severity: block
 status: draft
 lang: core

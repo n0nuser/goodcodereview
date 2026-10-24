@@ -1,7 +1,7 @@
 ---
 id: mod-central-config
 level: module
-tags: [config]
+tags: [maintainability, config]
 severity: should-fix
 status: draft
 lang: core

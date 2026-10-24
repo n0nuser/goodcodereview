@@ -1,7 +1,7 @@
 ---
 id: sys-n-plus-one-pooling
 level: system
-tags: [database, performance]
+tags: [performance, database]
 severity: should-fix
 status: draft
 note: N+1 half has 4 orgs (Django, Rails, SQLAlchemy, Microsoft); the bounded pool rests on 3 partial sources; the index clause has no source beyond topic level

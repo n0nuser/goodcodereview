@@ -1,7 +1,7 @@
 ---
 id: mod-validate-at-boundary-once
 level: module
-tags: [validation, design]
+tags: [correctness, maintainability, validation, design]
 severity: should-fix
 status: draft
 lang: core

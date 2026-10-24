@@ -1,7 +1,7 @@
 ---
 id: prod-canary-staged-rollout
 level: production
-tags: [deploys, release]
+tags: [reliability, deploys, release]
 severity: block
 status: stable
 lang: core

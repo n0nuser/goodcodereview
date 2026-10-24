@@ -1,7 +1,7 @@
 ---
 id: py-httpx-client-lifespan
 level: module
-tags: [python, resources]
+tags: [performance, python, resources]
 severity: should-fix
 status: draft
 lang: python

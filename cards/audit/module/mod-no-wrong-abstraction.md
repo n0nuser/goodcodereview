@@ -1,7 +1,7 @@
 ---
 id: mod-no-wrong-abstraction
 level: module
-tags: [design]
+tags: [maintainability, design]
 severity: should-fix
 status: draft
 lang: core

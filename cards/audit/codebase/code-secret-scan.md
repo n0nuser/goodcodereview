@@ -1,7 +1,7 @@
 ---
 id: code-secret-scan
 level: codebase
-tags: [security, secrets, ci]
+tags: [security, process, secrets, ci]
 severity: block
 status: draft
 lang: core

@@ -3,6 +3,7 @@
 ## chg-author-hygiene
 
 severity: should-fix  
+concerns: process  
 applies_when: Every change submitted for review.
 
 **Rule.** Self-review the diff and write the description before requesting review.
@@ -28,6 +29,7 @@ Author left inline notes on the two non-obvious hunks.
 ## chg-breaking-change-taxonomy
 
 severity: block  
+concerns: compatibility  
 applies_when: The change alters anything a caller can observe, documented or not.
 
 **Rule.** Treat any observable difference in signature, return shape, error type, ordering, timing, defaults, or side effects as breaking until a consumer check says otherwise.
@@ -53,6 +55,7 @@ flag orders_newest_first defaults off for one release".
 ## chg-expand-contract
 
 severity: block  
+concerns: compatibility  
 applies_when: The change renames, removes or reshapes a column, API field, message, config key or exported symbol that other code reads.
 
 **Rule.** Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.
@@ -78,6 +81,7 @@ ALTER TABLE users RENAME COLUMN name TO full_name;  -- app v1 still reads name
 ## chg-one-concern
 
 severity: should-fix  
+concerns: process  
 applies_when: Every change.
 
 **Rule.** Make each change do one logical thing; if the description needs "and" between unrelated outcomes, split it.
@@ -102,6 +106,7 @@ PR 1: dependency bump.  PR 2: rename (no logic change).  PR 3: export button.
 ## chg-perf-claim-evidence
 
 severity: should-fix  
+concerns: performance, testing  
 applies_when: The change or its description claims a speed, throughput, memory or cost improvement.
 
 **Rule.** Back a performance claim with measured before-and-after numbers.
@@ -126,6 +131,7 @@ Median of 7 alternating runs: 412 ms -> 301 ms, range 398-421 vs 295-310.
 ## chg-refactor-separate
 
 severity: should-fix  
+concerns: maintainability, process  
 applies_when: The change both restructures or reformats code and changes behaviour, or moves code between files.
 
 **Rule.** Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
@@ -151,6 +157,7 @@ commit 2: fix off-by-one + test
 ## chg-review-signal
 
 severity: discuss  
+concerns: process  
 applies_when: A reviewer is deciding what to comment on.
 
 **Rule.** Do not comment on what a tool enforces or on taste with no written rule; spend comments on a few high-conviction findings, and if there are many, talk to the author.
@@ -176,6 +183,7 @@ one nit. Formatting left to the formatter, which CI enforces.
 ## chg-size-ceiling
 
 severity: discuss  
+concerns: process  
 applies_when: The diff exceeds roughly 400 changed lines or about 20 files and is not generated or a pure move.
 
 **Rule.** Split a change past about 400 changed lines or about 20 files, or say in the description why not; aim for about 200.
@@ -199,6 +207,7 @@ Stack of 6 changes of 150-300 lines, each builds and passes tests alone.
 ## chg-tests-ship-with-change
 
 severity: block  
+concerns: testing  
 applies_when: The change alters behaviour of non-trivial code.
 
 **Rule.** Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks; a code-only change needs a stated reason.
@@ -224,6 +233,7 @@ PR adds discount.py change and test_discount.py with the edge cases
 ## chg-verify-before-claim
 
 severity: block  
+concerns: testing, process  
 applies_when: The author or reviewer asserts the change works or a finding is real.
 
 **Rule.** Back every "works" or "bug" claim with something run: a repro, a test or command output.

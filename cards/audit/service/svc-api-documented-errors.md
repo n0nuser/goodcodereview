@@ -1,7 +1,7 @@
 ---
 id: svc-api-documented-errors
 level: service
-tags: [api, contracts, errors]
+tags: [correctness, compatibility, api, contracts, errors]
 severity: should-fix
 status: draft
 note: OpenAPI requires only one response per operation; the stricter rule comes from Zalando rule 151

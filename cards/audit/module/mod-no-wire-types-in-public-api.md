@@ -1,7 +1,7 @@
 ---
 id: mod-no-wire-types-in-public-api
 level: module
-tags: [api-design, boundaries]
+tags: [maintainability, api-design, boundaries]
 severity: should-fix
 status: draft
 lang: core

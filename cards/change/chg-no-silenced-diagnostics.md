@@ -1,7 +1,7 @@
 ---
 id: chg-no-silenced-diagnostics
 level: change
-tags: [errors, lint, ci]
+tags: [correctness, maintainability, process, errors, lint, ci]
 severity: should-fix
 status: draft
 lang: core

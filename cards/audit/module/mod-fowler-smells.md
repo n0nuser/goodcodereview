@@ -1,7 +1,7 @@
 ---
 id: mod-fowler-smells
 level: module
-tags: [design, refactoring]
+tags: [maintainability, design, refactoring]
 severity: discuss
 status: draft
 lang: core

@@ -1,7 +1,7 @@
 ---
 id: sys-lock-fencing
 level: system
-tags: [locks, correctness, distributed]
+tags: [reliability, correctness, locks, distributed]
 severity: block
 status: stable
 lang: core

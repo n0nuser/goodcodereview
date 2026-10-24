@@ -1,7 +1,7 @@
 ---
 id: mod-no-module-mutable-state
 level: module
-tags: [state, testing]
+tags: [correctness, testing, state]
 severity: should-fix
 status: draft
 lang: core

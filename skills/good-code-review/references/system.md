@@ -3,6 +3,7 @@
 ## sys-load-shedding-bounded-queues
 
 severity: block  
+concerns: reliability  
 applies_when: Work is buffered in a queue, a channel, or a thread pool between components.
 
 **Rule.** Bound every queue and reject excess work cheaply.
@@ -28,6 +29,7 @@ alarm on age of oldest item; spillover queue for old deltas
 ## sys-lock-fencing
 
 severity: block  
+concerns: reliability, correctness  
 applies_when: A TTL lock or lease guards a write to an external store.
 
 **Rule.** Check a correctness lock on the resource side (fencing token or compare-and-set), never by lock possession alone.
@@ -56,6 +58,7 @@ db.update(row, where fence < token, set fence = token)
 ## sys-migration-expand-contract
 
 severity: block  
+concerns: reliability, compatibility  
 applies_when: A change drops, renames, or retypes a column, or mixes schema change with a data backfill.
 
 **Rule.** Run data backfills in batches, in a migration separate from the schema change.
@@ -79,6 +82,7 @@ N: add b, dual-write, ignore a in code ; N+1: batched backfill ; N+2: drop a
 ## sys-secrets-and-errors
 
 severity: block  
+concerns: security, correctness  
 applies_when: The code handles credentials, logs data, or returns errors to clients.
 
 **Rule.** Fail closed: a validation or auth error must deny, never continue, and an error response must not carry internals such as stack traces, SQL or tokens.

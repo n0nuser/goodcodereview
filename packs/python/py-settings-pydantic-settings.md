@@ -1,7 +1,7 @@
 ---
 id: py-settings-pydantic-settings
 level: module
-tags: [python, config]
+tags: [maintainability, python, config]
 severity: should-fix
 status: draft
 lang: python

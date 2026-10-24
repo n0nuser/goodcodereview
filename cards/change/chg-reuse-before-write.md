@@ -1,7 +1,7 @@
 ---
 id: chg-reuse-before-write
 level: change
-tags: [reuse, duplication]
+tags: [maintainability, reuse, duplication]
 severity: should-fix
 status: draft
 lang: core

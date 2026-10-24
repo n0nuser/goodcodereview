@@ -1,7 +1,7 @@
 ---
 id: sys-fanout-leg-deadlines
 level: system
-tags: [performance, latency, resilience]
+tags: [performance, reliability, latency, resilience]
 severity: should-fix
 status: draft
 lang: core

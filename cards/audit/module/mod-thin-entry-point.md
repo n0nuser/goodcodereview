@@ -1,7 +1,7 @@
 ---
 id: mod-thin-entry-point
 level: module
-tags: [architecture]
+tags: [maintainability, architecture]
 severity: should-fix
 status: draft
 lang: core

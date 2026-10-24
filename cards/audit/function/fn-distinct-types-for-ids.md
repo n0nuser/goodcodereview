@@ -1,7 +1,7 @@
 ---
 id: fn-distinct-types-for-ids
 level: function
-tags: [types, correctness]
+tags: [correctness, types]
 severity: should-fix
 status: draft
 lang: core

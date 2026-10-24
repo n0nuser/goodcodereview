@@ -3,6 +3,7 @@
 ## svc-api-conditional-writes
 
 severity: should-fix  
+concerns: correctness  
 applies_when: Two callers can update the same resource through PUT, PATCH or DELETE.
 
 **Rule.** Return an `ETag` on reads and honour `If-Match` on writes, answering 412 when the entity tag is stale.
@@ -29,6 +30,7 @@ PUT /docs/4  If-Match: "v7"  -> 412 Precondition Failed
 ## svc-api-deprecation-sunset
 
 severity: should-fix  
+concerns: compatibility  
 applies_when: A service retires an endpoint, field, version or parameter that outside callers use.
 
 **Rule.** Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers, with the `Sunset` date no earlier than the `Deprecation` date.
@@ -57,6 +59,7 @@ spec: deprecated: true
 ## svc-api-error-code-stable
 
 severity: should-fix  
+concerns: compatibility  
 applies_when: Callers of an HTTP or RPC API branch on the kind of error.
 
 **Rule.** Give each error a stable machine-readable code that callers branch on, and never make them parse the message text.
@@ -83,6 +86,7 @@ if response.json()["type"] == "https://api.example.com/problems/order-exists":  
 ## svc-api-versioning-policy
 
 severity: should-fix  
+concerns: compatibility  
 applies_when: A service offers an HTTP API to callers you do not deploy together with it.
 
 **Rule.** Write down one versioning scheme for the API, and ship no breaking change inside a version it has published.
@@ -109,6 +113,7 @@ the rename ships under api-version=2026-09-01
 ## svc-idempotency-key
 
 severity: block  
+concerns: reliability, correctness  
 applies_when: A non-idempotent operation (charge, create, send) can be retried by a client, a queue, or a saga.
 
 **Rule.** Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.
@@ -136,6 +141,7 @@ INSERT ... ON CONFLICT (idem_key) DO UPDATE SET idem_key = EXCLUDED.idem_key RET
 ## svc-retry-policy
 
 severity: block  
+concerns: reliability  
 applies_when: The code retries a failed call, or wraps a client that retries.
 
 **Rule.** Retry only transient errors, with capped attempts and jittered exponential backoff.

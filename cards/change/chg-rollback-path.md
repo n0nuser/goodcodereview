@@ -1,7 +1,7 @@
 ---
 id: chg-rollback-path
 level: change
-tags: [release, rollback]
+tags: [reliability, release, rollback]
 severity: block
 status: draft
 lang: core

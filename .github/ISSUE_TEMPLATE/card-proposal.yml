@@ -24,6 +24,24 @@ body:
         - incident
     validations:
       required: true
+  - type: dropdown
+    id: concerns
+    attributes:
+      label: Concerns
+      description: Pick one or more.
+      multiple: true
+      options:
+        - correctness
+        - security
+        - performance
+        - reliability
+        - compatibility
+        - testing
+        - maintainability
+        - observability
+        - process
+    validations:
+      required: true
   - type: textarea
     id: fail
     attributes:

@@ -1,7 +1,7 @@
 ---
 id: py-field-only-when-adds
 level: module
-tags: [python, pydantic]
+tags: [correctness, python, pydantic]
 severity: discuss
 status: draft
 lang: python

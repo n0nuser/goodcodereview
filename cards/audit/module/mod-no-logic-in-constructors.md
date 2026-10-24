@@ -1,7 +1,7 @@
 ---
 id: mod-no-logic-in-constructors
 level: module
-tags: [state, testing]
+tags: [correctness, testing, state]
 severity: should-fix
 status: draft
 lang: core

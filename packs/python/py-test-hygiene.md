@@ -1,7 +1,7 @@
 ---
 id: py-test-hygiene
 level: module
-tags: [python, testing]
+tags: [testing, python]
 severity: discuss
 status: draft
 lang: python

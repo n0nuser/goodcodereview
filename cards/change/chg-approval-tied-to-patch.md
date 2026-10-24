@@ -1,7 +1,7 @@
 ---
 id: chg-approval-tied-to-patch
 level: change
-tags: [review, process]
+tags: [process, review]
 severity: should-fix
 status: draft
 lang: core

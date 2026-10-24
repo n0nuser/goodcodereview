@@ -1,7 +1,7 @@
 ---
 id: py-cancellation
 level: service
-tags: [asyncio, cancellation]
+tags: [reliability, correctness, asyncio, cancellation]
 severity: block
 status: draft
 lang: python

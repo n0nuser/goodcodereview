@@ -1,7 +1,7 @@
 ---
 id: mod-one-name-per-concept
 level: module
-tags: [naming]
+tags: [maintainability, naming]
 severity: should-fix
 status: draft
 lang: core

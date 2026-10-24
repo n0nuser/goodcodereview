@@ -1,7 +1,7 @@
 ---
 id: svc-api-safe-idempotent-methods
 level: service
-tags: [api, http]
+tags: [compatibility, api, http]
 severity: block
 status: draft
 note: RFC 9110 sections 9.2.1 and 9.2.2

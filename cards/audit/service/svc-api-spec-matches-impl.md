@@ -1,7 +1,7 @@
 ---
 id: svc-api-spec-matches-impl
 level: service
-tags: [api, contracts]
+tags: [compatibility, api, contracts]
 severity: should-fix
 status: draft
 lang: core

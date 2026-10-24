@@ -1,7 +1,7 @@
 ---
 id: prod-kill-switch-fallback
 level: production
-tags: [resilience, flags]
+tags: [reliability, resilience, flags]
 severity: should-fix
 status: draft
 note: kill-switch half has no source; fallback half rests on the AWS caching article

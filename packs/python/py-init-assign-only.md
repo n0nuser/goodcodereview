@@ -1,7 +1,7 @@
 ---
 id: py-init-assign-only
 level: module
-tags: [python, classes]
+tags: [maintainability, python, classes]
 severity: should-fix
 status: draft
 lang: python

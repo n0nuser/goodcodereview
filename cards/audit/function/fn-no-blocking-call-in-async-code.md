@@ -1,7 +1,7 @@
 ---
 id: fn-no-blocking-call-in-async-code
 level: function
-tags: [performance, concurrency, io]
+tags: [performance, correctness, concurrency, io]
 severity: block
 status: draft
 lang: core

@@ -1,7 +1,7 @@
 ---
 id: py-pydantic-validation
 level: module
-tags: [python, validation]
+tags: [correctness, python, validation]
 severity: should-fix
 status: draft
 lang: python

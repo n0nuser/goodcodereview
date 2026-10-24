@@ -1,7 +1,7 @@
 ---
 id: chg-delete-legacy-after-migration
 level: change
-tags: [migration, cleanup]
+tags: [compatibility, maintainability, migration, cleanup]
 severity: should-fix
 status: draft
 lang: core

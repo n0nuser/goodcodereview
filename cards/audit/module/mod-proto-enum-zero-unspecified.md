@@ -1,7 +1,7 @@
 ---
 id: mod-proto-enum-zero-unspecified
 level: module
-tags: [api, protobuf, compatibility]
+tags: [compatibility, api, protobuf]
 severity: should-fix
 status: draft
 lang: core

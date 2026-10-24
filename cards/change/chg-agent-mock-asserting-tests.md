@@ -1,7 +1,7 @@
 ---
 id: chg-agent-mock-asserting-tests
 level: change
-tags: [agents, testing]
+tags: [testing, process, agents]
 severity: block
 status: draft
 lang: core

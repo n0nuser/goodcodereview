@@ -1,7 +1,7 @@
 ---
 id: svc-api-contract-tests
 level: service
-tags: [api, testing, contracts]
+tags: [compatibility, testing, api, contracts]
 severity: should-fix
 status: draft
 note: the Pact page read does not describe provider verification or the broker; those steps are not asserted here

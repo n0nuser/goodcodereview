@@ -1,7 +1,7 @@
 ---
 id: svc-api-error-code-stable
 level: service
-tags: [api, errors]
+tags: [compatibility, api, errors]
 severity: should-fix
 status: stable
 note: RFC 9457 and Google AIP-193 describe the mechanism; the rule never to reword a published code is inference from both

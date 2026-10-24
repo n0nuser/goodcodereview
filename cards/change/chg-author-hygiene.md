@@ -1,7 +1,7 @@
 ---
 id: chg-author-hygiene
 level: change
-tags: [author, process, ci]
+tags: [process, author, ci]
 severity: should-fix
 status: stable
 lang: core

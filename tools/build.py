@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from validate import LEVELS, load_cards, validate  # noqa: E402
+from validate import CONCERNS, LEVELS, load_cards, validate  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
@@ -79,9 +79,14 @@ def card_html(fm, body, ids):
 
 
 def listing(title, intro, cards, ids):
-    tags = sorted({t for _, fm, _ in cards for t in fm["tags"]})
+    seen = {t for _, fm, _ in cards for t in fm["tags"]}
+    tags = [c for c in CONCERNS if c in seen] + sorted(seen - set(CONCERNS))
     bar = "<p>" + " ".join(f'<span class="tag" data-t="{html.escape(t)}">#{html.escape(t)}</span>' for t in tags) + "</p>"
     return page(title, intro + bar + ("".join(card_html(fm, b, ids) for _, fm, b in cards) or "<p>No cards yet.</p>"), True)
+
+
+def concerns(fm):
+    return [t for t in fm["tags"] if t in CONCERNS]
 
 
 def rule(body):
@@ -111,7 +116,7 @@ def main():
         pages.append((f"pack-{pk}.html", f"Pack: {pk}", [c for c in cards if c[1]["lang"] == pk]))
     for f, title, cs in pages:
         (SITE / f).write_text(listing(title, "", cs, ids))
-        llms += [f"## {title} ({f})"] + [f"- {fm['id']}: {rule(b)}" for _, fm, b in cs] + [""]
+        llms += [f"## {title} ({f})"] + [f"- {fm['id']} {{{', '.join(concerns(fm))}}}: {rule(b)}" for _, fm, b in cs] + [""]
     g = "".join(f'<article id="{p.stem}">{md(p.read_text(), ids)}</article>' for p in gloss)
     (SITE / "glossary.html").write_text(page("Glossary", g))
     llms += [f"## Glossary (glossary.html)"] + [f"- {p.stem}" for p in gloss]
@@ -135,14 +140,17 @@ def main():
     sk += [f"| {i} | {lv} |" for i, lv in ROUTES]
     sk += ["", "## Verdict format", "", "Each check gets `PASS`, `FAIL`, or `N/A`, with `file:line` evidence.",
            "A `FAIL` carries the card's severity: `block`, `should-fix`, or `discuss`.", "",
-           "The full text for each level is in `references/<level>.md`.", ""]
+           "The full text for each level is in `references/<level>.md`.", "",
+           "## Scope by concern", "",
+           "Each card lists its concerns in braces: " + ", ".join(f"`{c}`" for c in CONCERNS) + ".",
+           "To review only some concerns, such as a performance-only review, check only the cards that list them.", ""]
     for lv in LEVELS:
         cs = [c for c in stable if c[1]["level"] == lv]
         if not cs:
             continue
-        sk += [f"## {lv}", ""] + [f"- `{fm['id']}` [{fm['severity']}]: {rule(b)}" for _, fm, b in cs] + [""]
+        sk += [f"## {lv}", ""] + [f"- `{fm['id']}` [{fm['severity']}] {{{', '.join(concerns(fm))}}}: {rule(b)}" for _, fm, b in cs] + [""]
         (SKILL / "references" / f"{lv}.md").write_text(
-            f"# {lv}\n\n" + "\n\n".join(f"## {fm['id']}\n\nseverity: {fm['severity']}  \napplies_when: {fm['applies_when']}\n\n{b.strip()}"
+            f"# {lv}\n\n" + "\n\n".join(f"## {fm['id']}\n\nseverity: {fm['severity']}  \nconcerns: {', '.join(concerns(fm))}  \napplies_when: {fm['applies_when']}\n\n{b.strip()}"
                                         for _, fm, b in cs) + "\n")
     (SKILL / "SKILL.md").write_text("\n".join(sk))
     if len(sk) > SKILL_BUDGET:

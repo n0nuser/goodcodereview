@@ -1,7 +1,7 @@
 ---
 id: py-ruff-gate
 level: change
-tags: [python, tooling]
+tags: [maintainability, python, tooling]
 severity: should-fix
 status: draft
 lang: python

@@ -1,7 +1,7 @@
 ---
 id: fn-english-identifiers
 level: function
-tags: [naming, readability]
+tags: [maintainability, naming, readability]
 severity: discuss
 status: draft
 lang: core

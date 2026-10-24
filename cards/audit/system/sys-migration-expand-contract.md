@@ -1,7 +1,7 @@
 ---
 id: sys-migration-expand-contract
 level: system
-tags: [database, migration, deploys]
+tags: [reliability, compatibility, database, migration, deploys]
 severity: block
 status: stable
 lang: core

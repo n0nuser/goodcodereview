@@ -1,7 +1,7 @@
 ---
 id: mod-no-import-side-effects
 level: module
-tags: [architecture, testing]
+tags: [testing, maintainability, architecture]
 severity: block
 status: draft
 lang: core

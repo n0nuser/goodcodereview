@@ -1,7 +1,7 @@
 ---
 id: chg-migration-add-column-rewrite
 level: change
-tags: [database, migration, postgres]
+tags: [compatibility, database, migration, postgres]
 severity: block
 status: draft
 lang: core

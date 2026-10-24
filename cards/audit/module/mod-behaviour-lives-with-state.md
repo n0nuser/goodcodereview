@@ -1,7 +1,7 @@
 ---
 id: mod-behaviour-lives-with-state
 level: module
-tags: [design, oop]
+tags: [maintainability, design, oop]
 severity: discuss
 status: draft
 lang: core

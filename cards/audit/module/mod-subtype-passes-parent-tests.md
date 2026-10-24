@@ -1,7 +1,7 @@
 ---
 id: mod-subtype-passes-parent-tests
 level: module
-tags: [oop, design]
+tags: [maintainability, oop, design]
 severity: should-fix
 status: draft
 lang: core

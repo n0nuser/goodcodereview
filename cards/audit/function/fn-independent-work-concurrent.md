@@ -1,7 +1,7 @@
 ---
 id: fn-independent-work-concurrent
 level: function
-tags: [performance, concurrency]
+tags: [performance, correctness, concurrency]
 severity: should-fix
 status: draft
 note: 2 orgs with primary pages (Python, Mozilla) plus one vendor's review skill (opinion); a third org (Go errgroup) is needed before promotion

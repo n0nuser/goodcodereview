@@ -1,7 +1,7 @@
 ---
 id: fn-resource-lifetime
 level: function
-tags: [concurrency, resources]
+tags: [correctness, concurrency, resources]
 severity: block
 status: draft
 lang: core

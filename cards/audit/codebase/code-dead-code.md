@@ -1,7 +1,7 @@
 ---
 id: code-dead-code
 level: codebase
-tags: [cleanup, deletion]
+tags: [maintainability, cleanup, deletion]
 severity: should-fix
 status: stable
 lang: core

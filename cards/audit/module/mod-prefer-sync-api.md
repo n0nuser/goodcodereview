@@ -1,7 +1,7 @@
 ---
 id: mod-prefer-sync-api
 level: module
-tags: [api, concurrency]
+tags: [correctness, api, concurrency]
 severity: discuss
 status: draft
 lang: core

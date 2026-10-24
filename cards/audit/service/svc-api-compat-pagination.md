@@ -1,7 +1,7 @@
 ---
 id: svc-api-compat-pagination
 level: service
-tags: [api, compatibility]
+tags: [compatibility, api]
 severity: should-fix
 status: draft
 note: no source yet; first-hand reasoning

@@ -1,7 +1,7 @@
 ---
 id: py-strenum-not-strings
 level: function
-tags: [python, types]
+tags: [correctness, python, types]
 severity: should-fix
 status: draft
 lang: python

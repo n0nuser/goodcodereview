@@ -1,7 +1,7 @@
 ---
 id: chg-one-concern
 level: change
-tags: [scope, size]
+tags: [process, scope, size]
 severity: should-fix
 status: stable
 lang: core

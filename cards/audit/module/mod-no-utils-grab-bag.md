@@ -1,7 +1,7 @@
 ---
 id: mod-no-utils-grab-bag
 level: module
-tags: [architecture, naming]
+tags: [maintainability, architecture, naming]
 severity: should-fix
 status: draft
 lang: core

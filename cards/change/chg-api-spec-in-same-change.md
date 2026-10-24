@@ -1,7 +1,7 @@
 ---
 id: chg-api-spec-in-same-change
 level: change
-tags: [api, contracts]
+tags: [compatibility, api, contracts]
 severity: should-fix
 status: draft
 lang: core

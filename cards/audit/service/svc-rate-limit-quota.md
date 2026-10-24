@@ -1,7 +1,7 @@
 ---
 id: svc-rate-limit-quota
 level: service
-tags: [multi-tenant, overload]
+tags: [security, reliability, multi-tenant, overload]
 severity: should-fix
 status: draft
 lang: core

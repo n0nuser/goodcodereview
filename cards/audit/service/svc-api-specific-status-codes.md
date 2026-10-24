@@ -1,7 +1,7 @@
 ---
 id: svc-api-specific-status-codes
 level: service
-tags: [api, http]
+tags: [compatibility, api, http]
 severity: should-fix
 status: draft
 note: RFC 9110 sections 9.3.4, 10.2.1 and 15.3.2; section 15.5.6 on 405 was not read

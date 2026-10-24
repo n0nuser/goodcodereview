@@ -1,7 +1,7 @@
 ---
 id: fn-comments-survive-context
 level: function
-tags: [docs]
+tags: [maintainability, docs]
 severity: should-fix
 status: draft
 lang: core

@@ -1,7 +1,7 @@
 ---
 id: py-imports
 level: module
-tags: [python, imports]
+tags: [maintainability, python, imports]
 severity: should-fix
 status: draft
 lang: python

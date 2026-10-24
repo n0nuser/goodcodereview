@@ -1,7 +1,7 @@
 ---
 id: svc-api-cache-control
 level: service
-tags: [api, http, caching]
+tags: [performance, api, http, caching]
 severity: should-fix
 status: draft
 lang: core

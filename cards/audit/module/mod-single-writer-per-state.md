@@ -1,7 +1,7 @@
 ---
 id: mod-single-writer-per-state
 level: module
-tags: [concurrency, ownership]
+tags: [correctness, concurrency, ownership]
 severity: should-fix
 status: draft
 lang: core

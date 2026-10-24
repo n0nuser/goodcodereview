@@ -1,7 +1,7 @@
 ---
 id: py-paths-from-file
 level: function
-tags: [python, io]
+tags: [correctness, python, io]
 severity: should-fix
 status: draft
 lang: python

@@ -1,7 +1,7 @@
 ---
 id: svc-api-naming-consistent
 level: service
-tags: [api, naming]
+tags: [maintainability, api, naming]
 severity: discuss
 status: draft
 note: Zalando and Microsoft disagree on the convention, so the card checks consistency, not the choice

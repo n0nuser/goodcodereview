@@ -1,7 +1,7 @@
 ---
 id: fn-empty-collection-not-none
 level: function
-tags: [api, errors]
+tags: [correctness, api, errors]
 severity: should-fix
 status: draft
 lang: core

@@ -3,6 +3,7 @@
 ## fn-comments-explain-why
 
 severity: should-fix  
+concerns: maintainability  
 applies_when: A comment sits next to code, or the code needs one to be understood.
 
 **Rule.** Write comments that give a reason, a constraint, or a trade-off; rename before commenting, and never restate what the next line does.

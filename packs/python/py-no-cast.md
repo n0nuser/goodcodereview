@@ -1,7 +1,7 @@
 ---
 id: py-no-cast
 level: function
-tags: [python, types]
+tags: [correctness, python, types]
 severity: should-fix
 status: draft
 lang: python

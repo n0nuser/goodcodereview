@@ -1,7 +1,7 @@
 ---
 id: svc-api-retry-after
 level: service
-tags: [api, http, resilience]
+tags: [reliability, api, http, resilience]
 severity: should-fix
 status: draft
 note: the draft rate-limit header fields are not required here; RFC 6585 on 429 was not fetched

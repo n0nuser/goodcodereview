@@ -1,7 +1,7 @@
 ---
 id: sys-health-liveness-readiness
 level: system
-tags: [health, availability]
+tags: [reliability, health, availability]
 severity: block
 status: draft
 lang: core

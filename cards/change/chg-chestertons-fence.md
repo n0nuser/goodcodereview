@@ -1,7 +1,7 @@
 ---
 id: chg-chestertons-fence
 level: change
-tags: [legacy, history]
+tags: [maintainability, process, legacy, history]
 severity: should-fix
 status: draft
 lang: core

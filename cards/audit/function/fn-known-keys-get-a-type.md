@@ -1,7 +1,7 @@
 ---
 id: fn-known-keys-get-a-type
 level: function
-tags: [types]
+tags: [correctness, types]
 severity: should-fix
 status: draft
 lang: core

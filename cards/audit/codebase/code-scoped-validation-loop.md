@@ -1,7 +1,7 @@
 ---
 id: code-scoped-validation-loop
 level: codebase
-tags: [testing, onboarding]
+tags: [testing, process, onboarding]
 severity: discuss
 status: draft
 lang: core

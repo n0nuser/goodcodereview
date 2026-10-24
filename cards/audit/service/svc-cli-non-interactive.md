@@ -1,7 +1,7 @@
 ---
 id: svc-cli-non-interactive
 level: service
-tags: [cli, automation]
+tags: [maintainability, process, cli, automation]
 severity: should-fix
 status: draft
 lang: core

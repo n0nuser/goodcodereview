@@ -1,7 +1,7 @@
 ---
 id: svc-security-event-logging
 level: service
-tags: [security, logging]
+tags: [security, observability, logging]
 severity: should-fix
 status: draft
 lang: core

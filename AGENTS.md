@@ -4,8 +4,9 @@
 
 1. Read `skills/good-code-review/SKILL.md`.
 2. Match the input (diff, file, package, service, repo, release, or incident) to a level with the routing table.
-3. Check each rule for that level. The full text is in `skills/good-code-review/references/<level>.md`.
-4. Report each check as `PASS`, `FAIL`, or `N/A` with `file:line` evidence. A `FAIL` carries the card's severity: `block`, `should-fix`, or `discuss`.
+3. To scope the review to some concerns (for example, performance only), keep only the cards whose `{...}` list names them.
+4. Check each rule for that level. The full text is in `skills/good-code-review/references/<level>.md`.
+5. Report each check as `PASS`, `FAIL`, or `N/A` with `file:line` evidence. A `FAIL` carries the card's severity: `block`, `should-fix`, or `discuss`.
 
 Without a checkout, read https://goodcodereview.com/llms.txt.
 

@@ -1,7 +1,7 @@
 ---
 id: code-build-hermetic
 level: codebase
-tags: [build, reproducibility]
+tags: [process, build, reproducibility]
 severity: should-fix
 status: draft
 lang: core

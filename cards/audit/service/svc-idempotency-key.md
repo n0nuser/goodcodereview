@@ -1,7 +1,7 @@
 ---
 id: svc-idempotency-key
 level: service
-tags: [resilience, correctness]
+tags: [reliability, correctness, resilience]
 severity: block
 status: stable
 lang: core

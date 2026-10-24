@@ -1,7 +1,7 @@
 ---
 id: chg-name-attack-surface
 level: change
-tags: [security, review]
+tags: [security, process, review]
 severity: block
 status: draft
 lang: core

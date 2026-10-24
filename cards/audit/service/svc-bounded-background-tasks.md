@@ -1,7 +1,7 @@
 ---
 id: svc-bounded-background-tasks
 level: service
-tags: [concurrency, resilience, async]
+tags: [reliability, correctness, concurrency, resilience, async]
 severity: block
 status: draft
 lang: core

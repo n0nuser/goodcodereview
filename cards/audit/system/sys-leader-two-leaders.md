@@ -1,7 +1,7 @@
 ---
 id: sys-leader-two-leaders
 level: system
-tags: [leader-election, idempotency]
+tags: [reliability, leader-election, idempotency]
 severity: should-fix
 status: draft
 lang: core

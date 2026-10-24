@@ -1,7 +1,7 @@
 ---
 id: svc-api-versioning-policy
 level: service
-tags: [api, versioning]
+tags: [compatibility, api, versioning]
 severity: should-fix
 status: stable
 note: the three sources pick three different mechanisms; the card requires only that one is chosen and documented

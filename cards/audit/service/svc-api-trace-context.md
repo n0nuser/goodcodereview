@@ -1,7 +1,7 @@
 ---
 id: svc-api-trace-context
 level: service
-tags: [api, observability, tracing]
+tags: [observability, api, tracing]
 severity: should-fix
 status: draft
 lang: core

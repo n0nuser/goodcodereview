@@ -1,7 +1,7 @@
 ---
 id: code-dependency-licence-sbom
 level: codebase
-tags: [supply-chain, licences, sbom]
+tags: [security, supply-chain, licences, sbom]
 severity: should-fix
 status: draft
 lang: core

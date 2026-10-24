@@ -1,7 +1,7 @@
 ---
 id: svc-cli-destructive-dry-run
 level: service
-tags: [cli, safety]
+tags: [reliability, maintainability, cli, safety]
 severity: should-fix
 status: draft
 lang: core

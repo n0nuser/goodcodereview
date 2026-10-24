@@ -1,7 +1,7 @@
 ---
 id: mod-cohesive-unit
 level: module
-tags: [architecture]
+tags: [maintainability, architecture]
 severity: discuss
 status: draft
 lang: core

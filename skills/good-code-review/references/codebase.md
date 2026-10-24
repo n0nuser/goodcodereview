@@ -3,6 +3,7 @@
 ## code-ci-gates
 
 severity: should-fix  
+concerns: process  
 applies_when: Auditing which checks must pass before a change merges.
 
 **Rule.** Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
@@ -26,6 +27,7 @@ Protected main: 1 approval + required checks (build, test, lint, types).
 ## code-dead-code
 
 severity: should-fix  
+concerns: maintainability  
 applies_when: Auditing for code, flags and files that nothing uses.
 
 **Rule.** Remove unreferenced functions, commented-out code, expired flags, and orphaned files; history keeps them.
@@ -51,6 +53,7 @@ or each is allowlisted with a reason.
 ## code-dependency-pinning
 
 severity: block  
+concerns: security  
 applies_when: Auditing how the repo resolves third-party packages.
 
 **Rule.** Commit a lockfile with hashes and install from it in CI.

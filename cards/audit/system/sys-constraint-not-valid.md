@@ -1,7 +1,7 @@
 ---
 id: sys-constraint-not-valid
 level: system
-tags: [database, migration, postgres]
+tags: [compatibility, database, migration, postgres]
 severity: block
 status: draft
 note: ADD CONSTRAINT ... USING INDEX route not independently verified; PostgreSQL is the example dialect

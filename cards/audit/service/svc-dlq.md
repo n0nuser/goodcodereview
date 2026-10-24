@@ -1,7 +1,7 @@
 ---
 id: svc-dlq
 level: service
-tags: [queues, resilience]
+tags: [reliability, queues, resilience]
 severity: should-fix
 status: draft
 lang: core

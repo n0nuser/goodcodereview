@@ -1,7 +1,7 @@
 ---
 id: code-rule-has-enforcer
 level: codebase
-tags: [tooling, conventions]
+tags: [maintainability, tooling, conventions]
 severity: should-fix
 status: draft
 lang: core

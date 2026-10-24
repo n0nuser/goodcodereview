@@ -1,7 +1,7 @@
 ---
 id: chg-verify-before-claim
 level: change
-tags: [verification, reviewer]
+tags: [testing, process, verification, reviewer]
 severity: block
 status: stable
 lang: core

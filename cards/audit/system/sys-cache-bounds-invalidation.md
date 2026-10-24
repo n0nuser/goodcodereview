@@ -1,7 +1,7 @@
 ---
 id: sys-cache-bounds-invalidation
 level: system
-tags: [caching, memory, performance]
+tags: [performance, caching, memory]
 severity: should-fix
 status: draft
 note: bounds and expiry have 3 orgs (AWS, Redis, Caffeine); invalidation has one (IETF, HTTP only)

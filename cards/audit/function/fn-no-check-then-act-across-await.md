@@ -1,7 +1,7 @@
 ---
 id: fn-no-check-then-act-across-await
 level: function
-tags: [concurrency]
+tags: [correctness, concurrency]
 severity: block
 status: draft
 lang: core

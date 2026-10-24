@@ -1,7 +1,7 @@
 ---
 id: svc-api-deprecation-sunset
 level: service
-tags: [api, deprecation]
+tags: [compatibility, api, deprecation]
 severity: should-fix
 status: stable
 lang: core

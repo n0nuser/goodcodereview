@@ -1,7 +1,7 @@
 ---
 id: py-pytest-parametrize
 level: function
-tags: [python, testing]
+tags: [testing, python]
 severity: should-fix
 status: draft
 lang: python

@@ -1,7 +1,7 @@
 ---
 id: chg-new-api-has-usage
 level: change
-tags: [api, yagni]
+tags: [maintainability, api, yagni]
 severity: should-fix
 status: draft
 lang: core

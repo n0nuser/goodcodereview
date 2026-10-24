@@ -1,7 +1,7 @@
 ---
 id: chg-perf-claim-evidence
 level: change
-tags: [performance, verification]
+tags: [performance, testing, verification]
 severity: should-fix
 status: stable
 lang: core

@@ -1,7 +1,7 @@
 ---
 id: svc-retry-policy
 level: service
-tags: [resilience, retries]
+tags: [reliability, resilience, retries]
 severity: block
 status: stable
 note: Google SRE gives a retry budget (about 10% of requests); the card leaves the number to the team

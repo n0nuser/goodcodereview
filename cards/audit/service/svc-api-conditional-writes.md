@@ -1,7 +1,7 @@
 ---
 id: svc-api-conditional-writes
 level: service
-tags: [api, http, concurrency]
+tags: [correctness, api, http, concurrency]
 severity: should-fix
 status: stable
 lang: core

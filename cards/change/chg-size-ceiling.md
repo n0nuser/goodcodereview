@@ -1,7 +1,7 @@
 ---
 id: chg-size-ceiling
 level: change
-tags: [size, review-quality]
+tags: [process, size, review-quality]
 severity: discuss
 status: stable
 lang: core

@@ -1,7 +1,7 @@
 ---
 id: mod-inject-boundary-collaborators
 level: module
-tags: [testing, design]
+tags: [testing, maintainability, design]
 severity: should-fix
 status: draft
 lang: core

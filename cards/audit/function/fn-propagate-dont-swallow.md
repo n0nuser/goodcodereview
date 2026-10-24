@@ -1,7 +1,7 @@
 ---
 id: fn-propagate-dont-swallow
 level: function
-tags: [errors]
+tags: [correctness, errors]
 severity: block
 status: draft
 lang: core

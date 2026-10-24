@@ -1,7 +1,7 @@
 ---
 id: code-documented-setup-runs
 level: codebase
-tags: [docs, onboarding]
+tags: [maintainability, process, docs, onboarding]
 severity: should-fix
 status: draft
 lang: core

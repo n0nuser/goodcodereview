@@ -1,7 +1,7 @@
 ---
 id: chg-agent-grounded-code
 level: change
-tags: [agents, ai-generated, reuse]
+tags: [maintainability, process, agents, ai-generated, reuse]
 severity: block
 status: draft
 lang: core

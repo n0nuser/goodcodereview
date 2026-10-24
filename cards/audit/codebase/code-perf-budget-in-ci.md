@@ -1,7 +1,7 @@
 ---
 id: code-perf-budget-in-ci
 level: codebase
-tags: [performance, ci]
+tags: [performance, process, ci]
 severity: should-fix
 status: draft
 lang: core

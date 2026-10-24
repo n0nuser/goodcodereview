@@ -1,7 +1,7 @@
 ---
 id: prod-alerts-symptoms-golden-signals
 level: production
-tags: [monitoring, alerting]
+tags: [observability, monitoring, alerting]
 severity: should-fix
 status: draft
 lang: core

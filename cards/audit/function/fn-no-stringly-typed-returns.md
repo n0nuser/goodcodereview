@@ -1,7 +1,7 @@
 ---
 id: fn-no-stringly-typed-returns
 level: function
-tags: [types, api]
+tags: [correctness, compatibility, types, api]
 severity: should-fix
 status: draft
 lang: core

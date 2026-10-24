@@ -1,7 +1,7 @@
 ---
 id: fn-name-intermediate-conditions
 level: function
-tags: [readability]
+tags: [maintainability, readability]
 severity: discuss
 status: draft
 lang: core

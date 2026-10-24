@@ -1,7 +1,7 @@
 ---
 id: py-task-reference
 level: service
-tags: [asyncio, concurrency]
+tags: [correctness, asyncio, concurrency]
 severity: block
 status: draft
 lang: python

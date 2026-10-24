@@ -1,7 +1,7 @@
 ---
 id: chg-match-codebase-pattern
 level: change
-tags: [consistency, style]
+tags: [correctness, maintainability, consistency, style]
 severity: should-fix
 status: draft
 lang: core

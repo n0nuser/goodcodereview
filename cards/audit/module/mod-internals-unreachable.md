@@ -1,7 +1,7 @@
 ---
 id: mod-internals-unreachable
 level: module
-tags: [encapsulation, boundaries]
+tags: [maintainability, encapsulation, boundaries]
 severity: should-fix
 status: draft
 lang: core

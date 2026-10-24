@@ -1,7 +1,7 @@
 ---
 id: fn-no-getattr-for-known-names
 level: function
-tags: [types, readability]
+tags: [maintainability, types, readability]
 severity: discuss
 status: draft
 lang: core

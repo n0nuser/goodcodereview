@@ -1,7 +1,7 @@
 ---
 id: chg-refactor-separate
 level: change
-tags: [refactoring, scope]
+tags: [maintainability, process, refactoring, scope]
 severity: should-fix
 status: stable
 lang: core

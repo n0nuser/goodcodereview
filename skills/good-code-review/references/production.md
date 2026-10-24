@@ -3,6 +3,7 @@
 ## prod-canary-staged-rollout
 
 severity: block  
+concerns: reliability  
 applies_when: A change, config or dependency update is rolled out to production.
 
 **Rule.** Roll out in stages behind a canary, and abort by rule, not by judgment.

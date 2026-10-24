@@ -1,7 +1,7 @@
 ---
 id: py-no-init-or-model-tests
 level: module
-tags: [python, testing]
+tags: [testing, python]
 severity: should-fix
 status: draft
 lang: python

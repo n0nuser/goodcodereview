@@ -1,7 +1,7 @@
 ---
 id: sys-cache-cold-start
 level: system
-tags: [caching, overload]
+tags: [performance, reliability, caching, overload]
 severity: should-fix
 status: draft
 lang: core

@@ -1,7 +1,7 @@
 ---
 id: code-workflow-supply-chain
 level: codebase
-tags: [supply-chain, ci, security]
+tags: [security, process, supply-chain, ci]
 severity: block
 status: draft
 lang: core

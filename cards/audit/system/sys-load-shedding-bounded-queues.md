@@ -1,7 +1,7 @@
 ---
 id: sys-load-shedding-bounded-queues
 level: system
-tags: [overload, queues]
+tags: [reliability, overload, queues]
 severity: block
 status: stable
 lang: core

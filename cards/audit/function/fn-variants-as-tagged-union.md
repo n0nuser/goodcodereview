@@ -1,7 +1,7 @@
 ---
 id: fn-variants-as-tagged-union
 level: function
-tags: [types, modelling]
+tags: [maintainability, types, modelling]
 severity: should-fix
 status: draft
 lang: core

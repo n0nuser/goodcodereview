@@ -1,7 +1,7 @@
 ---
 id: mod-derive-dont-duplicate
 level: module
-tags: [duplication, schemas]
+tags: [compatibility, maintainability, duplication, schemas]
 severity: should-fix
 status: draft
 lang: core

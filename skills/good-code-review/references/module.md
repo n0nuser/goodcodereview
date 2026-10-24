@@ -3,6 +3,7 @@
 ## mod-yagni
 
 severity: should-fix  
+concerns: maintainability, process  
 applies_when: The change adds an abstraction, parameter, hook or option.
 
 **Rule.** Add an abstraction only when the logic is reused, non-trivial, or clutters the main flow; do not build for a need that does not exist yet.

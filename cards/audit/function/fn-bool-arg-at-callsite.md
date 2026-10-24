@@ -1,7 +1,7 @@
 ---
 id: fn-bool-arg-at-callsite
 level: function
-tags: [readability, api]
+tags: [maintainability, readability, api]
 severity: discuss
 status: draft
 lang: core

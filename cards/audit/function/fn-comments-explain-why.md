@@ -1,7 +1,7 @@
 ---
 id: fn-comments-explain-why
 level: function
-tags: [readability, docs]
+tags: [maintainability, readability, docs]
 severity: should-fix
 status: stable
 lang: core

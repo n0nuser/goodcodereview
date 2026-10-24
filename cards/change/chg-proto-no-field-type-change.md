@@ -1,7 +1,7 @@
 ---
 id: chg-proto-no-field-type-change
 level: change
-tags: [api, protobuf, compatibility]
+tags: [compatibility, api, protobuf]
 severity: block
 status: draft
 lang: core

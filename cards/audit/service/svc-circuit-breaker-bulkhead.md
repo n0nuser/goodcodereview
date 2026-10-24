@@ -1,7 +1,7 @@
 ---
 id: svc-circuit-breaker-bulkhead
 level: service
-tags: [resilience, isolation]
+tags: [reliability, resilience, isolation]
 severity: should-fix
 status: draft
 lang: core

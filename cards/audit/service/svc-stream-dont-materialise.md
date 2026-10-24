@@ -1,7 +1,7 @@
 ---
 id: svc-stream-dont-materialise
 level: service
-tags: [memory, performance, io]
+tags: [performance, memory, io]
 severity: should-fix
 status: draft
 lang: core

@@ -1,7 +1,7 @@
 ---
 id: svc-timeouts            # level prefix + short name, unique
 level: service              # change | function | module | service | system | codebase | production | incident
-tags: [resilience, io]
+tags: [reliability, io]     # at least one concern: correctness security performance reliability compatibility testing maintainability observability process; then any topic tags
 severity: block             # block | should-fix | discuss
 status: draft               # draft | stable
 lang: core                  # core | python | ...

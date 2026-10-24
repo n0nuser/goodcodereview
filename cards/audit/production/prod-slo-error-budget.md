@@ -1,7 +1,7 @@
 ---
 id: prod-slo-error-budget
 level: production
-tags: [reliability, slo]
+tags: [reliability, observability, slo]
 severity: discuss
 status: draft
 note: no source yet; first-hand reasoning

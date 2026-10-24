@@ -1,7 +1,7 @@
 ---
 id: chg-abstraction-needs-two-callers
 level: change
-tags: [abstraction, layering]
+tags: [maintainability, abstraction, layering]
 severity: discuss
 status: draft
 lang: core

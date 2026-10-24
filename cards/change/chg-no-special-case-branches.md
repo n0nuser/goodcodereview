@@ -1,7 +1,7 @@
 ---
 id: chg-no-special-case-branches
 level: change
-tags: [design, complexity]
+tags: [maintainability, design, complexity]
 severity: should-fix
 status: draft
 lang: core

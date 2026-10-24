@@ -1,7 +1,7 @@
 ---
 id: mod-deep-modules
 level: module
-tags: [design]
+tags: [maintainability, design]
 severity: discuss
 status: draft
 lang: core

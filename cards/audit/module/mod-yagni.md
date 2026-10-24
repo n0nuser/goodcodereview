@@ -1,7 +1,7 @@
 ---
 id: mod-yagni
 level: module
-tags: [design, scope]
+tags: [maintainability, process, design, scope]
 severity: should-fix
 status: stable
 lang: core

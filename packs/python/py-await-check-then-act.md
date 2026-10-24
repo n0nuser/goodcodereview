@@ -1,7 +1,7 @@
 ---
 id: py-await-check-then-act
 level: function
-tags: [python, concurrency]
+tags: [correctness, python, concurrency]
 severity: block
 status: draft
 lang: python

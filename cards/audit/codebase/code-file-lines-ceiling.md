@@ -1,7 +1,7 @@
 ---
 id: code-file-lines-ceiling
 level: codebase
-tags: [structure, size]
+tags: [maintainability, process, structure, size]
 severity: discuss
 status: draft
 lang: core

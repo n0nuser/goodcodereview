@@ -10,6 +10,9 @@ LEVEL_PREFIX = dict(zip(LEVELS, ["chg", "fn", "mod", "svc", "sys", "code", "prod
 PACK_PREFIX = {"python": "py"}  # other packs: prefix = lang name
 SEVERITIES = ["block", "should-fix", "discuss"]
 STATUSES = ["draft", "stable"]
+# Closed list. Every card's tags include one or more of these, so a review can be scoped to one concern.
+CONCERNS = ["correctness", "security", "performance", "reliability", "compatibility",
+            "testing", "maintainability", "observability", "process"]
 BODY_MARKS = ["**Rule.**", "**Why.**", "**FAIL**", "**PASS**", "**Counterpoint.**"]
 
 
@@ -82,6 +85,9 @@ def validate(root):
             err(f"bad severity '{fm['severity']}'")
         if fm.get("status") is not None and fm["status"] not in STATUSES:
             err(f"bad status '{fm['status']}'")
+        tags = fm.get("tags", [])
+        if not any(t in CONCERNS for t in tags):
+            err(f"tags need at least one concern: {', '.join(CONCERNS)}")
         if len(ids.get(cid, [])) > 1:
             err(f"duplicate id '{cid}'")
         if lang == "core" and level in LEVEL_PREFIX and not cid.startswith(LEVEL_PREFIX[level] + "-"):

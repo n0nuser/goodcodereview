@@ -1,7 +1,7 @@
 ---
 id: chg-agent-independent-review
 level: change
-tags: [agents, review, process]
+tags: [process, agents, review]
 severity: should-fix
 status: draft
 lang: core

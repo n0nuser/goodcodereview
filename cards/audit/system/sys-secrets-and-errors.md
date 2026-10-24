@@ -1,7 +1,7 @@
 ---
 id: sys-secrets-and-errors
 level: system
-tags: [security, secrets, errors]
+tags: [security, correctness, secrets, errors]
 severity: block
 status: stable
 note: Rule backed by OWASP, MITRE CWE-636/209, Saltzer and Schroeder, and RFC 9457 (security section); secrets in source rest on 12factor and OWASP only, so they stay in the Why

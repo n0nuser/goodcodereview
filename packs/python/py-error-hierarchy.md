@@ -1,7 +1,7 @@
 ---
 id: py-error-hierarchy
 level: module
-tags: [python, errors]
+tags: [correctness, python, errors]
 severity: should-fix
 status: draft
 lang: python

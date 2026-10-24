@@ -1,7 +1,7 @@
 ---
 id: chg-fix-root-cause-not-symptom
 level: change
-tags: [bugfix, verification]
+tags: [correctness, testing, bugfix, verification]
 severity: block
 status: draft
 lang: core

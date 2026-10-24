@@ -1,7 +1,7 @@
 ---
 id: svc-timeouts
 level: service
-tags: [resilience, io, performance]
+tags: [performance, reliability, resilience, io]
 severity: block
 status: draft
 note: timeout numbers are not prescribed by any source; only Google (gRPC, SRE) and AWS state that the deadline passes down the chain

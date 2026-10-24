@@ -1,7 +1,7 @@
 ---
 id: py-class-earns-its-instance
 level: module
-tags: [python, classes]
+tags: [maintainability, python, classes]
 severity: discuss
 status: draft
 lang: python

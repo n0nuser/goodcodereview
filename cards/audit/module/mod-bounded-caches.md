@@ -1,7 +1,7 @@
 ---
 id: mod-bounded-caches
 level: module
-tags: [resources, state]
+tags: [performance, reliability, resources, state]
 severity: block
 status: draft
 lang: core

@@ -1,7 +1,7 @@
 ---
 id: chg-matches-spec
 level: change
-tags: [scope, requirements]
+tags: [process, scope, requirements]
 severity: block
 status: draft
 lang: core

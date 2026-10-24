@@ -1,7 +1,7 @@
 ---
 id: prod-load-test-before-launch
 level: production
-tags: [performance, release, capacity]
+tags: [performance, reliability, release, capacity]
 severity: should-fix
 status: draft
 lang: core
