@@ -7,7 +7,7 @@ status: draft
 lang: core
 applies_when: A custom widget sets `role` or an `aria-*` attribute because no native element fits.
 tool_gate: ESLint `jsx-a11y/role-has-required-aria-props`; axe `aria-required-attr`. Neither checks that the keys work.
-note: W3C, Mozilla, and Heydon Pickering together, but both tool-gate rule names checked against the jsx-a11y README and the axe rule list; held at draft: the state and keys clauses have 2 orgs each, only W3C backs all three
+note: held at draft; W3C backs all three clauses, but the state and keys clauses have only 2 orgs each (W3C with Heydon Pickering, W3C with Mozilla); tool-gate rule names checked against the jsx-a11y README and the axe rule list
 borrowed_from:
   - https://www.w3.org/WAI/ARIA/apg/practices/read-me-first/
   - https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html
