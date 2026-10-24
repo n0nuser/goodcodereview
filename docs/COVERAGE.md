@@ -16,9 +16,9 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #9 | Service Discovery | glossary/service-discovery | glossary |
 | 111-list #10 | Circuit Breakers | `svc-circuit-breaker-bulkhead` | draft |
 | 111-list #11 | Timeouts | `svc-timeouts` | draft |
-| 111-list #12 | Retries | `svc-retry-policy` | draft |
-| 111-list #13 | Exponential Backoff | `svc-retry-policy` | draft |
-| 111-list #14 | Idempotency | `svc-idempotency-key` | draft |
+| 111-list #12 | Retries | `svc-retry-policy` | stable |
+| 111-list #13 | Exponential Backoff | `svc-retry-policy` | stable |
+| 111-list #14 | Idempotency | `svc-idempotency-key` | stable |
 | 111-list #15 | Message Queues | `svc-dlq` | draft |
 | 111-list #16 | Pub/Sub | glossary/pub-sub | glossary |
 | 111-list #17 | Event-Driven Architecture | glossary/event-driven-architecture | glossary |
@@ -48,7 +48,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #41 | Memory Leaks | `fn-resource-lifetime` | draft |
 | 111-list #42 | Garbage Collection | glossary/garbage-collection | glossary |
 | 111-list #43 | Thread Safety | glossary/thread-safety | glossary |
-| 111-list #44 | Backpressure | `sys-load-shedding-bounded-queues` | draft |
+| 111-list #44 | Backpressure | `sys-load-shedding-bounded-queues` | stable |
 | 111-list #45 | Autoscaling | glossary/autoscaling | glossary |
 | 111-list #46 | Horizontal Scaling | glossary/horizontal-scaling | glossary |
 | 111-list #47 | Vertical Scaling | glossary/vertical-scaling | glossary |
@@ -64,7 +64,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #56 | Health Checks | `sys-health-liveness-readiness` | draft |
 | 111-list #57 | Liveness & Readiness Probes | glossary/liveness-readiness-probes | glossary |
 | 111-list #58 | Monitoring | `prod-alerts-symptoms-golden-signals` | draft |
-| 111-list #59 | Logging | `sys-secrets-and-errors` | draft |
+| 111-list #59 | Logging | `sys-secrets-and-errors` | stable |
 | 111-list #60 | Distributed Tracing | glossary/distributed-tracing | glossary |
 | 111-list #61 | Metrics | `prod-wide-events-bounded-labels` | draft |
 | 111-list #62 | Alerts | `prod-alerts-symptoms-golden-signals` | draft |
@@ -72,7 +72,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #64 | SLIs | glossary/slis | glossary |
 | 111-list #65 | Error Budgets | glossary/error-budgets | glossary |
 | 111-list #66 | Observability | `prod-wide-events-bounded-labels` | draft |
-| 111-list #67 | Secrets Management | `sys-secrets-and-errors` | draft |
+| 111-list #67 | Secrets Management | `sys-secrets-and-errors` | stable |
 | 111-list #68 | IAM | glossary/iam | glossary |
 | 111-list #69 | OAuth | glossary/oauth | glossary |
 | 111-list #70 | JWT Rotation | glossary/jwt-rotation | glossary |
@@ -89,8 +89,8 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #81 | Database Migrations | `sys-migration-lock-timeout` | draft |
 | 111-list #81b | Database Migrations (constraints) | `sys-constraint-not-valid` | draft |
 | 111-list #81c | Database Migrations (rewrite) | `chg-migration-add-column-rewrite` | draft |
-| 111-list #81d | Database Migrations (backfill) | `sys-migration-expand-contract` | draft |
-| 111-list #82 | Schema Versioning | `sys-migration-expand-contract` | draft |
+| 111-list #81d | Database Migrations (backfill) | `sys-migration-expand-contract` | stable |
+| 111-list #82 | Schema Versioning | `sys-migration-expand-contract` | stable |
 | 111-list #83 | Disaster Recovery | glossary/disaster-recovery | glossary |
 | 111-list #84 | Backups | glossary/backups | glossary |
 | 111-list #85 | Failover | glossary/failover | glossary |
@@ -254,8 +254,8 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Error handling: Specific exceptions only | `fn-specific-exceptions-only` | draft |
 | core-python | Error handling: Propagate, translate with `from` | `fn-propagate-dont-swallow` | draft |
 | core-python | Error handling: Base exception per package, errors module | `py-error-hierarchy` | draft |
-| core-python | Error handling: Retry only transient failures on idempotent operations | `svc-retry-policy` | draft |
-| core-python | Error handling: Error responses don't leak internals | `sys-secrets-and-errors` | draft |
+| core-python | Error handling: Retry only transient failures on idempotent operations | `svc-retry-policy` | stable |
+| core-python | Error handling: Error responses don't leak internals | `sys-secrets-and-errors` | stable |
 | core-python | Error handling: Log the branches that matter with a request ID | `svc-request-id-logging` | draft |
 | core-python | Security: Validate every input; name new attack surface; secrets from settings | `mod-validate-at-boundary-once`, `chg-name-attack-surface`, `sys-secrets-and-errors` | draft |
 | core-python | Docstrings and comments: Comments explain why | `fn-comments-explain-why` | stable |
@@ -285,12 +285,12 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | asyncio: discarded create_task, TaskGroup, shield | `py-task-reference` | draft |
 | service-system | asyncio: swallowed CancelledError, TimeoutError inside timeout block | `py-cancellation` | draft |
 | service-system | asyncio: await without timeout bound; Azure retry/timeouts | `svc-timeouts` | draft |
-| service-system | Azure retry: backoff, attempts, non-transient, stacked layers; AWS correlated: jitter | `svc-retry-policy` | draft |
-| service-system | Azure retry/saga: idempotency, unique saga id | `svc-idempotency-key` | draft |
+| service-system | Azure retry: backoff, attempts, non-transient, stacked layers; AWS correlated: jitter | `svc-retry-policy` | stable |
+| service-system | Azure retry/saga: idempotency, unique saga id | `svc-idempotency-key` | stable |
 | service-system | Azure circuit breaker and bulkhead | `svc-circuit-breaker-bulkhead` | draft |
 | service-system | AWS queues: DLQ, visibility timeout, queue age | `svc-dlq` | draft |
 | service-system | AWS fairness / shuffle sharding: per-tenant quota, 429 vs 503 | `svc-rate-limit-quota` | draft |
-| service-system | AWS queues: bounded queue, sideline, cheap shedding | `sys-load-shedding-bounded-queues` | draft |
+| service-system | AWS queues: bounded queue, sideline, cheap shedding | `sys-load-shedding-bounded-queues` | stable |
 | service-system | Kleppmann / antirez: fencing, check-and-set, disagreement | `sys-lock-fencing` | stable |
 | service-system | AWS leader election: two leaders, lease check | `sys-leader-two-leaders` | draft |
 | service-system | AWS caching: TTL, size, metrics, versioned values | `sys-cache-bounds-invalidation` | draft |
@@ -299,10 +299,10 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | PG config + altertable: lock_timeout | `sys-migration-lock-timeout` | draft |
 | service-system | PG altertable: NOT VALID / VALIDATE | `sys-constraint-not-valid` | draft |
 | service-system | PG createindex: CONCURRENTLY, INVALID leftovers | `sys-index-concurrently` | draft |
-| service-system | GitLab migration style + avoiding downtime | `sys-migration-expand-contract` | draft |
+| service-system | GitLab migration style + avoiding downtime | `sys-migration-expand-contract` | stable |
 | service-system | OWASP A03:2025, Scorecard, SLSA | `code-dependency-pinning`, `code-workflow-supply-chain`, `code-dependency-licence-sbom` | draft |
 | service-system | OWASP LLM01 | `sys-prompt-injection` | draft |
-| service-system | OWASP A10:2025, ASVS V16 (error leaks, fail open, log data) | `sys-secrets-and-errors` | draft |
+| service-system | OWASP A10:2025, ASVS V16 (error leaks, fail open, log data) | `sys-secrets-and-errors` | stable |
 | service-system | OWASP A01 (SSRF folded in) | `sys-ssrf` | draft |
 | service-system | OWASP A05 / A07 / A01 (index only) | `svc-sqli-authn` | draft |
 | service-system | SRE monitoring | `prod-alerts-symptoms-golden-signals` | draft |
@@ -349,7 +349,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 22 Verify the real thing, not a proxy; re-runnable script as artifact | `chg-verify-before-claim`, `chg-agent-independent-review` | draft |
 | cursor-plugins | 23 Test must fail when behaviour breaks and survive an internals refactor | `chg-agent-mock-asserting-tests`, `mod-mock-at-boundaries-only`, `py-no-init-or-model-tests` | draft |
 | cursor-plugins | 24 Independent test oracle; pair a negative assertion with a positive case | `fn-test-oracle-independent` | draft |
-| cursor-plugins | 25 A performance number needs run count, spread and a named limiter | `chg-perf-claim-evidence` | draft |
+| cursor-plugins | 25 A performance number needs run count, spread and a named limiter | `chg-perf-claim-evidence` | stable |
 | cursor-plugins | 26 Verify each unit before the next; failing test first | `chg-tests-ship-with-change` | stable |
 | cursor-plugins | 26b Commit order tells the story | dropped: history shape is not visible in a diff | dropped |
 | cursor-plugins | 27 Redesign instead of bolting on | dropped: posture; visible symptom is chg-no-special-case-branches | dropped |
@@ -388,7 +388,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 59b Spot-check renames against strings and prose | dropped: manual step, not visible in a diff | dropped |
 | cursor-plugins | 60 Refactor must lower reader load or be reverted | `chg-refactor-separate` | stable |
 | cursor-plugins | 61 Perf fixes tie to a measurement; cheap options in order | glossary/performance-mantras | glossary |
-| cursor-plugins | 62 Benchmark checklist: seven questions for a performance claim | `chg-perf-claim-evidence` | draft |
+| cursor-plugins | 62 Benchmark checklist: seven questions for a performance claim | `chg-perf-claim-evidence` | stable |
 | cursor-plugins | 63 verify-this listed under pstack by mistake | dropped: duplicate of row 77 | dropped |
 | cursor-plugins | 64 PR body as a one-minute briefing; narrow PRs; one primary perf number | `chg-author-hygiene`, `chg-size-ceiling` | stable |
 | cursor-plugins | 65 A verdict covers one patch; recheck after rebase by patch id | `chg-approval-tied-to-patch` | draft |
@@ -465,7 +465,7 @@ Source: `docs/research/security-pass.md`. Row numbers are that file's.
 | security-pass | §8 NIST SSDF practices | dropped: page named no practice numbers; read the PDF in a later pass | dropped |
 
 - `chg-fix-root-cause-not-symptom`: FAIL if a fix adds a guard, retry, sleep, longer timeout, swallowed error, cast, skipped or weakened test, or a special case for the failing input, with no stated cause seen in evidence.
-- `chg-perf-claim-evidence`: FAIL if a performance claim lacks run count, spread, a named limiter, or a check that errors were counted and the work ran inside the timed region.
+- `chg-perf-claim-evidence`: FAIL if a performance claim has no measured before-and-after numbers.
 - `chg-delete-legacy-after-migration`: FAIL if a change adds a new API or path and leaves the old one alive when no consumer outside the repo needs it (sibling of `chg-expand-contract`).
 - `chg-refactor-has-behaviour-pin`: FAIL if a refactor moves structure with no test, snapshot or equivalence check that pins current behaviour first.
 - `chg-approval-tied-to-patch`: FAIL if an approval or verification verdict older than the last push that changed non-test content is treated as current.
@@ -492,15 +492,15 @@ From `docs/research/api-pass.md`.
 | api-pass | RFC 9110 9.2: Safe and idempotent methods | `svc-api-safe-idempotent-methods` | draft |
 | api-pass | RFC 9110 9.3, 10.2, 15.3: 201 with Location, 405 with Allow, most specific status | `svc-api-specific-status-codes` | draft |
 | api-pass | RFC 9110 10.2.3, IETF ratelimit draft: Retry-After on 429 and 503; draft RateLimit fields not required | `svc-api-retry-after` | draft |
-| api-pass | RFC 9110 13.1.1, Azure guidelines: ETag and If-Match on shared writes, 412 on stale | `svc-api-conditional-writes` | draft |
+| api-pass | RFC 9110 13.1.1, Azure guidelines: ETag and If-Match on shared writes, 412 on stale | `svc-api-conditional-writes` | stable |
 | api-pass | RFC 9111: Explicit Cache-Control, private for user data, Vary | `svc-api-cache-control` | draft |
 | api-pass | RFC 9457, Zalando 176: Errors as application/problem+json, no internals | `svc-api-problem-json` | draft |
-| api-pass | RFC 9457, AIP-193: Stable machine-readable error code | `svc-api-error-code-stable` | draft |
+| api-pass | RFC 9457, AIP-193: Stable machine-readable error code | `svc-api-error-code-stable` | stable |
 | api-pass | OpenAPI 3.1, Zalando 100-101: Spec is the source of truth and matches the service | `svc-api-spec-matches-impl` | draft |
 | api-pass | OpenAPI 3.1, Zalando 101: Spec changes in the same diff as the route | `chg-api-spec-in-same-change` | draft |
 | api-pass | OpenAPI 3.1, Zalando 151: Error responses and examples documented per operation | `svc-api-documented-errors` | draft |
-| api-pass | RFC 9745, RFC 8594, Zalando 189: Deprecation and Sunset headers before removal | `svc-api-deprecation-sunset` | draft |
-| api-pass | Zalando 113-116, Azure, Stripe: One documented versioning scheme, no breaks inside a version | `svc-api-versioning-policy` | draft |
+| api-pass | RFC 9745, RFC 8594, Zalando 189: Deprecation and Sunset headers before removal | `svc-api-deprecation-sunset` | stable |
+| api-pass | Zalando 113-116, Azure, Stripe: One documented versioning scheme, no breaks inside a version | `svc-api-versioning-policy` | stable |
 | api-pass | Zalando 118, Azure: One naming convention per location | `svc-api-naming-consistent` | draft |
 | api-pass | protobuf.dev (RPC vs storage messages): Response built from an explicit type, no internal fields | `svc-api-no-internal-fields` | draft |
 | api-pass | W3C Trace Context: Forward traceparent with a new parent id per hop | `svc-api-trace-context` | draft |

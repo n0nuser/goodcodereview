@@ -31,6 +31,7 @@ token = lock.acquire()             # monotonically increasing
 db.update(row, where fence < token, set fence = token)
 ```
 
-**See also.** [[sys-leader-two-leaders]], [[svc-idempotency-key]].
 
 **Counterpoint.** "Our lock library is safe, so holding the lock is enough." Whether a given algorithm such as Redlock is safe is disputed, but that a paused holder can still write is not. Locks used only for efficiency (avoiding duplicate work) may be loose. For correctness, state that it is a correctness lock and make the store reject stale writers, with a monotonically increasing token or a unique token checked by compare-and-set, whatever the lock implementation.
+
+**See also.** [[svc-idempotency-key]].

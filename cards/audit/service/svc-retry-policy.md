@@ -3,8 +3,8 @@ id: svc-retry-policy
 level: service
 tags: [resilience, retries]
 severity: block
-status: draft
-note: retry budget is not defined in the sources
+status: stable
+note: Google SRE gives a retry budget (about 10% of requests); the card leaves the number to the team
 lang: core
 applies_when: The code retries a failed call, or wraps a client that retries.
 tool_gate: none
@@ -35,8 +35,10 @@ for i in range(3):
     try:
         return client.call()
     except TransientError:
+        if i == 2:
+            raise
         time.sleep(random.uniform(0, min(CAP_S, BASE_S * 2**i)))
 # retry at one layer only: the client's own retries are off
 ```
 
-**Counterpoint.** "Retries make us more reliable." Only for transient faults and only within a budget. Past that they hurt, which is why the Azure guidance also says to cancel on non-transient errors. A retry budget (retries capped as a share of traffic) is a further team convention that this card does not require.
+**Counterpoint.** "Retries make us more reliable." Only for transient faults and only within a budget. Past that they hurt, so a non-transient error should fail at once. A retry budget (retries capped as a share of traffic) helps further. This card leaves its size to the team.

@@ -3,7 +3,7 @@ id: svc-api-conditional-writes
 level: service
 tags: [api, http, concurrency]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: Two callers can update the same resource through PUT, PATCH or DELETE.
 tool_gate: Integration test that sends a write with a stale `If-Match` and expects 412.
@@ -32,4 +32,4 @@ PUT /docs/4  If-Match: "v7"  -> 200  ETag: "v8"
 PUT /docs/4  If-Match: "v7"  -> 412 Precondition Failed
 ```
 
-**Counterpoint.** "Last write wins is fine here." For a log or a counter it is; say so in the spec. For a document, a profile or a config that two people edit, it loses work. Zalando makes ETag support a MAY, so the card applies to shared, human-edited resources.
+**Counterpoint.** "Last write wins is fine here." For a log or a counter it is; say so in the spec. For a document, a profile or a config that two people edit, it loses work. The card applies to shared resources that people edit.

@@ -73,7 +73,7 @@ ALTER TABLE users RENAME COLUMN name TO full_name;  -- app v1 still reads name
 -- change 3 (later): drop name
 ```
 
-**Counterpoint.** Three steps are slow for internal code. Exception: when producer and consumers deploy atomically from one repo, or the table is small enough to alter in one safe step, a one-step change is fine. Say so in the description. [[sys-migration-expand-contract]] covers batching and release steps for databases.
+**Counterpoint.** Three steps are slow for internal code. Exception: when producer and consumers deploy atomically from one repo, or the table is small enough to alter in one safe step, a one-step change is fine. Say so in the description. [[sys-migration-expand-contract]] covers batching the backfill.
 
 ## chg-one-concern
 
@@ -98,6 +98,30 @@ PR 1: dependency bump.  PR 2: rename (no logic change).  PR 3: export button.
 ```
 
 **Counterpoint.** Splitting adds overhead, and stacked diffs need tooling and cost rebasing pain. The rule is one concern, not a line count: as small as possible, but no smaller. A single concern that is legitimately large (a generated migration) is fine if the description says so.
+
+## chg-perf-claim-evidence
+
+severity: should-fix  
+applies_when: The change or its description claims a speed, throughput, memory or cost improvement.
+
+**Rule.** Back a performance claim with measured before-and-after numbers.
+
+**Why.** A single fast run can measure noise, a cached result, an error path that returns early, or a step that is a tenth of the total. A piece that is 10% of the run caps the gain near 11% however well it is tuned. So a useful number comes with the run count, the spread, the resource that limits further gain, and a check that errors were counted and the work ran inside the timed region.
+
+**FAIL**
+
+```text
+"Parse is much faster now." (no numbers; 4% of requests now return 500 early)
+```
+
+**PASS**
+
+```text
+Median of 7 alternating runs: 412 ms -> 301 ms, range 398-421 vs 295-310.
+0 errors in both. Parse is 35% of the request, so the cap is 1.5x; limiter: DB round trip.
+```
+
+**Counterpoint.** "A micro-optimisation needs no benchmark ceremony." A claim in prose does. If the description makes no performance claim, mark `N/A`.
 
 ## chg-refactor-separate
 

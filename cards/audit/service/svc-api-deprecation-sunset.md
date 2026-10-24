@@ -3,7 +3,7 @@ id: svc-api-deprecation-sunset
 level: service
 tags: [api, deprecation]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: A service retires an endpoint, field, version or parameter that outside callers use.
 tool_gate: Middleware that adds both headers for routes tagged deprecated; a spec linter on `deprecated: true` without a sunset date; a dashboard counting calls that carry the headers.
