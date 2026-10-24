@@ -4,6 +4,7 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ## [Unreleased]
 
+- On the Concerns page, draft cards show as one row each instead of full cards, which shrinks the page (`wc -c site/concerns.html` after `python3 tools/build.py`). Level pages and `llms-drafts.txt` keep the full text.
 - 26 stable cards ship in `skills/good-code-review/SKILL.md` (`python3 tools/build.py`).
 - Cards cover a change review and seven audit levels: function, module, service, system, codebase, production, and incident (`ls cards/audit`).
 - The site builds 11 static pages (`python3 tools/build.py`) for goodcodereview.com.
