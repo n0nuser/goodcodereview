@@ -11,6 +11,10 @@ note: RFC 8725 used; OWASP's JWT cheat sheet URLs returned 404 during the fetch
 borrowed_from:
   - https://www.rfc-editor.org/rfc/rfc8725
   - https://top10.owasp.org/2025/A01_2025-Broken_Access_Control
+  - https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_Cheat_Sheet.html
+  - https://learn.microsoft.com/en-us/entra/identity-platform/access-tokens
+  - https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
+  - https://codeql.github.com/codeql-query-help/javascript/js-jwt-missing-verification/
 ---
 
 **Rule.** Verify the signature against a fixed algorithm list, then check `exp`, `iss` and `aud` before reading any claim.

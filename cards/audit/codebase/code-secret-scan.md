@@ -10,6 +10,7 @@ tool_gate: Secret scanning on push (provider or pre-commit hook) with push prote
 borrowed_from:
   - https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning
   - https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html
+  - https://www.cisa.gov/resources-tools/resources/product-security-bad-practices
 ---
 
 **Rule.** Scan for committed credentials, and treat any hit as leaked: revoke and replace it first.

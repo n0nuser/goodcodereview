@@ -11,6 +11,9 @@ borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html
   - https://api-security.owasp.org/editions/2023/en/0xa1-broken-object-level-authorization
   - https://top10.owasp.org/2025/A01_2025-Broken_Access_Control
+  - https://learn.microsoft.com/en-us/aspnet/core/security/authorization/resourcebased
+  - https://developers.cloudflare.com/api-shield/security/bola-vulnerability-detection/
+  - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-228-upd1.pdf
 ---
 
 **Rule.** Check that the caller may act on the specific record before returning or changing it.

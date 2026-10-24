@@ -12,6 +12,7 @@ borrowed_from:
   - https://github.com/ossf/scorecard/blob/main/docs/checks.md
   - https://slsa.dev/spec/v1.0/levels
   - https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/
+  - https://docs.github.com/en/actions/reference/security/secure-use
 ---
 
 **Rule.** Pin every CI action to a full commit SHA.

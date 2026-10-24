@@ -11,6 +11,10 @@ note: the TLS cheat sheet does not forbid disabling verification outright; the r
 borrowed_from:
   - https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures
   - https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html
+  - https://www.rfc-editor.org/rfc/rfc9525.html
+  - https://pkg.go.dev/crypto/tls#Config
+  - https://codeql.github.com/codeql-query-help/python/py-request-without-cert-validation/
+  - https://docs.python.org/3/library/ssl.html
 ---
 
 **Rule.** Leave certificate and hostname verification on in every environment that ships.

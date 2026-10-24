@@ -10,6 +10,9 @@ tool_gate: none
 borrowed_from:
   - https://aws.amazon.com/builders-library/fairness-in-multi-tenant-systems/
   - https://aws.amazon.com/builders-library/workload-isolation-using-shuffle-sharding/
+  - https://sre.google/sre-book/handling-overload/
+  - https://learn.microsoft.com/en-us/azure/architecture/antipatterns/noisy-neighbor/noisy-neighbor
+  - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-228-upd1.pdf
 ---
 
 **Rule.** Enforce a per-tenant quota on shared APIs and queues.

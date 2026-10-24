@@ -11,6 +11,8 @@ note: the legal retention periods differ by jurisdiction; the source gives only 
 borrowed_from:
   - https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures
   - https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html
+  - https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/data-protection-principles/a-guide-to-the-data-protection-principles/storage-limitation/
+  - https://gdpr-info.eu/art-5-gdpr/
 ---
 
 **Rule.** Store sensitive data only as long and as fully as the feature needs, and give every store a delete or expiry rule.

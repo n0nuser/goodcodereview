@@ -10,6 +10,10 @@ tool_gate: ESLint (`no-unsanitized/property`, `no-unsanitized/method`, `react/no
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
   - https://genai.owasp.org/llmrisk/llm052025-improper-output-handling/
+  - https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
+  - https://web.dev/articles/trusted-types
+  - https://react.dev/reference/react-dom/components/common
+  - https://www.cisa.gov/resources-tools/resources/secure-design-alert-eliminating-cross-site-scripting-vulnerabilities
 ---
 
 **Rule.** Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.

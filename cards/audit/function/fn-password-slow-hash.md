@@ -10,6 +10,8 @@ tool_gate: Grep or SAST rule for `md5`, `sha1`, `sha256` near a `password` ident
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
   - https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures
+  - https://www.rfc-editor.org/rfc/rfc9106.html
+  - https://pages.nist.gov/800-63-4/sp800-63b.html
 ---
 
 **Rule.** Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.

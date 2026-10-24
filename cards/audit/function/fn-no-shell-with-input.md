@@ -10,6 +10,9 @@ tool_gate: SAST rule for `shell=True`, `os.system`, `exec` and `eval` with taint
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html
   - https://genai.owasp.org/llmrisk/llm052025-improper-output-handling/
+  - https://docs.python.org/3/library/subprocess.html
+  - https://pkg.go.dev/os/exec
+  - https://www.cisa.gov/resources-tools/resources/secure-design-alert-eliminating-os-command-injection-vulnerabilities
 ---
 
 **Rule.** Start processes with the program and each argument as separate list items, and never through a shell string.

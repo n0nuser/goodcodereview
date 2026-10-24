@@ -10,6 +10,9 @@ tool_gate: Upload tests with a renamed `.php`, an oversized file and a zip bomb;
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html
   - https://api-security.owasp.org/editions/2023/en/0xa4-unrestricted-resource-consumption
+  - https://learn.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads
+  - https://portswigger.net/web-security/file-upload
+  - https://docs.djangoproject.com/en/5.2/topics/security/#user-uploaded-content
 ---
 
 **Rule.** Allowlist the file type, cap the size, store under a generated name outside the web root, and serve through a handler.

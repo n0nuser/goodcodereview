@@ -10,6 +10,8 @@ tool_gate: Tool registry reviewed in code; downstream credentials scoped in IAM 
 borrowed_from:
   - https://genai.owasp.org/llmrisk/llm062025-excessive-agency/
   - https://genai.owasp.org/llmrisk/llm052025-improper-output-handling/
+  - https://www.ncsc.gov.uk/blog-post/prompt-injection-is-not-sql-injection
+  - https://www.microsoft.com/en-us/msrc/blog/2025/07/how-microsoft-defends-against-indirect-prompt-injection-attacks
 ---
 
 **Rule.** Give the agent only narrow tools, run them with the requesting user's own minimal credentials, and enforce authorization in the downstream system.

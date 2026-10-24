@@ -11,6 +11,8 @@ note: thin sourcing: routing to a qualified reviewer and crypto randomness only;
 borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
   - https://go.dev/wiki/CodeReviewComments
+  - https://cheatsheetseries.owasp.org/cheatsheets/Attack_Surface_Analysis_Cheat_Sheet.html
+  - https://wiki.mozilla.org/Security/Reviews
 ---
 
 **Rule.** List any new attack surface in the description.

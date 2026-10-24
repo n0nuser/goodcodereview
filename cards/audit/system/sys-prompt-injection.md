@@ -9,6 +9,9 @@ applies_when: An LLM reads untrusted text (user input, web pages, documents) and
 tool_gate: none
 borrowed_from:
   - https://genai.owasp.org/llmrisk/llm01-prompt-injection/
+  - https://www.ncsc.gov.uk/blog-post/prompt-injection-is-not-sql-injection
+  - https://www.microsoft.com/en-us/msrc/blog/2025/07/how-microsoft-defends-against-indirect-prompt-injection-attacks
+  - https://blog.google/security/mitigating-prompt-injection-attacks/
 ---
 
 **Rule.** Validate model output deterministically before code acts on it.

@@ -10,6 +10,10 @@ tool_gate: Lint rule banning `random`, `Math.random` and `rand()` in files that 
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html
   - https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures
+  - https://docs.python.org/3/library/secrets.html
+  - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+  - https://www.rfc-editor.org/rfc/rfc4086.html
+  - https://pkg.go.dev/crypto/rand
 ---
 
 **Rule.** Draw every security-relevant random value from the platform CSPRNG.

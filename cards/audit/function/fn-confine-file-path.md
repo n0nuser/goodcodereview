@@ -10,6 +10,8 @@ tool_gate: SAST rule for `open(`, `send_file(` and `os.path.join` with a request
 borrowed_from:
   - https://community.owasp.org/attacks/Path_Traversal
   - https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html
+  - https://go.dev/blog/osroot
+  - https://codeql.github.com/codeql-query-help/python/py-path-injection/
 ---
 
 **Rule.** Resolve the final path and check that it stays inside the intended base directory before using it.

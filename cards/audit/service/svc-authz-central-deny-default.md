@@ -11,6 +11,9 @@ borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html
   - https://api-security.owasp.org/editions/2023/en/0xa5-broken-function-level-authorization
   - https://top10.owasp.org/2025/A01_2025-Broken_Access_Control
+  - https://portswigger.net/web-security/access-control
+  - https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic_policy-eval-denyallow.md
+  - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-228-upd1.pdf
 ---
 
 **Rule.** Route every request through one authorization layer that denies when no rule allows it.
