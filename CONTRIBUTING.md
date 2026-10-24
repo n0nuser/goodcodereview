@@ -14,3 +14,5 @@ A card is accepted when it has:
 New cards start as `status: draft`. Only `stable` cards ship in `SKILL.md`.
 
 Run `python3 tools/validate.py` to lint the cards. Run `python3 tools/build.py` to build the site and the skill.
+
+To propose or correct a card, use the [issue templates](.github/ISSUE_TEMPLATE). Before you open a pull request, read the [pull request template](.github/pull_request_template.md).

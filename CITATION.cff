@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: If you use this checklist, cite it as below.
+title: Good Code Review
+type: software
+authors:
+  - family-names: González
+    given-names: Pablo
+url: https://goodcodereview.com
+repository-code: https://github.com/n0nuser/goodcodereview
+license:
+  - CC-BY-4.0
+  - MIT

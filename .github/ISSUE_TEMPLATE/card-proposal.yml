@@ -1,0 +1,54 @@
+name: Card proposal
+description: Propose a new card. See CONTRIBUTING.md for the acceptance rules.
+body:
+  - type: textarea
+    id: rule
+    attributes:
+      label: Rule
+      description: One imperative line that a reviewer can mark `FAIL` in code or config.
+    validations:
+      required: true
+  - type: dropdown
+    id: level
+    attributes:
+      label: Level
+      description: Pick exactly one.
+      options:
+        - change
+        - function
+        - module
+        - service
+        - system
+        - codebase
+        - production
+        - incident
+    validations:
+      required: true
+  - type: textarea
+    id: fail
+    attributes:
+      label: FAIL example
+      description: Code or config that breaks the rule.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: pass
+    attributes:
+      label: PASS example
+      description: The fix.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why, and the best counterpoint
+      description: The failure the rule prevents, and the strongest objection with your answer.
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: Links for `borrowed_from`, or a note of first-hand experience.
+    validations:
+      required: true

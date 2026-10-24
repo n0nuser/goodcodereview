@@ -1,0 +1,34 @@
+name: Card correction
+description: A card has a wrong rule, a wrong example, or a broken source.
+body:
+  - type: input
+    id: card-id
+    attributes:
+      label: Card id
+      description: The `id` in the card's front matter, such as `svc-timeouts`.
+    validations:
+      required: true
+  - type: dropdown
+    id: problem
+    attributes:
+      label: What is wrong
+      options:
+        - The rule
+        - The FAIL example
+        - The PASS example
+        - The source link
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Say what is wrong and link a source, a reproduction, or a counter-example.
+    validations:
+      required: true
+  - type: textarea
+    id: fix
+    attributes:
+      label: Suggested fix
+      description: Optional. Write it in your own words, not pasted source text.
