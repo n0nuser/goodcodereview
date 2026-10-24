@@ -3,7 +3,7 @@ id: chg-review-signal
 level: change
 tags: [reviewer, etiquette, signal]
 severity: discuss
-status: draft
+status: stable
 lang: core
 applies_when: A reviewer is deciding what to comment on.
 tool_gate: Formatter, linter and type checker own style and mechanical rules.
@@ -16,7 +16,7 @@ borrowed_from:
 
 **Rule.** Do not comment on what a tool enforces or on taste with no written rule; spend comments on a few high-conviction findings, and if there are many, talk to the author.
 
-**Why.** Noise buries the real defects and trains authors to dismiss review. A rubber-stamp approval is as harmful: Meta tracks "eyeball time" as a guardrail for that reason.
+**Why.** Noise buries the real defects and trains authors to dismiss review. A rubber-stamp approval is as harmful: an approval must reflect real reading.
 
 **FAIL**
 
@@ -32,4 +32,4 @@ the null dereference on line 90 never mentioned.
 one nit. Formatting left to the formatter, which CI enforces.
 ```
 
-**Counterpoint.** Limiting comments risks missing issues. The cap applies to opinion, not to defects; every real defect is still raised. Google says the style guide wins; Slack says leave formatting to tools. Both agree repeated nits mean a missing gate.
+**Counterpoint.** Limiting comments risks missing issues. The cap applies to opinion, not to defects; every real defect is still raised. Style is settled by the written style guide or the formatter, and repeated nits mean a missing gate.

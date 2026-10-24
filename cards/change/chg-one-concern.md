@@ -3,7 +3,7 @@ id: chg-one-concern
 level: change
 tags: [scope, size]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: Every change.
 tool_gate: A CI check can label or warn on file count and diff size.
@@ -31,4 +31,4 @@ fixed an unrelated typo in the auth module.
 PR 1: dependency bump.  PR 2: rename (no logic change).  PR 3: export button.
 ```
 
-**Counterpoint.** Splitting adds overhead, and stacked diffs need tooling and rebasing pain. Phabricator says "as small as possible, but no smaller" and rejects line-count rules; Palantir sets numeric limits. Answer: the rule is one concern, not a number. A single concern that is legitimately large (a generated migration) is fine if the description says so.
+**Counterpoint.** Splitting adds overhead, and stacked diffs need tooling and rebasing pain. Answer: the rule is one concern, not a line count: as small as possible, but no smaller. A single concern that is legitimately large (a generated migration) is fine if the description says so.

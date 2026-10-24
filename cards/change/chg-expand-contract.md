@@ -3,14 +3,14 @@ id: chg-expand-contract
 level: change
 tags: [compatibility, migration]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: The change renames, removes or reshapes a column, API field, message, config key or exported symbol that other code reads.
 tool_gate: Schema or API diff tools (breaking-change detectors) in CI.
-note: expand/contract recipe itself unsourced; compatibility principle from CPython devguide and Hyrum's law
 borrowed_from:
   - https://www.hyrumslaw.com/
   - https://devguide.python.org/getting-started/pull-request-lifecycle/
+  - https://docs.gitlab.com/development/database/avoiding_downtime_in_migrations/
 ---
 
 **Rule.** Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.

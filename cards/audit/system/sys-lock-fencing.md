@@ -3,7 +3,7 @@ id: sys-lock-fencing
 level: system
 tags: [locks, correctness, distributed]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: A TTL lock or lease guards a write to an external store.
 tool_gate: none
@@ -33,4 +33,4 @@ db.update(row, where fence < token, set fence = token)
 
 **See also.** [[sys-leader-two-leaders]], [[svc-idempotency-key]].
 
-**Counterpoint.** Sources disagree. Kleppmann says Redlock gives no monotonic token and so is unsafe for correctness; antirez answers that a random unique token with check-and-set suffices and that ordered tokens need a linearizable store. Both agree locks used only for efficiency may be loose. So: state which kind of lock it is; for correctness, require a resource-side check, do not rule on Redlock itself.
+**Counterpoint.** "Our lock library is safe, so holding the lock is enough." Whether a given algorithm such as Redlock is safe is disputed; that a paused holder can still write is not. Locks used only for efficiency (avoiding duplicate work) may be loose. For correctness, state that it is a correctness lock and make the store reject stale writers, with a monotonically increasing token or a unique token checked by compare-and-set, whatever the lock implementation.

@@ -42,7 +42,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #35 | Eventual Consistency | glossary/eventual-consistency | glossary |
 | 111-list #36 | Optimistic Locking | glossary/optimistic-locking | glossary |
 | 111-list #37 | Pessimistic Locking | glossary/pessimistic-locking | glossary |
-| 111-list #38 | Distributed Locks | `sys-lock-fencing` | draft |
+| 111-list #38 | Distributed Locks | `sys-lock-fencing` | stable |
 | 111-list #39 | Race Conditions | glossary/race-conditions | glossary |
 | 111-list #40 | Deadlocks | glossary/deadlocks | glossary |
 | 111-list #41 | Memory Leaks | `fn-resource-lifetime` | draft |
@@ -58,9 +58,9 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #51 | Feature Flags | `prod-kill-switch-fallback` | draft |
 | 111-list #51b | Feature Flags (telemetry) | `prod-wide-events-bounded-labels` | draft |
 | 111-list #52 | Blue-Green Deployment | glossary/blue-green-deployment | glossary |
-| 111-list #53 | Canary Releases | `prod-canary-staged-rollout` | draft |
-| 111-list #54 | Rolling Deployments | `prod-canary-staged-rollout` | draft |
-| 111-list #55 | Rollbacks | `prod-canary-staged-rollout` | draft |
+| 111-list #53 | Canary Releases | `prod-canary-staged-rollout` | stable |
+| 111-list #54 | Rolling Deployments | `prod-canary-staged-rollout` | stable |
+| 111-list #55 | Rollbacks | `prod-canary-staged-rollout` | stable |
 | 111-list #56 | Health Checks | `sys-health-liveness-readiness` | draft |
 | 111-list #57 | Liveness & Readiness Probes | glossary/liveness-readiness-probes | glossary |
 | 111-list #58 | Monitoring | `prod-alerts-symptoms-golden-signals` | draft |
@@ -110,13 +110,13 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #99 | HTTP/2 & HTTP/3 | glossary/http2-http3 | glossary |
 | 111-list #100 | gRPC | glossary/grpc | glossary |
 | 111-list #101 | Webhooks | glossary/webhooks | glossary |
-| 111-list #102 | API Versioning | `chg-breaking-change-taxonomy` | draft |
+| 111-list #102 | API Versioning | `chg-breaking-change-taxonomy` | stable |
 | 111-list #103 | Semantic Versioning | glossary/semantic-versioning | glossary |
 | 111-list #104 | Infrastructure as Code | glossary/infrastructure-as-code | glossary |
 | 111-list #105 | Terraform | glossary/terraform | glossary |
 | 111-list #106 | Helm Charts | glossary/helm-charts | glossary |
 | 111-list #107 | Build Caching | `code-build-hermetic` | draft |
-| 111-list #108 | Dependency Hell | `code-dependency-pinning` | draft |
+| 111-list #108 | Dependency Hell | `code-dependency-pinning` | stable |
 | 111-list #109 | Production Incidents | glossary/production-incidents | glossary |
 | 111-list #110 | On-Call | glossary/on-call | glossary |
 | 111-list #111 | Postmortems | glossary/postmortems | glossary |
@@ -126,7 +126,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #X4 | Concurrency (bounded await) | `svc-timeouts` | draft |
 | 111-list #X5 | Async vs Sync | `mod-prefer-sync-api` | draft |
 | 111-list #X6 | Clean Code | glossary/clean-code | glossary |
-| 111-list #X7 | YAGNI | `mod-yagni` | draft |
+| 111-list #X7 | YAGNI | `mod-yagni` | stable |
 | 111-list #X8 | Grug | glossary/grug | glossary |
 | 111-list #X9 | SOLID | glossary/solid | glossary |
 | 111-list #X9b | SOLID (Liskov) | `mod-subtype-passes-parent-tests` | draft |
@@ -142,7 +142,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | pocock-smells | Repeated Switches | `mod-fowler-smells` | draft |
 | pocock-smells | Shotgun Surgery | `mod-fowler-smells` | draft |
 | pocock-smells | Divergent Change | `mod-cohesive-unit` | draft |
-| pocock-smells | Speculative Generality | `mod-yagni` | draft |
+| pocock-smells | Speculative Generality | `mod-yagni` | stable |
 | pocock-smells | Message Chains | `mod-fowler-smells` | draft |
 | pocock-smells | Middle Man | `fn-no-pass-through-wrapper` | draft |
 | pocock-smells | Refused Bequest | `mod-subtype-passes-parent-tests` | draft |
@@ -161,23 +161,23 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | thermo-nuclear | Copy-pasted logic | `chg-reuse-before-write` | draft |
 | thermo-nuclear | Temporary branching likely to stay | `chg-flag-owner-retirement` | draft |
 | thermo-nuclear | Few high-conviction comments; direct tone; approval bar | `chg-review-signal`, `chg-review-comment-format` | draft |
-| thermo-nuclear | Review: only report added or modified code | `chg-review-signal` | draft |
-| thermo-nuclear | Review: trace side effects before claiming breakage; no unfinished research | `chg-verify-before-claim` | draft |
+| thermo-nuclear | Review: only report added or modified code | `chg-review-signal` | stable |
+| thermo-nuclear | Review: trace side effects before claiming breakage; no unfinished research | `chg-verify-before-claim` | stable |
 | thermo-nuclear | Review: developer-experience breaks (env vars, ports, secret sources, new scripts) | `chg-devex-breaking-config` | draft |
 | thermo-nuclear | Review: feature-gate leaks | `chg-flag-owner-retirement` | draft |
 | thermo-nuclear | Review: do not report an intended breakage | dropped: reviewer posture | dropped |
-| thermo-nuclear | Review: do not over-report priority | `chg-review-signal` | draft |
+| thermo-nuclear | Review: do not over-report priority | `chg-review-signal` | stable |
 | thermo-nuclear | Review: read bot comments only after own audit | `chg-agent-independent-review` | draft |
 | thermo-nuclear | Thermos: two parallel passes then merge | dropped: workflow mechanics; fresh context is chg-agent-independent-review | dropped |
-| research-gap | a change is too large to review (about 200-400 lines or 20+ fi | `chg-size-ceiling` | draft |
-| research-gap | a change mixes refactor or formatting with behavior change. | `chg-refactor-separate` | draft |
+| research-gap | a change is too large to review (about 200-400 lines or 20+ fi | `chg-size-ceiling` | stable |
+| research-gap | a change mixes refactor or formatting with behavior change. | `chg-refactor-separate` | stable |
 | research-gap | legacy behavior changes with no test recording what it does to | `chg-chestertons-fence` | draft |
-| research-gap | the description omits what the problem is, or lists only the c | `chg-author-hygiene` | draft |
-| research-gap | code changes without tests and no reason is given. | `chg-tests-ship-with-change` | draft |
+| research-gap | the description omits what the problem is, or lists only the c | `chg-author-hygiene` | stable |
+| research-gap | code changes without tests and no reason is given. | `chg-tests-ship-with-change` | stable |
 | research-gap | a rewrite names no defect that only a rewrite fixes. | `chg-chestertons-fence` | draft |
 | research-gap | a module is a shallow wrapper or pass-through, or leaks one pi | `mod-deep-modules` | draft |
 | research-gap | an abstraction is introduced from one or two uses, or grows fl | `mod-no-wrong-abstraction` | draft |
-| research-gap | a comment restates the code or is stale. | `fn-comments-explain-why` | draft |
+| research-gap | a comment restates the code or is stale. | `fn-comments-explain-why` | stable |
 | research-gap | an except or catch swallows an error and continues, leaving a | `fn-propagate-dont-swallow` | draft |
 | research-gap | release artifacts have no provenance. | `code-workflow-supply-chain` | draft |
 | research-gap | model output or retrieved text is acted on without validation, | `sys-prompt-injection` | draft |
@@ -189,31 +189,31 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | change-codebase | Consistency with codebase unless pattern is bad; improve what you touch | `chg-match-codebase-pattern` | draft |
 | change-codebase | Reuse: search for an existing helper first | `chg-reuse-before-write` | draft |
 | change-codebase | Move logic to shared module with 2+ call sites; wrong-abstraction | `chg-abstraction-needs-two-callers` | draft |
-| change-codebase | Scope: one concern per change | `chg-one-concern` | draft |
-| change-codebase | Size spread, SmartBear/Cisco single vendor study | `chg-size-ceiling` | draft |
-| change-codebase | Refactors separate; moves not edited | `chg-refactor-separate` | draft |
-| change-codebase | Tests ship with the change | `chg-tests-ship-with-change` | draft |
+| change-codebase | Scope: one concern per change | `chg-one-concern` | stable |
+| change-codebase | Size spread, SmartBear/Cisco single vendor study | `chg-size-ceiling` | stable |
+| change-codebase | Refactors separate; moves not edited | `chg-refactor-separate` | stable |
+| change-codebase | Tests ship with the change | `chg-tests-ship-with-change` | stable |
 | change-codebase | New API ships with a usage | `chg-new-api-has-usage` | draft |
 | change-codebase | Spec match, no unrequested changes | `chg-matches-spec` | draft |
-| change-codebase | Author hygiene: description, self-review, CI green | `chg-author-hygiene` | draft |
-| change-codebase | Expand/contract (gap: recipe unsourced) | `chg-expand-contract` | draft |
-| change-codebase | Breaking-change taxonomy (Hyrum's law) | `chg-breaking-change-taxonomy` | draft |
+| change-codebase | Author hygiene: description, self-review, CI green | `chg-author-hygiene` | stable |
+| change-codebase | Expand/contract (gap: recipe unsourced) | `chg-expand-contract` | stable |
+| change-codebase | Breaking-change taxonomy (Hyrum's law) | `chg-breaking-change-taxonomy` | stable |
 | change-codebase | Rollback path (thin source) | `chg-rollback-path` | draft |
 | change-codebase | Flag owner and retirement (thin source) | `chg-flag-owner-retirement` | draft |
 | change-codebase | New attack surface named (thin source) | `chg-name-attack-surface` | draft |
 | change-codebase | Severity labels, one comment per finding | `chg-review-comment-format` | draft |
-| change-codebase | What not to flag; few high-conviction comments | `chg-review-signal` | draft |
-| change-codebase | Verify before claim | `chg-verify-before-claim` | draft |
+| change-codebase | What not to flag; few high-conviction comments | `chg-review-signal` | stable |
+| change-codebase | Verify before claim | `chg-verify-before-claim` | stable |
 | change-codebase | No silenced diagnostics | `chg-no-silenced-diagnostics` | draft |
 | change-codebase | Chesterton's fence | `chg-chestertons-fence` | draft |
 | change-codebase | Agent code: hallucinated APIs, re-implemented helpers | `chg-agent-grounded-code` | draft |
 | change-codebase | Agent code: mock-asserting tests | `chg-agent-mock-asserting-tests` | draft |
 | change-codebase | Agent code: same-session self-review | `chg-agent-independent-review` | draft |
 | change-codebase | File-size ceiling 1k lines (gap: heuristic) | `code-file-lines-ceiling` | draft |
-| change-codebase | Dead code | `code-dead-code` | draft |
-| change-codebase | Dependency pinning | `code-dependency-pinning` | draft |
+| change-codebase | Dead code | `code-dead-code` | stable |
+| change-codebase | Dependency pinning | `code-dependency-pinning` | stable |
 | change-codebase | Licences, SBOM (licence part is a gap) | `code-dependency-licence-sbom` | draft |
-| change-codebase | CI gates | `code-ci-gates` | draft |
+| change-codebase | CI gates | `code-ci-gates` | stable |
 | change-codebase | ADRs (gap: format unsourced) | `code-adr` | draft |
 | change-codebase | Consistency drift | `code-consistency-drift` | draft |
 | change-codebase | Supply chain: workflows, provenance | `code-workflow-supply-chain` | draft |
@@ -225,7 +225,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Architecture: Large literals in their own module; one cohesive unit; single-module folder inlined | `mod-cohesive-unit` | draft |
 | core-python | Architecture: `__init__.py` empty except at a public boundary | `py-init-py-empty` | draft |
 | core-python | Architecture: I/O at the edges; import touches nothing | `mod-no-import-side-effects` | draft |
-| core-python | Architecture: YAGNI | `mod-yagni` | draft |
+| core-python | Architecture: YAGNI | `mod-yagni` | stable |
 | core-python | Architecture: No pass-through wrappers | `fn-no-pass-through-wrapper` | draft |
 | core-python | Architecture: Behaviour lives with the state it owns | `mod-behaviour-lives-with-state` | draft |
 | core-python | Config and typing: Env config through pydantic-settings | `py-settings-pydantic-settings` | draft |
@@ -242,7 +242,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Naming and classes: Semantics and consistency; one name per concept; glossary wins; no borrowed terms | `mod-one-name-per-concept` | draft |
 | core-python | Naming and classes: Name intermediate conditions | `fn-name-intermediate-conditions` | draft |
 | core-python | Naming and classes: Bool argument at call site | `fn-bool-arg-at-callsite` | draft |
-| core-python | Naming and classes: Code explains itself; rename before commenting | `fn-comments-explain-why` | draft |
+| core-python | Naming and classes: Code explains itself; rename before commenting | `fn-comments-explain-why` | stable |
 | core-python | Naming and classes: English everywhere | `fn-english-identifiers` | draft |
 | core-python | Naming and classes: No codenames or ticket numbers in code | `fn-comments-survive-context` | draft |
 | core-python | Naming and classes: A class earns its instance; Protocol needs two implementations | `py-class-earns-its-instance` | draft |
@@ -258,11 +258,11 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Error handling: Error responses don't leak internals | `sys-secrets-and-errors` | draft |
 | core-python | Error handling: Log the branches that matter with a request ID | `svc-request-id-logging` | draft |
 | core-python | Security: Validate every input; name new attack surface; secrets from settings | `mod-validate-at-boundary-once`, `chg-name-attack-surface`, `sys-secrets-and-errors` | draft |
-| core-python | Docstrings and comments: Comments explain why | `fn-comments-explain-why` | draft |
+| core-python | Docstrings and comments: Comments explain why | `fn-comments-explain-why` | stable |
 | core-python | Docstrings and comments: Comments survive loss of context | `fn-comments-survive-context` | draft |
 | core-python | Docstrings and comments: No forced docstrings, Google style | `py-docstrings-google` | draft |
 | core-python | Docstrings and comments: No section banners | `mod-cohesive-unit` | draft |
-| core-python | Docstrings and comments: Check every stated reason against the artifact | `fn-comments-explain-why` | draft |
+| core-python | Docstrings and comments: Check every stated reason against the artifact | `fn-comments-explain-why` | stable |
 | core-python | Docstrings and comments: Empty `__init__.py` means empty | `py-init-py-empty` | draft |
 | core-python | Testing: `parametrize` for variations | `py-pytest-parametrize` | draft |
 | core-python | Testing: No `test_init_*` or plain-model tests | `py-no-init-or-model-tests` | draft |
@@ -291,7 +291,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | AWS queues: DLQ, visibility timeout, queue age | `svc-dlq` | draft |
 | service-system | AWS fairness / shuffle sharding: per-tenant quota, 429 vs 503 | `svc-rate-limit-quota` | draft |
 | service-system | AWS queues: bounded queue, sideline, cheap shedding | `sys-load-shedding-bounded-queues` | draft |
-| service-system | Kleppmann / antirez: fencing, check-and-set, disagreement | `sys-lock-fencing` | draft |
+| service-system | Kleppmann / antirez: fencing, check-and-set, disagreement | `sys-lock-fencing` | stable |
 | service-system | AWS leader election: two leaders, lease check | `sys-leader-two-leaders` | draft |
 | service-system | AWS caching: TTL, size, metrics, versioned values | `sys-cache-bounds-invalidation` | draft |
 | service-system | AWS caching: cold start, stampede, cache-off test | `sys-cache-cold-start` | draft |
@@ -307,7 +307,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | OWASP A05 / A07 / A01 (index only) | `svc-sqli-authn` | draft |
 | service-system | SRE monitoring | `prod-alerts-symptoms-golden-signals` | draft |
 | service-system | Honeycomb wide events, cardinality, deploy markers | `prod-wide-events-bounded-labels` | draft |
-| service-system | SRE canary + release engineering, AWS velocity control | `prod-canary-staged-rollout` | draft |
+| service-system | SRE canary + release engineering, AWS velocity control | `prod-canary-staged-rollout` | stable |
 | service-system | AWS cache-off test, ASVS degradation path | `prod-kill-switch-fallback` | draft |
 | service-system | Canary / health-check fail-open caution | `inc-rollback-path-tested` | draft |
 | service-system | First-hand card, no research source | `svc-api-compat-pagination` | draft |

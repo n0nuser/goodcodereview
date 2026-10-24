@@ -3,7 +3,7 @@ id: chg-author-hygiene
 level: change
 tags: [author, process, ci]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: Every change submitted for review.
 tool_gate: PR template with required sections; branch protection requiring green CI.

@@ -3,7 +3,7 @@ id: chg-size-ceiling
 level: change
 tags: [size, review-quality]
 severity: discuss
-status: draft
+status: stable
 lang: core
 applies_when: The diff exceeds roughly 400 changed lines or about 20 files and is not generated or a pure move.
 tool_gate: Size labels or a diff-size warning in CI.
@@ -15,7 +15,7 @@ borrowed_from:
   - https://newsletter.pragmaticengineer.com/p/stacked-diffs
 ---
 
-**Rule.** Treat about 200 lines as the target and about 400 as the ceiling; above that, the author splits or explains in the description why not.
+**Rule.** Past about 400 changed lines or about 20 files, split the change or say in the description why not; aim for about 200.
 
 **Why.** Review usefulness falls as changes grow, so big diffs get skimmed and approved on trust.
 
@@ -31,4 +31,4 @@ borrowed_from:
 Stack of 6 changes of 150-300 lines, each builds and passes tests alone.
 ```
 
-**Counterpoint.** The numbers are heuristics. The direction (smaller is better) holds across Google logs (median change 24 lines), Microsoft comment data (usefulness drops from about 20 files) and others. The 200-400 figure comes from a single vendor study, so do not treat it as a threshold. Comment count rising with size is not defect yield.
+**Counterpoint.** "Line counts are arbitrary." The exact numbers are rough; the direction is not: larger changes get fewer useful comments per file and are approved on trust. Treat 400 as a prompt to split or explain, not a hard gate, and exclude generated code and pure moves.
