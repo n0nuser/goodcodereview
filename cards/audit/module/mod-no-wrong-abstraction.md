@@ -14,7 +14,7 @@ borrowed_from:
 
 **Rule.** Inline an abstraction that has grown flags for its callers, then re-split it.
 
-**Why.** Extract an abstraction at two real call sites ([[chg-abstraction-needs-two-callers]]). A wrong one is harder to remove than the duplication it replaced, because each new caller adds a branch until nobody can say what the code is for.
+**Why.** Extract an abstraction when real call sites need it ([[mod-yagni]]). A wrong one is harder to remove than the duplication it replaced, because each new caller adds a branch until nobody can say what the code is for.
 
 **FAIL**
 

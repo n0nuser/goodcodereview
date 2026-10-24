@@ -32,4 +32,4 @@ def checkout(cart, user, pricing=standard_pricing):
     total = pricing(cart, user)       # acme's rule lives in its own pricing function
 ```
 
-**Counterpoint.** "It is one line; an abstraction is overkill." One is fine. The second and third special case are the signal. See [[chg-abstraction-needs-two-callers]] for when not to extract yet. Temporary branches need an owner and a removal date ([[chg-flag-owner-retirement]]).
+**Counterpoint.** "It is one line; an abstraction is overkill." One is fine. The second and third special case are the signal. See [[mod-yagni]] for when not to extract yet. Temporary branches need an owner and a removal date ([[chg-flag-owner-retirement]]).

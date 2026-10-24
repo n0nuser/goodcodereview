@@ -78,6 +78,34 @@ ALTER TABLE users RENAME COLUMN name TO full_name;  -- app v1 still reads name
 
 **Counterpoint.** Three steps are slow for internal code. Exception: when producer and consumers deploy atomically from one repo, or the table is small enough to alter in one safe step, a one-step change is fine. Say so in the description. [sys-migration-expand-contract](system.md#sys-migration-expand-contract) covers batching the backfill.
 
+## chg-match-codebase-pattern
+
+severity: should-fix  
+concerns: correctness, maintainability  
+applies_when: The change adds code that solves a problem the codebase already solves somewhere.
+
+**Rule.** Follow the established pattern nearby.
+
+**Why.** A silent second way to do the same thing doubles what every later reader must learn. Equally, copying a bad pattern forever freezes it in place.
+
+**FAIL**
+
+```text
+Repo uses Result-returning repository classes everywhere.
+New PR adds a module that raises raw DB exceptions and builds SQL inline,
+description: "cleaner this way". No ticket, no mention of the old pattern.
+```
+
+**PASS**
+
+```text
+New module uses the repository pattern like its neighbours.
+PR notes: "pattern X leaks DB errors, see TICKET-123 proposing a standard".
+Code the PR touches anyway is improved in passing.
+```
+
+**Counterpoint.** "Consistency preserves bugs." Consistency is a tie-breaker, not a reason to copy something that breaks a rule or hurts code health, so a reviewer must not demand matching code that makes things worse. When the nearby pattern is bad, keep to the local style in this change, file a ticket, and propose the new standard in its own change, improving what you touch. A second pattern slipped into a feature change without a word is the failure.
+
 ## chg-one-concern
 
 severity: should-fix  

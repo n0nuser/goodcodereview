@@ -1,5 +1,30 @@
 # system
 
+## sys-agent-tool-least-privilege
+
+severity: block  
+concerns: security, process  
+applies_when: An LLM agent can call tools, run code, or act on external systems.
+
+**Rule.** Give the agent only the narrow tools and the minimal credentials its task needs.
+
+**Why.** Hallucination or an injected instruction can drive any tool the model holds. An open-ended shell or URL fetch hands over everything the service account can do. Where you can, run each tool as the requesting user rather than a shared admin identity, and let the downstream system check that user's rights on every call. [sys-prompt-injection](system.md#sys-prompt-injection) covers validating model output and human approval; this card covers how much the agent can reach in the first place.
+
+**FAIL**
+
+```text
+tools = [shell(), http_fetch(any_url), db(admin_role)]       # one shared service identity
+```
+
+**PASS**
+
+```text
+tools = [read_ticket(id), add_comment(id, text)]             # narrow functions
+creds = user_scoped_token(user, scopes=["tickets:rw"])       # downstream checks the user
+```
+
+**Counterpoint.** "Narrow tools make the agent less useful." Add tools when a task needs them and remove those that no task uses. A tool the model never calls is risk without benefit.
+
 ## sys-cache-bounds-invalidation
 
 severity: should-fix  
@@ -186,6 +211,57 @@ for o in Order.objects.select_related("user"):
 
 **Counterpoint.** "Measure first." Yes, for micro-optimizations, but a query inside a loop over unbounded input is a defect by shape.
 
+## sys-pii-minimise-retention
+
+severity: should-fix  
+concerns: security  
+applies_when: The system stores, copies or logs personal or otherwise sensitive data.
+
+**Rule.** Give every store of personal or sensitive data a retention period, and delete or anonymise the data when it ends.
+
+**Why.** Data you do not keep cannot leak. Keep only the fields the feature needs, too. Full card numbers, national IDs and raw request bodies pile up in logs, analytics tables and backups, and nobody owns their deletion. Tokenise or truncate when the full value is not needed, and encrypt what you keep. This is a technical check, not a legal opinion.
+
+**FAIL**
+
+```text
+analytics.events: full email, DOB and phone, no TTL
+logs: raw request body with the national ID field, kept forever
+```
+
+**PASS**
+
+```text
+analytics.events: hashed user id, TTL 90 days
+logs: id field masked; table has a retention policy and an owner
+```
+
+**Counterpoint.** "We might need it later." A guess is not a purpose. Keep it when a named feature or legal duty needs it, and write that reason next to the retention rule.
+
+## sys-prompt-injection
+
+severity: block  
+concerns: security  
+applies_when: An LLM reads untrusted text (user input, web pages, documents) and can call tools or produce output that code acts on.
+
+**Rule.** Validate model output deterministically before code acts on it.
+
+**Why.** Injected instructions in retrieved text can steer tool calls. No known prevention is fool-proof, and RAG or fine-tuning do not fully fix it, so the goal is to limit what a fooled model can make the code do. Also keep credentials in code, not in the model, and require human approval for high-risk actions.
+
+**FAIL**
+
+```text
+tool_call = llm(user_doc); shell(tool_call.cmd)     # model holds the API token
+```
+
+**PASS**
+
+```text
+cmd = parse_strict(llm(...)); if cmd not in ALLOWED: reject
+destructive actions -> human confirm ; untrusted text labelled in the prompt
+```
+
+**Counterpoint.** "Guardrail prompts block it." They reduce risk but are not a boundary. The permission model has to hold even when the model is fooled.
+
 ## sys-secrets-and-errors
 
 severity: block  
@@ -214,3 +290,29 @@ except Exception as err:
 ```
 
 **Counterpoint.** "A broad `except Exception` breaks the specific-exceptions rule." At a security boundary, fail-closed wins: catch broadly, log redacted, deny, and never use a bare `except:`. "We need detail to debug." Log it server-side with a correlation id.
+
+## sys-ssrf
+
+severity: block  
+concerns: security  
+applies_when: The server fetches a URL that a user or external data supplies.
+
+**Rule.** Fetch a user-supplied URL only when its host matches a server-side allowlist.
+
+**Why.** The server can reach networks that the attacker cannot, such as internal services and the cloud metadata address, and an open fetch lets the attacker read them. A hostname allowlist alone does not stop DNS rebinding, so also check that the resolved address is not private and connect to that address. Turn off redirect following, or check each redirect target the same way.
+
+**FAIL**
+
+```python
+requests.get(request.args["url"])
+```
+
+**PASS**
+
+```python
+u = urlparse(request.args["url"])
+if u.scheme != "https" or u.hostname not in ALLOWED_HOSTS: abort(400)
+requests.get(u.geturl(), allow_redirects=False, timeout=5)
+```
+
+**Counterpoint.** "Blocklisting private ranges is enough." Alternate IP forms, URL parser tricks and open redirects get past a blocklist. An allowlist fails closed when someone finds a new trick.

@@ -110,6 +110,115 @@ the rename ships under api-version=2026-09-01
 
 **Counterpoint.** "We will cross that bridge later." Later arrives with a customer on the old shape. The scheme can be minimal. A media type, a dated query parameter and a pinned header all work. Pick one and write it down. What counts as breaking is in [chg-breaking-change-taxonomy](change.md#chg-breaking-change-taxonomy).
 
+## svc-authz-central-deny-default
+
+severity: block  
+concerns: security  
+applies_when: The service exposes routes or functions that different roles may call.
+
+**Rule.** Route every request through one authorization layer that denies when no rule allows it.
+
+**Why.** Per-handler checks drift: one admin route ships without its decorator and any user can call it. A central layer with deny as the fallback turns a forgotten check into a 403 instead of a hole.
+
+**FAIL**
+
+```text
+@app.route("/admin/export")        # no role check; framework default is allow
+def export(): ...
+```
+
+**PASS**
+
+```text
+policy = {"export": {"admin"}}             # endpoint -> roles, reviewed in one place
+@app.before_request
+def gate(): require_role(policy.get(request.endpoint))   # missing entry -> 403
+```
+
+**Counterpoint.** "A central policy is a bottleneck for feature teams." Keep the engine central and let each team own its rows. The cost of a one-line policy entry is small next to an unguarded admin route.
+
+## svc-bound-client-controlled-sizes
+
+severity: should-fix  
+concerns: security  
+applies_when: A request parameter or body sets how many records, bytes, items or operations the server handles.
+
+**Rule.** Cap every client-controlled size and count on the server: body bytes, string length, array items, page size and batch size.
+
+**Why.** A request for `limit=10000000` or a batch of 50,000 operations lets one client exhaust memory or the bill for a paid backend. The cap has to sit in the server, since a UI limit is not one. [svc-rate-limit-quota](service.md#svc-rate-limit-quota) covers request rate; this card covers size.
+
+**FAIL**
+
+```text
+limit = int(request.args["limit"])
+rows = db.fetch(limit)                              # no ceiling
+items: list[Item]                                    # schema with no maxItems
+```
+
+**PASS**
+
+```text
+limit = max(1, min(int(request.args.get("limit", 50)), 100))
+items: list[Item] = Field(max_length=100)            # body capped at 1 MB by the proxy
+```
+
+**Counterpoint.** "Legit clients sometimes need big batches." Offer a documented bulk or export endpoint with its own quota. The default path stays capped.
+
+## svc-cors-allowlist
+
+severity: should-fix  
+concerns: security  
+applies_when: The service sends `Access-Control-Allow-Origin` or similar CORS headers.
+
+**Rule.** Allow cross-origin access only to a fixed list of named origins, and never echo the request `Origin` header back unchecked.
+
+**Why.** Reflecting any Origin, or allowing `*` on an endpoint that returns private data, lets a hostile page read responses. CORS also does not stop CSRF, so it is no substitute for [svc-csrf-state-changing](service.md#svc-csrf-state-changing). A subdomain regex that matches `evil-example.com` is the same bug, and so is allowing the `null` origin.
+
+**FAIL**
+
+```text
+resp.headers["Access-Control-Allow-Origin"] = request.headers["Origin"]
+resp.headers["Access-Control-Allow-Credentials"] = "true"
+```
+
+**PASS**
+
+```text
+ALLOWED = {"https://app.example.com"}
+if request.headers.get("Origin") in ALLOWED:
+    resp.headers["Access-Control-Allow-Origin"] = request.headers["Origin"]
+resp.headers["Vary"] = "Origin"                # caches keep one copy per origin
+```
+
+**Counterpoint.** "`*` is fine for a public API." It is, for endpoints that return only public data and take no credentials. Keep it off any endpoint behind a login.
+
+## svc-csrf-state-changing
+
+severity: block  
+concerns: security  
+applies_when: The service authenticates browsers with cookies and changes state on requests.
+
+**Rule.** Require a CSRF token (or an equivalent header check) on every cookie-authenticated request that changes state, and never change state on GET.
+
+**Why.** The browser attaches cookies to a cross-site request, so a hostile page can post as the user. `SameSite` helps but `Lax` still sends cookies on cross-site top-level GET, so it supports the token and does not replace it. Naive double-submit cookies fail when a sibling subdomain can set cookies.
+
+**FAIL**
+
+```text
+@app.get("/account/delete")                    # state change on GET
+@app.post("/transfer")                         # cookie auth, no token check
+```
+
+**PASS**
+
+```text
+@app.post("/transfer")
+@csrf_protect                                  # token bound to the session
+Set-Cookie: sid=...; SameSite=Lax; Secure; HttpOnly
+```
+
+**Counterpoint.** "Our API uses JSON, so browsers cannot forge it." A simple content type such as `text/plain` can carry a JSON body without a preflight. Reject it, or require a custom header such as `X-CSRF-Token`. Pure bearer-token APIs with no cookies are exempt.
+
 ## svc-idempotency-key
 
 severity: block  
@@ -191,6 +300,65 @@ applies_when: A multi-step flow, such as checkout or signup, asks for data in mo
 
 **Counterpoint.** "Retyping a new password confirms it." That is a fair exception. So is data that is no longer valid, and re-entry that is the point of the task, such as a memory test. Browser autofill does not count: the page itself must supply the value.
 
+## svc-page-title-per-route
+
+severity: should-fix  
+concerns: accessibility, usability  
+applies_when: An app serves several pages or client-side routes under one HTML shell.
+
+**Rule.** Give every page and every client-side view its own `<title>` that says what it is.
+
+**Why.** The title labels the browser tab, the history, search results, and bookmarks, and it helps users find where they are. If every route says "My App", a user cannot tell the pages apart. In a single-page app the shell's title stays put unless the code changes it, so it goes on describing the first view.
+
+**FAIL**
+
+```html
+<title>My App</title>
+<!-- the same title on /billing, /settings, and /billing/error -->
+```
+
+**PASS**
+
+```jsx
+function usePageTitle(title) {
+  useEffect(() => { document.title = `${title} - My App`; }, [title]);
+}
+
+function Settings() { usePageTitle("Settings"); /* ... */ }
+function Billing({ hasErrors }) {
+  usePageTitle(hasErrors ? "Error: Billing details" : "Billing details");
+  /* ... */
+}
+```
+
+**Counterpoint.** "The router library sets it." Then test that it does for each route. A router that changes the URL and the view but not the title is the common failure.
+
+## svc-rate-limit-quota
+
+severity: should-fix  
+concerns: security, reliability  
+applies_when: A shared API or queue serves several tenants or callers.
+
+**Rule.** Enforce a per-tenant quota on shared APIs and queues.
+
+**Why.** Without a quota, one noisy tenant consumes shared capacity for everyone. Also add a per-tenant concurrency cap, and return 429 for over-quota but 503 for the service's own lack of capacity, so clients do not retry quota errors as capacity problems.
+
+**FAIL**
+
+```text
+every tenant shares one worker pool and one request budget
+no per-tenant limit: one tenant's batch job starves the rest
+```
+
+**PASS**
+
+```text
+limiter.check(tenant_id) -> 429 + Retry-After
+per-tenant semaphore on workers
+```
+
+**Counterpoint.** "One global rate limit is simpler." A global limit protects the service, but one tenant can use all of it, and then every other tenant gets errors. A per-tenant limit costs one key per tenant in the limiter. Some older services return 503 for quota errors, so the status code is a convention; what matters is that a client can tell a quota error from a capacity error. Shuffle sharding (per-tenant worker subsets) isolates tenants further, and this card does not require it.
+
 ## svc-reflow-and-zoom
 
 severity: should-fix  
@@ -260,6 +428,87 @@ for i in range(3):
 
 **Counterpoint.** "Retries make us more reliable." Only for transient faults and only within a budget. Past that they hurt, so a non-transient error should fail at once. A retry budget (retries capped as a share of traffic) helps further. This card leaves its size to the team.
 
+## svc-security-event-logging
+
+severity: should-fix  
+concerns: security, observability  
+applies_when: The service authenticates users.
+
+**Rule.** Log every failed authentication with the account name and a timestamp.
+
+**Why.** Without these events, password guessing in progress is invisible and an incident cannot be reconstructed. Log authorization denials and validation failures the same way, and add a correlation ID so one request can be followed across services. Never log passwords, tokens or session IDs, because the log then becomes a second leak. Untrusted values with CR or LF can forge log lines, so use structured output.
+
+**FAIL**
+
+```python
+except AuthError:
+    return 401                                   # nothing logged
+```
+
+**PASS**
+
+```python
+except AuthError:
+    log.warning("auth_failed", account=username, ip=ip, at=utc_now(), req=req_id)
+    return 401
+```
+
+**Counterpoint.** "Logging every failed login is noisy." Log them as one event type, count them, and alert on the rate, not on each line. Without the events, nobody sees the attack.
+
+## svc-security-headers
+
+severity: should-fix  
+concerns: security  
+applies_when: The service serves HTML pages or sets cookies for browsers over HTTPS.
+
+**Rule.** Send `Strict-Transport-Security` on every HTTPS response.
+
+**Why.** Without HSTS, the first plain-HTTP request can be downgraded by anyone on the path, and a user can click through a certificate warning. With it, the browser rewrites `http` to `https` and refuses the click-through. Two more one-line headers belong next to it: `X-Content-Type-Options: nosniff`, so a browser does not run an upload as script, and CSP `frame-ancestors` (or `X-Frame-Options: DENY`), so a hostile page cannot frame yours for clickjacking.
+
+**FAIL**
+
+```text
+HTTP/1.1 200 OK
+Content-Type: text/html
+(no Strict-Transport-Security)
+```
+
+**PASS**
+
+```text
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+X-Content-Type-Options: nosniff
+Content-Security-Policy: frame-ancestors 'none'
+```
+
+**Counterpoint.** "HSTS can lock users out if the certificate lapses." True, so ramp `max-age` up and check the preload rules before you submit the domain. A lockout from an expired certificate is an outage you fix, while a downgrade is a breach.
+
+## svc-session-lifecycle
+
+severity: block  
+concerns: security  
+applies_when: The service sets a session cookie or session ID after login.
+
+**Rule.** Issue a new session ID at login, and set `Secure`, `HttpOnly` and `SameSite` on the session cookie.
+
+**Why.** A session ID that survives login can be planted by an attacker beforehand (fixation). A cookie without `HttpOnly` is readable by any injected script, and one without `Secure` travels over plain HTTP. Also end the session on the server at logout, because clearing only the browser cookie leaves a stolen copy valid, and enforce idle and absolute timeouts on the server.
+
+**FAIL**
+
+```text
+Set-Cookie: sid=abc123
+login():  keep the pre-login session id
+```
+
+**PASS**
+
+```text
+Set-Cookie: __Host-sid=<new random>; Secure; HttpOnly; SameSite=Lax; Path=/
+login():  session.regenerate()
+```
+
+**Counterpoint.** "The framework already does this." Some do: Spring Security changes the session ID at login by default, and Rails gives you `reset_session`. Hand-written login code and custom session stores often skip it, and cookie flags depend on configuration. Check the login handler and the real `Set-Cookie` header, not the framework's reputation.
+
 ## svc-slow-operation-shows-progress
 
 severity: should-fix  
@@ -287,3 +536,85 @@ applies_when: A page action, such as a save, an upload, a search, or a page load
 ```
 
 **Counterpoint.** "A spinner on a 200 ms call flickers." Right: below about a second, show nothing, or the placeholder just flashes. Skeleton screens suit page loads, and progress bars suit uploads and other long jobs.
+
+## svc-sqli-authn
+
+severity: block  
+concerns: security  
+applies_when: The code builds a SQL query that includes request data or other untrusted input.
+
+**Rule.** Pass untrusted data to queries as bound parameters, never by string concatenation or formatting.
+
+**Why.** Concatenated input becomes SQL, so a value of `1 OR 1=1` reads every row and a quote ends the string early. A bound parameter travels apart from the query text, and the database never parses it as SQL.
+
+**FAIL**
+
+```python
+db.execute("SELECT * FROM users WHERE id = " + req.id)
+db.execute(f"SELECT * FROM users WHERE name = '{name}'")
+```
+
+**PASS**
+
+```python
+db.execute("SELECT * FROM users WHERE id = %s", (req.id,))
+db.execute("SELECT * FROM users WHERE name = %s", (name,))
+```
+
+**Counterpoint.** "An ORM makes this moot." Raw fragments still bypass it, and so do table, column and `ORDER BY` names, which cannot be bound. Map those to a fixed allowlist in code.
+
+## svc-timeouts
+
+severity: block  
+concerns: performance, reliability  
+applies_when: The code calls anything over a network or process boundary.
+
+**Rule.** Set an explicit timeout on every remote call.
+
+**Why.** A call without a bound holds a thread, a connection, and a caller indefinitely, so one slow dependency becomes an outage. Many clients, gRPC and `requests` among them, set no timeout by default. Where the caller has a deadline of its own, pass the remaining time down: a per-hop timeout that ignores it keeps working for a client that already gave up, and a retry loop shares that one deadline across its attempts.
+
+**FAIL**
+
+```python
+resp = requests.get(url)                   # no timeout: can wait forever
+reply = stub.GetUser(request)              # gRPC sets no deadline by default
+```
+
+**PASS**
+
+```python
+client = httpx.Client(timeout=httpx.Timeout(10.0, connect=2.0))   # set once on the client
+resp = client.get(url)
+
+def GetProfile(self, request, context):
+    # bounded, and no longer than what the caller has left
+    return stub.GetUser(request, timeout=min(2.0, context.time_remaining()))
+```
+
+**Counterpoint.** "Defaults are fine; the library will time out eventually." Many defaults are infinite, and an eventual timeout longer than the caller's own deadline is wasted work. Configure the client's timeout once at construction, connect and read separately, then shrink it per call to what the caller has left. Pick the numbers from measured latency, such as the downstream p99.9, not folklore.
+
+## svc-upload-validate-store
+
+severity: block  
+concerns: security  
+applies_when: The service accepts file uploads.
+
+**Rule.** Allowlist the file type, cap the size, and store each upload under a generated name where the server will not execute it.
+
+**Why.** The client-supplied name and Content-Type are attacker text. A user-chosen name allows path tricks, and an upload served from the web root with its original extension can run as code. Count the decompressed size of archives. Storing outside the web root and serving files through a handler, or from a separate domain, keeps a file that slips past the type check from running. [fn-confine-file-path](function.md#fn-confine-file-path) covers the path check.
+
+**FAIL**
+
+```python
+path = f"/var/www/uploads/{file.filename}"
+file.save(path)                       # any type, any size, public URL
+```
+
+**PASS**
+
+```python
+if ext(file.filename) not in {".png", ".jpg"} or size > 5_000_000: abort(400)
+file.save(STORE / f"{uuid4()}.bin")   # outside web root; served by /files/<id>
+```
+
+**Counterpoint.** "The extension check is enough." The extension is attacker text, and double extensions or parser quirks get past a check on it. The generated name and a storage place that never executes files are what make a file that slips through harmless.

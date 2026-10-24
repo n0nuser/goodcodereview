@@ -1,5 +1,33 @@
 # function
 
+## fn-aria-role-has-state-and-keys
+
+severity: should-fix  
+concerns: accessibility  
+applies_when: A custom widget sets `role` or an `aria-*` attribute because no native element fits.
+
+**Rule.** When a native element cannot do the job, give the custom widget the state attribute and the keys its role promises.
+
+**Why.** A role only tells assistive technology what the element is. It adds no keyboard behaviour, and it says nothing about state. A `role="switch"` with no `aria-checked` is announced as a switch of unknown state. Wrong ARIA is worse than none, because it gives a screen-reader user a false picture. The widget also needs an accessible name, from its text or a label, or it is announced by role alone.
+
+**FAIL**
+
+```jsx
+<button type="button" role="switch" onClick={toggle}>Dark mode</button>
+// no aria-checked: announced as a switch of unknown state
+```
+
+**PASS**
+
+```jsx
+<button type="button" role="switch" aria-checked={on} onClick={toggle}>
+  Dark mode
+</button>
+// a native <button> already takes Tab, Enter, and Space
+```
+
+**Counterpoint.** "ARIA patterns are in the guide, so we copy them." Copy the keyboard table as well as the attributes. For a plain toggle, a `button` with `aria-pressed` is enough, and the label should stay the same when the state changes.
+
 ## fn-colour-not-sole-cue
 
 severity: should-fix  
@@ -54,6 +82,58 @@ retry = False  # see the PR, currently disabled
 ```
 
 **Counterpoint.** "Good names make comments unnecessary." Names carry *what*. They cannot carry why a branch exists, a unit, or what callers may rely on, and a missing reason costs more than a slightly stale one. Rename first, then comment what the name cannot say. A stale comment is a defect either way. The test is whether the comment adds information that the code cannot carry.
+
+## fn-confine-file-path
+
+severity: block  
+concerns: security  
+applies_when: Code opens, reads, writes or deletes a file whose name or path includes request data.
+
+**Rule.** Resolve the final path and check that it stays inside the intended base directory before using it.
+
+**Why.** A name like `../../etc/passwd`, or its percent-encoded form, walks out of the upload folder. Stripping `../` fails against `....//` and double encoding. The reliable check works on the resolved path. Better still, map a user choice to an ID and build the path in code.
+
+**FAIL**
+
+```python
+return send_file(os.path.join(UPLOADS, request.args["name"]))
+```
+
+**PASS**
+
+```python
+p = (UPLOADS / request.args["name"]).resolve()
+if not p.is_relative_to(UPLOADS.resolve()): abort(400)
+return send_file(p)
+```
+
+**Counterpoint.** "We already strip `..`." String stripping is a blocklist and gets bypassed. Resolve first, compare second. Resolving catches a symlink that already points outside, but a symlink swapped in between the check and the open still escapes. For trees that untrusted users can write to, use a rooted open such as Go's `os.OpenInRoot`, which refuses any escape at open time.
+
+## fn-csprng-for-secrets
+
+severity: block  
+concerns: security  
+applies_when: Code generates a token, session ID, password-reset code, API key, nonce or IV.
+
+**Rule.** Draw every security-relevant random value from the platform CSPRNG.
+
+**Why.** A general-purpose PRNG is predictable from a few outputs, so an attacker who sees two tokens can guess the next. UUIDv1 is time-based and also not secret. The API call is the whole fix, so it is cheap to demand.
+
+**FAIL**
+
+```python
+token = "".join(random.choices(string.ascii_letters, k=32))
+reset = str(int(time.time()))
+```
+
+**PASS**
+
+```python
+token = secrets.token_urlsafe(32)           # os.urandom under the hood
+# JavaScript: crypto.getRandomValues(new Uint8Array(32))
+```
+
+**Counterpoint.** "Math.random is fine for a short-lived code." Short-lived codes still get brute-forced, and predictable ones need no brute force. Use the CSPRNG for anything an attacker gains from guessing.
 
 ## fn-destructive-confirm-or-undo
 
@@ -335,6 +415,33 @@ out = "".join(f"{row.id},{row.name}\n" for row in rows)
 
 **Counterpoint.** "CPython optimises `+=` in place." Sometimes: only in CPython, and only while nothing else holds a reference to the string. Code that leans on it turns quadratic on other runtimes. A small fixed number of pieces is fine with `+` or an f-string, which read better. The rule covers loops over input-sized data.
 
+## fn-jwt-verify-pinned
+
+severity: block  
+concerns: security  
+applies_when: Code accepts a JWT as proof of identity or permission.
+
+**Rule.** Verify the signature against a fixed list of accepted algorithms, and check `iss` and `aud`, before reading any claim.
+
+**Why.** If the verifier takes the algorithm from the token header, an attacker picks `none` or turns an RSA public key into an HMAC secret. Claims read before verification are attacker text. Pinning the algorithm and binding each key to one algorithm closes both. Also require `exp`, so a stolen token stops working.
+
+**FAIL**
+
+```python
+claims = jwt.decode(token, options={"verify_signature": False})
+claims = jwt.decode(token, key)               # PyJWT 1.x: algorithm taken from the header
+```
+
+**PASS**
+
+```python
+claims = jwt.decode(token, key, algorithms=["RS256"],
+                    issuer=ISSUER, audience=AUD,
+                    options={"require": ["exp", "iss", "aud"]})
+```
+
+**Counterpoint.** "Our gateway already verifies the token." Then the service trusts a header that any internal caller can forge. Verify at each trust boundary, or prove that only the gateway can reach the service.
+
 ## fn-keep-input-on-error
 
 severity: should-fix  
@@ -423,6 +530,59 @@ async def handler(req):
 
 **Counterpoint.** "This call is fast enough." A short read from a local SSD can be quicker synchronously. Measure it with asyncio debug mode or the runtime's equivalent. A call that crosses the network, or that waits on anything outside the process, is never in that class.
 
+## fn-no-mass-assignment
+
+severity: block  
+concerns: security  
+applies_when: A handler copies request fields into a model, ORM entity or settings object.
+
+**Rule.** Bind request data to a DTO or an explicit field allowlist, never straight onto the model.
+
+**Why.** When the model has `is_admin`, `balance` or `owner_id`, a client that adds those keys to the JSON body sets them. A blocklist fails the day someone adds a new sensitive column. The allowlist still needs the object-level check from [fn-object-level-authz](function.md#fn-object-level-authz).
+
+**FAIL**
+
+```text
+user = User(**request.json)          # body {"name": "a", "is_admin": true}
+user.save()
+```
+
+**PASS**
+
+```text
+class UserIn(BaseModel):            # only editable fields exist here
+    name: str
+user = User(**UserIn(**request.json).model_dump())
+```
+
+**Counterpoint.** "A DTO per endpoint is boilerplate." Generate DTOs from the API schema. The boilerplate costs less than one privilege escalation.
+
+## fn-no-native-deserialise-untrusted
+
+severity: block  
+concerns: security  
+applies_when: Code turns bytes or text from outside the process into objects.
+
+**Rule.** Parse untrusted input with a data-only format, never with a native object deserialiser.
+
+**Why.** `pickle`, `ObjectInputStream`, `BinaryFormatter` and full-power YAML loaders can run attacker-chosen code while they load, so validating after the call is too late. JSON cannot instantiate arbitrary classes. Validate the parsed data against a schema afterwards, as the PASS does.
+
+**FAIL**
+
+```python
+obj = pickle.loads(request.data)
+cfg = yaml.load(body, Loader=yaml.Loader)
+```
+
+**PASS**
+
+```python
+obj = Model.model_validate_json(request.data)
+cfg = yaml.safe_load(body)
+```
+
+**Counterpoint.** "The data comes from our own queue." Anyone who can write to the queue can run code on every consumer, so the queue is a trust boundary. Signing the payload, or a Java serialisation filter that allowlists classes, narrows the risk while you migrate. The call still fails this check until it reads a data-only format.
+
 ## fn-no-positive-tabindex
 
 severity: should-fix  
@@ -451,6 +611,112 @@ applies_when: Markup sets `tabindex`, or a layout reorders content with CSS.
 ```
 
 **Counterpoint.** "The visual layout puts the sidebar first, but the main content comes first in the DOM." Reorder the DOM to match, or accept the difference only if the order still makes sense to a keyboard user. Do not patch it with numbers.
+
+## fn-no-raw-html-sink
+
+severity: block  
+concerns: security  
+applies_when: Code writes a string into a page, a template or a rendered model-output view.
+
+**Rule.** Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.
+
+**Why.** One `innerHTML` of a username or of model output runs the attacker's script with the victim's session. Encoding must match the context: body, attribute, script string and URL each differ. Framework escape hatches such as `dangerouslySetInnerHTML` have the same effect.
+
+**FAIL**
+
+```text
+el.innerHTML = comment.body;
+<div dangerouslySetInnerHTML={{ __html: reply }} />
+```
+
+**PASS**
+
+```text
+el.textContent = comment.body;
+<div>{reply}</div>                       // escaped by the framework
+// user-authored HTML: DOMPurify.sanitize(html), nothing edited afterwards
+```
+
+**Counterpoint.** "We need to render rich text." Then sanitise with a maintained library such as DOMPurify at render time and add a CSP as a second layer. A CSP alone is not a fix, because it is defence in depth.
+
+## fn-no-shell-with-input
+
+severity: block  
+concerns: security  
+applies_when: Code starts a process and some part of the command comes from a request, a file or model output.
+
+**Rule.** Start processes with the program and each argument as separate list items, and never through a shell string.
+
+**Why.** A shell reads `;`, `|` and `$()` as commands, so a filename of `a; rm -rf ~` runs. Argument arrays skip the shell. The values still need validation, since an argument beginning with `-` becomes an option; end options with `--` where the tool allows it.
+
+**FAIL**
+
+```python
+os.system("convert " + upload_name + " out.png")
+subprocess.run(f"git log {branch}", shell=True)
+```
+
+**PASS**
+
+```python
+subprocess.run(["convert", upload_path, "out.png"], check=True)   # upload_path is a server-generated name
+subprocess.run(["git", "log", branch], check=True)   # branch checked against an allowlist
+```
+
+**Counterpoint.** "We need shell features like pipes." Chain two `subprocess` calls in code, or use the library that does the job. If a shell is unavoidable, build the string only from constants.
+
+## fn-object-level-authz
+
+severity: block  
+concerns: security  
+applies_when: A handler loads, changes or deletes a record by an ID that comes from the request.
+
+**Rule.** Check that the caller may act on the specific record before returning or changing it.
+
+**Why.** A login proves who the caller is, not which records they own. Without a per-object check, changing `id=41` to `id=42` reads or edits another user's data (IDOR, also called BOLA). Random IDs only hide the problem.
+
+**FAIL**
+
+```text
+order = db.get(Order, request.args["id"])     # any logged-in user, any order
+return order.to_json()
+```
+
+**PASS**
+
+```text
+order = db.get(Order, request.args["id"])
+if order is None or order.owner_id != user.id: raise NotFound()   # same error for both
+return order.to_json()
+```
+
+**Counterpoint.** "The IDs are UUIDs, nobody can guess them." A UUID leaks through logs, links and shared screenshots, and it is not an access check. Keep it as a second layer. Scope the query itself (`WHERE owner_id = :me`) so the check cannot be forgotten on the next endpoint.
+
+## fn-password-slow-hash
+
+severity: block  
+concerns: security  
+applies_when: Code stores or verifies a user password.
+
+**Rule.** Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.
+
+**Why.** A fast hash such as SHA-256 lets an attacker with the database try billions of guesses a second. A slow, salted, memory-hard hash makes each guess cost real time. A common baseline is Argon2id with at least 19 MiB of memory and 2 iterations. Check the current numbers when you review.
+
+**FAIL**
+
+```text
+stored = hashlib.sha256(password.encode()).hexdigest()
+```
+
+**PASS**
+
+```text
+ph = argon2.PasswordHasher()            # salt and parameters stored in the hash string
+stored = ph.hash(password)
+ph.verify(stored, attempt)             # rehash when check_needs_rehash()
+```
+
+**Counterpoint.** "Argon2 is expensive at login." That cost is the defence; tune it to about a second on production hardware. Where FIPS compliance rules Argon2 out, PBKDF2-HMAC-SHA256 with a high iteration count is the accepted fallback.
 
 ## fn-reduced-motion-respected
 
@@ -511,6 +777,32 @@ func valid(s string) bool { return lower.MatchString(s) }
 
 **Counterpoint.** "The library caches patterns." Python and .NET keep recently used patterns, so a few static calls are fine. A pattern built from input or an unbounded set of patterns defeats the cache.
 
+## fn-response-fields-explicit
+
+severity: should-fix  
+concerns: security, compatibility  
+applies_when: A handler returns a stored object or entity to the client.
+
+**Rule.** Return a response type that lists each field, never the stored model or a generic dump of it.
+
+**Why.** A model gains `password_hash`, `internal_notes` or `email` and every endpoint that serialises it leaks the new field silently. Callers also start to depend on whatever is sent, so removing a field later is a breaking change. An explicit response type makes each exposed field a decision someone reviewed. The write side is [fn-no-mass-assignment](function.md#fn-no-mass-assignment).
+
+**FAIL**
+
+```text
+return jsonify(user.__dict__)
+return user_model.to_dict()          # all columns
+```
+
+**PASS**
+
+```text
+class UserOut(BaseModel): id: int; display_name: str
+return UserOut.model_validate(user)
+```
+
+**Counterpoint.** "A response type per endpoint duplicates the model." Derive it from the model with a field list. The duplication is one line per field and shows up in the diff when a field is added.
+
 ## fn-status-announced-live-region
 
 severity: should-fix  
@@ -539,3 +831,56 @@ document.body.append(note);
 ```
 
 **Counterpoint.** "Move focus to the message instead." Use that for a blocking error after submit, where the user must act. For a passive result, moving focus steals the user's place. Keep `assertive` and `role="alert"` for errors, because they interrupt speech.
+
+## fn-target-size
+
+severity: should-fix  
+concerns: accessibility, usability  
+applies_when: Styles size a button, icon button, checkbox, or link that a pointer or finger operates.
+
+**Rule.** Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.
+
+**Why.** Small, tight controls cause mis-taps for anyone with a tremor, a large thumb, or a bumpy train. A mis-tap on "Delete" next to "Edit" costs more than a mis-tap on a menu item.
+
+**FAIL**
+
+```css
+.icon-btn { width: 16px; height: 16px; margin: 0; }
+```
+
+```html
+<button class="icon-btn">✎</button><button class="icon-btn">🗑</button>
+```
+
+**PASS**
+
+```css
+.icon-btn { min-width: 24px; min-height: 24px; padding: 4px; }
+```
+
+**Counterpoint.** "Inline links and dense tables are exempt." Targets inside a sentence are, and so are controls with an equivalent control that is big enough. A row of toolbar icons is neither, and nor are the action buttons on a table row. Touch platforms often ask for 44 px or more, so treat 24 px as the floor, not the goal.
+
+## fn-tls-verify-on
+
+severity: block  
+concerns: security  
+applies_when: Code makes an outbound HTTPS, database or message-broker connection.
+
+**Rule.** Leave certificate and hostname verification on in every environment that ships.
+
+**Why.** With verification off, any on-path attacker presents a certificate and reads or changes the traffic. The flag is usually added to silence a dev-box error and then ships. Fix the trust store or pin a private CA instead.
+
+**FAIL**
+
+```text
+requests.get(url, verify=False)                  # Python
+https.request({ rejectUnauthorized: false })     // Node.js
+```
+
+**PASS**
+
+```python
+requests.get(url, verify="/etc/ssl/company-ca.pem")   # private CA added, check stays on
+```
+
+**Counterpoint.** "It is an internal network." Internal links get sniffed after one compromised host. A private CA gives you the same convenience with the check intact.

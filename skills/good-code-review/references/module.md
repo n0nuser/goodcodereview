@@ -65,6 +65,32 @@ async Task<string> Fetch(string url) => await Client.GetStringAsync(url);
 
 **Counterpoint.** "A throwaway client is simpler." For a one-off script, yes (scope it with `with`). On a server path it exhausts sockets under load.
 
+## mod-vetted-crypto-only
+
+severity: block  
+concerns: security  
+applies_when: A module encrypts or decrypts data.
+
+**Rule.** Encrypt with an authenticated mode such as AES-GCM, and never reuse a nonce under one key.
+
+**Why.** Unauthenticated modes allow silent tampering, and ECB also leaks the structure of the plaintext. Reusing a nonce under one key breaks GCM completely: it leaks the XOR of the plaintexts and the authentication key. Take the call from a maintained library and never write your own cipher. Keys belong in a KMS or secrets manager, never in source; [sys-secrets-and-errors](system.md#sys-secrets-and-errors) covers where secrets live at runtime.
+
+**FAIL**
+
+```python
+cipher = AES.new(KEY, AES.MODE_ECB)
+ct = bytes(b ^ k for b, k in zip(msg, KEY * 99))
+```
+
+**PASS**
+
+```python
+aead = AESGCM(key_from_kms)
+ct = aead.encrypt(os.urandom(12), msg, aad)      # fresh nonce per message
+```
+
+**Counterpoint.** "The library API is awkward, so a wrapper is safer." Wrap the vetted call, do not replace it. Review the wrapper only for nonce handling and key sourcing.
+
 ## mod-yagni
 
 severity: should-fix  

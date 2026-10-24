@@ -1,5 +1,33 @@
 # codebase
 
+## code-a11y-check-in-ci
+
+severity: should-fix  
+concerns: accessibility, testing  
+applies_when: The repo builds a web UI and has an automated test suite.
+
+**Rule.** Run an automated accessibility check, such as axe on rendered pages, in the automated tests, and fail the test on a violation.
+
+**Why.** A violation that nobody sees at review ships. A failing test catches the missing label or `alt` on the pull request that adds it, and run in CI on every change it blocks the merge. A JSX lint such as `jsx-a11y` catches some of the same problems earlier, in the editor. Either way it is a floor: tools find only part of the problems, so a person still tests with a keyboard.
+
+**FAIL**
+
+```js
+// e2e: axe runs, but nothing fails on what it finds
+const results = await new AxeBuilder({ page }).analyze();
+console.log(results.violations.length);
+```
+
+**PASS**
+
+```js
+// e2e: fail on any axe violation
+const results = await new AxeBuilder({ page }).analyze();
+expect(results.violations).toEqual([]);
+```
+
+**Counterpoint.** "Tools only catch a minority, and we have a backlog, so a failing check would turn every build red." The check catches the cheap failures at no review cost, which frees the manual pass for what only a person can judge. For the backlog, exclude the known violations by name (`disableRules`, `exclude`, or a fingerprint of each known issue) and fail on anything new. Remove each exclusion once it is fixed.
+
 ## code-ci-gates
 
 severity: should-fix  
@@ -100,3 +128,28 @@ k6: thresholds: { http_req_duration: ["p(95)<300"] }        # non-zero exit fail
 ```
 
 **Counterpoint.** "Benchmarks in CI are noisy and flake." They are when a gate trusts one run. Gate on a stable budget, compare repeated runs (benchstat wants 10 to 20), and keep the threshold above the noise. On a site with much room to improve, a tight budget only turns every build red, so set it at today's level and lower it later.
+
+## code-secret-scan
+
+severity: block  
+concerns: security, process  
+applies_when: Any repository, including its history, issues and pull requests.
+
+**Rule.** Scan for committed credentials, and treat any hit as leaked: revoke and replace it first.
+
+**Why.** A secret in history is readable by everyone with clone access, and forks and caches keep it after a rewrite. Rewriting history is slow and often unnecessary once the secret is dead.
+
+**FAIL**
+
+```text
+git log -p | rg 'AKIA'      # a live cloud key in an old commit; "removed it in the next commit"
+```
+
+**PASS**
+
+```text
+scanner runs on every push and covers history
+key revoked and reissued the same day; new value comes from the secret store
+```
+
+**Counterpoint.** "Scanners give false positives." Tune with an allowlist of reviewed, non-secret strings. A missed live key costs far more than a triaged alert. [sys-secrets-and-errors](system.md#sys-secrets-and-errors) covers where secrets live at runtime.

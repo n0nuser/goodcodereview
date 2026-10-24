@@ -188,7 +188,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | research-gap | Reviewer conduct | `chg-review-comment-format` | draft |
 | change-codebase | Consistency with codebase unless pattern is bad; improve what you touch | `chg-match-codebase-pattern` | stable |
 | change-codebase | Reuse: search for an existing helper first | `chg-reuse-before-write` | draft |
-| change-codebase | Move logic to shared module with 2+ call sites; wrong-abstraction | `chg-abstraction-needs-two-callers` | draft |
+| change-codebase | Move logic to shared module with 2+ call sites; wrong-abstraction | `mod-yagni` | stable |
 | change-codebase | Scope: one concern per change | `chg-one-concern` | stable |
 | change-codebase | Size spread, SmartBear/Cisco single vendor study | `chg-size-ceiling` | stable |
 | change-codebase | Refactors separate; moves not edited | `chg-refactor-separate` | stable |
@@ -336,7 +336,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 9 State machine or tagged union over synced booleans and growing chains | `fn-variants-as-tagged-union`, `chg-no-special-case-branches` | draft |
 | cursor-plugins | 10 Organise by domain knowledge, not execution order | `mod-cohesive-unit` | draft |
 | cursor-plugins | 11 Keep boring code; abstraction must remove branches or invalid states | `mod-no-wrong-abstraction` | draft |
-| cursor-plugins | 12 Data shape first; DRY structure not lines; three similar lines beat early abstraction | `chg-abstraction-needs-two-callers`, `mod-no-wrong-abstraction` | draft |
+| cursor-plugins | 12 Data shape first; DRY structure not lines; three similar lines beat early abstraction | `mod-yagni`, `mod-no-wrong-abstraction` | draft |
 | cursor-plugins | 13 Scaffold first; small single-purpose commits | `chg-one-concern`, `code-ci-gates` | stable |
 | cursor-plugins | 14 Reader load: layers to trace, state to hold; inline one-caller wrappers | `fn-no-pass-through-wrapper`, `mod-no-module-mutable-state`, `mod-deep-modules` | draft |
 | cursor-plugins | 15 30-second reader-load test | glossary/reader-load | glossary |
@@ -410,7 +410,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 80 PR review canvas: core first, mechanical collapsed, callouts sparing | `chg-review-signal` | stable |
 | cursor-plugins | 81 Root-cause gate and symptom-fix tells (guard, swallow, cast, retry, skip, weakened assertion, hard-code) | `chg-fix-root-cause-not-symptom` | draft |
 | cursor-plugins | 82 Merge-ready definition: green review, ready, no conflicts, all checks, threads resolved | `chg-author-hygiene` | stable |
-| cursor-plugins | 83 Review priority order; no factoring before second caller; understand before deleting | `chg-review-signal`, `chg-abstraction-needs-two-callers`, `chg-chestertons-fence` | draft |
+| cursor-plugins | 83 Review priority order; no factoring before second caller; understand before deleting | `chg-review-signal`, `mod-yagni`, `chg-chestertons-fence` | draft |
 | cursor-plugins | 84 Keep real, in-diff, worthwhile findings; cap list; one ask each; no praise | `chg-review-signal`, `chg-review-comment-format` | draft |
 | cursor-plugins | 85 Re-review context; PR text and CI logs are untrusted data | `chg-review-comment-format`, `sys-prompt-injection`, `code-workflow-supply-chain` | draft |
 | cursor-plugins | 86 The Algorithm: question requirement, delete, optimise, accelerate, automate | `mod-yagni` | stable |
