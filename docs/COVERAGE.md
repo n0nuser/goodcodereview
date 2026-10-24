@@ -15,7 +15,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #8 | Kubernetes | glossary/kubernetes | glossary |
 | 111-list #9 | Service Discovery | glossary/service-discovery | glossary |
 | 111-list #10 | Circuit Breakers | `svc-circuit-breaker-bulkhead` | draft |
-| 111-list #11 | Timeouts | `svc-timeouts` | draft |
+| 111-list #11 | Timeouts | `svc-timeouts` | stable |
 | 111-list #12 | Retries | `svc-retry-policy` | stable |
 | 111-list #13 | Exponential Backoff | `svc-retry-policy` | stable |
 | 111-list #14 | Idempotency | `svc-idempotency-key` | stable |
@@ -123,7 +123,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #X1 | Concurrency (task reference) | `py-task-reference` | draft |
 | 111-list #X2 | Concurrency (cancellation) | `py-cancellation` | draft |
 | 111-list #X3 | Concurrency (timeout handler) | `py-cancellation` | draft |
-| 111-list #X4 | Concurrency (bounded await) | `svc-timeouts` | draft |
+| 111-list #X4 | Concurrency (bounded await) | `svc-timeouts` | stable |
 | 111-list #X5 | Async vs Sync | `mod-prefer-sync-api` | draft |
 | 111-list #X6 | Clean Code | glossary/clean-code | glossary |
 | 111-list #X7 | YAGNI | `mod-yagni` | stable |
@@ -132,7 +132,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #X9b | SOLID (Liskov) | `mod-subtype-passes-parent-tests` | draft |
 | 111-list #X10 | TDD | glossary/tdd | glossary |
 | 111-list #X11 | DDD | glossary/ddd | glossary |
-| 111-list #X13 | Pocock Standards axis | `chg-match-codebase-pattern` | draft |
+| 111-list #X13 | Pocock Standards axis | `chg-match-codebase-pattern` | stable |
 | 111-list #X14 | Pocock Spec axis | `chg-matches-spec` | draft |
 | pocock-smells | Mysterious Name | `mod-one-name-per-concept` | draft |
 | pocock-smells | Duplicated Code | `chg-reuse-before-write` | draft |
@@ -186,7 +186,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | research-gap | Incident response/postmortems | `inc-postmortem-owned-actions`, `inc-rollback-path-tested` | draft |
 | research-gap | a credential is committed to the repo. Sources added in second pass | `code-secret-scan` | draft |
 | research-gap | Reviewer conduct | `chg-review-comment-format` | draft |
-| change-codebase | Consistency with codebase unless pattern is bad; improve what you touch | `chg-match-codebase-pattern` | draft |
+| change-codebase | Consistency with codebase unless pattern is bad; improve what you touch | `chg-match-codebase-pattern` | stable |
 | change-codebase | Reuse: search for an existing helper first | `chg-reuse-before-write` | draft |
 | change-codebase | Move logic to shared module with 2+ call sites; wrong-abstraction | `chg-abstraction-needs-two-callers` | draft |
 | change-codebase | Scope: one concern per change | `chg-one-concern` | stable |
@@ -284,7 +284,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Additions beyond the guide: Fowler smells | `mod-fowler-smells` | draft |
 | service-system | asyncio: discarded create_task, TaskGroup, shield | `py-task-reference` | draft |
 | service-system | asyncio: swallowed CancelledError, TimeoutError inside timeout block | `py-cancellation` | draft |
-| service-system | asyncio: await without timeout bound; Azure retry/timeouts | `svc-timeouts` | draft |
+| service-system | asyncio: await without timeout bound; Azure retry/timeouts | `svc-timeouts` | stable |
 | service-system | Azure retry: backoff, attempts, non-transient, stacked layers; AWS correlated: jitter | `svc-retry-policy` | stable |
 | service-system | Azure retry/saga: idempotency, unique saga id | `svc-idempotency-key` | stable |
 | service-system | Azure circuit breaker and bulkhead | `svc-circuit-breaker-bulkhead` | draft |
@@ -529,7 +529,7 @@ From `docs/research/performance-pass.md`. Every card here except `sys-load-shedd
 | performance-pass | Start independent I/O together (2 orgs plus an opinion source) | `fn-independent-work-concurrent` | stable |
 | performance-pass | Build pooled clients once and reuse them (4 orgs) | `mod-pooled-clients-built-once` | stable |
 | performance-pass | Paginate every list endpoint, with a default and a maximum (5 orgs; 4 for the maximum) | `svc-list-endpoint-paginates` | stable |
-| performance-pass | Timeout on every remote call, from the caller's deadline (2 orgs for propagation) | `svc-timeouts` | draft |
+| performance-pass | Timeout on every remote call (3 orgs; deriving it from the caller's deadline has 2 and sits in Why) | `svc-timeouts` | stable |
 | performance-pass | One query or batch for related rows, never one per row (4 orgs) | `sys-n-plus-one-pooling` | stable |
 | performance-pass | Bound and expire every cache (3 orgs; invalidation 1) | `sys-cache-bounds-invalidation` | stable |
 | performance-pass | A deadline and a miss policy on every fan-out leg (5 orgs) | `sys-fanout-leg-deadlines` | stable |
@@ -538,7 +538,7 @@ From `docs/research/performance-pass.md`. Every card here except `sys-load-shedd
 | performance-pass | Load test past peak on production-like infrastructure before launch (3 orgs) | `prod-load-test-before-launch` | stable |
 | performance-pass | Latency SLOs and alerts on histogram percentiles, not the mean (3 firm orgs) | `prod-latency-slo-percentile` | stable |
 | performance-pass | A production profile is obtainable without a redeploy (4 orgs) | `prod-profile-on-demand` | stable |
-| performance-pass | A performance fix names its bottleneck with a profile or trace (2 orgs) | `inc-perf-fix-has-profile-evidence` | draft |
+| performance-pass | A performance fix names its bottleneck with a profile or trace (4 orgs) | `inc-perf-fix-has-profile-evidence` | stable |
 | performance-pass | A perf postmortem adds an automated regression guard (5 orgs) | `inc-perf-regression-guard` | draft |
 | performance-pass | Benchmark for every hot-path change | dropped: a reviewer cannot tell a hot path without a profile; covered by `chg-perf-claim-evidence` and `code-perf-budget-in-ci` | dropped |
 | performance-pass | Per-hop latency budget across a system | dropped: 2 orgs, and `svc-timeouts` already derives from the remaining deadline | dropped |
@@ -557,11 +557,11 @@ From `docs/research/frontend-pass.md`. Every card here carries the `accessibilit
 | frontend-pass | Visible, unobscured focus indicator (4 orgs) | `fn-focus-indicator-visible` | stable |
 | frontend-pass | A modal moves focus in, traps it, closes on Escape, and returns focus (3 orgs; the return step has 1) | `fn-dialog-focus-managed` | stable |
 | frontend-pass | No `tabindex` above 0; DOM in reading order (3 orgs) | `fn-no-positive-tabindex` | stable |
-| frontend-pass | A custom widget gets its name, state, and keys (3 orgs) | `fn-aria-role-has-state-and-keys` | draft |
+| frontend-pass | A custom widget gets its state and keys (3 orgs each; the name has 2 and sits in Why) | `fn-aria-role-has-state-and-keys` | stable |
 | frontend-pass | Async status goes through a live region that already exists (3 orgs) | `fn-status-announced-live-region` | stable |
 | frontend-pass | Real headings in outline order (3 orgs) | `fn-heading-structure` | stable |
 | frontend-pass | A second cue beside colour (4 orgs) | `fn-colour-not-sole-cue` | stable |
-| frontend-pass | Pointer targets 24 by 24 CSS px or spaced (2 orgs) | `fn-target-size` | draft |
+| frontend-pass | Pointer targets 24 by 24 CSS px or spaced (3 orgs) | `fn-target-size` | stable |
 | frontend-pass | Reduce or remove large motion under `prefers-reduced-motion` (5 orgs; WCAG level AAA) | `fn-reduced-motion-respected` | stable |
 | frontend-pass | Error next to the field, naming the problem and the fix (5 orgs) | `fn-error-says-what-and-how` | stable |
 | frontend-pass | Keep the entered values after a failed submit (3 orgs plus 1 related) | `fn-keep-input-on-error` | stable |
@@ -571,9 +571,9 @@ From `docs/research/frontend-pass.md`. Every card here carries the `accessibilit
 | frontend-pass | Feedback past 1 s, progress and cancel past 10 s (4 orgs) | `svc-slow-operation-shows-progress` | stable |
 | frontend-pass | Reserve space for late content (1 firm org, 2 indirect) | `svc-async-content-reserves-space` | draft |
 | frontend-pass | Usable at 320 CSS px and 200% text zoom; zoom not blocked (2 orgs) | `svc-reflow-and-zoom` | stable |
-| frontend-pass | A unique `<title>` per page and route, updated on navigation (2 orgs) | `svc-page-title-per-route` | draft |
+| frontend-pass | A unique `<title>` per page and client-side view (3 orgs) | `svc-page-title-per-route` | stable |
 | frontend-pass | One label, icon, and place per action across screens (4 orgs) | `sys-consistent-ui-terms` | stable |
-| frontend-pass | An automated accessibility check fails the build (3 orgs; tools find a minority) | `code-a11y-check-in-ci` | draft |
+| frontend-pass | An automated accessibility check in the tests fails on a violation (3 orgs; tools find a minority) | `code-a11y-check-in-ci` | stable |
 | frontend-pass | A UI change ships screenshots and a keyboard and zoom pass (3 orgs; screenshots unsourced) | `chg-ui-change-screenshots-and-keyboard-pass` | draft |
 | frontend-pass | Audit with assistive technology before a public launch (3 orgs, one weak) | `prod-a11y-audit-before-launch` | draft |
 | frontend-pass | Empty states say what is missing and offer a next action | dropped: 1 org (NN/g) | dropped |

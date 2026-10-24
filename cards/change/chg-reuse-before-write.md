@@ -7,6 +7,7 @@ status: draft
 lang: core
 applies_when: The change adds a helper, util, type or constant.
 tool_gate: Clone-detection in CI (jscpd, PMD CPD, or similar) can flag near-duplicate blocks.
+note: draft after stable pass 5 - only the kernel coding style backs "use the existing helper"; the Orosz post has no reuse check, and the Ousterhout summary and refactoring.guru are secondary and back the Why (duplication drifts), not the search; no source describes searching first
 borrowed_from:
   - https://blog.pragmaticengineer.com/good-code-reviews-better-code-reviews/
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2

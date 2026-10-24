@@ -3,11 +3,11 @@ id: fn-aria-role-has-state-and-keys
 level: function
 tags: [accessibility, frontend, aria, keyboard]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: A custom widget sets `role` or an `aria-*` attribute because no native element fits.
 tool_gate: ESLint `jsx-a11y/role-has-required-aria-props`; axe `aria-required-attr`. Neither checks that the keys work.
-note: state clause: W3C, Mozilla, Deque, Heydon Pickering; keys clause: W3C, Mozilla, Google web.dev; name clause: W3C and Deque (both map to WCAG 4.1.2); tool-gate rule names checked against the jsx-a11y README and the axe rule list
+note: state clause: W3C, Mozilla, Deque, Heydon Pickering; keys clause: W3C, Mozilla, Google web.dev; the accessible name has 2 orgs (W3C, Deque, both WCAG 4.1.2) and sits in Why; tool-gate rule names checked against the jsx-a11y README and the axe rule list
 borrowed_from:
   - https://www.w3.org/WAI/ARIA/apg/practices/read-me-first/
   - https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html
@@ -19,9 +19,9 @@ borrowed_from:
   - https://web.dev/learn/accessibility/aria-html
 ---
 
-**Rule.** When a native element cannot do the job, give the custom widget its name, its state attribute, and the keys its role promises.
+**Rule.** When a native element cannot do the job, give the custom widget the state attribute and the keys its role promises.
 
-**Why.** A role only tells assistive technology what the element is. It adds no keyboard behaviour, and it says nothing about state. A `role="switch"` with no `aria-checked` is announced as a switch of unknown state. Wrong ARIA is worse than none, because it gives a screen-reader user a false picture.
+**Why.** A role only tells assistive technology what the element is. It adds no keyboard behaviour, and it says nothing about state. A `role="switch"` with no `aria-checked` is announced as a switch of unknown state. Wrong ARIA is worse than none, because it gives a screen-reader user a false picture. The widget also needs an accessible name, from its text or a label, or it is announced by role alone.
 
 **FAIL**
 
