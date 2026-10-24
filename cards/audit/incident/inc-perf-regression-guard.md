@@ -7,6 +7,7 @@ status: draft
 lang: core
 applies_when: A postmortem covers a performance regression or a resource-exhaustion incident.
 tool_gate: none
+note: draft after stable pass 5 - "an automated check catches performance regressions" has 5 orgs but is stable code-perf-budget-in-ci's Rule; "make it a postmortem action" has 2 (Google SRE, Cloudflare); splitting leaves a duplicate plus a 2-org half
 borrowed_from:
   - https://sre.google/sre-book/postmortem-culture/
   - https://web.dev/articles/lighthouse-ci

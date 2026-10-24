@@ -7,6 +7,7 @@ status: draft
 lang: core
 applies_when: The change extracts shared logic, adds a shared module, or moves logic into another layer.
 tool_gate: none
+note: draft after stable pass 5 - no source states "two" (Rule of Three says three); the sourced remainder (no abstraction for callers that do not exist yet; Google, Fowler, Dodds) is stable mod-yagni's Rule, which also allows extracting non-trivial logic for one caller, so the two cards conflict; merge into mod-yagni or mod-no-wrong-abstraction, or delete
 borrowed_from:
   - https://kentcdodds.com/blog/aha-programming
   - https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to

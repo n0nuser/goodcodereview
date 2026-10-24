@@ -7,7 +7,7 @@ status: draft
 lang: core
 applies_when: The change adds or rewrites a SQL query against a table that grows with users or time.
 tool_gate: none
-note: PostgreSQL, MySQL, and SQLite docs back "the database shows the plan and index use"; attaching the plan to the change is this card's own practice
+note: PostgreSQL, MySQL, and SQLite docs describe the plan, not a review practice; "check the plan before it ships" has 2 orgs (AWS, GitLab); "attach it to the change" has 1 (GitLab); "production-sized data" has 2 (GitLab, PostgreSQL)
 borrowed_from:
   - https://www.postgresql.org/docs/current/using-explain.html
   - https://dev.mysql.com/doc/refman/8.4/en/using-explain.html

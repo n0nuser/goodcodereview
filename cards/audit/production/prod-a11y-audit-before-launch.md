@@ -7,7 +7,7 @@ status: draft
 lang: core
 applies_when: A new UI service or a major redesign is about to open to the public.
 tool_gate: none; a launch checklist item that links the audit report.
-note: 3 orgs for audit with assistive technology and a report (GOV.UK, W3C, Deque); only GOV.UK ties it to before public launch; Section508.gov weak; the GOV.UK duty is a UK legal duty, so this card names WCAG 2.2 AA as the standard and claims no law elsewhere
+note: draft after stable pass 5 - 3 orgs for an audit with assistive technology (GOV.UK, W3C, Deque), but only GOV.UK ties it to before a public launch, which is the card's point; Section508.gov weak; the GOV.UK duty is a UK legal duty, so this card names WCAG 2.2 AA as the standard and claims no law elsewhere
 borrowed_from:
   - https://www.gov.uk/service-manual/helping-people-to-use-your-service/making-your-service-accessible-an-introduction
   - https://www.w3.org/WAI/test-evaluate/preliminary/
@@ -37,4 +37,4 @@ Launch checklist
     Report: docs/audit-2026-10.pdf. Open issues: 2, both minor, owner and date set.
 ```
 
-**Counterpoint.** "We have no budget for an external audit." GOV.UK accepts a department auditor. Cut scope instead of the audit: audit the main task flows first, and say in the report which parts are not covered.
+**Counterpoint.** "We have no budget for an external audit." The auditor can be in-house, if they are trained and did not build the service. Cut scope instead of the audit: audit the main task flows first, and say in the report which parts are not covered.
