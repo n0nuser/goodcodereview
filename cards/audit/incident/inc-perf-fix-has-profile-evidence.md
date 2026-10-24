@@ -13,6 +13,8 @@ borrowed_from:
   - https://sre.google/sre-book/effective-troubleshooting/
   - https://www.brendangregg.com/usemethod.html
   - https://www.brendangregg.com/flamegraphs.html
+  - https://docs.gitlab.com/development/performance/
+  - https://learn.microsoft.com/en-us/azure/well-architected/performance-efficiency/optimize-code-infrastructure
 ---
 
 **Rule.** Tie the performance fix to evidence that names the bottleneck (a profile, a trace, or a USE check), and show the same measurement after the fix.

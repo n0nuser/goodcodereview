@@ -12,6 +12,8 @@ borrowed_from:
   - https://www.postgresql.org/docs/current/using-explain.html
   - https://dev.mysql.com/doc/refman/8.4/en/using-explain.html
   - https://www.sqlite.org/eqp.html
+  - https://docs.gitlab.com/development/database_review/
+  - https://aws.amazon.com/blogs/database/how-postgresql-processes-queries-and-how-to-analyze-them/
 ---
 
 **Rule.** Attach the query plan for each new or rewritten query on a growing table, taken on production-sized data.
