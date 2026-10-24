@@ -35,4 +35,4 @@ def test_token_expires():
 # run with: pytest --disable-socket
 ```
 
-**Counterpoint.** "Real time catches real bugs." It catches flakes. Test time-dependent logic with a frozen clock and cover real-network behaviour in a separate, opt-in suite.
+**Counterpoint.** "Real time catches real bugs." It catches flakes. Test time-dependent logic with a frozen clock, and cover real-network behaviour in a separate, opt-in suite.

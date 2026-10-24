@@ -2,4 +2,4 @@
 
 Copies of data kept to restore after loss.
 
-**Why a reviewer cares.** A backup is proven only by a restore test.
+**Why a reviewer cares.** Only a restore test proves a backup.

@@ -14,7 +14,7 @@ borrowed_from:
 
 **Rule.** Pass untrusted data to queries as bound parameters, never by string concatenation.
 
-**Why.** Concatenated input is injection (OWASP A05:2025). Related: endpoints should be authenticated and authorized by default, since opt-in checks eventually miss one (A01, A07).
+**Why.** Concatenated input is injection (OWASP A05:2025). Endpoints should also be authenticated and authorized by default, since opt-in checks eventually miss one (A01, A07).
 
 **FAIL**
 

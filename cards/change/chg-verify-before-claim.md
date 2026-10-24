@@ -32,4 +32,4 @@ Author: "repro: script X failed 3/10 runs; after fix 0/200. Test added."
 Reviewer checked out the branch and reran it.
 ```
 
-**Counterpoint.** Running everything is slow. Scale with risk: a rename needs no repro; a race, a bug fix or a UI change does. See it run, do not only read it.
+**Counterpoint.** Running everything is slow. Scale with risk: a rename needs no repro, but a race, a bug fix, or a UI change does. See it run, do not only read it.

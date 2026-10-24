@@ -13,7 +13,7 @@ borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
 ---
 
-**Rule.** New or changed behaviour arrives in the same change as a test that fails if the behaviour breaks; a code-only change needs a stated reason.
+**Rule.** Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks; a code-only change needs a stated reason.
 
 **Why.** "Tests later" mostly means never, and the reviewer cannot tell from reading whether the code does what the author intended.
 
@@ -31,4 +31,4 @@ PR adds discount.py change and test_discount.py with the edge cases
 (zero quantity, stacked coupons); the test was seen failing before the fix.
 ```
 
-**Counterpoint.** "Holding a good change for tests blocks progress." Approve changes that improve the code even if imperfect, but the test is part of the change, not polish. Untestable cases exist (config, pure docs, emergency fixes), and the rule allows them with a written reason and a ticket for the test.
+**Counterpoint.** "Holding a good change for tests blocks progress." Approve changes that improve the code even when imperfect, but the test is part of the change, not polish. Untestable cases exist (config, pure docs, emergency fixes), and the rule allows them with a written reason and a ticket for the test.

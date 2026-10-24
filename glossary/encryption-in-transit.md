@@ -1,5 +1,5 @@
-# Encryption in Transit
+# Encryption in transit
 
-Encrypting data as it crosses a network.
+Encrypting data while it crosses a network.
 
-**Why a reviewer cares.** Usually delivered by TLS.
+**Why a reviewer cares.** TLS usually provides it.

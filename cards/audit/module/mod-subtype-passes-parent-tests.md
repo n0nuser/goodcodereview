@@ -15,9 +15,9 @@ borrowed_from:
   - https://www.hillelwayne.com/post/lsp/
 ---
 
-**Rule.** A subtype must pass its parent's tests: accept every input the parent accepts, promise at least what it promises, keep its invariants.
+**Rule.** Make a subtype pass its parent's tests: accept every input the parent accepts, promise at least what it promises, and keep its invariants.
 
-**Why.** Callers hold the parent type. A subtype may weaken preconditions and strengthen postconditions, never the reverse, and must keep the parent's invariants; the parent's black-box tests are the cheapest way to check that. A subclass that rejects valid input or weakens a result breaks them, and the failure appears far from the subclass.
+**Why.** Callers hold the parent type. A subtype may weaken preconditions and strengthen postconditions, never the reverse, and must keep the parent's invariants. The parent's black-box tests are the cheapest way to check that. A subclass that rejects valid input or weakens a result breaks them, and the failure appears far from the subclass.
 
 **FAIL**
 
@@ -34,4 +34,4 @@ class ReadOnlyFile(Readable): ...      # separate type; File(Readable, Writable)
 # or: the parent's black-box tests run unchanged against ReadOnlyFile
 ```
 
-**Counterpoint.** "Inheritance is for sharing code." Then share it by composition. A subclass that ignores most of what it inherits ([[mod-fowler-smells]]) is a sign the hierarchy is wrong.
+**Counterpoint.** "Inheritance is for sharing code." Then share it by composition. A subclass that ignores most of what it inherits ([[mod-fowler-smells]]) is a sign that the hierarchy is wrong.

@@ -15,7 +15,7 @@ borrowed_from:
 
 **Rule.** Generate an SBOM and scan dependencies for known vulnerabilities in CI.
 
-**Why.** Without an inventory, a disclosed vulnerability cannot be answered quickly. Team policy: also fail the build on a dependency whose licence is not on the approved list.
+**Why.** Without an inventory, a team cannot answer a disclosed vulnerability quickly. Team policy: also fail the build on a dependency whose licence is not on the approved list.
 
 **FAIL**
 
@@ -31,4 +31,4 @@ CI: generate SBOM, run scanner, run licence check against allowlist;
 release artifacts attach the SBOM.
 ```
 
-**Counterpoint.** SBOMs and scanners create noise that nobody triages. Tune severity thresholds and assign an owner, since an ignored report is worse than none. The licence list is team policy, not a universal rule; drop it if your team has no licence constraints.
+**Counterpoint.** SBOMs and scanners create noise that nobody triages. Tune severity thresholds and assign an owner, since an ignored report is worse than none. The licence list is team policy, not a universal rule. Drop it if your team has no licence constraints.

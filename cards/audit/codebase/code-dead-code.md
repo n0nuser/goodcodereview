@@ -13,9 +13,9 @@ borrowed_from:
   - https://blog.palantir.com/code-review-best-practices-19e02780015f
 ---
 
-**Rule.** Remove unreferenced functions, commented-out code, expired flags and orphaned files; history keeps them.
+**Rule.** Remove unreferenced functions, commented-out code, expired flags, and orphaned files; history keeps them.
 
-**Why.** Dead code costs reading time, misleads searches and gets "fixed" and tested for no benefit.
+**Why.** Dead code costs reading time, misleads searches, and gets "fixed" and tested for no benefit.
 
 **FAIL**
 
@@ -31,4 +31,4 @@ Code deleted; git log -S shows where it went. Detector reports 0 unused symbols
 or each is allowlisted with a reason.
 ```
 
-**Counterpoint.** Code may be called by reflection, plugins or external users. Answer: check with the detector's config and a grep of consumers; for public API use deprecation first (see `chg-expand-contract`).
+**Counterpoint.** Code may be called by reflection, plugins, or external users. Check with the detector's config and a grep of consumers. For public API, deprecate first (see `chg-expand-contract`).

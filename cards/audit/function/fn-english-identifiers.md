@@ -16,7 +16,7 @@ borrowed_from:
 
 **Rule.** Write identifiers and comments in English, unless the project policy names another language.
 
-**Why.** Mixed languages split search, break naming conventions and exclude readers. Tools, libraries and error messages the code touches are English already.
+**Why.** Mixed languages split search, break naming conventions, and exclude readers. The tools, libraries, and error messages the code touches are already in English.
 
 **FAIL**
 
@@ -30,4 +30,4 @@ def calcular_precio_total(carrito): ...   # next to total_price() and cart.items
 def calculate_total_price(cart): ...
 ```
 
-**Counterpoint.** "Domain terms have no English word." Keep the local term, once, in a glossary and comment it ([[mod-one-name-per-concept]]). Python itself allows non-ASCII identifiers so that teams can name things in their own language (PEP 3131). If the code will never leave one language group, a team may choose that; write the choice down so the check can pass.
+**Counterpoint.** "Domain terms have no English word." Keep the local term, once, in a glossary, and comment it ([[mod-one-name-per-concept]]). Python itself allows non-ASCII identifiers so that teams can name things in their own language (PEP 3131). If the code will never leave one language group, a team may choose that language. Write the choice down so the check can pass.

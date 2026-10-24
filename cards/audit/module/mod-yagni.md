@@ -13,7 +13,7 @@ borrowed_from:
   - https://henrikwarne.com/2024/01/10/tidy-first/
 ---
 
-**Rule.** Add an abstraction only when the logic is reused, non-trivial, or clutters the main flow. Do not build for a need that does not exist yet.
+**Rule.** Add an abstraction only when the logic is reused, non-trivial, or clutters the main flow; do not build for a need that does not exist yet.
 
 **Why.** Speculative flexibility costs reading time every day and is usually the wrong shape when the need arrives. Reviewers cannot verify a use that does not exist.
 
@@ -30,4 +30,4 @@ def send(msg, retries=3, backoff=None, hook=None): ...   # nobody passes these
 def send_welcome_email(user): ...
 ```
 
-**Counterpoint.** "But we will surely need it." Then add it when you do, in a change that has the real second caller to shape it. Optimising for easy change means simple code, not built-in flexibility. Trivial single-use logic stays inline. The cost of waiting is low; the cost of the wrong guess is not.
+**Counterpoint.** "But we will surely need it." Then add it when you do, in a change that has the real second caller to shape it. Optimising for easy change means simple code, not built-in flexibility. Trivial single-use logic stays inline. The cost of waiting is low, and the cost of the wrong guess is not.

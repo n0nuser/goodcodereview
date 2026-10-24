@@ -15,7 +15,7 @@ borrowed_from:
 
 **Rule.** Retry only transient errors, with capped attempts and jittered exponential backoff.
 
-**Why.** Immediate, unbounded or synchronized retries turn a brief fault into a load spike on the struggling dependency. Retry at one layer only: three layers of three attempts is nine calls per user request. Make retried writes safe with [[svc-idempotency-key]].
+**Why.** Immediate, unbounded, or synchronized retries turn a brief fault into a load spike on the struggling dependency. Retry at one layer only: three layers of three attempts is nine calls per user request. Make retried writes safe with [[svc-idempotency-key]].
 
 **FAIL**
 
@@ -37,4 +37,4 @@ for i in range(3):
 # retry at one layer only: the client's own retries are off
 ```
 
-**Counterpoint.** "Retries make us more reliable." Only for transient faults and only within a budget; past that they hurt, which is why the Azure guidance also says to cancel on non-transient errors. A retry budget (retries capped as a share of traffic) is a further team convention, not required here.
+**Counterpoint.** "Retries make us more reliable." Only for transient faults and only within a budget. Past that they hurt, which is why the Azure guidance also says to cancel on non-transient errors. A retry budget (retries capped as a share of traffic) is a further team convention that this card does not require.

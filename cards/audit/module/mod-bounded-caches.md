@@ -13,7 +13,7 @@ note: from the author's own Python review guide
 
 **Rule.** Bound every per-key cache with LRU or TTL.
 
-**Why.** An unbounded per-session cache is a slow memory leak that appears only in production under real traffic. Evict it when its owner ends; that includes dicts on injected objects and module globals.
+**Why.** An unbounded per-session cache is a slow memory leak that appears only in production under real traffic. Evict it when its owner ends, including dicts on injected objects and module globals.
 
 **FAIL**
 

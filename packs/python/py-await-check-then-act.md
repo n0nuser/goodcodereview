@@ -11,7 +11,7 @@ borrowed_from: []
 note: from the author's own Python review guide
 ---
 
-**Rule.** A Python lock covers one process only: when more than one worker or process can run, make check-then-act an atomic DB statement or constraint.
+**Rule.** When more than one worker or process can run, make check-then-act an atomic DB statement or constraint, because a Python lock covers one process only.
 
 **Why.** Core rule: [[fn-no-check-then-act-across-await]]. An `asyncio.Lock` does serialise tasks inside one event loop, but a second worker or host shares no lock, so the guard has to live where the state lives.
 
@@ -36,4 +36,4 @@ if result.rowcount == 0:
     raise InsufficientFunds(acct)
 ```
 
-**Counterpoint.** "asyncio is single-threaded, so a lock or no lock is enough." Within one process an `asyncio.Lock` is correct, and without it every await is a point where another task runs. The rule applies once deployment can run more than one worker, which is the normal case.
+**Counterpoint.** "asyncio is single-threaded, so a lock or no lock is enough." Within one process, an `asyncio.Lock` is correct, and without it every await is a point where another task runs. The rule applies once deployment can run more than one worker, which is the normal case.

@@ -14,7 +14,7 @@ borrowed_from:
 
 **Rule.** Put a new case behind its own function or type; do not add a one-off branch to a shared flow.
 
-**Why.** Each special case in a shared path is a condition every later reader and every other feature must reason about. They accumulate until nobody can say what the path does.
+**Why.** Each special case in a shared path is a condition that every later reader and every other feature must reason about. The cases accumulate until nobody can say what the path does.
 
 **FAIL**
 
@@ -32,4 +32,4 @@ def checkout(cart, user, pricing=standard_pricing):
     total = pricing(cart, user)       # acme's rule lives in its own pricing function
 ```
 
-**Counterpoint.** "It is one line; an abstraction is overkill." One is fine. The second and third special case are the signal; see [[chg-abstraction-needs-two-callers]] for when not to extract yet. Temporary branches need an owner and a removal date ([[chg-flag-owner-retirement]]).
+**Counterpoint.** "It is one line; an abstraction is overkill." One is fine. The second and third special case are the signal. See [[chg-abstraction-needs-two-callers]] for when not to extract yet. Temporary branches need an owner and a removal date ([[chg-flag-owner-retirement]]).

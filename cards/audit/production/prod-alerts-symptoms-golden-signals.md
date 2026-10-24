@@ -13,7 +13,7 @@ borrowed_from:
 
 **Rule.** Page on user-visible symptoms, not causes.
 
-**Why.** Also cover latency, traffic, errors and saturation, track latency as a distribution, and delete alerts that never fire. Cause-based pages (CPU high) wake people without user impact; a mean hides the slow tail; failed-request latency mixed with successes hides both.
+**Why.** Cause-based pages (CPU high) wake people without user impact. A mean hides the slow tail, and failed-request latency mixed with successes hides both. Also cover latency, traffic, errors, and saturation, track latency as a distribution, and delete alerts that never fire.
 
 **FAIL**
 
@@ -29,4 +29,4 @@ alert: error ratio > X over 5m -> page
 latency p50/p99 histogram, errors split from successes
 ```
 
-**Counterpoint.** Cause alerts help diagnosis. Keep them as tickets or dashboard hints, not pages. Note the Honeycomb wide-event camp argues against pre-set metrics; the SRE book favors simple metric-based paging, so this card does not ban events, only cause-paging.
+**Counterpoint.** Cause alerts help diagnosis. Keep them as tickets or dashboard hints, not pages. The Honeycomb wide-event camp argues against pre-set metrics, while the SRE book favors simple metric-based paging, so this card does not ban events, only cause-paging.

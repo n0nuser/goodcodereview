@@ -32,4 +32,4 @@ PR notes: "pattern X leaks DB errors, see TICKET-123 proposing a standard".
 Code the PR touches anyway is improved in passing.
 ```
 
-**Counterpoint.** "Consistency preserves bugs." Google treats consistency only as a tie-breaker and puts code health first, so a reviewer must not demand matching code that makes things worse. Exception: when the nearby pattern is bad, ship in the local style, file a ticket, and propose the new standard in its own change, improving what you touch. Departing silently is the failure.
+**Counterpoint.** "Consistency preserves bugs." Google treats consistency only as a tie-breaker and puts code health first, so a reviewer must not demand matching code that makes things worse. When the nearby pattern is bad, ship in the local style, file a ticket, and propose the new standard in its own change, improving what you touch. Departing silently is the failure.

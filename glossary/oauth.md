@@ -1,5 +1,5 @@
 # OAuth
 
-A protocol for delegated access using tokens instead of passwords.
+A protocol for delegated access that uses tokens instead of passwords.
 
-**Why a reviewer cares.** Scope and token handling are the review surface.
+**Why a reviewer cares.** Review the scopes and the token handling.

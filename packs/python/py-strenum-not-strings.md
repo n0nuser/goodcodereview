@@ -30,4 +30,4 @@ class Mode(StrEnum):
 if resp.status_code == HTTPStatus.NOT_FOUND or mode == Mode.FAST: ...
 ```
 
-**Counterpoint.** "An enum is heavy for two values." It is one class, and it makes the type checker guard every caller. `StrEnum` needs Python 3.11+; on older versions use `class Mode(str, Enum)`.
+**Counterpoint.** "An enum is heavy for two values." It is one class, and it makes the type checker guard every caller. `StrEnum` needs Python 3.11 or later; on older versions, use `class Mode(str, Enum)`.

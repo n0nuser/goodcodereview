@@ -12,9 +12,9 @@ borrowed_from:
   - https://github.com/johnousterhout/aposd-vs-clean-code/blob/main/README.md
 ---
 
-**Rule.** Prefer a small interface that hides real work. Flag modules whose interface is nearly as complex as their implementation.
+**Rule.** Prefer a small interface that hides real work, and flag modules whose interface is nearly as complex as their implementation.
 
-**Why.** A shallow module charges the reader the cost of learning an interface and returns nothing; the complexity moves, it does not shrink.
+**Why.** A shallow module charges the reader the cost of learning an interface and returns nothing. The complexity moves; it does not shrink.
 
 **FAIL**
 
@@ -30,4 +30,4 @@ class Reader:
 def read_lines(path, encoding="utf-8") -> list[str]: ...
 ```
 
-**Counterpoint.** Ousterhout and Martin disagree: Martin favours many very small functions, Ousterhout says that yields shallow, entangled pieces. Evidence is thin on both sides. Ask the local question: does the split help a reader here?
+**Counterpoint.** Ousterhout and Martin disagree. Martin favours many very small functions, and Ousterhout says that yields shallow, entangled pieces. Evidence is thin on both sides. Ask the local question: does the split help a reader here?

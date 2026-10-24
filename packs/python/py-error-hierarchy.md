@@ -13,7 +13,7 @@ note: from the author's own Python review guide
 
 **Rule.** Give each package one base exception, with the specific ones in an `errors` module.
 
-**Why.** A base class gives callers one safe catch for the package. Inline `class X(Exception)` next to a raise scatters the hierarchy. Chain with `raise ... from err` ([[fn-propagate-dont-swallow]]).
+**Why.** A base class gives callers one safe catch for the package. An inline `class X(Exception)` next to a raise scatters the hierarchy. Chain with `raise ... from err` ([[fn-propagate-dont-swallow]]).
 
 **FAIL**
 

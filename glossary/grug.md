@@ -1,5 +1,5 @@
 # Grug
 
-A folk essay arguing for simple code and distrust of complexity.
+A folk essay that argues for simple code and distrust of complexity.
 
-**Why a reviewer cares.** Stub: not covered by the research notes; add a source before citing.
+**Why a reviewer cares.** Stub. The research notes do not cover it. Add a source before citing it.

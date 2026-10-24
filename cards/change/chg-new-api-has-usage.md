@@ -13,7 +13,7 @@ borrowed_from:
   - https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to
 ---
 
-**Rule.** New API ships with at least one real caller in the same change; fail speculative interfaces and options nothing uses.
+**Rule.** Ship new API with at least one real caller in the same change, and fail speculative interfaces and options that nothing uses.
 
 **Why.** Unused API has no proof it fits real needs, yet once published it must be kept. Interfaces designed before a consumer exists usually get the shape wrong. See also [[mod-yagni]].
 
@@ -30,4 +30,4 @@ borrowed_from:
 + export_csv(rows)   # called by the report job in the same PR
 ```
 
-**Counterpoint.** Library authors must ship API ahead of users. Answer: then the usage is an example or test in the change, and the surface stays minimal; the Go guidance (declare interfaces where consumed, return concrete types) points the same way.
+**Counterpoint.** Library authors must ship API ahead of users. Then the usage is an example or test in the change, and the surface stays minimal. The Go guidance (declare interfaces where consumed, return concrete types) points the same way.

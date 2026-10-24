@@ -14,7 +14,7 @@ borrowed_from:
   - https://rebels.cs.uwaterloo.ca/papers/msr2014_mcintosh.pdf
 ---
 
-**Rule.** The default branch requires review and passing build, tests, lint and type checks before merge; nothing mechanical is left to reviewer vigilance.
+**Rule.** Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
 
 **Why.** Any rule that depends on someone remembering will be skipped. Components where changes merge unreviewed or without discussion tend to ship more post-release defects.
 
@@ -30,4 +30,4 @@ Default branch: no protection. Force-push allowed. CI optional.
 Protected main: 1 approval + required checks (build, test, lint, types).
 ```
 
-**Counterpoint.** Gates slow small teams and flaky tests train people to override. Answer: keep gates few and reliable, fix flakes instead of overriding them, and let the gates own the mechanical checks so review time goes to design.
+**Counterpoint.** Gates slow small teams, and flaky tests train people to override. Keep gates few and reliable, fix flakes instead of overriding them, and let the gates own the mechanical checks so review time goes to design.

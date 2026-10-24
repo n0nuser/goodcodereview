@@ -13,7 +13,7 @@ borrowed_from:
 
 **Rule.** Validate model output deterministically before code acts on it.
 
-**Why.** Also keep credentials in code, not in the model, and require human approval for high-risk actions. Injected instructions in retrieved text can steer tool calls. OWASP says no fool-proof prevention exists and RAG or fine-tuning do not fully fix it, so the goal is limiting impact.
+**Why.** Injected instructions in retrieved text can steer tool calls. OWASP says no fool-proof prevention exists and RAG or fine-tuning do not fully fix it, so the goal is limiting impact. Also keep credentials in code, not in the model, and require human approval for high-risk actions.
 
 **FAIL**
 
@@ -28,4 +28,4 @@ cmd = parse_strict(llm(...)); if cmd not in ALLOWED: reject
 destructive actions -> human confirm ; untrusted text labelled in the prompt
 ```
 
-**Counterpoint.** "Guardrail prompts block it." They reduce risk but are not a boundary; the permission model has to hold even when the model is fooled.
+**Counterpoint.** "Guardrail prompts block it." They reduce risk but are not a boundary. The permission model has to hold even when the model is fooled.

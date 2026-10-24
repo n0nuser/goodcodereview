@@ -1,5 +1,5 @@
-# Cost Optimization
+# Cost optimization
 
-Reducing spend for the same outcome.
+Cutting spend without changing the outcome.
 
-**Why a reviewer cares.** Reviewers weigh cost against reliability; no source in research.
+**Why a reviewer cares.** Reviewers weigh cost against reliability. The research has no source for this entry.

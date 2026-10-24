@@ -29,4 +29,4 @@ service.py (logic), prompts.py (the big literal), billing.py ...
 only_one.py       # folder inlined
 ```
 
-**Counterpoint.** "Splitting scatters related code." True when the split is by layer or time rather than by concept; Ousterhout warns about temporal decomposition. Split by owned knowledge, not by when things run.
+**Counterpoint.** "Splitting scatters related code." True when the split is by layer or time rather than by concept. Ousterhout warns about temporal decomposition. Split by owned knowledge, not by when things run.

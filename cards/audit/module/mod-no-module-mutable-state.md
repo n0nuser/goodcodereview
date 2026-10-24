@@ -13,7 +13,7 @@ note: from the author's own Python review guide
 
 **Rule.** Keep no mutable state at module level.
 
-**Why.** Hidden global state leaks between tests, between requests and between threads, and its order of mutation is unreadable. A frozen, load-once constant such as settings is the exception; so is nothing used as a singleton to dodge injection.
+**Why.** Hidden global state leaks between tests, between requests, and between threads, and its order of mutation is unreadable. A frozen, load-once constant such as settings is the exception. A singleton used to dodge injection is not.
 
 **FAIL**
 

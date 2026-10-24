@@ -11,7 +11,7 @@ borrowed_from:
   - https://aws.amazon.com/builders-library/leader-election-in-distributed-systems/
 ---
 
-**Rule.** Leader work must be safe if two leaders overlap: make it idempotent, check the lease before acting, and stop when renewal fails.
+**Rule.** Make leader work safe if two leaders overlap: make it idempotent, check the lease before acting, and stop when renewal fails.
 
 **Why.** Lease-based election cannot guarantee exactly one leader. Non-idempotent work during overlap duplicates side effects.
 
@@ -29,4 +29,4 @@ for inv in pending: if lease.valid(): send_once(inv.id)   # keyed, idempotent
 
 **See also.** [[sys-lock-fencing]], [[svc-idempotency-key]].
 
-**Counterpoint.** AWS recommends first asking whether you need a leader at all (idempotent APIs or optimistic locking often suffice); hardening the leader is the second choice, not the first.
+**Counterpoint.** AWS recommends first asking whether you need a leader at all (idempotent APIs or optimistic locking often suffice). Hardening the leader is the second choice, not the first.

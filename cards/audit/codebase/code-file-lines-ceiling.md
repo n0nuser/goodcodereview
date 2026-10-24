@@ -13,9 +13,9 @@ borrowed_from:
   - https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to
 ---
 
-**Rule.** No hand-written source file exceeds about 1,000 lines without a listed exception; larger files are split by knowledge owned, not by execution order.
+**Rule.** Keep every hand-written source file under about 1,000 lines unless it has a listed exception, and split larger files by knowledge owned, not by execution order.
 
-**Why.** Huge files hide unrelated decisions, attract merge conflicts and cannot be understood in one read.
+**Why.** Huge files hide unrelated decisions, attract merge conflicts, and cannot be understood in one read.
 
 **FAIL**
 
@@ -31,4 +31,4 @@ $ wc -l src/*.py | sort -n | tail -2
 No hand-written file over 1,000 lines; generated files listed in an allowlist.
 ```
 
-**Counterpoint.** Ousterhout favours deep modules and a long file can be coherent; splitting for its own sake adds shallow pieces. 1,000 lines is a trigger for a look, not a verdict; the fix is to separate decisions (his information-leakage and temporal-decomposition flags).
+**Counterpoint.** Ousterhout favours deep modules and a long file can be coherent. Splitting for its own sake adds shallow pieces. 1,000 lines is a trigger for a look, not a verdict. The fix is to separate decisions (his information-leakage and temporal-decomposition flags).

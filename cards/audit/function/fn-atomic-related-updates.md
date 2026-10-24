@@ -31,4 +31,4 @@ with db.transaction():
     db.insert_many(items)
 ```
 
-**Counterpoint.** "The writes go to different systems; no transaction spans them." Then order the steps so a partial failure is harmless and retryable, or use an outbox or saga ([[svc-saga-steps]]). Do not leave it to chance. Check-then-write races are in [[fn-no-check-then-act-across-await]].
+**Counterpoint.** "The writes go to different systems; no transaction spans them." Then order the steps so a partial failure is harmless and retryable, or use an outbox or saga ([[svc-saga-steps]]). Do not leave it to chance. [[fn-no-check-then-act-across-await]] covers check-then-write races.

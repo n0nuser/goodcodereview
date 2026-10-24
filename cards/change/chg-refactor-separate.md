@@ -14,7 +14,7 @@ borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
 ---
 
-**Rule.** Put refactors, renames and reformatting in their own commit or PR, apart from behaviour changes.
+**Rule.** Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
 
 **Why.** A reviewer can verify a pure refactor by "tests unchanged" and a pure move by diff. Mixed in with logic, neither check works and a real bug hides in noise. Never edit moved code in the same patch as the move.
 
@@ -32,4 +32,4 @@ commit 1: move parser (git detects rename, 0 content change)
 commit 2: fix off-by-one + test
 ```
 
-**Counterpoint.** Separate PRs cost review round trips, and untangling a mixed branch after the fact is work. Separate commits in one PR are an acceptable compromise; the ideal is separate PRs. A tidy that only exists to enable the behaviour change in hand may ship with it if commits stay apart.
+**Counterpoint.** Separate PRs cost review round trips, and untangling a mixed branch after the fact is work. Separate commits in one PR are an acceptable compromise, but separate PRs are ideal. A tidy that exists only to enable the behaviour change in hand may ship with it if the commits stay apart.

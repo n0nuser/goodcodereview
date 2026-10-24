@@ -28,4 +28,4 @@ def render(doc, *, as_pdf=False, for_email=False, legacy=False, skip_header=Fals
 render_pdf(doc), render_email(doc)   # small, similar, independent
 ```
 
-**Counterpoint.** Sources disagree: Ousterhout lists repetition as a red flag (one fact in many places); the AHA/Sandi Metz line prefers duplication to a wrong abstraction. They fit together: dedupe knowledge (a rule, a format, a constant), wait on shape, and extract only when the second real caller shows what is shared.
+**Counterpoint.** Sources disagree. Ousterhout lists repetition as a red flag (one fact in many places), and the AHA/Sandi Metz line prefers duplication to a wrong abstraction. They fit together: dedupe knowledge (a rule, a format, a constant), wait on shape, and extract only when the second real caller shows what is shared.

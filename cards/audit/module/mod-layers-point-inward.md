@@ -5,7 +5,7 @@ tags: [architecture]
 severity: should-fix
 status: draft
 lang: core
-applies_when: The codebase has separable transport, logic and outbound-boundary code.
+applies_when: The codebase has separable transport, logic, and outbound-boundary code.
 tool_gate: import-linter or similar
 borrowed_from: []
 note: from the author's own Python review guide
@@ -29,4 +29,4 @@ controller -> service -> repository      (imports only along this arrow)
 service takes plain domain types
 ```
 
-**Counterpoint.** "Three layers is ceremony for a CRUD app." For a ten-endpoint app, yes, fold them. The check applies once you have real logic; it asks only that dependencies not point outward, not that you build all three folders.
+**Counterpoint.** "Three layers is ceremony for a CRUD app." For a ten-endpoint app, yes; fold them. The check applies once you have real logic. It asks only that dependencies not point outward, not that you build all three folders.

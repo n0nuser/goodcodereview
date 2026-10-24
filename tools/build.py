@@ -120,9 +120,9 @@ def main():
     (SITE / "404.html").write_text(page("Not found", '<p><a href="index.html">Back to the start</a></p>'))
     links = lambda ls: "".join(f'<a href="{l}.html">{l}</a>' for l in ls)
     (SITE / "index.html").write_text(page("Good Code Review", (
-        "<p>What to check when reviewing code. Every check ends in PASS, FAIL or N/A with file:line evidence.</p>"
+        "<p>A checklist for reviewing code. Every check ends in PASS, FAIL, or N/A with file:line evidence.</p>"
         f'<div class="doors"><div><a href="change.html"><strong>Review a change</strong><br>A diff or PR.</a></div>'
-        f'<div><strong>Audit what exists</strong>{links(AUDIT)}</div></div>'
+        f'<div><strong>Audit existing code</strong>{links(AUDIT)}</div></div>'
         "<p>Packs: " + (" ".join(f'<a href="pack-{p}.html">{p}</a>' for p in packs) or "none") + "</p>")))
 
     stable = [c for c in cards if c[1]["status"] == "stable"]
@@ -130,12 +130,12 @@ def main():
     for f in (SKILL / "references").glob("*.md"):
         f.unlink()
     sk = ["---", "name: good-code-review",
-          "description: Review code against stable cards, from a diff up to an incident. Use when asked to review, audit or check code.",
+          "description: Review code against stable cards, from a diff up to an incident. Use when asked to review, audit, or check code.",
           "---", "", "# Good Code Review", "", "## Routing", "", "| Input | Entry point |", "|---|---|"]
     sk += [f"| {i} | {lv} |" for i, lv in ROUTES]
-    sk += ["", "## Verdict format", "", "Per check: `PASS`, `FAIL` or `N/A`, with `file:line` evidence.",
-           "A `FAIL` carries the card severity: block, should-fix or discuss.", "",
-           "Full text per level: `references/<level>.md`.", ""]
+    sk += ["", "## Verdict format", "", "Each check gets `PASS`, `FAIL`, or `N/A`, with `file:line` evidence.",
+           "A `FAIL` carries the card's severity: `block`, `should-fix`, or `discuss`.", "",
+           "The full text for each level is in `references/<level>.md`.", ""]
     for lv in LEVELS:
         cs = [c for c in stable if c[1]["level"] == lv]
         if not cs:

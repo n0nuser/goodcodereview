@@ -1,7 +1,7 @@
 # Deadlocks
 
-Two or more actors each waiting on a lock the other holds.
+Two or more actors that each wait on a lock another one holds.
 
-**Why a reviewer cares.** Timeouts on lock acquisition turn a hang into an error.
+**Why a reviewer cares.** A timeout on lock acquisition turns a hang into an error.
 
 **Checks.** `sys-migration-lock-timeout`

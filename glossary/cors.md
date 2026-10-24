@@ -1,5 +1,5 @@
 # CORS
 
-Browser rules on which origins may call an API.
+Browser rules for which origins may call an API.
 
-**Why a reviewer cares.** Overly broad allow-lists weaken browser protections.
+**Why a reviewer cares.** An allow-list that is too broad weakens browser protections.

@@ -7,7 +7,7 @@ applies_when: Every change submitted for review.
 
 **Rule.** Self-review the diff and write the description before requesting review.
 
-**Why.** Reviewer time spent on stray debug lines, red builds or a missing "why" is wasted and teaches reviewers to skim. The description gives the reason, the impact and how it was verified; CI is green, or a failing job is shown to fail on the base branch too.
+**Why.** Reviewer time spent on stray debug lines, red builds, or a missing "why" is wasted and teaches reviewers to skim. The description gives the reason, the impact, and how the author verified the change. CI is green, or a failing job is shown to fail on the base branch too.
 
 **FAIL**
 
@@ -23,14 +23,14 @@ Body: why (bug link), what changed, test plan, risk. CI green.
 Author left inline notes on the two non-obvious hunks.
 ```
 
-**Counterpoint.** Templates breed boilerplate no one reads. Answer: the check is substance, not headings; a one-line change needs one line of reason. Performance claims need numbers.
+**Counterpoint.** Templates breed boilerplate that no one reads. The check is for substance, not headings: a one-line change needs one line of reason. Performance claims need numbers.
 
 ## chg-breaking-change-taxonomy
 
 severity: block  
 applies_when: The change alters anything a caller can observe, documented or not.
 
-**Rule.** Classify the change against what callers can see: signature, return shape, error type, ordering, timing, defaults, side effects. Any observable difference is breaking until a consumer check says otherwise.
+**Rule.** Treat any observable difference in signature, return shape, error type, ordering, timing, defaults, or side effects as breaking until a consumer check says otherwise.
 
 **Why.** With enough users, every observable behaviour is depended on, so "undocumented" does not mean "safe to change".
 
@@ -48,7 +48,7 @@ PR states: "ordering changes, known consumers A and B checked,
 flag orders_newest_first defaults off for one release".
 ```
 
-**Counterpoint.** Treating everything as breaking freezes the code. Answer: weigh by known consumers and blast radius, and use staged rollout rather than a ban. Optional parameters with defaults are the safe way to add.
+**Counterpoint.** Treating everything as breaking freezes the code. Weigh each change by known consumers and blast radius, and use a staged rollout instead of a ban. Optional parameters with defaults are the safe way to add.
 
 ## chg-expand-contract
 
@@ -73,14 +73,14 @@ ALTER TABLE users RENAME COLUMN name TO full_name;  -- app v1 still reads name
 -- change 3 (later): drop name
 ```
 
-**Counterpoint.** Three steps are slow for internal code. Exception, stated once: when producer and consumers deploy atomically from one repo, or the table is small enough to alter in one safe step, a one-step change is fine; say so in the description. Batching and release steps for databases are in [[sys-migration-expand-contract]].
+**Counterpoint.** Three steps are slow for internal code. Exception: when producer and consumers deploy atomically from one repo, or the table is small enough to alter in one safe step, a one-step change is fine. Say so in the description. [[sys-migration-expand-contract]] covers batching and release steps for databases.
 
 ## chg-one-concern
 
 severity: should-fix  
 applies_when: Every change.
 
-**Rule.** A change does one logical thing; if the description needs "and" between unrelated outcomes, split it.
+**Rule.** Make each change do one logical thing; if the description needs "and" between unrelated outcomes, split it.
 
 **Why.** Reviewers can only judge intent and risk of a single concern. Mixed changes hide the risky part, cannot be reverted alone, and break bisect.
 
@@ -97,14 +97,14 @@ fixed an unrelated typo in the auth module.
 PR 1: dependency bump.  PR 2: rename (no logic change).  PR 3: export button.
 ```
 
-**Counterpoint.** Splitting adds overhead, and stacked diffs need tooling and rebasing pain. Answer: the rule is one concern, not a line count: as small as possible, but no smaller. A single concern that is legitimately large (a generated migration) is fine if the description says so.
+**Counterpoint.** Splitting adds overhead, and stacked diffs need tooling and cost rebasing pain. The rule is one concern, not a line count: as small as possible, but no smaller. A single concern that is legitimately large (a generated migration) is fine if the description says so.
 
 ## chg-refactor-separate
 
 severity: should-fix  
 applies_when: The change both restructures or reformats code and changes behaviour, or moves code between files.
 
-**Rule.** Put refactors, renames and reformatting in their own commit or PR, apart from behaviour changes.
+**Rule.** Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
 
 **Why.** A reviewer can verify a pure refactor by "tests unchanged" and a pure move by diff. Mixed in with logic, neither check works and a real bug hides in noise. Never edit moved code in the same patch as the move.
 
@@ -122,7 +122,7 @@ commit 1: move parser (git detects rename, 0 content change)
 commit 2: fix off-by-one + test
 ```
 
-**Counterpoint.** Separate PRs cost review round trips, and untangling a mixed branch after the fact is work. Separate commits in one PR are an acceptable compromise; the ideal is separate PRs. A tidy that only exists to enable the behaviour change in hand may ship with it if commits stay apart.
+**Counterpoint.** Separate PRs cost review round trips, and untangling a mixed branch after the fact is work. Separate commits in one PR are an acceptable compromise, but separate PRs are ideal. A tidy that exists only to enable the behaviour change in hand may ship with it if the commits stay apart.
 
 ## chg-review-signal
 
@@ -131,7 +131,7 @@ applies_when: A reviewer is deciding what to comment on.
 
 **Rule.** Do not comment on what a tool enforces or on taste with no written rule; spend comments on a few high-conviction findings, and if there are many, talk to the author.
 
-**Why.** Noise buries the real defects and trains authors to dismiss review. A rubber-stamp approval is as harmful: an approval must reflect real reading.
+**Why.** Noise buries the real defects and trains authors to dismiss review. A rubber-stamp approval is just as harmful: an approval must reflect real reading.
 
 **FAIL**
 
@@ -147,14 +147,14 @@ the null dereference on line 90 never mentioned.
 one nit. Formatting left to the formatter, which CI enforces.
 ```
 
-**Counterpoint.** Limiting comments risks missing issues. The cap applies to opinion, not to defects; every real defect is still raised. Style is settled by the written style guide or the formatter, and repeated nits mean a missing gate.
+**Counterpoint.** Limiting comments risks missing issues. The cap applies to opinion, not to defects, so every real defect is still raised. The written style guide or the formatter settles style, and repeated nits mean a missing gate.
 
 ## chg-size-ceiling
 
 severity: discuss  
 applies_when: The diff exceeds roughly 400 changed lines or about 20 files and is not generated or a pure move.
 
-**Rule.** Past about 400 changed lines or about 20 files, split the change or say in the description why not; aim for about 200.
+**Rule.** Split a change past about 400 changed lines or about 20 files, or say in the description why not; aim for about 200.
 
 **Why.** Review usefulness falls as changes grow, so big diffs get skimmed and approved on trust.
 
@@ -170,14 +170,14 @@ applies_when: The diff exceeds roughly 400 changed lines or about 20 files and i
 Stack of 6 changes of 150-300 lines, each builds and passes tests alone.
 ```
 
-**Counterpoint.** "Line counts are arbitrary." The exact numbers are rough; the direction is not: larger changes get fewer useful comments per file and are approved on trust. Treat 400 as a prompt to split or explain, not a hard gate, and exclude generated code and pure moves.
+**Counterpoint.** "Line counts are arbitrary." The exact numbers are rough, but the direction is not: larger changes get fewer useful comments per file and are approved on trust. Treat 400 as a prompt to split or explain, not a hard gate, and exclude generated code and pure moves.
 
 ## chg-tests-ship-with-change
 
 severity: block  
 applies_when: The change alters behaviour of non-trivial code.
 
-**Rule.** New or changed behaviour arrives in the same change as a test that fails if the behaviour breaks; a code-only change needs a stated reason.
+**Rule.** Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks; a code-only change needs a stated reason.
 
 **Why.** "Tests later" mostly means never, and the reviewer cannot tell from reading whether the code does what the author intended.
 
@@ -195,7 +195,7 @@ PR adds discount.py change and test_discount.py with the edge cases
 (zero quantity, stacked coupons); the test was seen failing before the fix.
 ```
 
-**Counterpoint.** "Holding a good change for tests blocks progress." Approve changes that improve the code even if imperfect, but the test is part of the change, not polish. Untestable cases exist (config, pure docs, emergency fixes), and the rule allows them with a written reason and a ticket for the test.
+**Counterpoint.** "Holding a good change for tests blocks progress." Approve changes that improve the code even when imperfect, but the test is part of the change, not polish. Untestable cases exist (config, pure docs, emergency fixes), and the rule allows them with a written reason and a ticket for the test.
 
 ## chg-verify-before-claim
 
@@ -220,4 +220,4 @@ Author: "repro: script X failed 3/10 runs; after fix 0/200. Test added."
 Reviewer checked out the branch and reran it.
 ```
 
-**Counterpoint.** Running everything is slow. Scale with risk: a rename needs no repro; a race, a bug fix or a UI change does. See it run, do not only read it.
+**Counterpoint.** Running everything is slow. Scale with risk: a rename needs no repro, but a race, a bug fix, or a UI change does. See it run, do not only read it.

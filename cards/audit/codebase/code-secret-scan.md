@@ -29,4 +29,4 @@ scanner runs on every push and covers history
 key revoked and reissued the same day; new value comes from the secret store
 ```
 
-**Counterpoint.** "Scanners give false positives." Tune with an allowlist of reviewed, non-secret strings; a missed live key costs far more than a triaged alert. Where secrets live at runtime is in [[sys-secrets-and-errors]].
+**Counterpoint.** "Scanners give false positives." Tune with an allowlist of reviewed, non-secret strings. A missed live key costs far more than a triaged alert. [[sys-secrets-and-errors]] covers where secrets live at runtime.

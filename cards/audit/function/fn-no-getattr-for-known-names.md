@@ -11,9 +11,9 @@ borrowed_from: []
 note: from the author's own Python review guide
 ---
 
-**Rule.** Use plain field access. Reserve dynamic access for genuinely dynamic names.
+**Rule.** Use plain field access, and reserve dynamic access for genuinely dynamic names.
 
-**Why.** Dynamic access defeats rename tools, type checking and grep. A rename misses it and fails at runtime.
+**Why.** Dynamic access defeats rename tools, type checking, and grep. A rename misses it, and it fails at runtime.
 
 **FAIL**
 
@@ -27,4 +27,4 @@ value = getattr(order, "total")
 value = order.total
 ```
 
-**Counterpoint.** "I loop over field names." Fine when the set of names is the data (a mapping from column names, a serializer). If the names are fixed, unroll the loop.
+**Counterpoint.** "I loop over field names." That is fine when the set of names is the data (a mapping from column names, a serializer). If the names are fixed, unroll the loop.

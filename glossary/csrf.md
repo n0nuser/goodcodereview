@@ -1,5 +1,5 @@
 # CSRF
 
-Tricking a logged-in browser into sending an unwanted request.
+Tricking a logged-in browser into sending a request the user did not intend.
 
-**Why a reviewer cares.** State-changing endpoints need a defence; reviewers look for one.
+**Why a reviewer cares.** State-changing endpoints need a defence. Look for one.

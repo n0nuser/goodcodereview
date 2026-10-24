@@ -16,7 +16,7 @@ borrowed_from:
 
 **Rule.** Give each review comment one finding and a severity label (block, should-fix, nit).
 
-**Why.** Phrase comments as a question or a fact, not a verdict on the person. Bundled or unlabelled comments leave the author unable to tell what blocks merge, and blame-shaped wording stalls the discussion.
+**Why.** Bundled or unlabelled comments leave the author unable to tell what blocks merge, and wording that blames the person stalls the discussion. Phrase comments as a question or a fact, not a verdict on the person.
 
 **FAIL**
 
@@ -31,4 +31,4 @@ borrowed_from:
 "[nit] could this be named `retry_count`?"
 ```
 
-**Counterpoint.** Labels add ceremony for tiny reviews. Answer: two labels are enough, and unlabelled comments default to non-blocking so the author is never guessing. Slack stresses people and tone over mechanics and Palantir bans absolute wording; Google's tool is "Nit:" only. Take the common core.
+**Counterpoint.** Labels add ceremony for tiny reviews. Two labels are enough, and unlabelled comments default to non-blocking so the author is never guessing. Slack stresses people and tone over mechanics, and Palantir bans absolute wording. Google's tool is "Nit:" only. Take the common core.

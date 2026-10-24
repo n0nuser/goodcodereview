@@ -11,7 +11,7 @@ borrowed_from: []
 note: from the author's own Python review guide
 ---
 
-**Rule.** Inject boundary collaborators through the constructor. Do not construct them inside or reach for a global.
+**Rule.** Inject boundary collaborators through the constructor; do not construct them inside or reach for a global.
 
 **Why.** Hard-wired collaborators force tests to patch module internals and tie the class to one environment.
 
@@ -29,4 +29,4 @@ class Billing:
     def __init__(self, gateway): self._gateway = gateway
 ```
 
-**Counterpoint.** "Injection everywhere is enterprise bloat." Inject the boundary (DB, HTTP, cloud, clock) only. Internal collaborators stay plain and real in tests.
+**Counterpoint.** "Injection everywhere is enterprise bloat." Inject only the boundary (DB, HTTP, cloud, clock). Internal collaborators stay plain and real in tests.

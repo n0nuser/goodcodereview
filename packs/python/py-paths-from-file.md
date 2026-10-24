@@ -13,7 +13,7 @@ note: from the author's own Python review guide
 
 **Rule.** Resolve paths from `__file__`, not the current working directory.
 
-**Why.** A cwd-relative path works from the repo root and fails from CI, an IDE or an installed package.
+**Why.** A cwd-relative path works from the repo root and fails from CI, an IDE, or an installed package.
 
 **FAIL**
 
@@ -27,4 +27,4 @@ Path("tests/fixtures/data.json")
 Path(__file__).parent / "fixtures" / "data.json"
 ```
 
-**Counterpoint.** "Tests always run from the root." Until someone runs one test from its directory, or an installer moves it.
+**Counterpoint.** "Tests always run from the root." That holds until someone runs one test from its directory, or an installer moves it.

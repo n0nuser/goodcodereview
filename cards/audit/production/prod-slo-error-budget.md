@@ -13,7 +13,7 @@ borrowed_from: []
 
 **Rule.** Define an SLO with an indicator and window, and use its remaining error budget to gate risky releases.
 
-**Why.** Without a stated target nobody can say if reliability work or a freeze is warranted; every incident is argued from feelings.
+**Why.** Without a stated target, nobody can say whether reliability work or a freeze is warranted, and every incident is argued from feelings.
 
 **FAIL**
 
@@ -27,4 +27,4 @@ borrowed_from: []
 SLO: 99.9% of requests succeed in 300ms over 30d ; budget burn alert; freeze at 0
 ```
 
-**Counterpoint.** "SLOs are bureaucracy for small teams." A one-line target is enough; skip it for internal tools with no users.
+**Counterpoint.** "SLOs are bureaucracy for small teams." A one-line target is enough. Skip it for internal tools with no users.

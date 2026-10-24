@@ -13,7 +13,7 @@ borrowed_from:
 
 **Rule.** Give a class real state or a collaborator; otherwise write a module function.
 
-**Why.** A static-only class is a module with extra typing. A one-implementation `Protocol` is a speculative interface ([[mod-yagni]]). A `Protocol` needs two or more real implementations swapped at runtime; see [[mod-yagni]].
+**Why.** A static-only class is a module with extra typing. A `Protocol` with one implementation is a speculative interface. A `Protocol` needs two or more real implementations swapped at runtime; see [[mod-yagni]].
 
 **FAIL**
 
@@ -31,4 +31,4 @@ dates.py:  def parse(s): ...
 # use the concrete class until a second real impl exists
 ```
 
-**Counterpoint.** "Protocols make testing easy." A fake of a concrete class in tests works with duck typing too. The Go review guide takes the same stance: declare interfaces where consumed, avoid speculative ones.
+**Counterpoint.** "Protocols make testing easy." A fake of a concrete class in tests works with duck typing too. The Go review guide takes the same stance: declare interfaces where consumed, and avoid speculative ones.

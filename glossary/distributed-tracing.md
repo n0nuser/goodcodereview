@@ -1,5 +1,5 @@
-# Distributed Tracing
+# Distributed tracing
 
-Following one request across services with a shared trace id.
+Following one request across services by a shared trace id.
 
-**Why a reviewer cares.** Trace ids on every wide event let reviewers connect symptoms to causes.
+**Why a reviewer cares.** A trace id on every wide event lets reviewers connect symptoms to causes.

@@ -31,4 +31,4 @@ SET lock_timeout = '5s';
 ALTER TABLE orders ADD COLUMN note text;   -- retry on timeout
 ```
 
-**Counterpoint.** "Set it globally." The Postgres docs advise against setting it in postgresql.conf because it affects every session; scope it to the migration. Also, with a non-zero `statement_timeout`, a larger `lock_timeout` has no effect.
+**Counterpoint.** "Set it globally." The Postgres docs advise against setting it in postgresql.conf because it affects every session, so scope it to the migration. Also, with a non-zero `statement_timeout`, a larger `lock_timeout` has no effect.

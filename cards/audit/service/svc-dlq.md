@@ -29,4 +29,4 @@ queue: orders  redrive -> orders-dlq (maxReceiveCount=5)
 alarm: orders-dlq depth > 0 ; alarm: age of oldest message
 ```
 
-**Counterpoint.** "A DLQ just hides failures." Only if nobody watches it; the alarm and a replay path are part of the rule.
+**Counterpoint.** "A DLQ just hides failures." Only if nobody watches it. The alarm and a replay path are part of the rule.

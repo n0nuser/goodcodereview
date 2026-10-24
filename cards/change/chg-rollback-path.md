@@ -15,7 +15,7 @@ borrowed_from:
 
 **Rule.** State in the description how to undo the change.
 
-**Why.** When a release goes wrong, the time to find the way back is before shipping. Irreversible steps (dropped data, sent messages) need an explicit decision. The author has checked that route is possible. See [[inc-rollback-path-tested]] for drilling it and [[prod-canary-staged-rollout]] for abort rules.
+**Why.** When a release goes wrong, the time to find the way back is before shipping. Irreversible steps (dropped data, sent messages) need an explicit decision. The author has checked that the route is possible. See [[inc-rollback-path-tested]] for drilling it and [[prod-canary-staged-rollout]] for abort rules.
 
 **FAIL**
 
@@ -31,4 +31,4 @@ Rollback: revert PR; column kept for one release, dropped in a later PR.
 Behaviour behind a flag; canary at 5% with an abort rule.
 ```
 
-**Counterpoint.** "We can always roll forward." Fine for stateless code, but not after data is destroyed or a client has cached the new contract. The check is cheap for reversible changes (one line) and only bites on irreversible ones.
+**Counterpoint.** "We can always roll forward." Fine for stateless code, but not after data is destroyed or a client has cached the new contract. The check is cheap for reversible changes (one line) and bites only on irreversible ones.

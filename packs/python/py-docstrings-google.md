@@ -13,7 +13,7 @@ borrowed_from:
 
 **Rule.** Write a Google-style docstring only when it adds what the signature cannot say.
 
-**Why.** Forced docstrings restate the signature and rot. The ones that matter state units, side effects and what callers may rely on. Presence is never forced; the gate checks format only.
+**Why.** Forced docstrings restate the signature and rot. The ones that matter state units, side effects, and what callers may rely on. The gate never forces presence; it checks format only.
 
 **FAIL**
 
@@ -29,4 +29,4 @@ def charge(order):
     """Charge the card once; safe to retry with the same order id (idempotent)."""
 ```
 
-**Counterpoint.** "Every public function needs a docstring." Ousterhout would sympathise (missing docs cost more than wrong ones), and Martin would not. The compromise here: require content that adds information, not presence.
+**Counterpoint.** "Every public function needs a docstring." Ousterhout would sympathise (missing docs cost more than wrong ones), and Martin would not. The compromise here is to require content that adds information, not presence.

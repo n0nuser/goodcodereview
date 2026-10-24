@@ -14,7 +14,7 @@ borrowed_from:
   - https://blog.palantir.com/code-review-best-practices-19e02780015f
 ---
 
-**Rule.** A change does one logical thing; if the description needs "and" between unrelated outcomes, split it.
+**Rule.** Make each change do one logical thing; if the description needs "and" between unrelated outcomes, split it.
 
 **Why.** Reviewers can only judge intent and risk of a single concern. Mixed changes hide the risky part, cannot be reverted alone, and break bisect.
 
@@ -31,4 +31,4 @@ fixed an unrelated typo in the auth module.
 PR 1: dependency bump.  PR 2: rename (no logic change).  PR 3: export button.
 ```
 
-**Counterpoint.** Splitting adds overhead, and stacked diffs need tooling and rebasing pain. Answer: the rule is one concern, not a line count: as small as possible, but no smaller. A single concern that is legitimately large (a generated migration) is fine if the description says so.
+**Counterpoint.** Splitting adds overhead, and stacked diffs need tooling and cost rebasing pain. The rule is one concern, not a line count: as small as possible, but no smaller. A single concern that is legitimately large (a generated migration) is fine if the description says so.

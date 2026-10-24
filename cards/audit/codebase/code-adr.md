@@ -13,9 +13,9 @@ borrowed_from:
   - https://blog.pragmaticengineer.com/good-code-reviews-better-code-reviews/
 ---
 
-**Rule.** Significant choices (datastore, framework, deviation from a pattern) have a short written record stating the problem, alternatives considered and cost of the chosen option.
+**Rule.** Keep a short written record for significant choices (datastore, framework, deviation from a pattern) that states the problem, the alternatives considered, and the cost of the chosen option.
 
-**Why.** Without it, the next reader reverses a decision blindly or cargo-cults it. Listing only the chosen design's flaws is not a trade-off analysis.
+**Why.** Without a record, the next reader reverses a decision blindly or cargo-cults it. Listing only the chosen design's flaws is not a trade-off analysis.
 
 **FAIL**
 

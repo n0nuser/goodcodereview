@@ -11,9 +11,9 @@ tool_gate: Schema diff check (e.g. OpenAPI breaking-change linter) in CI.
 borrowed_from: []
 ---
 
-**Rule.** Change an API only in backward-compatible ways: add fields, never rename, remove or retype them.
+**Rule.** Change an API only in backward-compatible ways: add fields, and never rename, remove, or retype them.
 
-**Why.** Callers deploy on their own schedule; a removed field breaks them without warning. Likewise paginate every list endpoint with a cursor: an unpaginated list grows until one request exhausts memory or the timeout.
+**Why.** Callers deploy on their own schedule, and a removed field breaks them without warning. Likewise, paginate every list endpoint with a cursor: an unpaginated list grows until one request exhausts memory or the timeout.
 
 **FAIL**
 
@@ -29,4 +29,4 @@ GET /orders?limit=100&cursor=abc -> {items, next_cursor}
 response: add "amount_total", keep "total", mark it deprecated
 ```
 
-**Counterpoint.** "Internal API, we control every caller." Then say how the change is released in lockstep; otherwise the rolling deploy itself runs two versions at once.
+**Counterpoint.** "Internal API, we control every caller." Then say how the change is released in lockstep. Otherwise the rolling deploy itself runs two versions at once.

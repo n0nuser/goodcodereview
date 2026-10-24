@@ -13,7 +13,7 @@ borrowed_from:
 
 **Rule.** Write comments that remain true without outside context: no "see the PR", "currently", "not yet", ticket ids or codenames.
 
-**Why.** The PR vanishes from memory and the "currently" never gets updated. Comments with expired context are lies by the next release.
+**Why.** The PR vanishes from memory and the "currently" never gets updated. A comment whose context has expired is a lie by the next release.
 
 **FAIL**
 

@@ -16,7 +16,7 @@ borrowed_from:
 
 **Rule.** Do not comment on what a tool enforces or on taste with no written rule; spend comments on a few high-conviction findings, and if there are many, talk to the author.
 
-**Why.** Noise buries the real defects and trains authors to dismiss review. A rubber-stamp approval is as harmful: an approval must reflect real reading.
+**Why.** Noise buries the real defects and trains authors to dismiss review. A rubber-stamp approval is just as harmful: an approval must reflect real reading.
 
 **FAIL**
 
@@ -32,4 +32,4 @@ the null dereference on line 90 never mentioned.
 one nit. Formatting left to the formatter, which CI enforces.
 ```
 
-**Counterpoint.** Limiting comments risks missing issues. The cap applies to opinion, not to defects; every real defect is still raised. Style is settled by the written style guide or the formatter, and repeated nits mean a missing gate.
+**Counterpoint.** Limiting comments risks missing issues. The cap applies to opinion, not to defects, so every real defect is still raised. The written style guide or the formatter settles style, and repeated nits mean a missing gate.

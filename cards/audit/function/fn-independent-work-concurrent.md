@@ -31,4 +31,4 @@ user, orders, prefs = await asyncio.gather(
     get_user(uid), get_orders(uid), get_prefs(uid))
 ```
 
-**Counterpoint.** "Parallel calls load the dependency harder and complicate errors." Cap fan-out with a semaphore or pool, and use a task group so one failure cancels the rest ([[py-cancellation]]). A deliberate order for rate limits or ordering is a reason; write it down.
+**Counterpoint.** "Parallel calls load the dependency harder and complicate errors." Cap fan-out with a semaphore or pool, and use a task group so one failure cancels the rest ([[py-cancellation]]). A deliberate order, for rate limits or ordering, is a valid reason. Write it down.

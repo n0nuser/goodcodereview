@@ -1,4 +1,4 @@
-# DDoS Protection
+# DDoS protection
 
 Absorbing or filtering floods of traffic.
 

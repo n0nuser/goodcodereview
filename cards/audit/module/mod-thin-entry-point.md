@@ -5,13 +5,13 @@ tags: [architecture]
 severity: should-fix
 status: draft
 lang: core
-applies_when: The application has a main module, entry point or bootstrap file.
+applies_when: The application has a main module, an entry point, or a bootstrap file.
 tool_gate: none
 borrowed_from: []
 note: from the author's own Python review guide
 ---
 
-**Rule.** Keep the entry module to wiring: bootstrap, configuration, lifespan. No business logic.
+**Rule.** Keep the entry module to wiring (bootstrap, configuration, lifespan) and put no business logic in it.
 
 **Why.** Logic in the entry module cannot be imported by tests or other entry points without starting the app.
 

@@ -16,7 +16,7 @@ borrowed_from:
 
 **Rule.** Pin every CI action to a full commit SHA.
 
-**Why.** The pipeline holds secrets and publish rights, so a compromised action or injected input owns the artifact. Also give workflows least-privilege tokens, keep untrusted event data out of `run:` and out of `pull_request_target` checkouts, and attach build provenance to releases. Dependency pins live in [[code-dependency-pinning]] and the inventory in [[code-dependency-licence-sbom]].
+**Why.** The pipeline holds secrets and publish rights, so a compromised action or injected input owns the artifact. Also give workflows least-privilege tokens, keep untrusted event data out of `run:` and out of `pull_request_target` checkouts, and attach build provenance to releases. [[code-dependency-pinning]] covers dependency pins, and [[code-dependency-licence-sbom]] covers the inventory.
 
 **FAIL**
 
@@ -39,4 +39,4 @@ steps:
     env: { TITLE: ${{ github.event.pull_request.title }} }
 ```
 
-**Counterpoint.** SHA pinning blocks automatic fixes and adds update churn. Let an update bot propose SHA bumps. SLSA levels are a scale: L1 provenance exists, L2 signed from a hosted platform, L3 hardened build platform.
+**Counterpoint.** SHA pinning blocks automatic fixes and adds update churn. Let an update bot propose SHA bumps. SLSA levels are a scale: L1 means provenance exists, L2 means signed from a hosted platform, and L3 means a hardened build platform.

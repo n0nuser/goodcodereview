@@ -13,7 +13,7 @@ note: from the author's own Python review guide
 
 **Rule.** Validate request data with a pydantic model, not hand-written checks.
 
-**Why.** Core rule: [[mod-validate-at-boundary-once]]. Fields stay `snake_case` in Python; for camelCase JSON use an alias generator and dump by alias.
+**Why.** Core rule: [[mod-validate-at-boundary-once]]. Fields stay `snake_case` in Python. For camelCase JSON, use an alias generator and dump by alias.
 
 **FAIL**
 

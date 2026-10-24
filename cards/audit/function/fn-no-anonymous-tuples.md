@@ -13,7 +13,7 @@ note: from the author's own Python review guide
 
 **Rule.** Return a small named record, not a positional tuple, once the fields differ in meaning.
 
-**Why.** `code, message = parse_error(e)` works until someone swaps the order. Nothing fails; the wrong value lands in the wrong place.
+**Why.** `code, message = parse_error(e)` works until someone swaps the order. Nothing fails, and the wrong value lands in the wrong place.
 
 **FAIL**
 
@@ -31,4 +31,4 @@ class ParsedError:
     message: str
 ```
 
-**Counterpoint.** "A pair is obviously (a, b)." Only when both elements are the same kind (`min`, `max` of one quantity, a coordinate). When two strings sit in different roles, the position is the only documentation, and it is wrong the day someone adds a third field.
+**Counterpoint.** "A pair is obviously (a, b)." That holds only when both elements are the same kind (`min` and `max` of one quantity, a coordinate). When two strings play different roles, the position is the only documentation, and it is wrong the day someone adds a third field.

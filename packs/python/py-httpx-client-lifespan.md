@@ -33,4 +33,4 @@ async def lifespan(app):
         yield
 ```
 
-**Counterpoint.** "httpx defaults are fine." They are (5s), but set the value explicitly so a library change cannot silently change behaviour.
+**Counterpoint.** "httpx defaults are fine." They are (5s), but set the value explicitly so that a library change cannot silently change behaviour.

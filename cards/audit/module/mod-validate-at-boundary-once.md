@@ -11,9 +11,9 @@ borrowed_from: []
 note: from the author's own Python review guide
 ---
 
-**Rule.** Validate at the boundary, once, with a schema or model. Inner layers receive typed, already-valid data.
+**Rule.** Validate at the boundary, once, with a schema or model, so that inner layers receive typed, already-valid data.
 
-**Why.** The same check copied into three layers drifts, until nobody knows which is authoritative.
+**Why.** The same check copied into three layers drifts until nobody knows which one is authoritative.
 
 **FAIL**
 

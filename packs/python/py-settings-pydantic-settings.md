@@ -13,7 +13,7 @@ note: from the author's own Python review guide
 
 **Rule.** Load env config with `BaseSettings` from `pydantic_settings`.
 
-**Why.** Core rule: [[mod-central-config]]. `os.environ.get` returns untyped strings with silent defaults; `BaseSettings` parses, validates and fails at startup. In pydantic v2 `BaseSettings` is no longer importable from `pydantic`.
+**Why.** Core rule: [[mod-central-config]]. `os.environ.get` returns untyped strings with silent defaults, while `BaseSettings` parses, validates, and fails at startup. In pydantic v2, `BaseSettings` is no longer importable from `pydantic`.
 
 **FAIL**
 

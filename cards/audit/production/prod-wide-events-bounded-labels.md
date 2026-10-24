@@ -13,7 +13,7 @@ borrowed_from:
 
 **Rule.** Emit one structured event per request carrying trace, tenant, build and flag state.
 
-**Why.** Also keep metric labels bounded and record deploys and flag changes as telemetry. Many narrow log lines cannot be joined to answer "who is affected"; a metric labeled with user id explodes cost; without a deploy marker you cannot compare before and after.
+**Why.** Many narrow log lines cannot be joined to answer "who is affected". A metric labeled with user id explodes cost. Without a deploy marker, you cannot compare before and after. Also keep metric labels bounded and record deploys and flag changes as telemetry.
 
 **FAIL**
 
@@ -29,4 +29,4 @@ event{trace, tenant, build, flag.x, status, duration_ms}
 metric requests{route, status}
 ```
 
-**Counterpoint.** This is a vendor position (one Honeycomb post), and its "metrics are the past" claim is not a review criterion; only the structural checks above are. Wide events cost storage; sample if needed.
+**Counterpoint.** This is a vendor position (one Honeycomb post), and its "metrics are the past" claim is not a review criterion. Only the structural checks above are. Wide events cost storage; sample if needed.

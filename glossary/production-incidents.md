@@ -1,5 +1,5 @@
-# Production Incidents
+# Production incidents
 
-Unplanned events that hurt users.
+Unplanned events that harm users.
 
-**Why a reviewer cares.** Many review checks exist because a past incident made the failure real.
+**Why a reviewer cares.** Many review checks exist because a past incident showed the failure.

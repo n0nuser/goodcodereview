@@ -1,5 +1,5 @@
-# TCP vs UDP
+# TCP and UDP
 
-TCP gives ordered, reliable streams; UDP sends unordered datagrams.
+TCP gives ordered, reliable streams. UDP sends unordered datagrams.
 
-**Why a reviewer cares.** The choice shapes retry and loss handling.
+**Why a reviewer cares.** The choice shapes how retries and packet loss are handled.

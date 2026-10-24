@@ -13,7 +13,7 @@ note: from the author's own Python review guide
 
 **Rule.** Return an empty collection for "nothing found"; return `None` only when absent differs from empty.
 
-**Why.** Every caller must remember the `None` check. The one who forgets crashes on iteration, in production, on the rare empty case.
+**Why.** Every caller must remember the `None` check, and the one who forgets crashes on iteration, in production, on the rare empty case.
 
 **FAIL**
 
@@ -29,4 +29,4 @@ def find_orders(user) -> list[Order]:
     return rows
 ```
 
-**Counterpoint.** "None tells me the query failed." Then raise, or return a distinct result type. Overloading `None` for both "failed" and "empty" is the bug.
+**Counterpoint.** "None tells me the query failed." Then raise, or return a distinct result type. Using `None` for both "failed" and "empty" is the bug.

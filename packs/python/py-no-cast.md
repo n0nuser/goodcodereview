@@ -11,7 +11,7 @@ borrowed_from: []
 note: from the author's own Python review guide
 ---
 
-**Rule.** Do not use `cast()`. Parse the boundary into a typed model, or narrow with `isinstance`.
+**Rule.** Do not use `cast()`; parse the boundary into a typed model, or narrow with `isinstance`.
 
 **Why.** `cast` is a promise to the type checker that nothing verifies at runtime. When the promise is wrong, the type checker's output is a lie that spreads.
 
@@ -29,4 +29,4 @@ class Payload(BaseModel):
 data = Payload.model_validate_json(raw)
 ```
 
-**Counterpoint.** "Sometimes the checker is wrong." Then fix the stub or narrow with `isinstance`/`assert`, which check at runtime. A justified `type: ignore[code]` with a reason is more honest than a cast, because it stays visible.
+**Counterpoint.** "Sometimes the checker is wrong." Then fix the stub or narrow with `isinstance` or `assert`, which check at runtime. A justified `type: ignore[code]` with a reason is more honest than a cast, because it stays visible.

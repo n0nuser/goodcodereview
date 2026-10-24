@@ -12,7 +12,7 @@ borrowed_from:
   - https://github.com/matthiasn/talk-transcripts/blob/master/Hickey_Rich/HammockDrivenDev.md
 ---
 
-**Rule.** Every behaviour change in the diff traces to the stated requirement; flag missing requirements and any change nobody asked for.
+**Rule.** Trace every behaviour change in the diff to the stated requirement, and flag missing requirements and any change nobody asked for.
 
 **Why.** Unrequested changes carry unreviewed risk and surprise the owners. As a heuristic, a misunderstood requirement does more damage than a typo, so check the diff against the ask first.
 
@@ -30,4 +30,4 @@ Diff only changes the lookup path and its tests; the pagination idea
 is filed as a separate ticket.
 ```
 
-**Counterpoint.** "Obvious small fixes while I'm there are free." Sometimes, and Google wants reviewers to look at surrounding code too. Answer: tiny same-file hygiene is fine if named in the description; behaviour changes are not.
+**Counterpoint.** "Obvious small fixes while I'm there are free." Sometimes, and Google wants reviewers to look at surrounding code too. Tiny same-file hygiene is fine if the description names it. Behaviour changes are not.

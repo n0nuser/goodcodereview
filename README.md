@@ -1,45 +1,45 @@
 # Good Code Review
 
-What to check when reviewing code, for people and for agents. Every check ends in `PASS`, `FAIL` or `N/A` with `file:line` evidence.
+A checklist for reviewing code, for people and for agents. Every check ends in `PASS`, `FAIL`, or `N/A` with `file:line` evidence.
 
-## 30 seconds
+## Start a review
 
-**Paste this to your agent:**
+Paste this to your agent:
 
 > Read https://goodcodereview.com/llms.txt and use it to review my code.
 
-**Install as a skill** (Claude Code, Codex, Cursor and others that read `skills/<name>/SKILL.md`):
+To install it as a skill (Claude Code, Codex, Cursor, and other tools that read `skills/<name>/SKILL.md`), run:
 
 ```
 npx skills add n0nuser/goodcodereview
 ```
 
-**Claude Code plugin:**
+To install it as a Claude Code plugin, run:
 
 ```
 /plugin marketplace add n0nuser/goodcodereview
 /plugin install goodcodereview@goodcodereview
 ```
 
-**By hand:** open https://goodcodereview.com, pick a level, and tick through the checklist.
+To review by hand, open https://goodcodereview.com, pick a level, and work through the checklist.
 
-## Two front doors
+## Choose a starting point
 
-- **Reviewing a change?** Start with `cards/change/`.
-- **Auditing code that already exists?** Pick a level in `cards/audit/`: function, module, service, system, codebase, production, incident.
+- To review a change, start with `cards/change/`.
+- To audit existing code, pick a level in `cards/audit/`: function, module, service, system, codebase, production, or incident.
 
 ## Verdict format
 
-Per check: `PASS`, `FAIL` or `N/A`, with `file:line` evidence. A `FAIL` carries the card's severity: `block`, `should-fix` or `discuss`.
+Each check gets `PASS`, `FAIL`, or `N/A`, with `file:line` evidence. A `FAIL` carries the card's severity: `block`, `should-fix`, or `discuss`.
 
 ## Contributing
 
-One card per pull request. See [CONTRIBUTING.md](CONTRIBUTING.md). Agents: see [AGENTS.md](AGENTS.md).
+Send one card per pull request. See [CONTRIBUTING.md](CONTRIBUTING.md). Agents: see [AGENTS.md](AGENTS.md).
 
-More: [docs/COVERAGE.md](docs/COVERAGE.md) (source-to-card map), [docs/deploy.md](docs/deploy.md).
+See also [docs/COVERAGE.md](docs/COVERAGE.md), which maps sources to cards, and [docs/deploy.md](docs/deploy.md).
 
 ## Licence
 
-Code (`tools/`, workflows): [MIT](LICENSE). Content (`cards/`, `packs/`, `glossary/`, `docs/`): [CC BY 4.0](LICENSE-CONTENT).
+Code (`tools/`, workflows) is under the [MIT licence](LICENSE). Content (`cards/`, `packs/`, `glossary/`, `docs/`) is under [CC BY 4.0](LICENSE-CONTENT).
 
 Created and maintained by [Pablo González](https://pablogonzalez.me).

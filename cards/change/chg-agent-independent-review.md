@@ -5,7 +5,7 @@ tags: [agents, review, process]
 severity: should-fix
 status: draft
 lang: core
-applies_when: An agent wrote the change and an agent (or the same session) is asked to review it.
+applies_when: An agent wrote the change, and an agent or the same session is asked to review it.
 tool_gate: none
 note: thin sourcing: disclosure and rubber-stamp guardrails only, no agent-specific study
 borrowed_from:
@@ -13,9 +13,9 @@ borrowed_from:
   - https://engineering.fb.com/2022/11/16/culture/meta-code-review-time-improving/
 ---
 
-**Rule.** Self-review by the writing session does not count as review; a person or a fresh-context reviewer with the spec, not the author's reasoning, signs off.
+**Rule.** Get sign-off from a person or a fresh-context reviewer who has the spec but not the author's reasoning; self-review by the writing session does not count.
 
-**Why.** The same context repeats the same blind spots and assumptions. Approvals without real reading are rubber-stamps. The person who submits it must also be able to explain each hunk.
+**Why.** The same context repeats the same blind spots and assumptions. An approval without real reading is a rubber stamp. The person who submits the change must also be able to explain each hunk.
 
 **FAIL**
 
@@ -30,4 +30,4 @@ Fresh reviewer given spec + diff + test output, runs the branch, files findings.
 A human who can explain the change approves.
 ```
 
-**Counterpoint.** A same-session pass still catches typos and leftovers; keep it as the author's self-review step, just not as the gate. Meta tracks "eyeball time" as a guardrail against rubber-stamping, which is the failure this card targets.
+**Counterpoint.** A same-session pass still catches typos and leftovers. Keep it as the author's self-review step, not as the gate. Meta tracks "eyeball time" as a guardrail against rubber-stamping, the failure this card targets.

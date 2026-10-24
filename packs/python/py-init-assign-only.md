@@ -11,7 +11,7 @@ borrowed_from: []
 note: from the author's own Python review guide
 ---
 
-**Rule.** Keep `__init__` and `__post_init__` to assignments; do I/O in a `@classmethod` factory.
+**Rule.** Keep `__init__` and `__post_init__` to assignments, and do I/O in a `@classmethod` factory.
 
 **Why.** Core rule: [[mod-no-logic-in-constructors]]. A dataclass's `__post_init__` is a constructor too, so the same rule applies there.
 
@@ -38,4 +38,4 @@ class PriceList:
         return cls({sku: Decimal(p) for sku, p in raw.items()})
 ```
 
-**Counterpoint.** "Dataclasses make `__post_init__` normal." Normal for derived fields and cheap validation; not for reading files or calling APIs.
+**Counterpoint.** "Dataclasses make `__post_init__` normal." It is normal for derived fields and cheap validation, but not for reading files or calling APIs.

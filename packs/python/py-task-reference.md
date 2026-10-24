@@ -13,7 +13,7 @@ borrowed_from:
 
 **Rule.** Never discard the result of `create_task`; keep a reference and surface its exceptions, preferably through a `TaskGroup`.
 
-**Why.** The event loop holds only weak references, so an unreferenced task can be garbage-collected mid-run. A task nobody awaits also loses its exception ("never retrieved").
+**Why.** The event loop holds only weak references, so an unreferenced task can be garbage-collected mid-run. A task that nobody awaits also loses its exception ("never retrieved").
 
 **FAIL**
 
@@ -31,4 +31,4 @@ async with asyncio.TaskGroup() as tg:
 
 **See also.** [[py-cancellation]]; for retried background work, [[svc-idempotency-key]].
 
-**Counterpoint.** "The set-and-discard recipe from the docs is enough." It keeps the task alive but still never retrieves the exception; the docs point to TaskGroup for that. The same reference rule applies to tasks passed to `asyncio.shield`.
+**Counterpoint.** "The set-and-discard recipe from the docs is enough." It keeps the task alive but still never retrieves the exception, and the docs point to TaskGroup for that. The same reference rule applies to tasks passed to `asyncio.shield`.

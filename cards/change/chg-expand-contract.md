@@ -31,4 +31,4 @@ ALTER TABLE users RENAME COLUMN name TO full_name;  -- app v1 still reads name
 -- change 3 (later): drop name
 ```
 
-**Counterpoint.** Three steps are slow for internal code. Exception, stated once: when producer and consumers deploy atomically from one repo, or the table is small enough to alter in one safe step, a one-step change is fine; say so in the description. Batching and release steps for databases are in [[sys-migration-expand-contract]].
+**Counterpoint.** Three steps are slow for internal code. Exception: when producer and consumers deploy atomically from one repo, or the table is small enough to alter in one safe step, a one-step change is fine. Say so in the description. [[sys-migration-expand-contract]] covers batching and release steps for databases.

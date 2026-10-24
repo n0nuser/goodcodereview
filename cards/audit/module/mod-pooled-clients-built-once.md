@@ -13,7 +13,7 @@ note: from the author's own Python review guide
 
 **Rule.** Build pooled clients once at startup and reuse them.
 
-**Why.** A client per call defeats connection pooling, leaks sockets and pays a handshake every time. Scope a short-lived client with a context manager.
+**Why.** A client per call defeats connection pooling, leaks sockets, and pays a handshake every time. Scope a short-lived client with a context manager.
 
 **FAIL**
 

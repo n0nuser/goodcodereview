@@ -5,7 +5,7 @@ tags: [concurrency, resources]
 severity: block
 status: draft
 lang: core
-applies_when: Code starts a task, thread, goroutine, subprocess or opens a handle (file, socket, connection).
+applies_when: Code starts a task, thread, goroutine, or subprocess, or opens a handle (file, socket, connection).
 tool_gate: Leak detectors in tests (unclosed-resource warnings, goroutine leak checks).
 borrowed_from:
   - https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/
@@ -31,4 +31,4 @@ with open(path) as f:
     data = f.read()
 ```
 
-**Counterpoint.** "Some work is fire-and-forget by design." Then a long-lived owner (a supervisor or worker pool) holds it, logs its failures and stops it at shutdown. Python task references are in [[py-task-reference]].
+**Counterpoint.** "Some work is fire-and-forget by design." Then a long-lived owner (a supervisor or worker pool) holds it, logs its failures, and stops it at shutdown. [[py-task-reference]] covers Python task references.

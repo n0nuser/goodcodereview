@@ -11,7 +11,7 @@ borrowed_from: []
 note: from the author's own Python review guide
 ---
 
-**Rule.** Return an enum (or a tagged type), never a bare string the caller must compare.
+**Rule.** Return an enum or a tagged type, never a bare string that the caller must compare.
 
 **Why.** Callers compare against strings the compiler cannot check. A typo in the producer or the consumer compiles, runs, and takes the wrong branch.
 
@@ -32,4 +32,4 @@ class OrderCheck(Enum):
 def check(order) -> OrderCheck: ...
 ```
 
-**Counterpoint.** "Strings serialise for free." The enum serialises too (by value), and the wire format is unchanged. You gain a closed set the type checker can exhaust.
+**Counterpoint.** "Strings serialise for free." The enum serialises too (by value), and the wire format is unchanged. You gain a closed set that the type checker can exhaust.

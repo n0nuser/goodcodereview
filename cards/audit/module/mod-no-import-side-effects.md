@@ -11,7 +11,7 @@ borrowed_from: []
 note: from the author's own Python review guide
 ---
 
-**Rule.** Keep I/O at the edges. Importing a package must not touch the network, read files or read the environment.
+**Rule.** Keep I/O at the edges: importing a package must not touch the network, read files, or read the environment.
 
 **Why.** Import-time effects make tests slow and order-dependent, break tooling that merely imports the module, and fail in places that had no reason to need a network.
 
