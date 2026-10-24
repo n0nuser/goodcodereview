@@ -85,7 +85,7 @@ Pages fetched (WebFetch converts to markdown and a small model summarizes agains
 - Design: 1,056 live business sites; 37,927 agent journeys across four agent setups; 140,000+ page fetches; 31,127 asked facts graded against ground truth from 131 sampled businesses.
 - Measured outcomes (agent-ready vs not): clear endorsement 20% vs 11% (1.9x); web search share of the answer 12% vs 25%; own-page share of the answer 78% vs 58%; runs ending in a grounded answer 78% vs 56%; turns per run 5.5 vs 6.8; block rate 2.1x for not-ready sites; cost per grounded answer +64% on average (up to +93%); answers with none of the asked facts 7% when read from the site vs 25% off-site; accuracy 56% at highest own-site share vs 41% at lowest. Training knowledge supplies 7 to 10% of answers; pricing accuracy 60% from the site vs 37% from the web; web searches 2.6x higher on least readable sites.
 - Recommended fix (general only): make the site accessible, readable and usable for agents.
-- Why it matters for us: it is the evidence base that the readiness checks matter at all. Static-site applicable: the findings, yes; no checks to apply.
+- Why it matters for us: it is the evidence that the readiness checks matter. Static-site applicable: the findings, yes; no checks to apply.
 
 ## 4. Source 4: https://ora.ai/methodology
 
