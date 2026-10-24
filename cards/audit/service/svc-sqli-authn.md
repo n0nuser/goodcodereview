@@ -10,6 +10,10 @@ applies_when: The code builds a query or command from request data, or exposes a
 tool_gate: SAST rule for string-built SQL; authn middleware as default-deny.
 borrowed_from:
   - https://owasp.org/Top10/2025/
+  - https://docs.python.org/3/library/sqlite3.html
+  - https://codeql.github.com/codeql-query-help/python/py-sql-injection/
+  - https://portswigger.net/web-security/sql-injection
+  - https://go.dev/doc/database/sql-injection
 ---
 
 **Rule.** Pass untrusted data to queries as bound parameters, never by string concatenation.

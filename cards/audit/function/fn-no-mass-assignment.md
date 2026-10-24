@@ -10,6 +10,9 @@ tool_gate: Lint rule against `**request.json` or `Model(**data)`; schema tests t
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html
   - https://api-security.owasp.org/editions/2023/en/0xa3-broken-object-property-level-authorization
+  - https://learn.microsoft.com/en-us/aspnet/core/data/ef-mvc/crud?view=aspnetcore-9.0
+  - https://guides.rubyonrails.org/action_controller_overview.html
+  - https://docs.djangoproject.com/en/5.2/topics/forms/modelforms/
 ---
 
 **Rule.** Bind request data to a DTO or an explicit field allowlist, never straight onto the model.

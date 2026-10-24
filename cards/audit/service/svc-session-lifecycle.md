@@ -10,6 +10,9 @@ tool_gate: Header test on the login response; session fixation test in the end-t
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html
   - https://top10.owasp.org/2025/A01_2025-Broken_Access_Control
+  - https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/Cookies
+  - https://pages.nist.gov/800-63-4/sp800-63b/session/
+  - https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html
 ---
 
 **Rule.** Issue a new session ID at login, set `Secure`, `HttpOnly` and `SameSite` on the cookie, and end the session on the server at logout.

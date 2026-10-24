@@ -10,6 +10,10 @@ tool_gate: Header check in CI against a staging URL; framework middleware that s
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html
   - https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures
+  - https://infosec.mozilla.org/guidelines/web_security
+  - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Content-Type-Options
+  - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors
+  - https://www.rfc-editor.org/rfc/rfc6797.html
 ---
 
 **Rule.** Send `Strict-Transport-Security`, `X-Content-Type-Options: nosniff` and a CSP `frame-ancestors` (or `X-Frame-Options: DENY`) on every page response.

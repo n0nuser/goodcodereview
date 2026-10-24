@@ -10,6 +10,9 @@ tool_gate: Rate-limit middleware on auth routes; test that known and unknown use
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html
   - https://api-security.owasp.org/editions/2023/en/0xa4-unrestricted-resource-consumption
+  - https://pages.nist.gov/800-63-4/sp800-63b.html
+  - https://portswigger.net/web-security/authentication/password-based
+  - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-228-upd1.pdf
 ---
 
 **Rule.** Limit failed attempts per account, and return the same message, status and timing whether or not the account exists.

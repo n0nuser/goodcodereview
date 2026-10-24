@@ -10,6 +10,9 @@ tool_gate: Gateway request-size limit; schema `maxLength`/`maxItems`; test with 
 borrowed_from:
   - https://api-security.owasp.org/editions/2023/en/0xa4-unrestricted-resource-consumption
   - https://genai.owasp.org/llmrisk/llm102025-unbounded-consumption/
+  - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-228-upd1.pdf
+  - https://pkg.go.dev/net/http#MaxBytesReader
+  - https://docs.djangoproject.com/en/5.2/ref/settings/#data-upload-max-memory-size
 ---
 
 **Rule.** Cap every client-controlled size and count on the server: body bytes, string length, array items, page size and batch size.

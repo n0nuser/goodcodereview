@@ -11,6 +11,8 @@ note: SBOM and scan from OWASP A03:2025; the licence allowlist is team policy, u
 borrowed_from:
   - https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/
   - https://github.com/ossf/scorecard/blob/main/docs/checks.md
+  - https://www.cisa.gov/sbom
+  - https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-the-dependency-graph
 ---
 
 **Rule.** Generate an SBOM and scan dependencies for known vulnerabilities in CI.

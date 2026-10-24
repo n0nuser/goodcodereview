@@ -10,6 +10,9 @@ applies_when: The server fetches a URL that a user or external data supplies.
 tool_gate: Egress firewall or proxy allowlist.
 borrowed_from:
   - https://owasp.org/Top10/2025/
+  - https://codeql.github.com/codeql-query-help/python/py-full-ssrf/
+  - https://docs.aws.amazon.com/codeguru/detector-library/go/server-side-request-forgery/
+  - https://portswigger.net/web-security/ssrf
 ---
 
 **Rule.** Fetch user-supplied URLs only after checking the resolved address against an allowlist.

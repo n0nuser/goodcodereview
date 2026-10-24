@@ -10,6 +10,9 @@ tool_gate: Test that a failed login and a 403 each produce a structured log line
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html
   - https://top10.owasp.org/2025/A09_2025-Security_Logging_and_Alerting_Failures
+  - https://learn.microsoft.com/en-us/azure/well-architected/security/monitor-threats
+  - https://google.github.io/building-secure-and-reliable-systems/raw/ch15.html
+  - https://www.ncsc.gov.uk/guidance/introduction-logging-security-purposes
 ---
 
 **Rule.** Log authentication failures, authorization denials and validation failures with who, what, when and a correlation ID, and never log secrets.

@@ -10,6 +10,10 @@ applies_when: A handler builds a response body from a database row, entity, ORM 
 tool_gate: Response-schema test that lists the allowed fields and fails on extras.
 borrowed_from:
   - https://protobuf.dev/best-practices/dos-donts/
+  - https://api-security.owasp.org/editions/2023/en/0xa3-broken-object-property-level-authorization
+  - https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api
+  - https://www.django-rest-framework.org/api-guide/serializers/
+  - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-228-upd1.pdf
 ---
 
 **Rule.** Build every response from an explicit response type that names the exposed fields, never by serialising a stored or internal object.

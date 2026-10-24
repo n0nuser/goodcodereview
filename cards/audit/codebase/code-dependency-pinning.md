@@ -11,6 +11,8 @@ borrowed_from:
   - https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/
   - https://github.com/ossf/scorecard/blob/main/docs/checks.md
   - https://sre.google/sre-book/release-engineering/
+  - https://pip.pypa.io/en/stable/topics/secure-installs/
+  - https://docs.npmjs.com/cli/v10/commands/npm-ci
 ---
 
 **Rule.** Commit a lockfile with hashes and install from it in CI.

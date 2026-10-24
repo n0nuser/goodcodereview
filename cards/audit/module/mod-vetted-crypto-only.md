@@ -10,6 +10,10 @@ tool_gate: SAST rules for `ECB`, hand-written XOR ciphers and MD5 or SHA-1 used 
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html
   - https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures
+  - https://www.rfc-editor.org/rfc/rfc5116.html
+  - https://csrc.nist.gov/pubs/sp/800/38/d/final
+  - https://pkg.go.dev/crypto/cipher#NewGCM
+  - https://developers.google.com/tink
 ---
 
 **Rule.** Use a maintained library's authenticated-encryption call (AES-GCM or similar), and never write your own cipher or reuse a nonce.

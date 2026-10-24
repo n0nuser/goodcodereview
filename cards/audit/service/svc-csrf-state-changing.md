@@ -9,6 +9,8 @@ applies_when: The service authenticates browsers with cookies and changes state 
 tool_gate: Framework CSRF middleware enabled; test that a POST without the token returns 403.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
+  - https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/CSRF
+  - https://docs.djangoproject.com/en/5.2/howto/csrf/
 ---
 
 **Rule.** Require a CSRF token (or an equivalent header check) on every cookie-authenticated request that changes state, and never change state on GET.

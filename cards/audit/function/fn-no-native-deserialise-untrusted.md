@@ -9,6 +9,10 @@ applies_when: Code turns bytes or text from outside the process into objects.
 tool_gate: SAST rules for `pickle.load`, `yaml.load`, `ObjectInputStream`, `BinaryFormatter`, `unserialize`.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html
+  - https://docs.python.org/3/library/pickle.html
+  - https://learn.microsoft.com/en-us/dotnet/standard/serialization/binaryformatter-security-guide
+  - https://docs.oracle.com/en/java/javase/21/core/serialization-filtering1.html
+  - https://codeql.github.com/codeql-query-help/python/py-unsafe-deserialization/
 ---
 
 **Rule.** Parse untrusted input with a data-only format and a schema, never with a native object deserialiser.

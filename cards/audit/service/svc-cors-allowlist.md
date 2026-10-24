@@ -11,6 +11,9 @@ note: the fetched OWASP page does not cover the null origin or `*` with credenti
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html
   - https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
+  - https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS
+  - https://portswigger.net/web-security/cors
+  - https://codeql.github.com/codeql-query-help/javascript/js-cors-misconfiguration-for-credentials/
 ---
 
 **Rule.** Allow cross-origin access only to a fixed list of named origins, and never echo the request `Origin` header back unchecked.

@@ -9,6 +9,9 @@ applies_when: A handler returns a stored object or entity to the client.
 tool_gate: Response-schema tests that fail on unlisted fields.
 borrowed_from:
   - https://api-security.owasp.org/editions/2023/en/0xa3-broken-object-property-level-authorization
+  - https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api
+  - https://www.django-rest-framework.org/api-guide/serializers/
+  - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-228-upd1.pdf
 ---
 
 **Rule.** Return a response type that lists each field, never the stored model or a generic dump of it.

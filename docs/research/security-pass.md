@@ -60,3 +60,96 @@ Fetched 2026-10-24 through WebFetch (a small model summarises each page), so eve
 - OWASP ASVS 5.0 chapter text and the CWE Top 25 list were not read in this pass. Rules above rest on the cheat sheets and Top 10 pages only.
 - Input validation regex limits (row 17): already covered in spirit by `mod-validate-at-boundary-once`.
 - Third-party script integrity (row 21): left as a gap.
+
+## 9. Independent-org pass (2026-10-24)
+
+Goal: lift each security card toward three orgs behind its Rule. OWASP ASVS, Cheat Sheets, Top 10, API Top 10 and the GenAI project count as one org. Every URL below was opened through WebFetch (small-model summary, so each row is a paraphrase). Rows give the URL, the distilled point, and the card whose Rule it backs. Where a page only backs part of a Rule, the row says which part.
+
+JWT cheat sheet location: the OWASP sheet is now https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_Cheat_Sheet.html (opened, 200). The old `JSON_Web_Token_for_Java_Cheat_Sheet.html` path returns 404. No card cited the dead path, so the new URL was added to `fn-jwt-verify-pinned`.
+
+1. https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_Cheat_Sheet.html. Hardcode the accepted signing algorithms; check `exp`, `iss` (and use only that issuer's keys) and `aud`; reject tokens missing required claims. -> `fn-jwt-verify-pinned`.
+2. https://learn.microsoft.com/en-us/entra/identity-platform/access-tokens. Web APIs validate the signature and issuer, and accept only tokens whose `aud` is their own identifier. -> `fn-jwt-verify-pinned` (signature, `iss`, `aud` parts; no algorithm-list clause).
+3. https://developers.google.com/identity/gsi/web/guides/verify-google-id-token. Backend checks signature, `aud`, `iss` and `exp`; use a library rather than hand-rolled code. -> `fn-jwt-verify-pinned`.
+4. https://codeql.github.com/codeql-query-help/javascript/js-jwt-missing-verification/. Calling verify with no key selects the `none` algorithm and drops integrity checks (CWE-347). -> `fn-jwt-verify-pinned`.
+5. https://docs.python.org/3/library/secrets.html. Use `secrets`, not `random`, for tokens and passwords; `random` is for simulation. -> `fn-csprng-for-secrets`.
+6. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random. `Math.random()` is not cryptographically secure; use `crypto.getRandomValues()`. -> `fn-csprng-for-secrets`.
+7. https://www.rfc-editor.org/rfc/rfc4086.html. Pseudo-random processes used for secrets give "pseudo-security"; an attacker can search a small set of outcomes. -> `fn-csprng-for-secrets`.
+8. https://pkg.go.dev/crypto/rand. Go's `crypto/rand` is the CSPRNG, with a `Text` helper intended for secrets and tokens. -> `fn-csprng-for-secrets`.
+9. https://go.dev/blog/osroot. Sanitising a path string misses symlinks and check-then-use races; `os.Root` / `os.OpenInRoot` refuse any escape from the root. -> `fn-confine-file-path`.
+10. https://codeql.github.com/codeql-query-help/python/py-path-injection/. Normalise (`realpath`), then confirm the result starts with a safe root; CWE-22. -> `fn-confine-file-path`.
+11. https://learn.microsoft.com/en-us/aspnet/core/data/ef-mvc/crud?view=aspnetcore-9.0. Bind an explicit property list or a view model so fields added later stay protected. -> `fn-no-mass-assignment`.
+12. https://guides.rubyonrails.org/action_controller_overview.html. Strong Parameters block mass assignment until attributes are permitted; `permit!` is flagged as risky. -> `fn-no-mass-assignment`.
+13. https://docs.djangoproject.com/en/5.2/topics/forms/modelforms/. Set `fields` explicitly; `__all__` and `exclude` are called much less secure and tied to serious exploits. -> `fn-no-mass-assignment`.
+14. https://docs.python.org/3/library/pickle.html. Unpickling untrusted data can run arbitrary code; use a format such as JSON. -> `fn-no-native-deserialise-untrusted`.
+15. https://learn.microsoft.com/en-us/dotnet/standard/serialization/binaryformatter-security-guide. `BinaryFormatter` cannot be made safe; prefer `System.Text.Json` or XML serializers; data crosses trust boundaries more often than authors expect. -> `fn-no-native-deserialise-untrusted`.
+16. https://docs.oracle.com/en/java/javase/21/core/serialization-filtering1.html. Deserialising untrusted data is an attack; stream filters (allow/reject lists) screen classes first. -> `fn-no-native-deserialise-untrusted` (note: Java treats a filter as a mitigation, so "never" in the Rule is stricter than this page).
+17. https://codeql.github.com/codeql-query-help/python/py-unsafe-deserialization/. Avoid deserialising untrusted data; use JSON or `yaml.safe_load` (CWE-502). -> `fn-no-native-deserialise-untrusted`.
+18. https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML. Use `textContent` for plain text; if HTML is needed, sanitise through a Trusted Types policy. -> `fn-no-raw-html-sink`.
+19. https://web.dev/articles/trusted-types. Trusted Types lock `innerHTML` and similar sinks; build nodes with `createElement` / `textContent`. -> `fn-no-raw-html-sink`.
+20. https://react.dev/reference/react-dom/components/common. `dangerouslySetInnerHTML` runs any markup; use only with trusted, sanitised data. -> `fn-no-raw-html-sink`.
+21. https://www.cisa.gov/resources-tools/resources/secure-design-alert-eliminating-cross-site-scripting-vulnerabilities. Use frameworks with built-in output encoding; escape by hand otherwise; sanitisation alone is not infallible. -> `fn-no-raw-html-sink`.
+22. https://docs.python.org/3/library/subprocess.html. Without `shell=True` no shell runs and metacharacters pass safely; with it, quoting is the caller's job. -> `fn-no-shell-with-input`.
+23. https://pkg.go.dev/os/exec. The package does not invoke a shell; arguments are passed as given. -> `fn-no-shell-with-input`.
+24. https://www.cisa.gov/resources-tools/resources/secure-design-alert-eliminating-os-command-injection-vulnerabilities. Pass arguments as a list; ban `os.system` and `shell=True` at pull-request time. -> `fn-no-shell-with-input`.
+25. https://learn.microsoft.com/en-us/aspnet/core/security/authorization/resourcebased. `[Authorize]` runs before the resource loads and does not suffice; call an authorization check against the loaded resource. -> `fn-object-level-authz`.
+26. https://developers.cloudflare.com/api-shield/security/bola-vulnerability-detection/. Defines BOLA as failing to verify that a user may reach the specific object; detection does not replace fixing the policy. -> `fn-object-level-authz` (definition only).
+27. https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-228-upd1.pdf. NIST SP 800-228 (the 2026 update; the csrc.nist.gov landing page marks the older revision withdrawn). REC-API-12 and 20-1: authorise the end user against the object an endpoint targets, as a cross-cutting policy. REC-API-6, 13: mark fields public or internal and validate responses against the schema. REC-API-15-3, 15-4, 16: payload limits, page-size caps, per-user rate limits. REC-API-11-1: rate limit and lock out after repeated login failures. -> `fn-object-level-authz`, `svc-authz-central-deny-default`, `fn-response-fields-explicit`, `svc-api-no-internal-fields`, `svc-bound-client-controlled-sizes`, `svc-rate-limit-quota`, `svc-auth-throttle-generic-errors`.
+28. https://www.rfc-editor.org/rfc/rfc9106.html. Argon2id is the primary variant; section 4 gives parameter sets. -> `fn-password-slow-hash`.
+29. https://pages.nist.gov/800-63-4/sp800-63b.html. Passwords must be salted and hashed with a suitable scheme (cost factor as high as practical); consecutive failures per authenticator capped at 100 (section 3.2.2). The page did not address enumeration. -> `fn-password-slow-hash`, `svc-auth-throttle-generic-errors` (throttle half).
+30. https://pages.nist.gov/800-63-4/sp800-63b/session/. Session cookies must be Secure; HttpOnly and SameSite are recommended; logout must erase or invalidate the session secret. -> `svc-session-lifecycle`.
+31. https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api. DTOs hide properties clients should not see and prevent over-posting. -> `fn-response-fields-explicit`, `svc-api-no-internal-fields`.
+32. https://www.django-rest-framework.org/api-guide/serializers/. Name serializer `fields` explicitly; `__all__` and `exclude` expose new model fields automatically. -> `fn-response-fields-explicit`, `svc-api-no-internal-fields`.
+33. https://www.rfc-editor.org/rfc/rfc9525.html. A TLS client compares the presented identifier to its own reference identifier and ends the connection when nothing matches. -> `fn-tls-verify-on`.
+34. https://pkg.go.dev/crypto/tls#Config. `InsecureSkipVerify` makes TLS open to machine-in-the-middle attacks; testing only. -> `fn-tls-verify-on`.
+35. https://codeql.github.com/codeql-query-help/python/py-request-without-cert-validation/. Never use `verify=False` (CWE-295). -> `fn-tls-verify-on`.
+36. https://docs.python.org/3/library/ssl.html. The default context requires certificates; `CERT_NONE` accepts almost anything and hostname checking must stay on. -> `fn-tls-verify-on`.
+37. https://www.rfc-editor.org/rfc/rfc5116.html. AEAD nonces must be distinct per key; reuse in GCM can leak plaintext XOR and the hash key. -> `mod-vetted-crypto-only` (nonce clause).
+38. https://csrc.nist.gov/pubs/sp/800/38/d/final. Defines GCM, authenticated encryption. Only the abstract was readable. -> `mod-vetted-crypto-only` (AES-GCM clause).
+39. https://pkg.go.dev/crypto/cipher#NewGCM. GCM nonce must be unique for all time per key; random nonces cap at 2^32 messages. -> `mod-vetted-crypto-only`.
+40. https://developers.google.com/tink. Google-maintained library with "easy-to-use" crypto APIs. The page does not argue why to avoid own ciphers. -> `mod-vetted-crypto-only` (library clause, weak).
+41. https://portswigger.net/web-security/authentication/password-based. Differences in status code, wording or timing reveal valid usernames; account lockout and IP limiting each have gaps. -> `svc-auth-throttle-generic-errors`.
+42. https://portswigger.net/web-security/access-control. Deny by default, centralise enforcement, declare access in code, audit. -> `svc-authz-central-deny-default`.
+43. https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic_policy-eval-denyallow.md. All requests are implicitly denied unless a policy allows them; an explicit deny wins. -> `svc-authz-central-deny-default`.
+44. https://pkg.go.dev/net/http#MaxBytesReader. Exists to stop clients wasting server resources with large request bodies. -> `svc-bound-client-controlled-sizes`.
+45. https://docs.djangoproject.com/en/5.2/ref/settings/#data-upload-max-memory-size. Body-size and field-count caps exist to prevent denial of service. -> `svc-bound-client-controlled-sizes`.
+46. https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS. Credentialed requests cannot use `*`; echo `Origin` only against an allowlist; send `Vary: Origin`. -> `svc-cors-allowlist`.
+47. https://portswigger.net/web-security/cors. Reflecting `Origin` with credentials trusts every site; match strictly, reject `null`. -> `svc-cors-allowlist`.
+48. https://codeql.github.com/codeql-query-help/javascript/js-cors-misconfiguration-for-credentials/. Validate origins against an allowlist; never allow `null` with credentials (CWE-346, CWE-942). -> `svc-cors-allowlist`.
+49. https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/CSRF. CSRF tokens, `Sec-Fetch-Site`, non-simple requests, SameSite as defence in depth; never use GET for state change. -> `svc-csrf-state-changing`.
+50. https://docs.djangoproject.com/en/5.2/howto/csrf/. Token middleware on by default, token checked on unsafe-method POSTs. The page does not discuss GET. -> `svc-csrf-state-changing` (token clause).
+51. https://sre.google/sre-book/handling-overload/. Per-customer quotas, so only the customer over quota sees errors during overload. -> `svc-rate-limit-quota`.
+52. https://learn.microsoft.com/en-us/azure/architecture/antipatterns/noisy-neighbor/noisy-neighbor. Apply quota enforcement and rate limiting so one tenant cannot starve the rest. -> `svc-rate-limit-quota`.
+53. https://learn.microsoft.com/en-us/azure/well-architected/security/monitor-threats. Log who, what, when; log failures including authorization failures; keep secrets out of logs. -> `svc-security-event-logging`.
+54. https://google.github.io/building-secure-and-reliable-systems/raw/ch15.html. Timestamps, correlation of traces by ID, a policy for what may be logged, immutable remote logs. It does not name authentication decisions. -> `svc-security-event-logging`.
+55. https://www.ncsc.gov.uk/guidance/introduction-logging-security-purposes. Log failed sign-ins, account names and UTC timestamps; restrict log access. It does not cover leaving secrets out. -> `svc-security-event-logging`.
+56. https://infosec.mozilla.org/guidelines/web_security. HSTS and X-Frame-Options / `frame-ancestors` marked mandatory; `nosniff` recommended. -> `svc-security-headers`.
+57. https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Content-Type-Options. `nosniff` stops uploaded content being sniffed as HTML or script. -> `svc-security-headers`.
+58. https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors. Controls who may embed the page; omitting it allows embedding; HTTP header only. -> `svc-security-headers`.
+59. https://www.rfc-editor.org/rfc/rfc6797.html. HSTS: browser rewrites http to https and refuses click-through on certificate errors. -> `svc-security-headers` (HSTS clause only).
+60. https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/Cookies. `Secure`, `HttpOnly`, `SameSite`, `__Host-` prefix. Says nothing on regeneration or logout. -> `svc-session-lifecycle` (cookie clause).
+61. https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html. Spring changes the session ID on login by default (session-fixation protection). -> `svc-session-lifecycle` (new-ID clause).
+62. https://docs.python.org/3/library/sqlite3.html. Always use placeholders, not string formatting. -> `svc-sqli-authn`.
+63. https://codeql.github.com/codeql-query-help/python/py-sql-injection/. Use query parameters or prepared statements (CWE-89). -> `svc-sqli-authn`.
+64. https://portswigger.net/web-security/sql-injection. Parameterise values; table, column and `ORDER BY` names need an allowlist. -> `svc-sqli-authn`.
+65. https://go.dev/doc/database/sql-injection. Pass values as arguments to `database/sql`, never `fmt.Sprintf`. -> `svc-sqli-authn`.
+66. https://learn.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads. Store outside the app tree, generate names, allowlist extensions, cap size, scan. -> `svc-upload-validate-store`.
+67. https://portswigger.net/web-security/file-upload. Allowlist extensions, rename uploads, validate content before saving. It does not recommend storing outside the web root. -> `svc-upload-validate-store`.
+68. https://docs.djangoproject.com/en/5.2/topics/security/#user-uploaded-content. Cap size, restrict extensions, never execute uploads, serve from a separate domain. -> `svc-upload-validate-store`.
+69. https://www.ncsc.gov.uk/blog-post/prompt-injection-is-not-sql-injection. Prompt injection cannot be fully fixed; limit actions with deterministic non-LLM safeguards; drop the model's privileges to those of the untrusted source; log tool calls. -> `sys-prompt-injection`, `sys-agent-tool-least-privilege`.
+70. https://www.microsoft.com/en-us/msrc/blog/2025/07/how-microsoft-defends-against-indirect-prompt-injection-attacks. Deterministic blocking of exfiltration routes, fine-grained permissions to limit impact, human approval for risky actions. -> `sys-prompt-injection`, `sys-agent-tool-least-privilege`.
+71. https://blog.google/security/mitigating-prompt-injection-attacks/. System-level safeguards: markdown sanitisation, URL redaction, user confirmation. The post does not call them deterministic. -> `sys-prompt-injection`.
+72. https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/data-protection-principles/a-guide-to-the-data-protection-principles/storage-limitation/. Do not keep personal data longer than needed; set retention periods; erase or anonymise; cover backups. -> `sys-pii-minimise-retention`.
+73. https://gdpr-info.eu/art-5-gdpr/. Mirror of GDPR Art. 5(1)(c) and (e): minimisation and storage limitation. The official EUR-Lex page returned no text through WebFetch, so this is a mirror. -> `sys-pii-minimise-retention`.
+74. https://codeql.github.com/codeql-query-help/python/py-full-ssrf/. Prefer a server-side list of URLs; otherwise check that the resolved IP is not private and pin it (CWE-918). -> `sys-ssrf`.
+75. https://docs.aws.amazon.com/codeguru/detector-library/go/server-side-request-forgery/. Allowlist scheme and host; re-validate redirect targets. -> `sys-ssrf`.
+76. https://portswigger.net/web-security/ssrf. Blocklists and hostname allowlists are bypassed by alternate IP forms, URL parsing tricks and open redirects. -> `sys-ssrf` (supports resolving first; does not state a fix).
+77. https://www.cisa.gov/sbom. An SBOM is a nested inventory of components. The page ties vulnerability use only to VEX. -> `code-dependency-licence-sbom` (SBOM clause).
+78. https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-the-dependency-graph. Dependency graph, SBOM export, Dependabot alerts for vulnerable dependencies. -> `code-dependency-licence-sbom`.
+79. https://pip.pypa.io/en/stable/topics/secure-installs/. Hash-checking mode: every requirement pinned and hashed, sha256 recommended. -> `code-dependency-pinning`.
+80. https://docs.npmjs.com/cli/v10/commands/npm-ci. `npm ci` installs from the lockfile and fails on mismatch. -> `code-dependency-pinning`.
+81. https://docs.github.com/en/actions/reference/security/secure-use. Pin actions to a full commit SHA; tags are mutable. The page adds that a workflow dependency lockfile, where available, supersedes SHA pinning. -> `code-workflow-supply-chain`.
+82. https://www.cisa.gov/resources-tools/resources/product-security-bad-practices. Lists hard-coded credentials in source as a bad practice (item 8). -> `code-secret-scan` (why scan; does not mention scanners).
+83. https://cheatsheetseries.owasp.org/cheatsheets/Attack_Surface_Analysis_Cheat_Sheet.html. Changes to the attack surface should trigger threat modelling. -> `chg-name-attack-surface`.
+84. https://wiki.mozilla.org/Security/Reviews. Security review is optional but strongly encouraged for features touching sensitive data or browser security mechanisms. -> `chg-name-attack-surface` (routing clause only).
+
+Not found or too weak: `chg-name-attack-surface` has no source for "list new attack surface in the description" as such; items 83 and 84 back the trigger and the routing, and the card's own `note:` already says the rest is synthesis.
