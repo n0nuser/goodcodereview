@@ -28,6 +28,8 @@ These groups count as one organisation each:
 
 GitLab and GitHub are separate organisations. NIST, CISA, and NCSC are separate organisations.
 
+`tools/orgs.py` maps every source URL to the organisation that publishes it, and follows these groups. On a code host such as GitHub, the organisation is the repository owner, not the host. `tools/validate.py` fails on a URL that the map does not cover. It also fails on a stable card with fewer than three organisations in `borrowed_from`. That check is a floor: rule 1 counts per Rule clause, so a card can pass the check and still fail rule 1.
+
 ## What `lacks:` says
 
 Every draft has one line, `lacks: <reason>, <note>`. The reason is the first rule the card fails, in the order of this table. A draft that no stable pass has checked yet gets `unreviewed`.
