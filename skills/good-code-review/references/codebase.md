@@ -1,5 +1,29 @@
 # codebase
 
+## code-adr
+
+severity: discuss  
+concerns: maintainability, process  
+applies_when: Auditing whether the reasons behind significant design choices are recorded.
+
+**Rule.** Keep a short written record for each significant design choice (datastore, framework, deviation from a pattern) that states the context, the decision, and its consequences.
+
+**Why.** Without a record, the next reader reverses a decision blindly or cargo-cults it. Also list the options you ruled out and why: a record that weighs only the chosen design, its strengths or its flaws, is not a trade-off analysis.
+
+**FAIL**
+
+```text
+Repo uses Kafka for one 10-msg/day job. No record why; nobody dares remove it.
+```
+
+**PASS**
+
+```text
+docs/adr/0007-queue.md: context, decision, consequences, status, and the 2 options ruled out.
+```
+
+**Counterpoint.** ADRs rot and become paperwork. Keep each to a page, write them only for hard-to-reverse choices, and mark superseded ones.
+
 ## code-build-hermetic
 
 severity: should-fix  

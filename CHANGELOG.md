@@ -5,7 +5,7 @@ All notable changes to this project are recorded here. The format follows [Keep 
 ## [Unreleased]
 
 - On the Concerns page, every card shows as one row that links to its full card, which shrinks the page below 100,000 characters of text (`python3 tools/agent_ready_check.py` reports the largest page). Level pages keep the full text.
-- 88 stable cards ship in `skills/good-code-review/SKILL.md` (the `stable cards:` count that `python3 tools/build.py` prints). Every level has at least one, and the incident level has one.
+- 103 stable cards ship in `skills/good-code-review/SKILL.md` (the `stable cards:` count that `python3 tools/build.py` prints). Every level has at least one, and the incident level has one.
 - Cards cover a change review and seven audit levels: function, module, service, system, codebase, production, and incident (`ls cards/audit`).
 - The site builds 15 static pages, including the 404 page (the `site:` count that `python3 tools/build.py` prints) for goodcodereview.com.
 - You can install the checklist as a skill (`npx skills add n0nuser/goodcodereview`) or as a Claude Code plugin.

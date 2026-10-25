@@ -147,6 +147,7 @@ To review only some concerns, such as a performance-only review, check only the 
 
 ## codebase
 
+- `code-adr` [discuss] {maintainability, process}: Keep a short written record for each significant design choice (datastore, framework, deviation from a pattern) that states the context, the decision, and its consequences.
 - `code-build-hermetic` [should-fix] {process}: Build from declared inputs only, so that the same source revision gives the same artifact.
 - `code-ci-gates` [should-fix] {process}: Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
 - `code-consistency-drift` [discuss] {correctness, maintainability}: For each recurring concern (errors, config, HTTP clients, logging), make one pattern the standard instead of leaving several as equal peers.
