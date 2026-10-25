@@ -7,12 +7,13 @@ status: draft
 lang: core
 applies_when: An agent wrote the change, and an agent or the same session is asked to review it.
 tool_gate: none
-note: a person's sign-off on agent-written changes has Stripe (firm) and Uber (one clause); Kubernetes covers AI-assisted PRs with a human author; Spotify auto-merges some agent PRs; nobody backs a fresh agent as the sign-off
+note: a person's sign-off on agent-written changes has Stripe and Dropbox (firm) and Uber (maintenance tasks only); Kubernetes covers AI-assisted PRs with a human author; Spotify auto-merges some agent PRs; nobody backs a fresh agent as the sign-off (Cloudflare's separate-session AI reviewers review engineer-written code)
 borrowed_from:
   - https://www.kubernetes.dev/docs/guide/pull-requests/
   - https://engineering.fb.com/2022/11/16/culture/meta-code-review-time-improving/
   - https://stripe.dev/blog/minions-stripes-one-shot-end-to-end-coding-agents
   - https://www.uber.com/blog/efficient-software-factory/
+  - https://dropbox.tech/culture/beyond-code-generation-rethinking-engineering-productivity-in-the-age-of-ai-agents
 ---
 
 **Rule.** Get sign-off from a person or a fresh-context reviewer who has the spec but not the author's reasoning; self-review by the writing session does not count.

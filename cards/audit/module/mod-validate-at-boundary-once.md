@@ -7,8 +7,12 @@ status: draft
 lang: core
 applies_when: Input checks appear in more than one layer, or hand-rolled checks appear on a dict.
 tool_gate: none
-borrowed_from: []
-note: from the author's own Python review guide
+borrowed_from:
+  - https://shopify.engineering/managing-pii-shopify-scale
+  - https://netflixtechblog.com/ontology-driven-observability-building-an-end-to-end-knowledge-graph-at-netflix-scale-421392cf5adf
+  - https://www.uber.com/blog/scaling-verify-wallet/
+  - https://blog.cloudflare.com/18-november-2025-outage/
+note: from the author's own Python review guide; Shopify, Netflix, Uber and Cloudflare back validating at the boundary, but nobody backs 'once', and only Shopify uses a schema
 ---
 
 **Rule.** Validate at the boundary, once, with a schema or model, so that inner layers receive typed, already-valid data.

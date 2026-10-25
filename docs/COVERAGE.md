@@ -19,12 +19,12 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #12 | Retries | `svc-retry-policy` | stable |
 | 111-list #13 | Exponential Backoff | `svc-retry-policy` | stable |
 | 111-list #14 | Idempotency | `svc-idempotency-key` | stable |
-| 111-list #15 | Message Queues | `svc-dlq` | draft |
+| 111-list #15 | Message Queues | `svc-dlq` | stable |
 | 111-list #16 | Pub/Sub | glossary/pub-sub | glossary |
 | 111-list #17 | Event-Driven Architecture | glossary/event-driven-architecture | glossary |
 | 111-list #18 | Distributed Transactions | glossary/distributed-transactions | glossary |
 | 111-list #19 | Saga Pattern | `svc-saga-steps` | draft |
-| 111-list #20 | Dead Letter Queues | `svc-dlq` | draft |
+| 111-list #20 | Dead Letter Queues | `svc-dlq` | stable |
 | 111-list #21 | Cron Jobs | `sys-leader-two-leaders` | draft |
 | 111-list #22 | WebSockets | glossary/websockets | glossary |
 | 111-list #23 | Long Polling | glossary/long-polling | glossary |
@@ -55,7 +55,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #48 | CDN | glossary/cdn | glossary |
 | 111-list #49 | Edge Caching | glossary/edge-caching | glossary |
 | 111-list #50 | Cache Invalidation | `sys-cache-bounds-invalidation` | stable |
-| 111-list #51 | Feature Flags | `prod-kill-switch-fallback` | draft |
+| 111-list #51 | Feature Flags | `prod-kill-switch-fallback` | stable |
 | 111-list #51b | Feature Flags (telemetry) | `prod-wide-events-bounded-labels` | draft |
 | 111-list #52 | Blue-Green Deployment | glossary/blue-green-deployment | glossary |
 | 111-list #53 | Canary Releases | `prod-canary-staged-rollout` | stable |
@@ -115,7 +115,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #104 | Infrastructure as Code | glossary/infrastructure-as-code | glossary |
 | 111-list #105 | Terraform | glossary/terraform | glossary |
 | 111-list #106 | Helm Charts | glossary/helm-charts | glossary |
-| 111-list #107 | Build Caching | `code-build-hermetic` | draft |
+| 111-list #107 | Build Caching | `code-build-hermetic` | stable |
 | 111-list #108 | Dependency Hell | `code-dependency-pinning` | stable |
 | 111-list #109 | Production Incidents | glossary/production-incidents | glossary |
 | 111-list #110 | On-Call | glossary/on-call | glossary |
@@ -160,7 +160,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | thermo-nuclear | P7b Related updates that can leave state half applied | `fn-atomic-related-updates` | draft |
 | thermo-nuclear | Copy-pasted logic | `chg-reuse-before-write` | draft |
 | thermo-nuclear | Temporary branching likely to stay | `chg-flag-owner-retirement` | draft |
-| thermo-nuclear | Few high-conviction comments; direct tone; approval bar | `chg-review-signal`, `chg-review-comment-format` | draft |
+| thermo-nuclear | Few high-conviction comments; direct tone; approval bar | `chg-review-signal`, `chg-review-comment-format` | stable |
 | thermo-nuclear | Review: only report added or modified code | `chg-review-signal` | stable |
 | thermo-nuclear | Review: trace side effects before claiming breakage; no unfinished research | `chg-verify-before-claim` | stable |
 | thermo-nuclear | Review: developer-experience breaks (env vars, ports, secret sources, new scripts) | `chg-devex-breaking-config` | draft |
@@ -185,7 +185,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | research-gap | Release tied to a reviewed revision | dropped: duplicate of code-build-hermetic | dropped |
 | research-gap | Incident response/postmortems | `inc-postmortem-owned-actions`, `inc-rollback-path-tested` | draft |
 | research-gap | a credential is committed to the repo. Sources added in second pass | `code-secret-scan` | stable |
-| research-gap | Reviewer conduct | `chg-review-comment-format` | draft |
+| research-gap | Reviewer conduct | `chg-review-comment-format` | stable |
 | change-codebase | Consistency with codebase unless pattern is bad; improve what you touch | `chg-match-codebase-pattern` | stable |
 | change-codebase | Reuse: search for an existing helper first | `chg-reuse-before-write` | draft |
 | change-codebase | Move logic to shared module with 2+ call sites; wrong-abstraction | `mod-yagni`, `mod-no-wrong-abstraction` | draft |
@@ -201,7 +201,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | change-codebase | Rollback path (thin source) | `chg-rollback-path` | draft |
 | change-codebase | Flag owner and retirement (thin source) | `chg-flag-owner-retirement` | draft |
 | change-codebase | New attack surface named (thin source) | `chg-name-attack-surface` | draft |
-| change-codebase | Severity labels, one comment per finding | `chg-review-comment-format` | draft |
+| change-codebase | Severity labels, one comment per finding | `chg-review-comment-format` | stable |
 | change-codebase | What not to flag; few high-conviction comments | `chg-review-signal` | stable |
 | change-codebase | Verify before claim | `chg-verify-before-claim` | stable |
 | change-codebase | No silenced diagnostics | `chg-no-silenced-diagnostics` | draft |
@@ -217,7 +217,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | change-codebase | ADRs (gap: format unsourced) | `code-adr` | draft |
 | change-codebase | Consistency drift | `code-consistency-drift` | stable |
 | change-codebase | Supply chain: workflows, provenance | `code-workflow-supply-chain` | stable |
-| core-python | How I review: Ledger: PASS/FAIL/N/A with evidence | `chg-review-comment-format` | draft |
+| core-python | How I review: Ledger: PASS/FAIL/N/A with evidence | `chg-review-comment-format` | stable |
 | core-python | What the tools own: Linter owns what it can decide; add the gate | `py-ruff-gate` | draft |
 | core-python | Architecture: Three layers named by what they do; dependencies point inward | `mod-layers-point-inward` | draft |
 | core-python | Architecture: Entry module stays thin | `mod-thin-entry-point` | draft |
@@ -277,7 +277,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Change discipline: Never silence a diagnostic | `py-no-silenced-diagnostics` | draft |
 | core-python | Change discipline: No paths relative to the working directory | `py-paths-from-file` | draft |
 | core-python | Change discipline: Verify before claiming; delete workarounds; stay in scope; Chesterton; measure | `chg-verify-before-claim`, `chg-matches-spec`, `chg-chestertons-fence` | draft |
-| core-python | Writing the review: Severity labels, one comment per finding, design first | `chg-review-comment-format` | draft |
+| core-python | Writing the review: Severity labels, one comment per finding, design first | `chg-review-comment-format` | stable |
 | core-python | Critical rules: Bookmark table | dropped: bookmark table, severity lives on cards | dropped |
 | core-python | Additions beyond the guide: Deep modules | `mod-deep-modules` | draft |
 | core-python | Additions beyond the guide: Wrong abstraction | `mod-no-wrong-abstraction` | draft |
@@ -288,7 +288,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | Azure retry: backoff, attempts, non-transient, stacked layers; AWS correlated: jitter | `svc-retry-policy` | stable |
 | service-system | Azure retry/saga: idempotency, unique saga id | `svc-idempotency-key` | stable |
 | service-system | Azure circuit breaker and bulkhead | `svc-circuit-breaker-bulkhead` | draft |
-| service-system | AWS queues: DLQ, visibility timeout, queue age | `svc-dlq` | draft |
+| service-system | AWS queues: DLQ, visibility timeout, queue age | `svc-dlq` | stable |
 | service-system | AWS fairness / shuffle sharding: per-tenant quota, 429 vs 503 | `svc-rate-limit-quota` | stable |
 | service-system | AWS queues: bounded queue, sideline, cheap shedding | `sys-load-shedding-bounded-queues` | stable |
 | service-system | Kleppmann / antirez: fencing, check-and-set, disagreement | `sys-lock-fencing` | stable |
@@ -308,8 +308,8 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | SRE monitoring | `prod-alerts-symptoms-golden-signals` | stable |
 | service-system | Honeycomb wide events, cardinality, deploy markers | `prod-wide-events-bounded-labels` | draft |
 | service-system | SRE canary + release engineering, AWS velocity control | `prod-canary-staged-rollout` | stable |
-| service-system | AWS cache-off test, ASVS degradation path | `prod-kill-switch-fallback` | draft |
-| service-system | Canary / health-check fail-open caution | `inc-rollback-path-tested` | draft |
+| service-system | AWS cache-off test, ASVS degradation path | `prod-kill-switch-fallback` | stable |
+| service-system | Canary / health-check fail-open caution | `inc-rollback-path-tested` | stable |
 | service-system | First-hand card, no research source | dropped: svc-api-compat-pagination merged away in stable pass 6; its Rule is `svc-api-versioning-policy` and its pagination half is `svc-list-endpoint-paginates` | dropped |
 | service-system | First-hand card, no research source | `sys-n-plus-one-pooling` | stable |
 | service-system | First-hand card, no research source | `prod-slo-error-budget` | draft |
@@ -342,8 +342,8 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 15 30-second reader-load test | glossary/reader-load | glossary |
 | cursor-plugins | 16 One source of truth for a decision; smallest diff | `mod-central-config`, `chg-one-concern` | draft |
 | cursor-plugins | 17 Subtract first; no speculative validators or stubs | `mod-yagni` | stable |
-| cursor-plugins | 18 Operations converge on rerun and after a crash; stale markers recognisable | `fn-rerun-safe-after-crash`, `svc-idempotency-key` | draft |
-| cursor-plugins | 19 Separate before serialising shared state; single writer; convention is not a lock | `mod-single-writer-per-state` | draft |
+| cursor-plugins | 18 Operations converge on rerun and after a crash; stale markers recognisable | `fn-rerun-safe-after-crash`, `svc-idempotency-key` | stable |
+| cursor-plugins | 19 Separate before serialising shared state; single writer; convention is not a lock | `mod-single-writer-per-state` | stable |
 | cursor-plugins | 20 Migrate callers and delete the legacy API in one change (no outside consumers) | `chg-delete-legacy-after-migration` | draft |
 | cursor-plugins | 21 Accept planned, scoped breakage between rewrite phases | dropped: planning posture; conflicts with per-commit green | dropped |
 | cursor-plugins | 22 Verify the real thing, not a proxy; re-runnable script as artifact | `chg-verify-before-claim`, `chg-agent-independent-review` | draft |
@@ -370,7 +370,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 42 Red flag: information leakage | `mod-fowler-smells`, `mod-no-wire-types-in-public-api` | draft |
 | cursor-plugins | 43 Red flag: temporal decomposition | `mod-cohesive-unit` | draft |
 | cursor-plugins | 44 Red flag: pass-through method | `fn-no-pass-through-wrapper` | draft |
-| cursor-plugins | 45 Red flag: split ownership of state | `mod-single-writer-per-state` | draft |
+| cursor-plugins | 45 Red flag: split ownership of state | `mod-single-writer-per-state` | stable |
 | cursor-plugins | 46 Red flag: two ways to do one task | `chg-delete-legacy-after-migration`, `code-consistency-drift` | draft |
 | cursor-plugins | 47 Red flag: importable internals | `mod-internals-unreachable` | draft |
 | cursor-plugins | 48 Red flag: hand-synced list | `mod-derive-dont-duplicate` | stable |
@@ -383,7 +383,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 55 Reviewer judgement: nit inflation, unreachable hypotheticals, preference, independent agreement | `chg-review-signal`, `chg-agent-independent-review` | draft |
 | cursor-plugins | 56 State intent first; findings bucketed by action and severity | `chg-matches-spec`, `chg-review-comment-format` | draft |
 | cursor-plugins | 57 Bug fix: each line traces to runtime evidence; repro before fix | `chg-fix-root-cause-not-symptom`, `chg-verify-before-claim` | draft |
-| cursor-plugins | 58 Refactor: pin behaviour with a characterization test before moving structure | `chg-refactor-has-behaviour-pin` | draft |
+| cursor-plugins | 58 Refactor: pin behaviour with a characterization test before moving structure | `chg-refactor-has-behaviour-pin` | stable |
 | cursor-plugins | 59 Refactor API reshape: migrate callers, delete old API, no shim | `chg-delete-legacy-after-migration` | draft |
 | cursor-plugins | 59b Spot-check renames against strings and prose | dropped: manual step, not visible in a diff | dropped |
 | cursor-plugins | 60 Refactor must lower reader load or be reverted | `chg-refactor-separate` | stable |
@@ -403,7 +403,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 73 Deslop: extra comments, abnormal defensive try/catch, any casts, deep nesting | `chg-agent-grounded-code`, `chg-match-codebase-pattern`, `py-no-cast`, `mod-validate-at-boundary-once` | draft |
 | cursor-plugins | 74 Reviewability: matching summary, core vs generated, no hidden behaviour change, split if too big | `chg-author-hygiene`, `chg-refactor-separate`, `chg-size-ceiling` | stable |
 | cursor-plugins | 75 Compare tree hash after history rewrite | dropped: author workflow | dropped |
-| cursor-plugins | 76 Review order correctness before style; severity groups; judge on all checks | `chg-review-signal`, `chg-review-comment-format`, `code-ci-gates` | draft |
+| cursor-plugins | 76 Review order correctness before style; severity groups; judge on all checks | `chg-review-signal`, `chg-review-comment-format`, `code-ci-gates` | stable |
 | cursor-plugins | 77 Verify-this: falsifiable claim, same-condition baseline and treatment, one verdict | `chg-verify-before-claim`, `chg-perf-claim-evidence` | stable |
 | cursor-plugins | 78 Fix CI one cause at a time; flaky retry once; unrelated fixes stay out | `chg-one-concern` | stable |
 | cursor-plugins | 79 Task runners and agent mechanics (team-kit) | dropped: no review rule | dropped |
@@ -411,13 +411,13 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 81 Root-cause gate and symptom-fix tells (guard, swallow, cast, retry, skip, weakened assertion, hard-code) | `chg-fix-root-cause-not-symptom` | draft |
 | cursor-plugins | 82 Merge-ready definition: green review, ready, no conflicts, all checks, threads resolved | `chg-author-hygiene` | stable |
 | cursor-plugins | 83 Review priority order; no factoring before second caller; understand before deleting | `chg-review-signal`, `mod-yagni`, `chg-chestertons-fence` | draft |
-| cursor-plugins | 84 Keep real, in-diff, worthwhile findings; cap list; one ask each; no praise | `chg-review-signal`, `chg-review-comment-format` | draft |
-| cursor-plugins | 85 Re-review context; PR text and CI logs are untrusted data | `chg-review-comment-format`, `sys-prompt-injection`, `code-workflow-supply-chain` | draft |
+| cursor-plugins | 84 Keep real, in-diff, worthwhile findings; cap list; one ask each; no praise | `chg-review-signal`, `chg-review-comment-format` | stable |
+| cursor-plugins | 85 Re-review context; PR text and CI logs are untrusted data | `chg-review-comment-format`, `sys-prompt-injection`, `code-workflow-supply-chain` | stable |
 | cursor-plugins | 86 The Algorithm: question requirement, delete, optimise, accelerate, automate | `mod-yagni` | stable |
 | cursor-plugins | 87 dyl-ready-pr loop and build-figma | dropped: platform workflow | dropped |
 | cursor-plugins | 88 CLI: every input a flag; prompts only fallback; fail fast with example | `svc-cli-non-interactive` | draft |
 | cursor-plugins | 89 CLI: --dry-run and confirmation bypass for destructive commands | `svc-cli-destructive-dry-run` | draft |
-| cursor-plugins | 90 CLI: safe to rerun | `svc-idempotency-key`, `fn-rerun-safe-after-crash` | draft |
+| cursor-plugins | 90 CLI: safe to rerun | `svc-idempotency-key`, `fn-rerun-safe-after-crash` | stable |
 | cursor-plugins | 91 CLI help examples, consistent verbs, structured output | dropped: usability preference, one vendor's view | dropped |
 | cursor-plugins | 92 Documented setup path runs on a clean checkout | `code-documented-setup-runs` | draft |
 | cursor-plugins | 92a Scoped validation loop for a small change | `code-scoped-validation-loop` | draft |
@@ -473,7 +473,7 @@ Source: `docs/research/security-pass.md`. Row numbers are that file's.
 - `fn-distinct-types-for-ids`: FAIL if two arguments with different meanings share one primitive type and nothing stops them being swapped.
 - `fn-test-oracle-independent`: FAIL if a test's expected value comes from the code under test, or a 'not called' assertion has no matching case where the call happens.
 - `fn-rerun-safe-after-crash`: FAIL if an operation gives a different result on a second run or after a crash halfway, or leaves a marker the next run cannot judge as stale.
-- `mod-single-writer-per-state`: FAIL if more than one module or worker writes the same state when each could own its own, or sharing is guarded only by convention.
+- `mod-single-writer-per-state`: FAIL if more than one writer can change the same state at once, with no single owner, serialising queue or compare-and-swap, or if only a convention guards it.
 - `mod-internals-unreachable`: FAIL if a caller outside a module can import its internals and no check fails the build.
 - `mod-derive-dont-duplicate`: FAIL if a type, list or enum duplicates a shape owned by a schema or another list, with no derivation and no build check for disagreement.
 - `mod-no-wire-types-in-public-api`: FAIL if a public interface exposes transport, storage or framework types instead of domain types.

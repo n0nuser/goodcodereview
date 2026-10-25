@@ -7,8 +7,11 @@ status: draft
 lang: core
 applies_when: A module or package is large, mixes concepts, or holds a very large literal.
 tool_gate: none
+note: Shopify (a 3,000-line Shop class split into components) and Cabify (search logic moved out of models) back the Rule; the dev.to Ousterhout summary is secondary
 borrowed_from:
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
+  - https://shopify.engineering/refactoring-legacy-code-strangler-fig-pattern
+  - https://tech.cabify.com/blog/engineering/what-to-do-when-your-code-is-starting-to-smell
 ---
 
 **Rule.** Keep one cohesive concept per module.

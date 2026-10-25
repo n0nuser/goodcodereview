@@ -3,20 +3,23 @@ id: chg-review-comment-format
 level: change
 tags: [process, reviewer, etiquette]
 severity: discuss
-status: draft
+status: stable
 lang: core
 applies_when: A reviewer writes feedback on a change.
 tool_gate: none
+note: a severity label on each comment is backed by Google (prefix a non-blocking comment with "Nit:"), Gergely Orosz (make clear which comments are non-blocking), Cloudflare (each review finding carries critical, warning or suggestion) and Dropbox (most review findings advisory, blocking only for confirmed gaps); one finding per comment has no three-org backing and sits in Why
 borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/standard.html
   - https://blog.pragmaticengineer.com/good-code-reviews-better-code-reviews/
   - https://blog.palantir.com/code-review-best-practices-19e02780015f
   - https://slack.engineering/how-about-code-reviews/
+  - https://blog.cloudflare.com/ai-code-review/
+  - https://dropbox.tech/security/dropbox-mcp-dash-design-code-security
 ---
 
-**Rule.** Give each review comment one finding and a severity label: block, should-fix, or discuss.
+**Rule.** Label each review comment with its severity: block, should-fix, or discuss.
 
-**Why.** Bundled or unlabelled comments leave the author unable to tell what blocks merge, and wording that blames the person stalls the discussion. Phrase comments as a question or a fact, not a verdict on the person.
+**Why.** Unlabelled comments leave the author unable to tell what blocks merge. Keep one finding per comment, so each label covers one thing and each thread can close on its own. Wording that blames the person stalls the discussion. Phrase comments as a question or a fact, not a verdict on the person.
 
 **FAIL**
 
@@ -31,4 +34,4 @@ borrowed_from:
 "[discuss] could this be named `retry_count`?"
 ```
 
-**Counterpoint.** Labels add ceremony for tiny reviews. Use the same three severities the cards use, and treat an unlabelled comment as non-blocking, so the author never has to guess. Slack stresses people and tone over mechanics, and Palantir bans absolute wording. Google's tool is "Nit:" only. Take the common core.
+**Counterpoint.** "Labels add ceremony to a tiny review." A label is one word, and it saves a round trip in which the author asks whether a comment blocks the merge. A team that marks only its nits still leaves the author to guess about every other comment, so label those too.

@@ -7,9 +7,10 @@ status: draft
 lang: core
 applies_when: The change adds a feature flag, kill switch or config toggle.
 tool_gate: Flag registry linter that requires owner and expiry fields.
-note: one practitioner essay (switch off a long-lived branch); retirement discipline is an extension
+note: one practitioner essay (switch off a long-lived branch); Dropbox backs an owner for every gate; default, removal date and ticket have no company source
 borrowed_from:
   - https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to
+  - https://dropbox.tech/infrastructure/lessons-learned-in-incident-management
 ---
 
 **Rule.** Give every new flag an owner, a default, and a removal condition or date, and ticket the removal.

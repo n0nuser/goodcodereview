@@ -7,8 +7,10 @@ status: draft
 lang: core
 applies_when: A `.proto` file defines an enum.
 tool_gate: Protobuf linter (`buf lint`, ENUM_ZERO_VALUE_SUFFIX).
+note: a zero value with no real meaning has Google and Dropbox (UNKNOWN = 0); the _UNSPECIFIED name has Google only; Cabify lints for consistent zero values without naming the convention
 borrowed_from:
   - https://protobuf.dev/best-practices/dos-donts/
+  - https://dropbox.tech/infrastructure/courier-dropbox-migration-to-grpc
 ---
 
 **Rule.** Give every protobuf enum a zero value named `<ENUM>_UNSPECIFIED` with no real meaning.

@@ -4,12 +4,13 @@ level: service
 tags: [compatibility, api, http]
 severity: block
 status: draft
-note: RFC 9110 sections 9.2.1 and 9.2.2
+note: RFC 9110 sections 9.2.1 and 9.2.2; Dropbox backs GET without side effects, which stable svc-csrf-state-changing also requires; PUT and DELETE idempotence has the IETF only
 lang: core
 applies_when: A service exposes HTTP endpoints, or a handler changes which method it accepts.
 tool_gate: API linter, and an integration test that calls each GET twice and each PUT or DELETE twice and compares state.
 borrowed_from:
   - https://www.rfc-editor.org/rfc/rfc9110.html
+  - https://dropbox.tech/developers/limitations-of-the-get-method-in-http
 ---
 
 **Rule.** Keep GET, HEAD and OPTIONS free of side effects, and make PUT and DELETE give the same end state when repeated.
