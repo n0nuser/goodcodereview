@@ -940,3 +940,29 @@ requests.get(url, verify="/etc/ssl/company-ca.pem")   # private CA added, check 
 ```
 
 **Counterpoint.** "It is an internal network." Internal links get sniffed after one compromised host. A private CA gives you the same convenience with the check intact.
+
+## fn-xml-no-external-entities
+
+severity: block  
+concerns: security  
+applies_when: Code parses XML, SVG, SOAP, SAML, or an office document that a user or another system can supply.
+
+**Rule.** Parse untrusted XML with external entity resolution turned off, for example through a hardened parser such as `defusedxml`.
+
+**Why.** A DTD can declare an entity whose value is `file:///etc/passwd` or an internal URL, and a parser that resolves it pastes that content into the document or makes the request for the attacker. Nested internal entities can also expand a small file into gigabytes. Where the parser allows it, also turn off DTDs and the parser's network access. Each parser has its own switches, so name them in the code instead of trusting the library default.
+
+**FAIL**
+
+```python
+parser = lxml.etree.XMLParser(resolve_entities=True, no_network=False)
+doc = lxml.etree.fromstring(request.get_data(), parser)
+```
+
+**PASS**
+
+```python
+import defusedxml.ElementTree as ET
+doc = ET.fromstring(request.get_data())   # rejects DTD entities by default
+```
+
+**Counterpoint.** "Recent Python XML modules already refuse external entities." Some do. The FAIL above opts back in, Java and .NET parsers have their own defaults, and a later change to the parser config reopens the hole. An explicit hardened parser makes the setting visible in review.
