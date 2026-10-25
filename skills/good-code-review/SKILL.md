@@ -120,6 +120,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `svc-bound-client-controlled-sizes` [should-fix] {security}: Cap every client-controlled size and count on the server: body bytes, string length, array items, page size and batch size.
 - `svc-bounded-background-tasks` [block] {reliability, correctness}: Cap how many background tasks run at once, and never spawn one per input with no limit.
 - `svc-cors-allowlist` [should-fix] {security}: Allow cross-origin access only to a fixed list of named origins, and never echo the request `Origin` header back unchecked.
+- `svc-csp-strict-script-src` [should-fix] {security}: Send a `Content-Security-Policy` whose `script-src` uses a per-response nonce or script hashes, with `object-src 'none'` and `base-uri 'none'`.
 - `svc-csrf-state-changing` [block] {security}: Require a CSRF token (or an equivalent header check) on every cookie-authenticated request that changes state, and never change state on GET.
 - `svc-idempotency-key` [block] {reliability, correctness}: Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.
 - `svc-list-endpoint-paginates` [should-fix] {performance}: Paginate every list endpoint, with a default page size and a server-side maximum.

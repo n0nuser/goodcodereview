@@ -3,12 +3,11 @@ id: svc-csp-strict-script-src
 level: service
 tags: [security, http, headers, xss]
 severity: should-fix
-status: draft
-lacks: unreviewed, OWASP, Mozilla and Google listed; the nonce or hash form is stricter than the ASVS minimum
+status: stable
 lang: core
 applies_when: The service serves HTML pages to browsers.
 tool_gate: Google CSP Evaluator on the policy; a CI header check against a staging URL.
-note: follows OWASP, MDN and web.dev, which are stricter than the ASVS 3.4.3 minimum (that minimum still allows a host allowlist); svc-security-headers covers frame-ancestors; fn-no-raw-html-sink is the first defence against XSS and CSP is the second
+note: follows OWASP, MDN and web.dev, which are stricter than the ASVS 3.4.3 minimum (that minimum still allows a host allowlist); fn-no-raw-html-sink is the first defence against XSS and CSP is the second
 borrowed_from:
   - https://raw.githubusercontent.com/OWASP/ASVS/master/5.0/en/0x12-V3-Web-Frontend-Security.md
   - https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html

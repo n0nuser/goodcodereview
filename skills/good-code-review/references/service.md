@@ -255,6 +255,31 @@ resp.headers["Vary"] = "Origin"                # caches keep one copy per origin
 
 **Counterpoint.** "`*` is fine for a public API." It is, for endpoints that return only public data and take no credentials. Keep it off any endpoint behind a login.
 
+## svc-csp-strict-script-src
+
+severity: should-fix  
+concerns: security  
+applies_when: The service serves HTML pages to browsers.
+
+**Rule.** Send a `Content-Security-Policy` whose `script-src` uses a per-response nonce or script hashes, with `object-src 'none'` and `base-uri 'none'`.
+
+**Why.** When an XSS bug slips through, CSP decides whether the injected script runs. A host allowlist such as `script-src 'self' cdn.example` usually has a bypass, because some allowed host serves JSONP or an old library. A nonce or hash only lets through scripts the server marked. `'strict-dynamic'` lets those scripts load their own children. Browsers that support nonces ignore an `'unsafe-inline'` fallback placed next to one, so that fallback is safe. `'unsafe-inline'` on its own turns the policy off for inline script.
+
+**FAIL**
+
+```text
+Content-Security-Policy: script-src 'self' 'unsafe-inline' https://cdn.example.com
+```
+
+**PASS**
+
+```text
+Content-Security-Policy: script-src 'nonce-r4nd0m' 'strict-dynamic'; object-src 'none'; base-uri 'none'
+<script nonce="r4nd0m" src="/app.js"></script>
+```
+
+**Counterpoint.** "A strict CSP breaks inline handlers and third-party tags." It does at first, so roll it out with `Content-Security-Policy-Report-Only`, move `onclick=` attributes into script files, and switch to enforce when the reports go quiet. A policy that never leaves report-only protects nothing, so give that step a date.
+
 ## svc-csrf-state-changing
 
 severity: block  
