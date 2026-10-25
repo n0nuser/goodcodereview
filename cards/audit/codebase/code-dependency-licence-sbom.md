@@ -12,6 +12,7 @@ borrowed_from:
   - https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/
   - https://github.com/ossf/scorecard/blob/main/docs/checks.md
   - https://www.cisa.gov/sbom
+  - https://www.nist.gov/itl/executive-order-14028-improving-nations-cybersecurity/software-security-supply-chains-software-1
   - https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-the-dependency-graph
 ---
 

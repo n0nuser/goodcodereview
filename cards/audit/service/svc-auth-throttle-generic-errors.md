@@ -13,6 +13,9 @@ borrowed_from:
   - https://pages.nist.gov/800-63-4/sp800-63b.html
   - https://portswigger.net/web-security/authentication/password-based
   - https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-228-upd1.pdf
+  - https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity-configuration
+  - https://auth0.com/docs/secure/attack-protection/brute-force-protection
+  - https://docs.cloud.google.com/identity-platform/docs/admin/email-enumeration-protection
 ---
 
 **Rule.** Limit failed attempts per account, and return the same message, status and timing whether or not the account exists.

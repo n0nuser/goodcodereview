@@ -13,6 +13,7 @@ borrowed_from:
   - https://slsa.dev/spec/v1.0/levels
   - https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/
   - https://docs.github.com/en/actions/reference/security/secure-use
+  - https://www.stepsecurity.io/blog/pinning-github-actions-for-enhanced-security-a-complete-guide
 ---
 
 **Rule.** Pin every CI action to a full commit SHA.
