@@ -75,7 +75,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #67 | Secrets Management | `code-secret-scan` | stable |
 | 111-list #68 | IAM | glossary/iam | glossary |
 | 111-list #69 | OAuth | glossary/oauth | glossary |
-| 111-list #70 | JWT Rotation | glossary/jwt-rotation | glossary |
+| 111-list #70 | JWT Rotation | dropped: no source yet | dropped |
 | 111-list #71 | TLS | glossary/tls | glossary |
 | 111-list #72 | Encryption at Rest | glossary/encryption-at-rest | glossary |
 | 111-list #73 | Encryption in Transit | glossary/encryption-in-transit | glossary |
@@ -96,7 +96,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #85 | Failover | glossary/failover | glossary |
 | 111-list #86 | Multi-Region Deployment | glossary/multi-region-deployment | glossary |
 | 111-list #87 | Chaos Engineering | glossary/chaos-engineering | glossary |
-| 111-list #88 | Cost Optimization | glossary/cost-optimization | glossary |
+| 111-list #88 | Cost Optimization | dropped: no source yet | dropped |
 | 111-list #89 | Cold Starts | glossary/cold-starts | glossary |
 | 111-list #90 | Serverless Limits | glossary/serverless-limits | glossary |
 | 111-list #91 | Latency | glossary/latency | glossary |
@@ -127,11 +127,11 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #X5 | Async vs Sync | `mod-prefer-sync-api` | draft |
 | 111-list #X6 | Clean Code | glossary/clean-code | glossary |
 | 111-list #X7 | YAGNI | `mod-yagni` | stable |
-| 111-list #X8 | Grug | glossary/grug | glossary |
-| 111-list #X9 | SOLID | glossary/solid | glossary |
+| 111-list #X8 | Grug | dropped: no source yet | dropped |
+| 111-list #X9 | SOLID | dropped: no source yet | dropped |
 | 111-list #X9b | SOLID (Liskov) | `mod-subtype-passes-parent-tests` | draft |
 | 111-list #X10 | TDD | glossary/tdd | glossary |
-| 111-list #X11 | DDD | glossary/ddd | glossary |
+| 111-list #X11 | DDD | dropped: no source yet | dropped |
 | 111-list #X13 | Pocock Standards axis | `chg-match-codebase-pattern` | stable |
 | 111-list #X14 | Pocock Spec axis | `chg-matches-spec` | draft |
 | pocock-smells | Mysterious Name | `mod-one-name-per-concept` | draft |
