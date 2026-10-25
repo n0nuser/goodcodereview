@@ -9,7 +9,7 @@ from typing import Literal, Optional, Union, get_args, get_origin, get_type_hint
 
 from validate import LACKS
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2  # 2 added Card.orgs
 Status = Literal["stable", "draft"]
 Severity = Literal["block", "should-fix", "discuss"]
 Kind = Literal["stable", "drafts"]
