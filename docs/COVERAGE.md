@@ -591,3 +591,15 @@ Source: `docs/research/alerting-pass.md`. Row numbers are that file's.
 |---|---|---|---|
 | alerting-pass | 1-3 Page on user-visible symptoms such as error rate and latency; hold an error-rate alert for a few minutes | `prod-alerts-symptoms-golden-signals` | stable |
 | alerting-pass | 4 Alert on workload health, not arbitrary values | dropped: never says symptoms or causes, so it adds no org to the Rule | dropped |
+
+## Company sweep new cards
+
+Source: `docs/research/new-cards-pass-1.md`, which verifies leads from the company sweeps.
+
+| Source | Item | Maps to | Status |
+|---|---|---|---|
+| company-sweep | Run old and new side by side and diff outputs or snapshots before moving traffic (Netflix, Stripe, Airbnb, GitHub) | `prod-shadow-compare-before-cutover` | draft |
+| company-sweep | Non-critical dependencies are best-effort and every fallback is counted (Netflix, Uber, Cabify) | `svc-best-effort-optional-deps` | draft |
+| company-sweep | Cap blast radius with independent cells (Netflix, Slack, Airbnb, Cloudflare) | `sys-cells-limit-blast-radius` | draft |
+| company-sweep | Flaky tests: report passes after retry, quarantine with an owner, verify the fix with many reruns (Dropbox, Shopify) | `code-flaky-test-quarantine` | draft |
+| company-sweep | Rate-limit by cost, not request count (Shopify, GitHub, Airbnb) | `svc-rate-limit-by-cost` | draft |
