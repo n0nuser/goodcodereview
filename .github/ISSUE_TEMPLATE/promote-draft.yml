@@ -1,0 +1,42 @@
+name: Promote a draft
+description: A draft card now meets the bar in docs/PROMOTION.md.
+title: "Promote <card id>"
+body:
+  - type: input
+    id: card
+    attributes:
+      label: Card id
+      description: The draft's id, such as svc-circuit-breaker-bulkhead.
+    validations:
+      required: true
+  - type: textarea
+    id: lacks
+    attributes:
+      label: What it lacked
+      description: Paste its `lacks:` line and say how this issue answers it.
+    validations:
+      required: true
+  - type: textarea
+    id: orgs
+    attributes:
+      label: Three independent organisations
+      description: One line per organisation, with a link to the page that states the practice and the Rule clause it backs. One organisation counts once. A plan, a definition page, or a summary of another source does not count.
+      placeholder: |
+        Google: https://... backs the whole Rule
+        Grafana Labs: https://... backs the whole Rule
+        Datadog: https://... backs the whole Rule
+    validations:
+      required: true
+  - type: checkboxes
+    id: bar
+    attributes:
+      label: The rest of the bar
+      options:
+        - label: A reviewer can mark the Rule FAIL at the card's level.
+          required: true
+        - label: The FAIL and PASS examples parse and use real APIs.
+          required: true
+        - label: The counterpoint is a real objection, and the card answers it.
+          required: true
+        - label: No stable card covers the same rule.
+          required: true
