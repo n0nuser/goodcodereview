@@ -1,4 +1,4 @@
-# On-Call
+# On-call
 
 Engineers who take turns responding to alerts.
 

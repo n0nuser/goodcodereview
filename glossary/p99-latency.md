@@ -2,6 +2,6 @@
 
 The latency that 99% of requests beat.
 
-**Why a reviewer cares.** Means hide it. Use bucketed distributions.
+**Why a reviewer cares.** Averages hide p99 latency. Use bucketed distributions.
 
 **Checks.** `prod-alerts-symptoms-golden-signals`
