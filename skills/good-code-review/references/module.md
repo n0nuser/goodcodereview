@@ -68,7 +68,7 @@ status.py is generated from openapi.yaml in the build, or a test asserts the two
 severity: should-fix  
 concerns: performance  
 applies_when: Code creates a network or database client.  
-backed by: Microsoft, Google, Python Software Foundation, OpenJS Foundation
+backed by: Microsoft, Google, Requests project, OpenJS Foundation
 
 **Rule.** Build pooled clients once at startup and reuse them.
 
