@@ -8,7 +8,7 @@ lacks: orgs, reporting the keyboard pass has two PR templates; the 200% zoom cla
 lang: core
 applies_when: The change alters markup, styles, or behaviour a user sees or operates.
 tool_gate: A pull request template with a UI checklist; the screenshots and the keyboard result are the evidence.
-note: draft after stable pass 5 - running a keyboard pass is backed by W3C, WebAIM, GOV.UK, but reporting it in the change only by the WordPress and Elastic PR templates (2); 200% zoom is W3C only; screenshots rest on three PR templates (WordPress, Elastic, Mozilla), and WordPress's section is optional
+note: running a keyboard pass is backed by W3C, WebAIM, GOV.UK, but reporting it in the change only by the WordPress and Elastic PR templates (2); 200% zoom is W3C only; screenshots rest on three PR templates (WordPress, Elastic, Mozilla), and WordPress's section is optional
 borrowed_from:
   - https://www.w3.org/WAI/test-evaluate/preliminary/
   - https://webaim.org/techniques/keyboard/

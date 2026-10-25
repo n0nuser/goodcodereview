@@ -8,7 +8,7 @@ lacks: orgs, "before a public launch" has GOV.UK only; the audit content has GOV
 lang: core
 applies_when: A new UI service or a major redesign is about to open to the public.
 tool_gate: none; a launch checklist item that links the audit report.
-note: draft after stable pass 5 - 3 orgs for an audit with assistive technology (GOV.UK, W3C, Deque), but only GOV.UK ties it to before a public launch, which is the card's point; Section508.gov weak; the GOV.UK duty is a UK legal duty, so this card names WCAG 2.2 AA as the standard and claims no law elsewhere
+note: 3 orgs for an audit with assistive technology (GOV.UK, W3C, Deque), but only GOV.UK ties it to before a public launch, which is the card's point; Section508.gov weak; the GOV.UK duty is a UK legal duty, so this card names WCAG 2.2 AA as the standard and claims no law elsewhere
 borrowed_from:
   - https://www.gov.uk/service-manual/helping-people-to-use-your-service/making-your-service-accessible-an-introduction
   - https://www.w3.org/WAI/test-evaluate/preliminary/

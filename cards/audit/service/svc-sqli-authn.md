@@ -4,7 +4,6 @@ level: service
 tags: [security, injection, sql]
 severity: block
 status: stable
-note: the id says authn but the card covers SQL injection only; rename it in a change that also fixes docs/COVERAGE.md and the research notes
 lang: core
 applies_when: The code builds a SQL query that includes request data or other untrusted input.
 tool_gate: Bandit B608 (`hardcoded_sql_expressions`), CodeQL `py/sql-injection`.
