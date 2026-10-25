@@ -4,12 +4,15 @@ level: service
 tags: [compatibility, api, contracts]
 severity: should-fix
 status: draft
+note: source of truth has Zalando, Spotify and Stripe; generate-or-test has Stripe only; a spec generated from code makes the code, not the document, the source of truth
 lang: core
 applies_when: A service publishes an OpenAPI (Swagger) description that callers, SDK generators or gateways read.
 tool_gate: Contract test or schema validation in CI that runs requests against the service and checks responses against the spec, or a spec generated from the code.
 borrowed_from:
   - https://spec.openapis.org/oas/v3.1.0.html
   - https://opensource.zalando.com/restful-api-guidelines/
+  - https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products
+  - https://engineering.atspotify.com/2026/5/spotify-ads-api-claude-plugins
 ---
 
 **Rule.** Keep the OpenAPI document as the source of truth, and generate it from the code or test the running service against it in CI.

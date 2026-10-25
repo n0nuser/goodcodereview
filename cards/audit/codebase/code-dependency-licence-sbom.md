@@ -3,11 +3,11 @@ id: code-dependency-licence-sbom
 level: codebase
 tags: [security, supply-chain, licences, sbom]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: Auditing what third-party code the repo ships and under which terms.
-tool_gate: Licence checker and vulnerability scan in CI; SBOM generated at release.
-note: SBOM and scan from OWASP A03:2025; the licence allowlist is team policy, unsourced
+tool_gate: A vulnerability scanner such as OSV-Scanner or Dependabot alerts; an SBOM generator such as Syft.
+note: SBOM backed by OWASP, NIST and GitHub; scan by OWASP, OpenSSF and GitHub; the licence allowlist is team policy, unsourced
 borrowed_from:
   - https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/
   - https://github.com/ossf/scorecard/blob/main/docs/checks.md
@@ -16,14 +16,14 @@ borrowed_from:
   - https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-the-dependency-graph
 ---
 
-**Rule.** Generate an SBOM and scan dependencies for known vulnerabilities in CI.
+**Rule.** Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule.
 
-**Why.** Without an inventory, a team cannot answer a disclosed vulnerability quickly. Team policy: also fail the build on a dependency whose licence is not on the approved list.
+**Why.** Without an inventory, a team cannot answer a disclosed vulnerability quickly. CI is the usual place for both steps: the SBOM then matches what was built, and the scan runs without anyone remembering it. Team policy: also fail the build on a dependency whose licence is not on the approved list.
 
 **FAIL**
 
 ```text
-No SBOM step and no vulnerability scanner in CI.
+No SBOM anywhere, no scanner in CI, and dependency alerts turned off.
 ```
 
 **PASS**

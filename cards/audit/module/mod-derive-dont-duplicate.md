@@ -3,14 +3,19 @@ id: mod-derive-dont-duplicate
 level: module
 tags: [compatibility, maintainability, duplication, schemas]
 severity: should-fix
-status: draft
+status: stable
 lang: core
 applies_when: A schema, spec, enum or list owns a shape that other code restates by hand.
 tool_gate: Codegen from the schema, or a test that diffs the two lists.
-note: one vendor's engineering guidance (opinion), from pstack principle-type-system-discipline and architect/references/design-red-flags
+note: Uber, Stripe and Spotify back the Rule without cursor/plugins
 borrowed_from:
   - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-type-system-discipline/SKILL.md
   - https://github.com/cursor/plugins/blob/main/pstack/skills/architect/references/design-red-flags.md
+  - https://www.uber.com/blog/designing-mcp-gateway/
+  - https://www.uber.com/blog/high-performance-grpc/
+  - https://stripe.dev/blog/how-api-changes-flow-into-stripes-developer-products
+  - https://stripe.dev/blog/shepherd-how-stripe-adapted-chronon-to-scale-ml-feature-development
+  - https://engineering.atspotify.com/2026/5/spotify-ads-api-claude-plugins
 ---
 
 **Rule.** Derive a type, list or enum from the schema or list that owns it, or add a build check that fails when the two disagree.

@@ -3,11 +3,11 @@ id: code-workflow-supply-chain
 level: codebase
 tags: [security, process, supply-chain, ci]
 severity: block
-status: draft
+status: stable
 lang: core
 applies_when: Auditing CI workflow files and release pipelines.
-tool_gate: OpenSSF Scorecard run in CI; workflow linters.
-note: SLSA page fetched was the v1.0 path, which says a newer version is current
+tool_gate: OpenSSF Scorecard `Pinned-Dependencies` check; zizmor `unpinned-uses` audit.
+note: GitHub, OpenSSF and StepSecurity back the Rule; OWASP backs pinning in general
 borrowed_from:
   - https://github.com/ossf/scorecard/blob/main/docs/checks.md
   - https://slsa.dev/spec/v1.0/levels
@@ -23,22 +23,19 @@ borrowed_from:
 **FAIL**
 
 ```yaml
-on: pull_request_target
 steps:
-  - uses: some/action@v3            # tag, not SHA
-  - run: echo "${{ github.event.pull_request.title }}"
-  - uses: actions/checkout@v4
-    with: { ref: ${{ github.event.pull_request.head.sha }} }
+  - uses: actions/checkout@v4        # tag, can be moved to other code
+  - uses: some/action@main           # branch, changes on every push
 ```
 
 **PASS**
 
 ```yaml
-permissions: { contents: read }
+permissions:
+  contents: read
 steps:
-  - uses: some/action@<40-char-sha>
-  - run: echo "$TITLE"
-    env: { TITLE: ${{ github.event.pull_request.title }} }
+  - uses: actions/checkout@<40-char-sha>   # v4.2.2
+  - uses: some/action@<40-char-sha>        # v3.1.0
 ```
 
 **Counterpoint.** "SHA pinning blocks automatic fixes and adds update churn." Let an update bot propose SHA bumps, so fixes still arrive as reviewed changes. Where the platform offers a lockfile for workflow dependencies, that lockfile is stronger than SHA pins and meets this check.

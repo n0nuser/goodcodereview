@@ -17,7 +17,7 @@ borrowed_from:
 
 **Rule.** Commit a lockfile with hashes and install from it in CI.
 
-**Why.** Unpinned versions make builds non-reproducible and let a compromised release flow straight into production. Updates should arrive as reviewed, staged changes, not silently.
+**Why.** Unpinned versions make builds non-reproducible and let a compromised release flow straight into production. Updates should arrive as reviewed, staged changes, not silently. [[code-workflow-supply-chain]] covers CI action pins.
 
 **FAIL**
 

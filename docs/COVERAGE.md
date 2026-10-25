@@ -10,7 +10,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #3 | Load Balancing | glossary/load-balancing | glossary |
 | 111-list #4 | Reverse Proxies | glossary/reverse-proxies | glossary |
 | 111-list #5 | API Gateways | glossary/api-gateways | glossary |
-| 111-list #6 | CI/CD | `code-workflow-supply-chain` | draft |
+| 111-list #6 | CI/CD | `code-workflow-supply-chain` | stable |
 | 111-list #7 | Docker | glossary/docker | glossary |
 | 111-list #8 | Kubernetes | glossary/kubernetes | glossary |
 | 111-list #9 | Service Discovery | glossary/service-discovery | glossary |
@@ -167,7 +167,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | thermo-nuclear | Review: feature-gate leaks | `chg-flag-owner-retirement` | draft |
 | thermo-nuclear | Review: do not report an intended breakage | dropped: reviewer posture | dropped |
 | thermo-nuclear | Review: do not over-report priority | `chg-review-signal` | stable |
-| thermo-nuclear | Review: read bot comments only after own audit | `chg-agent-independent-review` | draft |
+| thermo-nuclear | Review: read bot comments only after own audit | `chg-agent-independent-review` | stable |
 | thermo-nuclear | Thermos: two parallel passes then merge | dropped: workflow mechanics; fresh context is chg-agent-independent-review | dropped |
 | research-gap | a change is too large to review (about 200-400 lines or 20+ fi | `chg-size-ceiling` | stable |
 | research-gap | a change mixes refactor or formatting with behavior change. | `chg-refactor-separate` | stable |
@@ -179,7 +179,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | research-gap | an abstraction is introduced from one or two uses, or grows fl | `mod-no-wrong-abstraction` | draft |
 | research-gap | a comment restates the code or is stale. | `fn-comments-explain-why` | stable |
 | research-gap | an except or catch swallows an error and continues, leaving a | `fn-propagate-dont-swallow` | draft |
-| research-gap | release artifacts have no provenance. | `code-workflow-supply-chain` | draft |
+| research-gap | release artifacts have no provenance. | `code-workflow-supply-chain` | stable |
 | research-gap | model output or retrieved text is acted on without validation, | `sys-prompt-injection` | stable |
 | research-gap | an AI-assisted PR lacks disclosure or an author able to explai | `code-ai-pr-disclosure` | draft |
 | research-gap | Release tied to a reviewed revision | dropped: duplicate of code-build-hermetic | dropped |
@@ -208,15 +208,15 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | change-codebase | Chesterton's fence | `chg-chestertons-fence` | draft |
 | change-codebase | Agent code: hallucinated APIs, re-implemented helpers | `chg-agent-grounded-code` | draft |
 | change-codebase | Agent code: mock-asserting tests | `chg-agent-mock-asserting-tests` | draft |
-| change-codebase | Agent code: same-session self-review | `chg-agent-independent-review` | draft |
+| change-codebase | Agent code: same-session self-review | `chg-agent-independent-review` | stable |
 | change-codebase | File-size ceiling 1k lines (gap: heuristic) | `code-file-lines-ceiling` | draft |
 | change-codebase | Dead code | `code-dead-code` | stable |
 | change-codebase | Dependency pinning | `code-dependency-pinning` | stable |
-| change-codebase | Licences, SBOM (licence part is a gap) | `code-dependency-licence-sbom` | draft |
+| change-codebase | Licences, SBOM (licence part is a gap) | `code-dependency-licence-sbom` | stable |
 | change-codebase | CI gates | `code-ci-gates` | stable |
 | change-codebase | ADRs (gap: format unsourced) | `code-adr` | draft |
-| change-codebase | Consistency drift | `code-consistency-drift` | draft |
-| change-codebase | Supply chain: workflows, provenance | `code-workflow-supply-chain` | draft |
+| change-codebase | Consistency drift | `code-consistency-drift` | stable |
+| change-codebase | Supply chain: workflows, provenance | `code-workflow-supply-chain` | stable |
 | core-python | How I review: Ledger: PASS/FAIL/N/A with evidence | `chg-review-comment-format` | draft |
 | core-python | What the tools own: Linter owns what it can decide; add the gate | `py-ruff-gate` | draft |
 | core-python | Architecture: Three layers named by what they do; dependencies point inward | `mod-layers-point-inward` | draft |
@@ -300,7 +300,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | PG altertable: NOT VALID / VALIDATE | `sys-constraint-not-valid` | draft |
 | service-system | PG createindex: CONCURRENTLY, INVALID leftovers | `sys-index-concurrently` | draft |
 | service-system | GitLab migration style + avoiding downtime | `sys-migration-expand-contract` | stable |
-| service-system | OWASP A03:2025, Scorecard, SLSA | `code-dependency-pinning`, `code-workflow-supply-chain`, `code-dependency-licence-sbom` | draft |
+| service-system | OWASP A03:2025, Scorecard, SLSA | `code-dependency-pinning`, `code-workflow-supply-chain`, `code-dependency-licence-sbom` | stable |
 | service-system | OWASP LLM01 | `sys-prompt-injection` | stable |
 | service-system | OWASP A10:2025, ASVS V16 (error leaks, fail open, log data) | `sys-secrets-and-errors` | stable |
 | service-system | OWASP A01 (SSRF folded in) | `sys-ssrf` | stable |
@@ -310,7 +310,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | SRE canary + release engineering, AWS velocity control | `prod-canary-staged-rollout` | stable |
 | service-system | AWS cache-off test, ASVS degradation path | `prod-kill-switch-fallback` | draft |
 | service-system | Canary / health-check fail-open caution | `inc-rollback-path-tested` | draft |
-| service-system | First-hand card, no research source | `svc-api-compat-pagination` | draft |
+| service-system | First-hand card, no research source | dropped: svc-api-compat-pagination merged away in stable pass 6; its Rule is `svc-api-versioning-policy` and its pagination half is `svc-list-endpoint-paginates` | dropped |
 | service-system | First-hand card, no research source | `sys-n-plus-one-pooling` | stable |
 | service-system | First-hand card, no research source | `prod-slo-error-budget` | draft |
 | service-system | First-hand card, no research source | `inc-postmortem-owned-actions` | draft |
@@ -331,7 +331,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 4 Validate at the boundary; pure logic, thin shell | `mod-validate-at-boundary-once`, `mod-thin-entry-point` | draft |
 | cursor-plugins | 5 No transport, storage or wire types in the public surface | `mod-no-wire-types-in-public-api` | draft |
 | cursor-plugins | 6 Distinct types for semantic primitives (ids) | `fn-distinct-types-for-ids` | draft |
-| cursor-plugins | 7 Derive types from the owning schema | `mod-derive-dont-duplicate` | draft |
+| cursor-plugins | 7 Derive types from the owning schema | `mod-derive-dont-duplicate` | stable |
 | cursor-plugins | 8 External data untyped until parsed at the boundary | `mod-validate-at-boundary-once` | draft |
 | cursor-plugins | 9 State machine or tagged union over synced booleans and growing chains | `fn-variants-as-tagged-union`, `chg-no-special-case-branches` | draft |
 | cursor-plugins | 10 Organise by domain knowledge, not execution order | `mod-cohesive-unit` | draft |
@@ -346,17 +346,17 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 19 Separate before serialising shared state; single writer; convention is not a lock | `mod-single-writer-per-state` | draft |
 | cursor-plugins | 20 Migrate callers and delete the legacy API in one change (no outside consumers) | `chg-delete-legacy-after-migration` | draft |
 | cursor-plugins | 21 Accept planned, scoped breakage between rewrite phases | dropped: planning posture; conflicts with per-commit green | dropped |
-| cursor-plugins | 22 Verify the real thing, not a proxy; re-runnable script as artifact | `chg-verify-before-claim`, `chg-agent-independent-review` | draft |
+| cursor-plugins | 22 Verify the real thing, not a proxy; re-runnable script as artifact | `chg-verify-before-claim`, `chg-agent-independent-review` | stable |
 | cursor-plugins | 23 Test must fail when behaviour breaks and survive an internals refactor | `chg-agent-mock-asserting-tests`, `mod-mock-at-boundaries-only`, `py-no-init-or-model-tests` | draft |
 | cursor-plugins | 24 Independent test oracle; pair a negative assertion with a positive case | `fn-test-oracle-independent` | draft |
 | cursor-plugins | 25 A performance number needs run count, spread and a named limiter | `chg-perf-claim-evidence` | stable |
 | cursor-plugins | 26 Verify each unit before the next; failing test first | `chg-tests-ship-with-change` | stable |
 | cursor-plugins | 26b Commit order tells the story | dropped: history shape is not visible in a diff | dropped |
 | cursor-plugins | 27 Redesign instead of bolting on | dropped: posture; visible symptom is chg-no-special-case-branches | dropped |
-| cursor-plugins | 28 Prefer the structural fix over a repeated instruction | `code-rule-has-enforcer` | draft |
+| cursor-plugins | 28 Prefer the structural fix over a repeated instruction | `code-rule-has-enforcer` | stable |
 | cursor-plugins | 29 Build the codemod or script so a reviewer can re-run it | dropped: author workflow, not failable from the diff | dropped |
 | cursor-plugins | 30 Exhaust design space, experience first, guard context, never block on human | dropped: design-process posture, product taste, agent runtime | dropped |
-| cursor-plugins | 31 Classify repeated corrections; fix at the highest level; lint message names the replacement | `code-rule-has-enforcer` | draft |
+| cursor-plugins | 31 Classify repeated corrections; fix at the highest level; lint message names the replacement | `code-rule-has-enforcer` | stable |
 | cursor-plugins | 32 Fail only when a change adds more of a common pattern; exceptions carry reason, expiry, approver | `code-ci-gates`, `chg-no-silenced-diagnostics` | draft |
 | cursor-plugins | 33 Comment exceptions: legal, forced by vendor or protocol, API contract, link; our surprises get a rename or type | `fn-comments-explain-why`, `fn-comments-survive-context` | draft |
 | cursor-plugins | 34 Constraint and 'do not remove' comments become a type, lint or test; correctness suppressions go | `chg-no-silenced-diagnostics`, `code-rule-has-enforcer` | draft |
@@ -373,14 +373,14 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 45 Red flag: split ownership of state | `mod-single-writer-per-state` | draft |
 | cursor-plugins | 46 Red flag: two ways to do one task | `chg-delete-legacy-after-migration`, `code-consistency-drift` | draft |
 | cursor-plugins | 47 Red flag: importable internals | `mod-internals-unreachable` | draft |
-| cursor-plugins | 48 Red flag: hand-synced list | `mod-derive-dont-duplicate` | draft |
+| cursor-plugins | 48 Red flag: hand-synced list | `mod-derive-dont-duplicate` | stable |
 | cursor-plugins | 49 Signs the architecture is wrong: repeated workarounds, escape hatches, special-case branches | `chg-no-special-case-branches`, `mod-deep-modules` | draft |
 | cursor-plugins | 50 Design twice; usage sketch first | dropped: design process, not visible in a diff | dropped |
 | cursor-plugins | 51 Root cause vs symptom: masking guard, retry over broken contract, silencing cast | `chg-fix-root-cause-not-symptom` | draft |
-| cursor-plugins | 52 A 'don't do X' comment should be a type, lint or runtime check | `code-rule-has-enforcer` | draft |
+| cursor-plugins | 52 A 'don't do X' comment should be a type, lint or runtime check | `code-rule-has-enforcer` | stable |
 | cursor-plugins | 53 Legacy dual-paths with no external consumer | `chg-delete-legacy-after-migration` | draft |
 | cursor-plugins | 54 Trace the call chain or input path before claiming a bug or security issue | `chg-verify-before-claim` | stable |
-| cursor-plugins | 55 Reviewer judgement: nit inflation, unreachable hypotheticals, preference, independent agreement | `chg-review-signal`, `chg-agent-independent-review` | draft |
+| cursor-plugins | 55 Reviewer judgement: nit inflation, unreachable hypotheticals, preference, independent agreement | `chg-review-signal`, `chg-agent-independent-review` | stable |
 | cursor-plugins | 56 State intent first; findings bucketed by action and severity | `chg-matches-spec`, `chg-review-comment-format` | draft |
 | cursor-plugins | 57 Bug fix: each line traces to runtime evidence; repro before fix | `chg-fix-root-cause-not-symptom`, `chg-verify-before-claim` | draft |
 | cursor-plugins | 58 Refactor: pin behaviour with a characterization test before moving structure | `chg-refactor-has-behaviour-pin` | draft |
@@ -441,7 +441,7 @@ Source: `docs/research/security-pass.md`. Row numbers are that file's.
 | security-pass | 7 Slow salted password hash | `fn-password-slow-hash` | stable |
 | security-pass | 8 Session ID regeneration, cookie flags, server-side logout | `svc-session-lifecycle` | stable |
 | security-pass | 9 Pinned JWT algorithm, `iss`, `aud`, `exp` | `fn-jwt-verify-pinned` | stable |
-| security-pass | 10-11 Per-account throttle, uniform auth errors | `svc-auth-throttle-generic-errors` | draft |
+| security-pass | 10-11 Per-account throttle, uniform auth errors | `svc-auth-throttle-generic-errors` | stable |
 | security-pass | 11, 29 Cap client-controlled sizes and counts | `svc-bound-client-controlled-sizes` | stable |
 | security-pass | 12, 28 Encoding sinks, no raw HTML | `fn-no-raw-html-sink` | stable |
 | security-pass | 13, 28 Argument arrays, no shell string | `fn-no-shell-with-input` | stable |
@@ -460,7 +460,7 @@ Source: `docs/research/security-pass.md`. Row numbers are that file's.
 | security-pass | 25-26 Log security events, keep secrets out, encode untrusted values | `svc-security-event-logging` | draft |
 | security-pass | 27 Narrow agent tools, user-scoped credentials | `sys-agent-tool-least-privilege` | stable |
 | security-pass | 28 Treat model output as untrusted | `sys-prompt-injection` | stable |
-| security-pass | 30 LLM supply chain: verify sources, sign, inventory | `code-dependency-licence-sbom` | draft |
+| security-pass | 30 LLM supply chain: verify sources, sign, inventory | `code-dependency-licence-sbom` | stable |
 | security-pass | 31 Invented package names from code models | `chg-agent-grounded-code` | draft |
 | security-pass | §8 NIST SSDF practices | dropped: page named no practice numbers; read the PDF in a later pass | dropped |
 
@@ -479,7 +479,7 @@ Source: `docs/research/security-pass.md`. Row numbers are that file's.
 - `mod-no-wire-types-in-public-api`: FAIL if a public interface exposes transport, storage or framework types instead of domain types.
 - `mod-cli-non-interactive`: FAIL if a CLI command needs a prompt or menu for any input that has no flag, or hangs on a missing flag instead of exiting with an example.
 - `mod-cli-destructive-dry-run`: FAIL if a destructive CLI command has no preview flag or no non-interactive confirmation bypass.
-- `code-rule-has-enforcer`: FAIL if a repeated review correction or an instruction file rule that a type, lint or CI check could enforce has no enforcer, or a constraint comment guards what a check could.
+- `code-rule-has-enforcer`: FAIL if a repeated review correction or an instruction file rule that a type, lint or CI check could enforce has no enforcer.
 - `code-documented-setup-runs`: FAIL if a setup or run command in the README or contribution guide fails on a clean checkout.
 - `code-scoped-validation-loop`: FAIL if the only documented way to check a small change is the full-repo run.
 
