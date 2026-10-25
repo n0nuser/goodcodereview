@@ -603,3 +603,20 @@ Source: `docs/research/new-cards-pass-1.md`, which verifies leads from the compa
 | company-sweep | Cap blast radius with independent cells (Netflix, Slack, Airbnb, Cloudflare) | `sys-cells-limit-blast-radius` | draft |
 | company-sweep | Flaky tests: report passes after retry, quarantine with an owner, verify the fix with many reruns (Dropbox, Shopify) | `code-flaky-test-quarantine` | draft |
 | company-sweep | Rate-limit by cost, not request count (Shopify, GitHub, Airbnb) | `svc-rate-limit-by-cost` | draft |
+
+## Security gaps pass 2
+
+Source: `docs/research/security-gaps-pass-2.md`, which verifies sources for the gaps in sections 2 and 3 of `docs/research/security-gaps.md`.
+
+| Source | Item | Maps to | Status |
+|---|---|---|---|
+| security-gaps | CWE-94 code injection through `eval`, `exec`, or templates (ASVS 1.3.2, 1.3.7) | `fn-no-eval-untrusted` | draft |
+| security-gaps | Open redirects and URL scheme checks (ASVS 3.7.2, 1.2.2) | `fn-redirect-target-allowlist` | draft |
+| security-gaps | Sensitive data in URLs and query strings (ASVS 14.2.1) | `svc-no-secrets-in-url` | draft |
+| security-gaps | XML external entities and parser hardening (ASVS 1.5.1) | `fn-xml-no-external-entities` | draft |
+| security-gaps | CWE-306 missing authentication for a critical function | `svc-authn-by-default` | draft |
+| security-gaps | Content Security Policy beyond `frame-ancestors` (ASVS 3.4.3) | `svc-csp-strict-script-src` | draft |
+| security-gaps | Prototype pollution (ASVS 15.3.6) | `fn-no-prototype-pollution` | draft |
+| security-gaps | TLS version and cipher policy for servers (ASVS 12.1.1, 12.1.2) | `svc-tls-modern-only` | draft |
+| security-gaps | Credential recovery, MFA enrolment, reset flows (ASVS 6.4) | dropped: no single Rule that can fail; `svc-auth-throttle-generic-errors` covers reset endpoints | dropped |
+| security-gaps | CWE-787, 125, 120, 121, 122, 416 memory safety | dropped: needs a `packs/<lang>/` pack that does not exist | dropped |
