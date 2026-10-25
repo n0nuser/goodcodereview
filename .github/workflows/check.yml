@@ -11,3 +11,4 @@ jobs:
       - run: python3 tools/validate.py
       - run: python3 tools/build.py
       - run: git diff --exit-code skills/
+      - run: node --test test/worker.test.mjs

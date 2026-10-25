@@ -4,7 +4,7 @@
 
 ## Workers project settings
 
-Cloudflare points new static sites at Workers with static assets. `wrangler.jsonc` in the repo root sets the output directory (`site`), a custom `404.html` for unknown paths, and `auto-trailing-slash` handling for `.html` files. `site/_headers` is applied to the static responses.
+Cloudflare points new static sites at Workers with static assets. `wrangler.jsonc` in the repo root sets the output directory (`site`) and `auto-trailing-slash` handling for `.html` files. `src/worker.js` runs only for `/` and for paths that match no file. It answers `Accept: text/markdown` on `/` with `index.md`, and it returns the `404.html` page, or a Markdown 404 for a Markdown request, with status 404. `site/_headers` is applied to every static response. Test the Worker with `node --test test/worker.test.mjs`. The free Workers plan allows 100,000 Worker requests a day, and only `/` and unknown paths count.
 
 In the dashboard, choose Workers & Pages, Create, and connect `n0nuser/goodcodereview` on `main`. Set:
 
