@@ -216,6 +216,7 @@ nav details:has([aria-current])>summary{font-weight:700}
 nav details>div{display:flex;flex-wrap:wrap;gap:0 var(--space-m);padding-inline-start:var(--space-s)}
 .skip{position:absolute;inset-block-start:-100px;inset-inline-start:var(--space-s);z-index:1;display:flex;align-items:center;min-block-size:44px;padding-inline:var(--space-s);background:var(--bg);color:var(--fg);border:2px solid var(--acc);font:600 var(--step--1)/1.3 var(--ui)}
 .skip:focus{inset-block-start:var(--space-s)}
+.vh{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 main:focus{outline:none}
 code{font:.9em var(--mono);padding:.08em .3em;background:var(--code);border-radius:2px;overflow-wrap:anywhere}
 pre{padding:var(--space-s);overflow-x:auto;background:var(--code);border-radius:2px;font:var(--step--1)/1.5 var(--mono);tab-size:4}
@@ -279,9 +280,10 @@ if(D)D.textContent=D.dataset.n+' draft cards'+(on?' ('+d+' match)':'')
 if(C)C.textContent=on?s+' stable and '+d+' draft '+(s+d==1?'card matches.':'cards match.'):''}
 q('button[data-k]').forEach(b=>b.onclick=()=>{const s=S[b.dataset.k],v=b.dataset.v;
 s.has(v)?s.delete(v):s.add(v);b.setAttribute('aria-pressed',s.has(v));go()});
+const V=document.getElementById('said'),say=(b,m)=>{b.textContent=m;V.textContent=m+'.'};
 q('button[data-copy]').forEach(b=>{const l=b.textContent;b.hidden=false;b.onclick=()=>{
 const t=b.dataset.copy=='ck'?q('ul.ck li[data-tags]:not([hidden])').filter(r=>!r.closest('details')).map(r=>'- `'+r.querySelector('a').textContent+'` ['+r.querySelector('.b').textContent+'] '+r.querySelector('.r').textContent+' PASS/FAIL/N/A: ').join('\\n'):b.previousElementSibling.textContent;
-(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>b.textContent='Copied',()=>b.textContent='Copy failed');setTimeout(()=>b.textContent=l,1500)}});
+(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>say(b,'Copied'),()=>say(b,'Copy failed'));setTimeout(()=>{b.textContent=l;V.textContent=''},1500)}});
 const op=()=>{const e=document.getElementById(location.hash.slice(1)),d=e&&e.closest('details');if(d){d.open=true;e.scrollIntoView()}};
 addEventListener('hashchange',op);op()"""
 FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23006469'/%3E%3Cpath d='M3.5 8.5l3 3 6-6' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E"
@@ -375,7 +377,7 @@ def page(title, body, script=False, links=(), cur="", desc="", slug="", ld=None)
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">'
             f'<link rel="icon" href="{FAVICON}">'
             f"<title>{html.escape(full)}</title>{head_tags(full, desc, slug)}<style>{CSS}</style>{jsonld}</head><body><a class=skip href=#main>Skip to content</a>{nav}<main id=main tabindex=-1><h1>{html.escape(title)}</h1>{body}</main>"
-            f"{FOOTER}{'<script>' + JS + '</script>' if script else ''}</body></html>")
+            f"{FOOTER}{'<p id=said class=vh role=status></p><script>' + JS + '</script>' if script else ''}</body></html>")
 
 
 def concerns(fm):
