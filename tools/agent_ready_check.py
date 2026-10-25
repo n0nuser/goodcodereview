@@ -176,7 +176,7 @@ def main():
             problems.append(f"{n}: canonical {canon}")
         if not (p.meta("name", "description") or [""])[0]:
             problems.append(f"{n}: description")
-        if not all(og.get(k) for k in ("og:title", "og:description", "og:type", "og:url", "og:site_name")) or "og:image" in og:
+        if not all(og.get(k) for k in ("og:title", "og:description", "og:type", "og:url", "og:site_name", "og:image")):
             problems.append(f"{n}: og tags")
         if p.meta("name", "is-agentic-site-type") != ["content"]:
             problems.append(f"{n}: is-agentic-site-type")
@@ -184,7 +184,8 @@ def main():
             problems.append(f"{n}: title")
     check(14, not any("canonical" in x for x in problems), "every page has one canonical URL, the extensionless URL in the sitemap")
     check(29, not any(k in x for x in problems for k in ("description", "og tags")) and all(re.search(r'<html lang="en"', f.read_text()) for f in SITE.glob("*.html")),
-          "every page has lang, description, and the Open Graph tags (no og:image: the site has no image)")
+          "every page has lang, description, and the Open Graph tags, including og:image")
+    check(29, (SITE / "og.png").read_bytes()[:8] == b"\x89PNG\r\n\x1a\n", "og.png is a PNG file")
     check(37, not any("title" in x for x in problems), "every page title names Good Code Review")
     check(42, not any("is-agentic-site-type" in x for x in problems), 'every page has <meta name="is-agentic-site-type" content="content">')
 

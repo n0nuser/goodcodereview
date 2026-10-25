@@ -347,7 +347,8 @@ def head_tags(title, desc, slug):
     if not slug:
         return ""
     q = lambda t: html.escape(t, quote=True)
-    og = {"title": title, "description": desc, "type": "website", "url": page_url(slug), "site_name": SITE_NAME}
+    og = {"title": title, "description": desc, "type": "website", "url": page_url(slug), "site_name": SITE_NAME,
+          "image": f"{BASE}/og.png", "image:alt": f"{SITE_NAME}: {SITE_DESC}", "image:width": "1200", "image:height": "630"}
     return (f'<meta name="description" content="{q(desc)}"><link rel="canonical" href="{page_url(slug)}">'
             + "".join(f'<meta property="og:{k}" content="{q(v)}">' for k, v in og.items())
             + f'<link rel="alternate" type="text/markdown" href="/{slug}.md"><link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">'
@@ -548,10 +549,12 @@ def main():
     rows = '<ul class="idx">' + "".join(
         f'<li><a href="{lv}.html">{NAME[lv]}</a><span>{LEVEL_DESC[lv]} Input: {INPUT[lv]}.</span>'
         f'<span class="n">{cnt[lv][0]} stable, {cnt[lv][1]} draft{f" · {EMPTY_MARK}" if lv in none else ""}</span></li>' for lv in LEVELS) + "</ul>"
-    person = {"@type": "Person", "name": "Pablo González", "url": "https://pablogonzalez.me"}
+    person = {"@type": "Person", "name": "Pablo González", "url": "https://pablogonzalez.me",
+              "description": "Maintainer of Good Code Review.", "sameAs": ["https://github.com/n0nuser"]}
     ld = {"@context": "https://schema.org", "@graph": [
         {"@type": "WebSite", "@id": f"{BASE}/#website", "url": f"{BASE}/", "name": SITE_NAME, "description": SITE_DESC, "inLanguage": "en",
-         "license": LICENCE_URL, "author": person, "dateModified": date},
+         "license": LICENCE_URL, "author": person, "dateModified": date,
+         "sameAs": ["https://github.com/n0nuser/goodcodereview"]},
         {"@type": "CreativeWork", "@id": f"{BASE}/#checklist", "url": f"{BASE}/", "name": "Good Code Review checklist",
          "description": "Rules for reviewing code, one card per rule, each with a FAIL example and a PASS example.", "inLanguage": "en",
          "isPartOf": {"@id": f"{BASE}/#website"}, "license": LICENCE_URL, "author": person, "dateModified": date}]}
@@ -695,6 +698,7 @@ def main():
     slugs = ["index", "concerns", *LEVELS, *[f"pack-{pk}" for pk in packs], "glossary", "about", "privacy"]
     (SITE / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                                       + "".join(f"<url><loc>{page_url(s)}</loc><lastmod>{date}</lastmod></url>\n" for s in slugs) + "</urlset>\n")
+    shutil.copy(ROOT / "tools" / "og.png", SITE / "og.png")
     (SITE / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {BASE}/sitemap.xml\n")
     (SITE / "_headers").write_text(headers_file(slugs))
 
