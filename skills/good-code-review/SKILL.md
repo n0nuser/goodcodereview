@@ -84,6 +84,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `fn-keep-input-on-error` [should-fix] {usability}: After a failed validation or submit, show the form again with every value the user entered, correct or not.
 - `fn-native-button-or-link` [block] {accessibility, usability}: Use `<button>` for an action and `<a href>` for navigation. Do not attach a click handler to a `div`, `span`, or `a` with no `href`.
 - `fn-no-blocking-call-in-async-code` [block] {performance, correctness}: Never make a blocking I/O call or run long CPU work directly in async code; use the async API or hand the work to a thread or worker.
+- `fn-no-eval-untrusted` [block] {security}: Never pass untrusted text to `eval`, `exec`, `new Function`, or a template compiler. Pass it to a fixed template or a parser as data.
 - `fn-no-mass-assignment` [block] {security}: Bind request data to a DTO or an explicit field allowlist, never straight onto the model.
 - `fn-no-native-deserialise-untrusted` [block] {security}: Parse untrusted input with a data-only format, never with a native object deserialiser.
 - `fn-no-positive-tabindex` [should-fix] {accessibility, usability}: Write the DOM in reading order and never set `tabindex` above 0.

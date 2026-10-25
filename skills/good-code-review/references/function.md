@@ -530,6 +530,32 @@ async def handler(req):
 
 **Counterpoint.** "This call is fast enough." A short read from a local SSD can be quicker synchronously. Measure it with asyncio debug mode or the runtime's equivalent. A call that crosses the network, or that waits on anything outside the process, is never in that class.
 
+## fn-no-eval-untrusted
+
+severity: block  
+concerns: security  
+applies_when: Code runs `eval`, `exec`, or `new Function`, or compiles a template, and some of the text comes from a request, a file, a database row, or model output.
+
+**Rule.** Never pass untrusted text to `eval`, `exec`, `new Function`, or a template compiler. Pass it to a fixed template or a parser as data.
+
+**Why.** Each of these turns a string into code that runs with the server's rights, so one field becomes remote code execution. A template engine counts: `render_template_string(request.args["msg"])` lets `{{ config }}` or worse run on the server. An expression language, such as SpEL, carries the same risk. Parse the data format instead (`json.loads`, `ast.literal_eval`), and keep templates in files the author wrote, with user values passed as variables.
+
+**FAIL**
+
+```python
+total = eval(request.args["expr"])
+html = render_template_string("Hello " + request.args["name"])
+```
+
+**PASS**
+
+```python
+data = json.loads(request.get_data())
+html = render_template("hello.html", name=request.args["name"])
+```
+
+**Counterpoint.** "Users need formulas, so we need `eval`." Write or adopt a small expression parser that knows only numbers and the operators you allow. A sandbox around `eval` loses to the next escape someone publishes.
+
 ## fn-no-mass-assignment
 
 severity: block  

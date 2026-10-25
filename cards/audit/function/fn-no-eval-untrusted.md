@@ -3,22 +3,22 @@ id: fn-no-eval-untrusted
 level: function
 tags: [security, injection]
 severity: block
-status: draft
-lacks: unreviewed, OWASP, MITRE, Mozilla and PortSwigger listed; check each recommends the practice rather than defining it
+status: stable
 lang: core
-applies_when: Code runs `eval`, `exec`, `new Function`, an expression language, or compiles a template, and some of the text comes from a request, a file, a database row, or model output.
-tool_gate: Bandit B307 (`eval`) and B102 (`exec_used`); CodeQL `py/code-injection`; ESLint `no-eval` and `no-implied-eval`.
+applies_when: Code runs `eval`, `exec`, or `new Function`, or compiles a template, and some of the text comes from a request, a file, a database row, or model output.
+tool_gate: Bandit B307 (`eval`) and B102 (`exec_used`); CodeQL `py/code-injection` and `py/template-injection`; ESLint `no-eval` and `no-implied-eval`.
 note: overlaps fn-no-shell-with-input (commands, not code) and fn-no-raw-html-sink (HTML, not templates); ASVS 1.3.2 and 1.3.7
 borrowed_from:
   - https://raw.githubusercontent.com/OWASP/ASVS/master/5.0/en/0x10-V1-Encoding-and-Sanitization.md
   - https://cwe.mitre.org/data/definitions/94.html
   - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
   - https://portswigger.net/web-security/server-side-template-injection
+  - https://codeql.github.com/codeql-query-help/python/py-template-injection/
 ---
 
-**Rule.** Never pass untrusted text to `eval`, `exec`, `new Function`, an expression language, or a template compiler. Pass it to a fixed template or a parser as data.
+**Rule.** Never pass untrusted text to `eval`, `exec`, `new Function`, or a template compiler. Pass it to a fixed template or a parser as data.
 
-**Why.** Each of these turns a string into code that runs with the server's rights, so one field becomes remote code execution. A template engine counts: `render_template_string(request.args["msg"])` lets `{{ config }}` or worse run on the server. Parse the data format instead (`json.loads`, `ast.literal_eval`), and keep templates in files the author wrote, with user values passed as variables.
+**Why.** Each of these turns a string into code that runs with the server's rights, so one field becomes remote code execution. A template engine counts: `render_template_string(request.args["msg"])` lets `{{ config }}` or worse run on the server. An expression language, such as SpEL, carries the same risk. Parse the data format instead (`json.loads`, `ast.literal_eval`), and keep templates in files the author wrote, with user values passed as variables.
 
 **FAIL**
 
