@@ -103,6 +103,12 @@ ABOUT = """Good Code Review is a checklist for reviewing code, for people and fo
 
 A stable card is vetted: at least three independent organisations back its rule, and its FAIL and PASS lines are real verdicts. A draft card is not vetted. Read it for ideas, but do not use it for a verdict. Each draft says what it lacks, and [How a draft becomes stable](https://github.com/n0nuser/goodcodereview/blob/main/docs/PROMOTION.md) gives the bar. The home page shows how many cards of each kind every level has.
 
+# How to check the cards
+
+You do not have to take the cards on trust. Each stable card links its sources under the card, and at least three independent organisations, such as OWASP, W3C, Google, or GOV.UK, back its rule. [How a draft becomes stable](https://github.com/n0nuser/goodcodereview/blob/main/docs/PROMOTION.md) gives the bar, and the [Drafts by what they lack](drafts.html) page shows why each draft is not stable yet. Every change to a card is public in the [commit history](https://github.com/n0nuser/goodcodereview/commits/main).
+
+The skill and the plugin are Markdown files only: `SKILL.md` and one reference file per level. They run no code and install no dependencies, so an agent that loads them only reads text.
+
 # How the site is built
 
 `python3 tools/build.py` reads the cards in the repository and writes this site as plain static files, plus the Markdown, `llms.txt`, and skill files that agents read. Cloudflare serves the result as static files. A small Worker answers only addresses that match no file, with a 404 page. There is no database.
