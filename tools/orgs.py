@@ -33,7 +33,7 @@ ORGS = {
     "sans-io": "Sans-I/O project", "section508": "Section508.gov", "shneiderman": "Ben Shneiderman", "shopify": "Shopify",
     "sitnik": "Size Limit project", "slack": "Slack", "smartbear": "SmartBear", "snyk": "Snyk", "spotify": "Spotify",
     "spring": "Spring", "sqlalchemy": "SQLAlchemy", "sqlite": "SQLite", "stepsecurity": "StepSecurity", "stripe": "Stripe",
-    "tef": "tef (programmingisterrible)", "tokio": "Tokio project", "uber": "Uber", "uswds": "USWDS", "vorpus": "Nathaniel J. Smith",
+    "tef": "tef (programmingisterrible)", "tokio": "Tokio project", "uber": "Uber", "uswds": "USWDS", "utsa": "University of Texas at San Antonio", "vorpus": "Nathaniel J. Smith",
     "warne": "Henrik Warne", "wayne": "Hillel Wayne", "webaim": "WebAIM", "whatwg": "WHATWG", "winand": "Markus Winand",
     "wordpress": "WordPress", "w3c": "W3C", "envoy": "Envoy", "hyrum": "Hyrum Wright", "owasp": "OWASP", "zalando": "Zalando",
 }
@@ -42,7 +42,7 @@ ORGS = {
 # so "owasp.org" covers cheatsheetseries.owasp.org. On code hosts the org is the repository owner, never the host.
 PREFIXES = {
     "12factor.net": "heroku", "airbnb.tech": "airbnb", "alphagov.github.io": "govuk", "angular.dev": "google",
-    "antirez.com": "salvatore", "arxiv.org/abs/2406.10279": "google", "atlassian.design": "atlassian", "auth0.com": "auth0",
+    "antirez.com": "salvatore", "arxiv.org/abs/2406.10279": "utsa", "atlassian.design": "atlassian", "auth0.com": "auth0",
     "aws.amazon.com": "aws", "aws.com": "aws", "baymard.com": "baymard", "bazel.build": "google", "blog.google": "google",
     "blog.palantir.com": "palantir", "blog.pragmaticengineer.com": "pragmatic-engineer", "newsletter.pragmaticengineer.com": "pragmatic-engineer",
     "cassandra.apache.org": "apache", "cloudflare.com": "cloudflare", "codeql.github.com": "github", "cwe.mitre.org": "mitre",
