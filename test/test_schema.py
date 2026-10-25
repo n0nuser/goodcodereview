@@ -32,6 +32,16 @@ class SchemaTest(unittest.TestCase):
 		self.data["cards"][0]["extra"] = 1
 		self.assertIn("unexpected 'extra'", " ".join(schema.check(self.schema, self.data)))
 
+	def test_only_drafts_say_what_they_lack(self):
+		self.assertEqual({c["lacks"] for c in self.data["cards"]}, {None})
+		drafts = json.loads((SITE / "cards-drafts.json").read_text())["cards"]
+		self.assertTrue(all(c["lacks"]["reason"] and c["lacks"]["note"] for c in drafts))
+
+	def test_a_reason_outside_the_list_fails(self):
+		drafts = json.loads((SITE / "cards-drafts.json").read_text())
+		drafts["cards"][0]["lacks"] = {"reason": "vibes", "note": "x"}
+		self.assertTrue(schema.check(self.schema, drafts))
+
 	def test_pass_is_a_json_key_not_pass_underscore(self):
 		self.assertIn("pass", self.data["cards"][0])
 		self.assertNotIn("pass_", self.data["cards"][0])

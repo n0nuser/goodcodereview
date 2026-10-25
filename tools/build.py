@@ -72,6 +72,12 @@ EMPTY_MARK = "no vetted cards yet"
 EMPTY_RULE = (f'A level marked "{EMPTY_MARK}" has no stable cards. Give no verdict for it. Say that there are no vetted cards for that level yet. '
               "You may list its draft cards as notes, never as `PASS` or `FAIL`.")
 DRAFT_RULE = "Draft cards are never verdicts."
+# The reader-facing words for each reason in validate.LACKS.
+LACKS_LABEL = {"orgs": "too few organisations back a clause of the Rule",
+               "evidence": "a source is a plan, a definition, or a summary rather than a stated practice",
+               "failable": "a reviewer could not mark the Rule FAIL at its level",
+               "duplicate": "it overlaps a stable card", "contradiction": "the card contradicts itself",
+               "held": "the maintainer keeps it as a draft"}
 # One closing prompt for design-level reviews. It sits outside the PASS/FAIL ledger.
 DESIGN_NOTE = "For a system or codebase review, end with one note outside the ledger: name the decision you would most want written down and what its alternative costs. Cite file:line for the decision. Give no verdict and no severity for it."
 DRAFT_NOTE = "A draft card is not vetted. Read it for ideas, but do not use it for a verdict."
@@ -393,11 +399,24 @@ def sources(fm):
     return ('<p class="note">Sources: ' + ", ".join(f'<a href="{html.escape(u)}">{html.escape(urlparse(u).netloc)}</a>' for u in urls) + "</p>") if urls else ""
 
 
+def lacks(fm):
+    """A draft's `lacks:` line as (reason, note), or None on a stable card."""
+    return tuple(fm["lacks"].split(", ", 1)) if "lacks" in fm else None
+
+
+def lacks_html(fm, ids):
+    if not lacks(fm):
+        return ""
+    reason, note = lacks(fm)
+    return (f'<p class="note"><strong>Why it is a draft:</strong> {LACKS_LABEL[reason]}. {inline(note[:1].upper() + note[1:], ids)} '
+            f'<a href="{REPO}/blob/main/docs/PROMOTION.md">How a draft becomes stable</a></p>')
+
+
 def card_html(fm, body, ids):
     b = f'<span class="b {fm["severity"]}">{fm["severity"]}</span><span class="b {fm["status"]}">{fm["status"]}</span>{chips(fm)}'
     gate = "" if fm["tool_gate"] == "none" else f'<p class="note">Tool gate: {inline(fm["tool_gate"], ids)}</p>'
     return (f'<article id="{html.escape(fm["id"])}" data-tags="{html.escape(" ".join(fm["tags"]))}" data-level="{fm["level"]}"><div class="ch"><h3>{html.escape(fm["id"])}</h3>{b}</div>'
-            f'<p><strong>Applies when:</strong> {inline(fm["applies_when"], ids)}</p>{md(body, ids)}{gate}{sources(fm)}</article>')
+            f'<p><strong>Applies when:</strong> {inline(fm["applies_when"], ids)}</p>{md(body, ids)}{lacks_html(fm, ids)}{gate}{sources(fm)}</article>')
 
 
 def row(fm, body, ids, href=""):
@@ -462,6 +481,7 @@ def corpus(kind, cs, cnt, date):
             id=fm["id"], level=fm["level"], status=fm["status"], severity=fm["severity"], concerns=concerns(fm),
             topics=[t for t in fm["tags"] if t not in CONCERNS], lang=fm["lang"], applies_when=fm["applies_when"],
             tool_gate=None if fm["tool_gate"] == "none" else fm["tool_gate"], note=fm.get("note"),
+            lacks=schema.Lacks(*lacks(fm)) if lacks(fm) else None,
             rule=rule(body), why=section(body, "Why"), counterpoint=section(body, "Counterpoint"),
             fail=schema.example(body, "FAIL"), pass_=schema.example(body, "PASS"), sources=fm["borrowed_from"],
             url=f"{page_url(where)}#{fm['id']}", markdown_url=f"{BASE}/{where}.md")
@@ -626,6 +646,7 @@ def main():
            "Each card lists its concerns in braces: " + ", ".join(f"`{c}`" for c in CONCERNS) + ".",
            "To review only some concerns, such as a performance-only review, check only the cards that list them.", ""]
     line = lambda fm, b: f"- `{fm['id']}` [{fm['severity']}] {{{', '.join(concerns(fm))}}}: {rule(b)}"
+    dline = lambda fm, b: line(fm, b) + (f" Lacks ({lacks(fm)[0]}): {lacks(fm)[1]}" if lacks(fm) else "")
     section = lambda fm, b: f"## {fm['id']}\n\nseverity: {fm['severity']}  \nconcerns: {', '.join(concerns(fm))}  \napplies_when: {fm['applies_when']}\n\n{b.strip()}"
     refs = {}
     twins = {}  # slug -> (title, description, markdown body). Each gets frontmatter and is written to site/<slug>.md.
@@ -680,10 +701,10 @@ def main():
     for lv in LEVELS:
         cs = [c for c in draft if c[1]["level"] == lv and c[1]["lang"] == "core"]
         if cs:
-            dr += [f"## {lv}", "", f"Full text: {url(cs[0][1])}", ""] + [line(fm, b) for _, fm, b in cs] + [""]
+            dr += [f"## {lv}", "", f"Full text: {url(cs[0][1])}", ""] + [dline(fm, b) for _, fm, b in cs] + [""]
     for pk in packs:
         cs = [c for c in draft if c[1]["lang"] == pk]
-        dr += [f"## pack {pk}", "", f"Full text: {url(cs[0][1])}", ""] + [line(fm, b) for _, fm, b in cs] + [""]
+        dr += [f"## pack {pk}", "", f"Full text: {url(cs[0][1])}", ""] + [dline(fm, b) for _, fm, b in cs] + [""]
     text, dtext = "\n".join(llms), "\n".join(dr)
     idre = lambda t: re.findall(r"^- `([^`]+)` \[", t, re.M)
     if idre(text) != idre("\n".join(sk)) or {fm["id"] for _, fm, _ in draft} & set(idre(text)):

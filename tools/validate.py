@@ -13,6 +13,8 @@ STATUSES = ["draft", "stable"]
 # Closed list. Every card's tags include one or more of these, so a review can be scoped to one concern.
 CONCERNS = ["correctness", "security", "performance", "reliability", "compatibility",
             "testing", "maintainability", "accessibility", "usability", "observability", "process"]
+# Closed list. Every draft names its main blocker as the first word of `lacks:`. docs/PROMOTION.md defines each one.
+LACKS = ["orgs", "evidence", "failable", "duplicate", "contradiction", "held"]
 BODY_MARKS = ["**Rule.**", "**Why.**", "**FAIL**", "**PASS**", "**Counterpoint.**"]
 
 
@@ -108,6 +110,13 @@ def validate(root):
         for u in urls:
             if u not in research:
                 err(f"borrowed_from URL not in docs/research: {u}")
+        lacks = fm.get("lacks")
+        if fm.get("status") == "stable" and lacks is not None:
+            err("stable card has 'lacks:'; remove it on promotion")
+        if fm.get("status") == "draft":
+            m = re.fullmatch(r"([a-z]+), ((?!.*\[\[).{1,160})", lacks) if isinstance(lacks, str) else None
+            if not m or m.group(1) not in LACKS:
+                err(f"draft needs 'lacks: <word>, <note of at most 160 characters>' with a word from: {', '.join(LACKS)}")
         if fm.get("status") == "stable" and not urls:
             err("stable card needs >=1 borrowed_from URL")
         for mark in BODY_MARKS:

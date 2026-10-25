@@ -7,10 +7,13 @@ import re
 from dataclasses import dataclass, field, fields, is_dataclass
 from typing import Literal, Optional, Union, get_args, get_origin, get_type_hints
 
+from validate import LACKS
+
 SCHEMA_VERSION = 1
 Status = Literal["stable", "draft"]
 Severity = Literal["block", "should-fix", "discuss"]
 Kind = Literal["stable", "drafts"]
+Reason = Literal[*LACKS]
 Level = Literal["change", "function", "module", "service", "system", "codebase", "production", "incident"]
 
 
@@ -19,6 +22,13 @@ class Example:
     """A code or text block from a card's FAIL or PASS section."""
     language: Optional[str]  # the fence label, such as "python" or "text"; null when the fence has none
     code: str
+
+
+@dataclass
+class Lacks:
+    """Why a draft card is not stable yet. docs/PROMOTION.md defines each reason."""
+    reason: Reason             # the main blocker, such as "orgs"
+    note: str                  # one sentence on what is missing
 
 
 @dataclass
@@ -33,6 +43,7 @@ class Card:
     applies_when: str
     tool_gate: Optional[str]   # a check a tool can run, or null when none exists
     note: Optional[str]        # a scope note, or null
+    lacks: Optional[Lacks]     # why a draft is not stable yet; null on stable cards
     rule: str                  # the one-sentence rule
     why: str
     counterpoint: str
