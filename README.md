@@ -44,6 +44,7 @@ See also [docs/COVERAGE.md](docs/COVERAGE.md), which maps sources to cards, and 
 
 - To report a wrong card, use the [card correction form](https://github.com/n0nuser/goodcodereview/issues/new?template=card-correction.yml).
 - To propose a card, use the [card proposal form](https://github.com/n0nuser/goodcodereview/issues/new?template=card-proposal.yml), then follow [CONTRIBUTING.md](CONTRIBUTING.md).
+- To promote a draft card to stable, read [docs/PROMOTION.md](docs/PROMOTION.md) and use the [promote a draft form](https://github.com/n0nuser/goodcodereview/issues/new?template=promote-draft.yml). The [Drafts by what they lack](https://goodcodereview.com/drafts) page shows what each draft needs.
 - To report a security issue, follow [SECURITY.md](SECURITY.md).
 - To get help, see [SUPPORT.md](SUPPORT.md).
 - To see what changed, read [CHANGELOG.md](CHANGELOG.md). To cite this project, use [CITATION.cff](CITATION.cff).

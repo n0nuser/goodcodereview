@@ -1,6 +1,6 @@
 # Deploy
 
-`tools/build.py` builds the site as plain static files. Cloudflare Pages hosts them.
+`tools/build.py` builds the site as plain static files. Cloudflare Workers serves them as static assets.
 
 ## Workers project settings
 

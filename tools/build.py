@@ -101,11 +101,11 @@ ABOUT = """Good Code Review is a checklist for reviewing code, for people and fo
 
 # What stable and draft mean
 
-A stable card is vetted, and its FAIL and PASS lines are real verdicts. A draft card is not vetted. Read it for ideas, but do not use it for a verdict. Each draft says what it lacks, and [How a draft becomes stable](https://github.com/n0nuser/goodcodereview/blob/main/docs/PROMOTION.md) gives the bar. The home page shows how many cards of each kind every level has.
+A stable card is vetted: at least three independent organisations back its rule, and its FAIL and PASS lines are real verdicts. A draft card is not vetted. Read it for ideas, but do not use it for a verdict. Each draft says what it lacks, and [How a draft becomes stable](https://github.com/n0nuser/goodcodereview/blob/main/docs/PROMOTION.md) gives the bar. The home page shows how many cards of each kind every level has.
 
 # How the site is built
 
-`python3 tools/build.py` reads the cards in the repository and writes this site as plain static files, plus the Markdown, `llms.txt`, and skill files that agents read. Cloudflare Pages hosts the result. There is no database and no server code.
+`python3 tools/build.py` reads the cards in the repository and writes this site as plain static files, plus the Markdown, `llms.txt`, and skill files that agents read. Cloudflare serves the result as static files. A small Worker answers only addresses that match no file, with a 404 page. There is no database.
 
 # Cost and licence
 
@@ -126,7 +126,7 @@ Nothing. Pages load no fonts, images, scripts, or styles from other sites. Links
 
 # Hosting
 
-Cloudflare Pages hosts the site. Like any web host, it handles each request and may keep standard server logs under its own privacy policy. That is outside this site's code.
+Cloudflare hosts the site. Like any web host, it handles each request and may keep standard server logs under its own privacy policy. That is outside this site's code.
 
 # Contact
 

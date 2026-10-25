@@ -8,7 +8,8 @@ Use GitHub private vulnerability reporting: open the **Security** tab of [n0nuse
 
 In scope:
 
-- The Python tools in `tools/` (`validate.py`, `build.py`).
+- The Python tools in `tools/`, such as `validate.py` and `build.py`.
+- The Worker in `src/worker.js`, which answers paths that match no file.
 - The workflow in `.github/workflows/`.
 - The site build and its output, such as injected markup in generated pages.
 
