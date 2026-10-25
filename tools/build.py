@@ -13,6 +13,7 @@ from urllib.parse import urlparse
 
 sys.path.insert(0, str(Path(__file__).parent))
 from validate import CONCERNS, LEVELS, load_cards, validate  # noqa: E402
+import schema  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
@@ -446,6 +447,28 @@ def rule(body):
     return " ".join(m.group(1).split()) if m else ""
 
 
+def section(body, label):
+    m = re.search(rf"\*\*{label}\.\*\*\s*(.*?)(?:\n\s*\n|$)", body, re.S)
+    return " ".join(m.group(1).split()) if m else ""
+
+
+def corpus(kind, cs, cnt, date):
+    """The cards.json model: kind "stable" for the vetted core cards, "drafts" for every other card."""
+    def card(fm, body):
+        where = f"pack-{fm['lang']}" if fm["lang"] != "core" else fm["level"]
+        return schema.Card(
+            id=fm["id"], level=fm["level"], status=fm["status"], severity=fm["severity"], concerns=concerns(fm),
+            topics=[t for t in fm["tags"] if t not in CONCERNS], lang=fm["lang"], applies_when=fm["applies_when"],
+            tool_gate=None if fm["tool_gate"] == "none" else fm["tool_gate"], note=fm.get("note"),
+            rule=rule(body), why=section(body, "Why"), counterpoint=section(body, "Counterpoint"),
+            fail=schema.example(body, "FAIL"), pass_=schema.example(body, "PASS"), sources=fm["borrowed_from"],
+            url=f"{page_url(where)}#{fm['id']}", markdown_url=f"{BASE}/{where}.md")
+    levels = [schema.LevelInfo(id=lv, name=NAME[lv], input=INPUT[lv], description=LEVEL_DESC[lv], stable_count=cnt[lv][0], draft_count=cnt[lv][1],
+                               gives_verdict=bool(cnt[lv][0]), url=page_url(lv), markdown_url=f"{BASE}/{lv}.md") for lv in LEVELS]
+    return schema.Corpus(schema.SCHEMA_VERSION, kind, SITE_NAME, f"{BASE}/", LICENCE_URL, date, list(CONCERNS), levels,
+                         [card(fm, b) for _, fm, b in cs])
+
+
 def check_routes(by_lv, refs, skill_text, stable_ids):
     """Return an error per routed level whose stable cards, reference file, or empty-level text disagree."""
     errs = []
@@ -646,6 +669,7 @@ def main():
              f"- [About]({BASE}/about.html): who makes this and under which licence.",
              f"- [Privacy]({BASE}/privacy.html): the site collects nothing.",
              f"- [Sitemap]({BASE}/sitemap.xml): every page.",
+             f"- [cards.json]({BASE}/cards.json): every stable card as JSON; the shape is in [cards.schema.json]({BASE}/cards.schema.json).",
              f"- [Agent Skills index]({BASE}/.well-known/agent-skills/index.json): the skill, with a sha256 digest.",
              f"- [AGENTS.md]({REPO}/blob/main/AGENTS.md): how to review code with this repo and how to contribute a card.",
              f"- [Skill folder]({REPO}/tree/main/skills/good-code-review): `SKILL.md` and `references/` in the repository.",
@@ -699,6 +723,14 @@ def main():
     (SITE / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                                       + "".join(f"<url><loc>{page_url(s)}</loc><lastmod>{date}</lastmod></url>\n" for s in slugs) + "</urlset>\n")
     shutil.copy(ROOT / "tools" / "og.png", SITE / "og.png")
+    # cards.json is the one machine-readable source for the CLI and any other tool. Both files must match cards.schema.json.
+    sch = schema.json_schema(BASE)
+    (SITE / "cards.schema.json").write_text(json.dumps(sch, indent=2) + "\n")
+    for name, kind, cs in (("cards.json", "stable", stable), ("cards-drafts.json", "drafts", draft)):
+        data = schema.to_dict(corpus(kind, cs, cnt, date))
+        if problems := schema.check(sch, data):
+            sys.exit(f"{name} does not match cards.schema.json:\n" + "\n".join(problems[:10]))
+        (SITE / name).write_text(json.dumps(data, indent=1, ensure_ascii=False) + "\n")
     (SITE / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {BASE}/sitemap.xml\n")
     (SITE / "_headers").write_text(headers_file(slugs))
 
