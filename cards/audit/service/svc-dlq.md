@@ -3,7 +3,7 @@ id: svc-dlq
 level: service
 tags: [reliability, queues, resilience]
 severity: should-fix
-status: stable
+status: draft
 lang: core
 applies_when: The code consumes from a queue or stream.
 tool_gate: A config check that every consumed queue has a dead-letter target (for SQS in Terraform, a `redrive_policy` with `maxReceiveCount`), and an alarm on dead-letter queue depth.

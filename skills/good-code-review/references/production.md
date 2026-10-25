@@ -49,8 +49,37 @@ deploy: all hosts at once, no comparison, rollback = "ask someone"
 5% canary 30m -> compare error rate, p99 -> auto-rollback if worse -> 25% -> 100%
 ```
 
+**See also.** [inc-rollback-path-tested](incident.md#inc-rollback-path-tested) (drill the rollback).
 
-**Counterpoint.** "Hotfixes can't wait." Then keep the canary short, not absent. Fleet tools should also have velocity limits. A hermetic, reproducible build tied to one revision is the precondition for rollback to mean anything.
+**Counterpoint.** "Hotfixes can't wait." Then keep the canary short, not absent. Fleet tools should also have velocity limits. A hermetic, reproducible build tied to one revision ([code-build-hermetic](codebase.md#code-build-hermetic)) is the precondition for rollback to mean anything.
+
+## prod-kill-switch-fallback
+
+severity: should-fix  
+concerns: reliability  
+applies_when: A new risky feature or a dependency fallback is added.
+
+**Rule.** Make a risky feature switchable off without a deploy, and exercise every fallback path in test or in production on a schedule.
+
+**Why.** A deploy is the slowest way to stop a feature that is hurting users. An untested fallback fails exactly when you need it: a fail-open path that never ran under load can overload the systems behind it, and a kill switch applied to a case it never met can raise its own error. Run the service with the dependency turned off, such as the cache disabled, and check that the safeguards hold.
+
+**FAIL**
+
+```python
+if redis_down:
+    return backup_lookup(key)   # never run since it was written
+new_checkout(cart)              # no flag; turning it off needs a deploy
+```
+
+**PASS**
+
+```python
+if flags.enabled("checkout_v2"):   # runtime toggle, default off
+    new_checkout(cart)
+# chaos job, weekly: block Redis for 10 minutes and assert backup_lookup serves
+```
+
+**Counterpoint.** "Flags add branches." True for release flags, so delete each one after the rollout. A kill switch is meant to stay: keep it, give it an owner, and exercise it with the fallbacks, so it still works the day you need it. For runbook steps that a person runs, such as a rollback or a failover, see [inc-rollback-path-tested](incident.md#inc-rollback-path-tested).
 
 ## prod-latency-slo-percentile
 

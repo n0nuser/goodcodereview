@@ -3,7 +3,7 @@ id: chg-review-comment-format
 level: change
 tags: [process, reviewer, etiquette]
 severity: discuss
-status: stable
+status: draft
 lang: core
 applies_when: A reviewer writes feedback on a change.
 tool_gate: none

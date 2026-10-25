@@ -1,5 +1,34 @@
 # codebase
 
+## code-build-hermetic
+
+severity: should-fix  
+concerns: process  
+applies_when: The repository has a build, a packaging, or a release step.
+
+**Rule.** Build from declared inputs only, so that the same source revision gives the same artifact.
+
+**Why.** A build that reads whatever is installed on the machine gives different output on different machines, so a bug cannot be reproduced and a release cannot be checked against its source. Tools are inputs too: pin the compiler and toolchain versions, and do not call host binaries. Undeclared shared files also break builds at scale, for example two tasks that clean and use the same `/tmp` directory race each other.
+
+**FAIL**
+
+```yaml
+steps:
+  - run: make               # uses whatever gcc, node and protoc the runner has
+  - run: date > BUILD_ID    # the clock is an undeclared input
+```
+
+**PASS**
+
+```yaml
+container:
+  image: ghcr.io/acme/builder@sha256:4b1e...   # toolchain pinned by digest
+steps:
+  - run: SOURCE_DATE_EPOCH=$(git log -1 --format=%ct) make   # timestamps come from the commit
+```
+
+**Counterpoint.** "Bit-identical builds are overkill." Full reproducibility is the ceiling. Declared inputs, pinned tools, and a recorded revision are the floor, and they cost little. [code-dependency-pinning](codebase.md#code-dependency-pinning) covers dependency pins.
+
 ## code-ci-gates
 
 severity: should-fix  

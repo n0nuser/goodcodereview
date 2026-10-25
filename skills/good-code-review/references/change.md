@@ -156,6 +156,31 @@ Median of 7 alternating runs: 412 ms -> 301 ms, range 398-421 vs 295-310.
 
 **Counterpoint.** "A micro-optimisation needs no benchmark ceremony." A claim in prose does. If the description makes no performance claim, mark `N/A`.
 
+## chg-refactor-has-behaviour-pin
+
+severity: should-fix  
+concerns: testing, maintainability  
+applies_when: The change restructures code and claims to keep its behaviour.
+
+**Rule.** Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
+
+**Why.** A type check and a linter pass on code that now does something else. Without a pin, "no behaviour change" is a claim nobody ran.
+
+**FAIL**
+
+```text
+PR "split billing.py into three modules": 900 lines moved, no test touched or added.
+```
+
+**PASS**
+
+```text
+Commit 1: golden-file test of invoice output for 12 fixtures (passes on old code).
+Commit 2: the split. The same test passes unchanged.
+```
+
+**Counterpoint.** "The code is already well tested." Then name the test that covers the moved paths. If you cannot, the pin is missing. See [chg-refactor-separate](change.md#chg-refactor-separate) for keeping the refactor apart from behaviour changes.
+
 ## chg-refactor-separate
 
 severity: should-fix  

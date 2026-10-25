@@ -777,6 +777,36 @@ func valid(s string) bool { return lower.MatchString(s) }
 
 **Counterpoint.** "The library caches patterns." Python and .NET keep recently used patterns, so a few static calls are fine. A pattern built from input or an unbounded set of patterns defeats the cache.
 
+## fn-rerun-safe-after-crash
+
+severity: block  
+concerns: reliability  
+applies_when: A function or job changes state and can be run twice, or can be killed partway.
+
+**Rule.** Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.
+
+**Why.** Jobs get retried and processes get killed. An append, a counter bump, or a lock file with no owner and time leaves the next run unable to tell finished work from half-done work. Record "done" only after the last step succeeds, so a crash leaves the work visibly pending.
+
+**FAIL**
+
+```python
+cur.execute("UPDATE accounts SET balance = balance + %s WHERE id = %s", (amount, acct))  # a retry applies it twice
+open("out.json", "w").write(data)                                                       # a crash leaves a truncated file
+```
+
+**PASS**
+
+```python
+cur.execute("INSERT INTO applied_ops (op_id) VALUES (%s) ON CONFLICT DO NOTHING", (op_id,))
+if cur.rowcount == 1:  # first run of this operation; same transaction as the update
+    cur.execute("UPDATE accounts SET balance = balance + %s WHERE id = %s", (amount, acct))
+tmp = path.with_suffix(".tmp")
+tmp.write_text(data)
+os.replace(tmp, path)  # the reader sees the old file or the new one, never half of one
+```
+
+**Counterpoint.** "Retries are rare." Crashes are not. For API calls that cross a network, [svc-idempotency-key](service.md#svc-idempotency-key) covers the key-based form of this rule.
+
 ## fn-response-fields-explicit
 
 severity: should-fix  

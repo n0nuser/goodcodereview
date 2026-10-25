@@ -54,6 +54,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `chg-match-codebase-pattern` [should-fix] {correctness, maintainability}: Follow the established pattern nearby.
 - `chg-one-concern` [should-fix] {process}: Make each change do one logical thing; if the description needs "and" between unrelated outcomes, split it.
 - `chg-perf-claim-evidence` [should-fix] {performance, testing}: Back a performance claim with measured before-and-after numbers.
+- `chg-refactor-has-behaviour-pin` [should-fix] {testing, maintainability}: Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
 - `chg-refactor-separate` [should-fix] {maintainability, process}: Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
 - `chg-review-signal` [discuss] {process}: Do not comment on what a tool enforces or on taste with no written rule; spend comments on a few high-conviction findings, and if there are many, talk to the author.
 - `chg-size-ceiling` [discuss] {process}: Split a change past about 400 changed lines or about 20 files, or say in the description why not; aim for about 200.
@@ -90,6 +91,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `fn-password-slow-hash` [block] {security}: Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.
 - `fn-reduced-motion-respected` [should-fix] {accessibility, usability}: Switch off or replace large, repeating, or interaction-triggered motion when `prefers-reduced-motion: reduce` is set.
 - `fn-regex-compiled-once` [should-fix] {performance}: Compile a regular expression once, at module or startup level, and reuse it.
+- `fn-rerun-safe-after-crash` [block] {reliability}: Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.
 - `fn-response-fields-explicit` [should-fix] {security, compatibility}: Return a response type that lists each field, never the stored model or a generic dump of it.
 - `fn-status-announced-live-region` [should-fix] {accessibility, usability}: Announce an async status message through a live region (`role="status"` or `role="alert"`) that is already in the markup before its text changes.
 - `fn-target-size` [should-fix] {accessibility, usability}: Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.
@@ -100,6 +102,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `mod-colour-tokens-meet-contrast` [should-fix] {accessibility, usability}: Make every text and background token pair meet 4.5:1 (3:1 for large text), and every border, icon, and focus colour meet 3:1 against its neighbour.
 - `mod-derive-dont-duplicate` [should-fix] {compatibility, maintainability}: Derive a type, list or enum from the schema or list that owns it, or add a build check that fails when the two disagree.
 - `mod-pooled-clients-built-once` [should-fix] {performance}: Build pooled clients once at startup and reuse them.
+- `mod-single-writer-per-state` [should-fix] {correctness}: Let only one writer change a piece of state at a time, through a single owner, a queue that serialises the writes, or compare-and-swap, never by convention.
 - `mod-vetted-crypto-only` [block] {security}: Encrypt with an authenticated mode such as AES-GCM, and never reuse a nonce under one key.
 - `mod-yagni` [should-fix] {maintainability, process}: Add an abstraction only when the logic is reused, non-trivial, or clutters the main flow; do not build for a need that does not exist yet.
 
@@ -144,6 +147,7 @@ To review only some concerns, such as a performance-only review, check only the 
 
 ## codebase
 
+- `code-build-hermetic` [should-fix] {process}: Build from declared inputs only, so that the same source revision gives the same artifact.
 - `code-ci-gates` [should-fix] {process}: Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
 - `code-consistency-drift` [discuss] {correctness, maintainability}: For each recurring concern (errors, config, HTTP clients, logging), make one pattern the standard instead of leaving several as equal peers.
 - `code-dead-code` [should-fix] {maintainability}: Remove unreferenced functions, commented-out code, expired flags, and orphaned files; history keeps them.
@@ -158,6 +162,7 @@ To review only some concerns, such as a performance-only review, check only the 
 
 - `prod-alerts-symptoms-golden-signals` [should-fix] {observability}: Page on user-visible symptoms, such as error rate and latency, not on causes.
 - `prod-canary-staged-rollout` [block] {reliability}: Roll out in stages behind a canary, and abort by rule, not by judgment.
+- `prod-kill-switch-fallback` [should-fix] {reliability}: Make a risky feature switchable off without a deploy, and exercise every fallback path in test or in production on a schedule.
 - `prod-latency-slo-percentile` [should-fix] {performance, observability}: Define latency SLOs and alerts on high percentiles, never on the mean.
 - `prod-load-test-before-launch` [should-fix] {performance, reliability}: Load test before launch, past the expected peak, with pass and fail thresholds written down.
 - `prod-profile-on-demand` [discuss] {performance, observability}: Make a CPU and memory profile of a production instance obtainable, through a continuous profiler or a private profile endpoint.
@@ -165,3 +170,4 @@ To review only some concerns, such as a performance-only review, check only the 
 ## incident
 
 - `inc-perf-fix-has-profile-evidence` [should-fix] {performance, testing}: Tie the performance fix to evidence that names the bottleneck: a profile, a trace, or a USE check.
+- `inc-rollback-path-tested` [should-fix] {reliability}: Exercise each mitigation that a runbook names (rollback, failover, flag off) on a regular schedule.
