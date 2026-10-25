@@ -415,6 +415,11 @@ def link_text(u):
     return host + ("/" + "/".join(parts) if len(parts) < 2 else "/…/" + parts[-1]) + (f"#{p.fragment}" if p.fragment else "")
 
 
+def backers(fm):
+    """The organisation names behind a card, for the Markdown and text outputs."""
+    return ", ".join(orgs.ORGS[o] for o, _ in orgs.group(fm["borrowed_from"])) or "no organisation yet"
+
+
 def icon(oid):
     return f'<svg class="oi" aria-hidden="true" focusable="false"><use href="#o-{oid}"/></svg>'
 
@@ -526,6 +531,7 @@ def corpus(kind, cs, cnt, date):
             lacks=schema.Lacks(*lacks(fm)) if lacks(fm) else None,
             rule=rule(body), why=section(body, "Why"), counterpoint=section(body, "Counterpoint"),
             fail=schema.example(body, "FAIL"), pass_=schema.example(body, "PASS"), sources=fm["borrowed_from"],
+            orgs=[schema.Org(o, orgs.ORGS[o], us) for o, us in orgs.group(fm["borrowed_from"])],
             url=f"{page_url(where)}#{fm['id']}", markdown_url=f"{BASE}/{where}.md")
     levels = [schema.LevelInfo(id=lv, name=NAME[lv], input=INPUT[lv], description=LEVEL_DESC[lv], stable_count=cnt[lv][0], draft_count=cnt[lv][1],
                                gives_verdict=bool(cnt[lv][0]), url=page_url(lv), markdown_url=f"{BASE}/{lv}.md") for lv in LEVELS]
@@ -698,8 +704,8 @@ def main():
            "Each card lists its concerns in braces: " + ", ".join(f"`{c}`" for c in CONCERNS) + ".",
            "To review only some concerns, such as a performance-only review, check only the cards that list them.", ""]
     line = lambda fm, b: f"- `{fm['id']}` [{fm['severity']}] {{{', '.join(concerns(fm))}}}: {rule(b)}"
-    dline = lambda fm, b: line(fm, b) + (f" Lacks ({lacks(fm)[0]}): {lacks(fm)[1]}" if lacks(fm) else "")
-    section = lambda fm, b: f"## {fm['id']}\n\nseverity: {fm['severity']}  \nconcerns: {', '.join(concerns(fm))}  \napplies_when: {fm['applies_when']}\n\n{b.strip()}"
+    dline = lambda fm, b: line(fm, b) + f" Backed by: {backers(fm)}." + (f" Lacks ({lacks(fm)[0]}): {lacks(fm)[1]}" if lacks(fm) else "")
+    section = lambda fm, b: f"## {fm['id']}\n\nseverity: {fm['severity']}  \nconcerns: {', '.join(concerns(fm))}  \napplies_when: {fm['applies_when']}  \nbacked by: {backers(fm)}\n\n{b.strip()}"
     refs = {}
     twins = {}  # slug -> (title, description, markdown body). Each gets frontmatter and is written to site/<slug>.md.
     for lv in LEVELS:
@@ -729,6 +735,7 @@ def main():
     k = next(i for i, l in enumerate(body) if l.startswith("The full text"))
     del body[k:body.index("", k) + 1]  # the shared pointer lines; llms.txt has its own Glossary and Draft sections
     llms = [body[0], "", "> " + sk[2][len("description: "):], "", "## When to use this site", "", WHEN_TO_USE, ""]
+    by_id = {fm["id"]: fm for _, fm, _ in stable}
     seen_level = False
     for l in body[2:]:
         if l.startswith("## ") and l[3:] in LEVELS:
@@ -737,7 +744,8 @@ def main():
                 seen_level = True
             llms += [l, "", f"- [{NAME[l[3:]]}, full text]({BASE}/{l[3:]}.md): every stable {l[3:]} card with its FAIL and PASS examples."]
         else:
-            llms.append(l)
+            m = re.match(r"- `([a-z0-9-]+)`", l)
+            llms.append(l + f" Backed by: {backers(by_id[m[1]])}." if m else l)
     llms += ["## Glossary", "", f"- [Glossary]({BASE}/glossary.md): terms the cards link to.", "",
              "## Draft cards", "", f"- [Draft cards]({BASE}/llms-drafts.txt): not vetted. {DRAFT_RULE}", "",
              "## Site", "",

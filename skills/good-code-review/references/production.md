@@ -4,7 +4,8 @@
 
 severity: should-fix  
 concerns: observability  
-applies_when: A service ships alerts or dashboards.
+applies_when: A service ships alerts or dashboards.  
+backed by: Google, Prometheus, Grafana Labs, Datadog
 
 **Rule.** Page on user-visible symptoms, such as error rate and latency, not on causes.
 
@@ -30,7 +31,8 @@ latency p50/p99 histogram, errors split from successes
 
 severity: block  
 concerns: reliability  
-applies_when: A change, config or dependency update is rolled out to production.
+applies_when: A change, config or dependency update is rolled out to production.  
+backed by: Google, AWS, OWASP
 
 **Rule.** Roll out in stages behind a canary, and abort by rule, not by judgment.
 
@@ -57,7 +59,8 @@ deploy: all hosts at once, no comparison, rollback = "ask someone"
 
 severity: should-fix  
 concerns: reliability  
-applies_when: A new risky feature or a dependency fallback is added.
+applies_when: A new risky feature or a dependency fallback is added.  
+backed by: AWS, Cloudflare, GitHub, Slack, Dropbox, Shopify
 
 **Rule.** Make a risky feature switchable off without a deploy, and exercise every fallback path in test or in production on a schedule.
 
@@ -85,7 +88,8 @@ if flags.enabled("checkout_v2"):   # runtime toggle, default off
 
 severity: should-fix  
 concerns: performance, observability  
-applies_when: A latency SLO, dashboard, or alert is defined for a service.
+applies_when: A latency SLO, dashboard, or alert is defined for a service.  
+backed by: Google, AWS, Prometheus, OpenTelemetry
 
 **Rule.** Define latency SLOs and alerts on high percentiles, never on the mean.
 
@@ -111,7 +115,8 @@ SLO: 99% of requests under 300 ms over 28 days
 
 severity: should-fix  
 concerns: performance, reliability  
-applies_when: A new service, a new feature with its own traffic, or a large architecture change is about to launch.
+applies_when: A new service, a new feature with its own traffic, or a large architecture change is about to launch.  
+backed by: Google, Microsoft, AWS, Grafana Labs
 
 **Rule.** Load test before launch, past the expected peak, with pass and fail thresholds written down.
 
@@ -137,7 +142,8 @@ thresholds: p99 < 400 ms, errors < 0.1%; result linked in the launch doc
 
 severity: discuss  
 concerns: performance, observability  
-applies_when: A service runs in production where CPU, memory, or latency problems would need a diagnosis.
+applies_when: A service runs in production where CPU, memory, or latency problems would need a diagnosis.  
+backed by: Google, Grafana Labs, Python Software Foundation, Brendan Gregg
 
 **Rule.** Make a CPU and memory profile of a production instance obtainable, through a continuous profiler or a private profile endpoint.
 

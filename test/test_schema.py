@@ -42,6 +42,15 @@ class SchemaTest(unittest.TestCase):
 		drafts["cards"][0]["lacks"] = {"reason": "vibes", "note": "x"}
 		self.assertTrue(schema.check(self.schema, drafts))
 
+	def test_every_stable_card_names_three_orgs_that_cover_its_sources(self):
+		for c in self.data["cards"]:
+			self.assertGreaterEqual(len(c["orgs"]), 3, c["id"])
+			self.assertEqual(sorted(u for o in c["orgs"] for u in o["sources"]), sorted(c["sources"]), c["id"])
+
+	def test_a_card_without_orgs_fails(self):
+		del self.data["cards"][0]["orgs"]
+		self.assertIn("missing 'orgs'", " ".join(schema.check(self.schema, self.data)))
+
 	def test_pass_is_a_json_key_not_pass_underscore(self):
 		self.assertIn("pass", self.data["cards"][0])
 		self.assertNotIn("pass_", self.data["cards"][0])

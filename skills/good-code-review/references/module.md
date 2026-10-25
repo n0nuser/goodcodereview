@@ -4,7 +4,8 @@
 
 severity: should-fix  
 concerns: accessibility, usability  
-applies_when: A design-system module or theme defines foreground and background colour tokens.
+applies_when: A design-system module or theme defines foreground and background colour tokens.  
+backed by: W3C, Deque, The A11y Project, Apple, Google
 
 **Rule.** Make every text and background token pair meet 4.5:1 (3:1 for large text), and every border, icon, and focus colour meet 3:1 against its neighbour.
 
@@ -40,7 +41,8 @@ test.each(pairs)("%s meets 4.5:1", (fg, bg) => expect(ratio(fg, bg)).toBeGreater
 
 severity: should-fix  
 concerns: compatibility, maintainability  
-applies_when: A schema, spec, enum or list owns a shape that other code restates by hand.
+applies_when: A schema, spec, enum or list owns a shape that other code restates by hand.  
+backed by: Cursor, Uber, Stripe, Spotify
 
 **Rule.** Derive a type, list or enum from the schema or list that owns it, or add a build check that fails when the two disagree.
 
@@ -65,7 +67,8 @@ status.py is generated from openapi.yaml in the build, or a test asserts the two
 
 severity: should-fix  
 concerns: performance  
-applies_when: Code creates a network or database client.
+applies_when: Code creates a network or database client.  
+backed by: Microsoft, Google, Python Software Foundation, OpenJS Foundation
 
 **Rule.** Build pooled clients once at startup and reuse them.
 
@@ -94,7 +97,8 @@ async Task<string> Fetch(string url) => await Client.GetStringAsync(url);
 
 severity: should-fix  
 concerns: correctness  
-applies_when: More than one module, worker or process writes the same state.
+applies_when: More than one module, worker or process writes the same state.  
+backed by: Cursor, Netflix, Cabify, GitHub
 
 **Rule.** Let only one writer change a piece of state at a time, through a single owner, a queue that serialises the writes, or compare-and-swap, never by convention.
 
@@ -119,7 +123,8 @@ or: state/a.json and state/b.json, one writer each; readers merge them
 
 severity: block  
 concerns: security  
-applies_when: A module encrypts or decrypts data.
+applies_when: A module encrypts or decrypts data.  
+backed by: OWASP, IETF, NIST, Google
 
 **Rule.** Encrypt with an authenticated mode such as AES-GCM, and never reuse a nonce under one key.
 
@@ -145,7 +150,8 @@ ct = aead.encrypt(os.urandom(12), msg, aad)      # fresh nonce per message
 
 severity: should-fix  
 concerns: maintainability, process  
-applies_when: The change adds an abstraction, parameter, hook or option.
+applies_when: The change adds an abstraction, parameter, hook or option.  
+backed by: Kent C. Dodds, Google, Henrik Warne
 
 **Rule.** Add an abstraction only when the logic is reused, non-trivial, or clutters the main flow; do not build for a need that does not exist yet.
 
