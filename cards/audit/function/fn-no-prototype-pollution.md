@@ -3,8 +3,7 @@ id: fn-no-prototype-pollution
 level: function
 tags: [security, javascript, injection]
 severity: block
-status: draft
-lacks: unreviewed, OWASP, PortSwigger, GitHub and Snyk listed; check each recommends the practice rather than defining it
+status: stable
 lang: core
 applies_when: JavaScript or TypeScript code merges, clones, or assigns properties whose key names come from JSON, a query string, or other untrusted input.
 tool_gate: CodeQL `js/prototype-pollution-utility` and `js/prototype-polluting-assignment`.
@@ -18,9 +17,9 @@ borrowed_from:
   - https://learn.snyk.io/lesson/prototype-pollution/
 ---
 
-**Rule.** Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys, and block `__proto__`, `constructor`, and `prototype` in any deep merge.
+**Rule.** Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys.
 
-**Why.** `obj[key] = value` with `key` set to `__proto__` writes to `Object.prototype`, so every object in the process gains that property. An attacker who sets `isAdmin` or a template option there can skip checks or reach code execution. The bug sits in generic helpers such as deep merge and path setters, so one bad helper exposes every caller.
+**Why.** `obj[key] = value` with `key` set to `__proto__` writes to `Object.prototype`, so every object in the process gains that property. An attacker who sets `isAdmin` or a template option there can skip checks or reach code execution. The bug sits in generic helpers such as deep merge and path setters, so one bad helper exposes every caller. Blocking `__proto__`, `constructor`, and `prototype` inside a deep merge helps, but a blocklist misses obfuscated keys, so treat it as a stopgap.
 
 **FAIL**
 
@@ -44,4 +43,4 @@ for (const [k, v] of Object.entries(JSON.parse(body))) {
 }
 ```
 
-**Counterpoint.** "Just freeze `Object.prototype` at startup." That helps, and the sources list it, but it can break libraries that patch prototypes, and it leaves `constructor.prototype` paths in class instances open. Fix the merge, and add the freeze on top if your dependencies allow it.
+**Counterpoint.** "Just freeze `Object.prototype` at startup." That helps, but it can break libraries that patch prototypes, and it leaves `constructor.prototype` paths in class instances open. Fix the merge, and add the freeze on top if your dependencies allow it.

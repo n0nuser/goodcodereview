@@ -88,6 +88,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `fn-no-mass-assignment` [block] {security}: Bind request data to a DTO or an explicit field allowlist, never straight onto the model.
 - `fn-no-native-deserialise-untrusted` [block] {security}: Parse untrusted input with a data-only format, never with a native object deserialiser.
 - `fn-no-positive-tabindex` [should-fix] {accessibility, usability}: Write the DOM in reading order and never set `tabindex` above 0.
+- `fn-no-prototype-pollution` [block] {security}: Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys.
 - `fn-no-raw-html-sink` [block] {security}: Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.
 - `fn-no-shell-with-input` [block] {security}: Start processes with the program and each argument as separate list items, and never through a shell string.
 - `fn-object-level-authz` [block] {security}: Check that the caller may act on the specific record before returning or changing it.

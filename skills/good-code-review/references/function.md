@@ -638,6 +638,40 @@ applies_when: Markup sets `tabindex`, or a layout reorders content with CSS.
 
 **Counterpoint.** "The visual layout puts the sidebar first, but the main content comes first in the DOM." Reorder the DOM to match, or accept the difference only if the order still makes sense to a keyboard user. Do not patch it with numbers.
 
+## fn-no-prototype-pollution
+
+severity: block  
+concerns: security  
+applies_when: JavaScript or TypeScript code merges, clones, or assigns properties whose key names come from JSON, a query string, or other untrusted input.
+
+**Rule.** Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys.
+
+**Why.** `obj[key] = value` with `key` set to `__proto__` writes to `Object.prototype`, so every object in the process gains that property. An attacker who sets `isAdmin` or a template option there can skip checks or reach code execution. The bug sits in generic helpers such as deep merge and path setters, so one bad helper exposes every caller. Blocking `__proto__`, `constructor`, and `prototype` inside a deep merge helps, but a blocklist misses obfuscated keys, so treat it as a stopgap.
+
+**FAIL**
+
+```javascript
+function merge(dst, src) {
+  for (const k in src) {
+    if (typeof src[k] === "object") merge(dst[k] ??= {}, src[k]);
+    else dst[k] = src[k];
+  }
+}
+merge(settings, JSON.parse(body));   // body: {"__proto__": {"isAdmin": true}}
+```
+
+**PASS**
+
+```javascript
+const ALLOWED = new Set(["theme", "lang"]);
+const prefs = new Map();
+for (const [k, v] of Object.entries(JSON.parse(body))) {
+  if (ALLOWED.has(k)) prefs.set(k, v);
+}
+```
+
+**Counterpoint.** "Just freeze `Object.prototype` at startup." That helps, but it can break libraries that patch prototypes, and it leaves `constructor.prototype` paths in class instances open. Fix the merge, and add the freeze on top if your dependencies allow it.
+
 ## fn-no-raw-html-sink
 
 severity: block  
