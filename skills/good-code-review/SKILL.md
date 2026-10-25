@@ -131,6 +131,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `svc-slow-operation-shows-progress` [should-fix] {usability, accessibility}: Show that a slow action is under way, and show its progress when it runs long.
 - `svc-sqli-authn` [block] {security}: Pass untrusted data to queries as bound parameters, never by string concatenation or formatting.
 - `svc-timeouts` [block] {performance, reliability}: Set an explicit timeout on every remote call.
+- `svc-tls-modern-only` [should-fix] {security}: Accept only TLS 1.2 and TLS 1.3 on servers.
 - `svc-upload-validate-store` [block] {security}: Allowlist the file type, cap the size, and store each upload under a generated name where the server will not execute it.
 
 ## system

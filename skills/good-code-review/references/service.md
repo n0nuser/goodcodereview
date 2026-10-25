@@ -568,6 +568,32 @@ def GetProfile(self, request, context):
 
 **Counterpoint.** "Defaults are fine; the library will time out eventually." Many defaults are infinite, and an eventual timeout longer than the caller's own deadline is wasted work. Configure the client's timeout once at construction, connect and read separately, then shrink it per call to what the caller has left. Pick the numbers from measured latency, such as the downstream p99.9, not folklore.
 
+## svc-tls-modern-only
+
+severity: should-fix  
+concerns: security  
+applies_when: The service or its load balancer terminates TLS.
+
+**Rule.** Accept only TLS 1.2 and TLS 1.3 on servers.
+
+**Why.** TLS 1.0 and 1.1 lack modern cipher suites and are deprecated by RFC 8996, and SSL 3.0 is broken outright. A server that still offers them lets an attacker on the path force a downgrade, and it fails compliance scans. Library defaults have moved to TLS 1.2, but an explicit lower setting, an old base image, or a load-balancer policy from years ago keeps the old versions alive. With TLS 1.2, prefer AEAD suites with forward secrecy.
+
+**FAIL**
+
+```python
+ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+ctx.minimum_version = ssl.TLSVersion.TLSv1
+```
+
+**PASS**
+
+```python
+ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+ctx.minimum_version = ssl.TLSVersion.TLSv1_2
+```
+
+**Counterpoint.** "Some of our users have old clients." Measure first: log the negotiated version, and if old clients are a real share, serve them from a separate endpoint with an end date instead of weakening every endpoint.
+
 ## svc-upload-validate-store
 
 severity: block  
