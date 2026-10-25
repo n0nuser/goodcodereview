@@ -14,7 +14,7 @@ A card is accepted when it has:
 
 New cards start as `status: draft`. Only `stable` cards ship in `SKILL.md`.
 
-A stable card must not name a draft card id. `tools/validate.py` fails if one does. When you promote a draft to stable, add back the links to it that stable cards dropped.
+A stable card or glossary entry must not name a draft card id. `tools/validate.py` fails if one does. When you promote a draft to stable, add back the links to it that stable cards and glossary entries dropped.
 
 Run `python3 tools/validate.py` to lint the cards. Run `python3 tools/build.py` to build the site and the skill.
 

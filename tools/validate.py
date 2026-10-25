@@ -121,6 +121,11 @@ def validate(root):
             for d in sorted(drafts):
                 if re.search(rf"(?<![a-z0-9-]){re.escape(d)}(?![a-z0-9-])", text):
                     err(f"stable card names draft id '{d}'")
+    for g in sorted((root / "glossary").glob("*.md")):
+        text = g.read_text()
+        for d in sorted(drafts):
+            if re.search(rf"(?<![a-z0-9-]){re.escape(d)}(?![a-z0-9-])", text):
+                errors.append(f"{g.relative_to(root)}: glossary entry names draft id '{d}'")
     return errors
 
 
