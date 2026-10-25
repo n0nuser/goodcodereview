@@ -12,7 +12,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 sys.path.insert(0, str(Path(__file__).parent))
-from validate import CONCERNS, LEVELS, load_cards, validate  # noqa: E402
+from validate import CONCERNS, LACKS, LEVELS, load_cards, validate  # noqa: E402
 import schema  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -72,13 +72,14 @@ EMPTY_MARK = "no vetted cards yet"
 EMPTY_RULE = (f'A level marked "{EMPTY_MARK}" has no stable cards. Give no verdict for it. Say that there are no vetted cards for that level yet. '
               "You may list its draft cards as notes, never as `PASS` or `FAIL`.")
 DRAFT_RULE = "Draft cards are never verdicts."
-# The reader-facing words for each reason in validate.LACKS.
-LACKS_LABEL = {"orgs": "too few organisations back a clause of the Rule",
+# The reader-facing words for each reason in validate.LACKS, in the order the drafts page lists them.
+LACKS_LABEL = {"unreviewed": "its sources are listed, but no stable pass has checked them yet",
+               "orgs": "too few organisations back a clause of the Rule",
                "evidence": "a source is a plan, a definition, or a summary rather than a stated practice",
                "failable": "a reviewer could not mark the Rule FAIL at its level",
                "duplicate": "it overlaps a stable card", "contradiction": "the card contradicts itself",
-               "held": "the maintainer keeps it as a draft",
-               "unreviewed": "its sources are listed, but no stable pass has checked them yet"}
+               "held": "the maintainer keeps it as a draft"}
+DRAFTS_DESC = "Every draft card grouped by what it lacks to become stable, with what each one needs."
 # One closing prompt for design-level reviews. It sits outside the PASS/FAIL ledger.
 DESIGN_NOTE = "For a system or codebase review, end with one note outside the ledger: name the decision you would most want written down and what its alternative costs. Cite file:line for the decision. Give no verdict and no severity for it."
 DRAFT_NOTE = "A draft card is not vetted. Read it for ideas, but do not use it for a verdict."
@@ -366,7 +367,7 @@ def head_tags(title, desc, slug):
 
 
 FOOTER = (f'<footer><p>Created and edited by <a href="https://pablogonzalez.me">Pablo González</a> · Content CC BY 4.0 · Code MIT · <a href="{REPO}">Source</a></p>'
-          '<ul class="fl"><li><a href="about.html">About</a></li><li><a href="privacy.html">Privacy</a></li>'
+          '<ul class="fl"><li><a href="drafts.html">Drafts by what they lack</a></li><li><a href="about.html">About</a></li><li><a href="privacy.html">Privacy</a></li>'
           f'<li><a href="{REPO}/issues">Contact (GitHub Issues)</a></li><li><a href="llms.txt">llms.txt</a></li><li><a href="sitemap.xml">Sitemap</a></li>'
           f'<li><a href="{REPO}/blob/main/AGENTS.md">AGENTS.md</a></li><li><a href="{REPO}/tree/main/skills/good-code-review">Skill folder</a></li></ul></footer>')
 
@@ -588,7 +589,17 @@ def main():
         (SITE / f).write_text(out)
     g = "".join(f'<article id="{p.stem}">{md(p.read_text(), ids)}</article>' for p in gloss)
     (SITE / "glossary.html").write_text(page("Glossary", g, links=links, cur="glossary.html", desc=GLOSSARY_DESC, slug="glossary"))
-    for slug, title, text, desc in (("about", "About", ABOUT, ABOUT_DESC), ("privacy", "Privacy", PRIVACY, PRIVACY_DESC)):
+    if set(LACKS_LABEL) != set(LACKS):
+        sys.exit("LACKS_LABEL must name every reason in validate.LACKS")
+    drafts = [fm for _, fm, _ in cards if lacks(fm)]
+    by_lack = {r: [(fm, lacks(fm)[1]) for fm in drafts if lacks(fm)[0] == r] for r in LACKS_LABEL}
+    drafts_md = (f"Each draft card names what keeps it from stable in a `lacks:` line. This page groups the {len(drafts)} drafts by that reason. "
+                 f"[How a draft becomes stable]({REPO}/blob/main/docs/PROMOTION.md) gives the bar. "
+                 f"To promote one, open a [Promote a draft issue]({REPO}/issues/new?template=promote-draft.yml).\n\n"
+                 + "\n\n".join(f"# {LACKS_LABEL[r][0].upper() + LACKS_LABEL[r][1:]} ({len(cs)})\n\n"
+                                 + "\n".join(f"- [[{fm['id']}]] ({fm['level']}): {note}" for fm, note in cs) for r, cs in by_lack.items() if cs))
+    for slug, title, text, desc in (("about", "About", ABOUT, ABOUT_DESC), ("privacy", "Privacy", PRIVACY, PRIVACY_DESC),
+                                    ("drafts", "Drafts by what they lack", drafts_md, DRAFTS_DESC)):
         (SITE / f"{slug}.html").write_text(page(title, md(text, ids), links=links, desc=desc, slug=slug))
     npx = "npx skills add n0nuser/goodcodereview"
     plugin = "/plugin marketplace add n0nuser/goodcodereview\n/plugin install goodcodereview@goodcodereview"
@@ -692,6 +703,7 @@ def main():
              "## Site", "",
              f"- [About]({BASE}/about.html): who makes this and under which licence.",
              f"- [Privacy]({BASE}/privacy.html): the site collects nothing.",
+             f"- [Drafts by what they lack]({BASE}/drafts.md): every draft grouped by what keeps it from stable.",
              f"- [Sitemap]({BASE}/sitemap.xml): every page.",
              f"- [cards.json]({BASE}/cards.json): every stable card as JSON; the shape is in [cards.schema.json]({BASE}/cards.schema.json).",
              f"- [Agent Skills index]({BASE}/.well-known/agent-skills/index.json): the skill, with a sha256 digest.",
@@ -733,6 +745,7 @@ def main():
     twins["glossary"] = ("Glossary", GLOSSARY_DESC, "# Glossary\n\n" + "\n\n".join(xlink(re.sub(r"^# ", "## ", p.read_text(), count=1).strip()) for p in gloss) + "\n")
     twins["about"] = ("About", ABOUT_DESC, "# About\n\n" + ABOUT)
     twins["privacy"] = ("Privacy", PRIVACY_DESC, "# Privacy\n\n" + PRIVACY)
+    twins["drafts"] = ("Drafts by what they lack", DRAFTS_DESC, "# Drafts by what they lack\n\n" + xlink(re.sub(r"^# ", "## ", drafts_md, flags=re.M)) + "\n")
     for slug, (title, desc, md_text) in twins.items():
         (SITE / f"{slug}.md").write_text(front(title, desc, slug, date) + md_text)
 
@@ -743,7 +756,7 @@ def main():
               ("sitemap.xml", "Sitemap", "every page.")] + [(f"{lv}.html", NAME[lv], LEVEL_DESC[lv]) for lv in LEVELS]) + "</ul>")
     (SITE / "404.html").write_text(re.sub(r'href="(?![a-z]+:|#|/)', 'href="/', page("Not found", nf, links=links)))
 
-    slugs = ["index", "concerns", *LEVELS, *[f"pack-{pk}" for pk in packs], "glossary", "about", "privacy"]
+    slugs = ["index", "concerns", *LEVELS, *[f"pack-{pk}" for pk in packs], "glossary", "drafts", "about", "privacy"]
     (SITE / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                                       + "".join(f"<url><loc>{page_url(s)}</loc><lastmod>{date}</lastmod></url>\n" for s in slugs) + "</urlset>\n")
     shutil.copy(ROOT / "tools" / "og.png", SITE / "og.png")
