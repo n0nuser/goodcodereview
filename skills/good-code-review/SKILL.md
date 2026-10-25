@@ -98,6 +98,7 @@ To review only some concerns, such as a performance-only review, check only the 
 ## module
 
 - `mod-colour-tokens-meet-contrast` [should-fix] {accessibility, usability}: Make every text and background token pair meet 4.5:1 (3:1 for large text), and every border, icon, and focus colour meet 3:1 against its neighbour.
+- `mod-derive-dont-duplicate` [should-fix] {compatibility, maintainability}: Derive a type, list or enum from the schema or list that owns it, or add a build check that fails when the two disagree.
 - `mod-pooled-clients-built-once` [should-fix] {performance}: Build pooled clients once at startup and reuse them.
 - `mod-vetted-crypto-only` [block] {security}: Encrypt with an authenticated mode such as AES-GCM, and never reuse a nonce under one key.
 - `mod-yagni` [should-fix] {maintainability, process}: Add an abstraction only when the logic is reused, non-trivial, or clutters the main flow; do not build for a need that does not exist yet.
@@ -108,8 +109,10 @@ To review only some concerns, such as a performance-only review, check only the 
 - `svc-api-deprecation-sunset` [should-fix] {compatibility}: Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers, with the `Sunset` date no earlier than the `Deprecation` date.
 - `svc-api-error-code-stable` [should-fix] {compatibility}: Give each error a stable machine-readable code that callers branch on, and never make them parse the message text.
 - `svc-api-versioning-policy` [should-fix] {compatibility}: Write down one versioning scheme for the API, and ship no breaking change inside a version it has published.
+- `svc-auth-throttle-generic-errors` [block] {security}: Limit failed attempts per account, and return the same message and status code whether or not the account exists.
 - `svc-authz-central-deny-default` [block] {security}: Route every request through one authorization layer that denies when no rule allows it.
 - `svc-bound-client-controlled-sizes` [should-fix] {security}: Cap every client-controlled size and count on the server: body bytes, string length, array items, page size and batch size.
+- `svc-bounded-background-tasks` [block] {reliability, correctness}: Cap how many background tasks run at once, and never spawn one per input with no limit.
 - `svc-cors-allowlist` [should-fix] {security}: Allow cross-origin access only to a fixed list of named origins, and never echo the request `Origin` header back unchecked.
 - `svc-csrf-state-changing` [block] {security}: Require a CSRF token (or an equivalent header check) on every cookie-authenticated request that changes state, and never change state on GET.
 - `svc-idempotency-key` [block] {reliability, correctness}: Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.
@@ -142,10 +145,14 @@ To review only some concerns, such as a performance-only review, check only the 
 ## codebase
 
 - `code-ci-gates` [should-fix] {process}: Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
+- `code-consistency-drift` [discuss] {correctness, maintainability}: For each recurring concern (errors, config, HTTP clients, logging), make one pattern the standard instead of leaving several as equal peers.
 - `code-dead-code` [should-fix] {maintainability}: Remove unreferenced functions, commented-out code, expired flags, and orphaned files; history keeps them.
+- `code-dependency-licence-sbom` [should-fix] {security}: Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule.
 - `code-dependency-pinning` [block] {security}: Commit a lockfile with hashes and install from it in CI.
 - `code-perf-budget-in-ci` [should-fix] {performance, process}: Write the performance budget down as a CI check that fails the build when it is exceeded.
+- `code-rule-has-enforcer` [should-fix] {maintainability}: Back each rule that a type, lint or CI check could enforce with that check, not with a line in an instruction file or a repeated review comment.
 - `code-secret-scan` [block] {security, process}: Scan for committed credentials, and treat any hit as leaked: revoke and replace it first.
+- `code-workflow-supply-chain` [block] {security, process}: Pin every CI action to a full commit SHA.
 
 ## production
 

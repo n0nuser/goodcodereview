@@ -110,6 +110,33 @@ the rename ships under api-version=2026-09-01
 
 **Counterpoint.** "We will cross that bridge later." Later arrives with a customer on the old shape. The scheme can be minimal. A media type, a dated query parameter and a pinned header all work. Pick one and write it down. What counts as breaking is in [chg-breaking-change-taxonomy](change.md#chg-breaking-change-taxonomy).
 
+## svc-auth-throttle-generic-errors
+
+severity: block  
+concerns: security  
+applies_when: The service has a login, password-reset or one-time-code endpoint.
+
+**Rule.** Limit failed attempts per account, and return the same message and status code whether or not the account exists.
+
+**Why.** Unlimited guesses make passwords and 6-digit codes brute-forceable. Different errors for "no such user" and "wrong password" let an attacker list valid accounts first. Limit per account, since a per-IP limit is bypassed by rotating addresses. Response time leaks the same fact: if the code hashes the password only when the user exists, a fast reply means "no such user", so hash on every attempt. Registration needs its own design: give the same reply whether or not the address is taken, and email the owner of an existing account instead of creating a second one.
+
+**FAIL**
+
+```text
+if not user: return "No such user", 404
+if not check(pw): return "Wrong password", 401      # no attempt limit
+```
+
+**PASS**
+
+```text
+if too_many_failures(account_key): return "Try again later", 429   # checked before the password
+ok = check(pw, user.pw_hash if user else DUMMY_HASH)              # hash runs either way
+if not (user and ok): record_failure(account_key); return "Invalid credentials", 401
+```
+
+**Counterpoint.** "A lockout lets attackers lock out real users." Use a rising delay, not a permanent lock, and keep the recovery flow reachable. Log every lockout so abuse shows up.
+
 ## svc-authz-central-deny-default
 
 severity: block  
@@ -163,6 +190,42 @@ items: list[Item] = Field(max_length=100)            # body capped at 1 MB by th
 ```
 
 **Counterpoint.** "Legit clients sometimes need big batches." Offer a documented bulk or export endpoint with its own quota. The default path stays capped.
+
+## svc-bounded-background-tasks
+
+severity: block  
+concerns: reliability, correctness  
+applies_when: The code starts a task, goroutine, or thread per item, request, or message.
+
+**Rule.** Cap how many background tasks run at once, and never spawn one per input with no limit.
+
+**Why.** Input size is not under your control. One task per item works for ten items and exhausts memory, connections, or the downstream service at ten thousand, and the failure lands on everything else in the process. Go's `errgroup.SetLimit`, asyncio's `Semaphore` and Tokio's `Semaphore` exist for exactly this.
+
+**FAIL**
+
+```python
+for msg in batch:                       # batch size comes from the queue
+    asyncio.create_task(handle(msg))    # 50k messages -> 50k concurrent handlers
+```
+
+**PASS**
+
+```python
+async def worker(queue):
+    while (msg := await queue.get()) is not None:
+        await handle(msg)
+
+queue = asyncio.Queue(maxsize=100)
+async with asyncio.TaskGroup() as tg:
+    for _ in range(32):                 # at most 32 handlers at once
+        tg.create_task(worker(queue))
+    for msg in batch:
+        await queue.put(msg)
+    for _ in range(32):
+        await queue.put(None)           # one stop signal per worker
+```
+
+**Counterpoint.** "Tasks are cheap." Creating them is, but what each one holds (a socket, a buffer, a database connection) is not. A semaphore around each handler also caps concurrency, though it still creates one task object per input. This card covers work that a service starts for itself. [sys-load-shedding-bounded-queues](system.md#sys-load-shedding-bounded-queues) covers refusing incoming requests under load.
 
 ## svc-cors-allowlist
 

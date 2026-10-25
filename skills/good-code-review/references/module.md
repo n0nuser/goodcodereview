@@ -36,6 +36,31 @@ test.each(pairs)("%s meets 4.5:1", (fg, bg) => expect(ratio(fg, bg)).toBeGreater
 
 **Counterpoint.** "The brand colour fails." A logo is exempt. A brand-coloured button label or link is not. Darken the shade used for text and keep the brand shade for fills. The ratio is exact: 4.499:1 fails.
 
+## mod-derive-dont-duplicate
+
+severity: should-fix  
+concerns: compatibility, maintainability  
+applies_when: A schema, spec, enum or list owns a shape that other code restates by hand.
+
+**Rule.** Derive a type, list or enum from the schema or list that owns it, or add a build check that fails when the two disagree.
+
+**Why.** A hand-kept copy drifts. The next field added to the schema is missing from the copy, and nothing fails until a user hits it.
+
+**FAIL**
+
+```text
+openapi.yaml defines Status: [open, closed, void]
+status.py:   class Status(Enum): OPEN, CLOSED     # void missing
+```
+
+**PASS**
+
+```text
+status.py is generated from openapi.yaml in the build, or a test asserts the two sets are equal
+```
+
+**Counterpoint.** "Generated code is awkward to read." A parity test gives the same safety with hand-written types. The rule fails only when neither derivation nor a check exists.
+
 ## mod-pooled-clients-built-once
 
 severity: should-fix  
