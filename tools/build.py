@@ -71,6 +71,8 @@ EMPTY_MARK = "no vetted cards yet"
 EMPTY_RULE = (f'A level marked "{EMPTY_MARK}" has no stable cards. Give no verdict for it. Say that there are no vetted cards for that level yet. '
               "You may list its draft cards as notes, never as `PASS` or `FAIL`.")
 DRAFT_RULE = "Draft cards are never verdicts."
+# One closing prompt for design-level reviews. It sits outside the PASS/FAIL ledger.
+DESIGN_NOTE = "For a system or codebase review, end with one note outside the ledger: name the decision you would most want written down and what its alternative costs. Cite file:line for the decision. Give no verdict and no severity for it."
 DRAFT_NOTE = "A draft card is not vetted. Read it for ideas, but do not use it for a verdict."
 PACK_DESC = "Draft cards specific to {pk}, not vetted. Use them with the level page that matches your input."
 CONCERNS_DESC = "Every card's rule on one page. Pick a concern, such as performance or security, to scope a review."
@@ -582,7 +584,7 @@ def main():
           "---", "", "# Good Code Review", "", "## Routing", "", "| Input | Entry point |", "|---|---|"]
     sk += [f"| {i} | {lv}{f' ({EMPTY_MARK})' if lv in empty else ''} |" for i, lv in ROUTES]
     sk += ["", INCIDENT_RULE, ""] + ([EMPTY_RULE, ""] if empty else [])
-    sk += ["## Verdict format", ""] + plain.replace(". ", ".\n").split("\n") + ["", "```", EXAMPLE, "```", "", DRAFT_RULE, "",
+    sk += ["## Verdict format", ""] + plain.replace(". ", ".\n").split("\n") + ["", "```", EXAMPLE, "```", "", DRAFT_RULE, "", DESIGN_NOTE, "",
            "The full text for each level is in `references/<level>.md`.",
            *[f"{pk.capitalize()} pack (draft cards, not vetted): {BASE}/pack-{pk}.html" for pk in packs],
            f"Glossary: {BASE}/glossary.html",

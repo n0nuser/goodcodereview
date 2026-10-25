@@ -36,6 +36,8 @@ N/A chg-perf-claim-evidence - the description makes no performance claim
 
 Draft cards are never verdicts.
 
+For a system or codebase review, end with one note outside the ledger: name the decision you would most want written down and what its alternative costs. Cite file:line for the decision. Give no verdict and no severity for it.
+
 The full text for each level is in `references/<level>.md`.
 Python pack (draft cards, not vetted): https://goodcodereview.com/pack-python.html
 Glossary: https://goodcodereview.com/glossary.html
