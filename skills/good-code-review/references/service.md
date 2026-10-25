@@ -363,6 +363,37 @@ applies_when: A multi-step flow, such as checkout or signup, asks for data in mo
 
 **Counterpoint.** "Retyping a new password confirms it." That is a fair exception. So is data that is no longer valid, and re-entry that is the point of the task, such as a memory test. Browser autofill does not count: the page itself must supply the value.
 
+## svc-no-secrets-in-url
+
+severity: should-fix  
+concerns: security  
+applies_when: A client or server puts an API key, session token, bearer token, password, or personal data into a URL.
+
+**Rule.** Send tokens, keys, passwords, and personal data in a header or the request body, never in the path or query string.
+
+**Why.** A URL is copied to places nobody reviews: proxy and access logs, browser history, the `Referer` header sent to third-party scripts and images, and links pasted into chat. A token there stays readable long after the request ends. The `Authorization` header and a POST body skip all of those copies.
+
+**FAIL**
+
+```text
+GET /api/orders?api_key=sk_live_abc123
+GET /reset?email=ana@example.com&token=9f2c
+```
+
+**PASS**
+
+```text
+GET /api/orders
+Authorization: Bearer sk_live_abc123
+
+POST /reset
+Content-Type: application/json
+
+{"token": "9f2c"}
+```
+
+**Counterpoint.** "Email links have to carry the token in the URL." Make that token single-use and short-lived, have the landing page swap it for a session at once, and send `Referrer-Policy: no-referrer` on that page. A long-lived API key has no such excuse.
+
 ## svc-rate-limit-quota
 
 severity: should-fix  

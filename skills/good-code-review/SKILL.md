@@ -124,6 +124,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `svc-idempotency-key` [block] {reliability, correctness}: Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.
 - `svc-list-endpoint-paginates` [should-fix] {performance}: Paginate every list endpoint, with a default page size and a server-side maximum.
 - `svc-no-redundant-entry` [should-fix] {usability, accessibility}: Do not ask for information the user already gave in the same flow. Fill it in, or let the user pick it.
+- `svc-no-secrets-in-url` [should-fix] {security}: Send tokens, keys, passwords, and personal data in a header or the request body, never in the path or query string.
 - `svc-rate-limit-quota` [should-fix] {security, reliability}: Enforce a per-tenant quota on shared APIs and queues.
 - `svc-reflow-and-zoom` [should-fix] {accessibility, usability}: Make the page usable at 320 CSS pixels wide and at 200% text zoom, with no sideways scrolling, no clipped content, and no blocked pinch-zoom.
 - `svc-retry-policy` [block] {reliability}: Retry only transient errors, with capped attempts and jittered exponential backoff.

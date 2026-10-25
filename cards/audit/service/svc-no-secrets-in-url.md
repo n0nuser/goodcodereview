@@ -3,8 +3,7 @@ id: svc-no-secrets-in-url
 level: service
 tags: [security, secrets, http]
 severity: should-fix
-status: draft
-lacks: unreviewed, OWASP, IETF, MITRE and Mozilla listed; check each recommends the practice rather than defining it
+status: stable
 lang: core
 applies_when: A client or server puts an API key, session token, bearer token, password, or personal data into a URL.
 tool_gate: none
