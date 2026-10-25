@@ -149,6 +149,7 @@ To review only some concerns, such as a performance-only review, check only the 
 
 ## production
 
+- `prod-alerts-symptoms-golden-signals` [should-fix] {observability}: Page on user-visible symptoms, such as error rate and latency, not on causes.
 - `prod-canary-staged-rollout` [block] {reliability}: Roll out in stages behind a canary, and abort by rule, not by judgment.
 - `prod-latency-slo-percentile` [should-fix] {performance, observability}: Define latency SLOs and alerts on high percentiles, never on the mean.
 - `prod-load-test-before-launch` [should-fix] {performance, reliability}: Load test before launch, past the expected peak, with pass and fail thresholds written down.

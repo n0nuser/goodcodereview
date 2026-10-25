@@ -63,11 +63,11 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | 111-list #55 | Rollbacks | `prod-canary-staged-rollout` | stable |
 | 111-list #56 | Health Checks | `sys-health-liveness-readiness` | draft |
 | 111-list #57 | Liveness & Readiness Probes | glossary/liveness-readiness-probes | glossary |
-| 111-list #58 | Monitoring | `prod-alerts-symptoms-golden-signals` | draft |
+| 111-list #58 | Monitoring | `prod-alerts-symptoms-golden-signals` | stable |
 | 111-list #59 | Logging | `sys-secrets-and-errors` | stable |
 | 111-list #60 | Distributed Tracing | glossary/distributed-tracing | glossary |
 | 111-list #61 | Metrics | `prod-wide-events-bounded-labels` | draft |
-| 111-list #62 | Alerts | `prod-alerts-symptoms-golden-signals` | draft |
+| 111-list #62 | Alerts | `prod-alerts-symptoms-golden-signals` | stable |
 | 111-list #63 | SLOs | glossary/slos | glossary |
 | 111-list #64 | SLIs | glossary/slis | glossary |
 | 111-list #65 | Error Budgets | glossary/error-budgets | glossary |
@@ -305,7 +305,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | service-system | OWASP A10:2025, ASVS V16 (error leaks, fail open, log data) | `sys-secrets-and-errors` | stable |
 | service-system | OWASP A01 (SSRF folded in) | `sys-ssrf` | stable |
 | service-system | OWASP A05 / A07 / A01 (index only) | `svc-sqli-authn` | stable |
-| service-system | SRE monitoring | `prod-alerts-symptoms-golden-signals` | draft |
+| service-system | SRE monitoring | `prod-alerts-symptoms-golden-signals` | stable |
 | service-system | Honeycomb wide events, cardinality, deploy markers | `prod-wide-events-bounded-labels` | draft |
 | service-system | SRE canary + release engineering, AWS velocity control | `prod-canary-staged-rollout` | stable |
 | service-system | AWS cache-off test, ASVS degradation path | `prod-kill-switch-fallback` | draft |
@@ -582,3 +582,12 @@ From `docs/research/frontend-pass.md`. Every card here carries the `accessibilit
 | frontend-pass | Validate on blur versus on submit | dropped: GOV.UK and Baymard disagree | dropped |
 | frontend-pass | Incident-level accessibility card | dropped: no source describes an accessibility incident review | dropped |
 | frontend-pass | Material Design target and contrast guidance | dropped: the Material pages returned only a title | dropped |
+
+## Alerting pass
+
+Source: `docs/research/alerting-pass.md`. Row numbers are that file's.
+
+| Source | Item | Maps to | Status |
+|---|---|---|---|
+| alerting-pass | 1-3 Page on user-visible symptoms such as error rate and latency; hold an error-rate alert for a few minutes | `prod-alerts-symptoms-golden-signals` | stable |
+| alerting-pass | 4 Alert on workload health, not arbitrary values | dropped: never says symptoms or causes, so it adds no org to the Rule | dropped |
