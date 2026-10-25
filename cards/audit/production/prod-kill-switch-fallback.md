@@ -4,7 +4,7 @@ level: production
 tags: [reliability, resilience, flags]
 severity: should-fix
 status: stable
-note: switch off without a deploy - Cloudflare (kill switches through global config), GitHub (Flipper rollout and rollback), Slack (feature flags with instant rollback), Dropbox (rollback for experiments and gates); exercise the fallback - AWS (tests with the cache disabled), Cloudflare (regular cut tests; an untested fail-open path), Shopify (repeated Game Days in production); Cloudflare's overload tests are a stated plan
+note: switch off without a deploy - Cloudflare (kill switches through global config), GitHub (Flipper rollout and rollback), Slack (feature flags with instant rollback), Dropbox (rollback for experiments and gates); exercise the fallback - AWS (tests with the cache disabled), Cloudflare (regular cut tests; an untested fail-open path), Shopify (repeated Game Days in production), Dropbox (monthly datacenter failovers); on a schedule - Cloudflare, Shopify, Dropbox; Cloudflare's overload tests are a stated plan
 lang: core
 applies_when: A new risky feature or a dependency fallback is added.
 tool_gate: none
@@ -16,6 +16,7 @@ borrowed_from:
   - https://github.blog/engineering/engineering-principles/how-we-improved-availability-through-iterative-simplification
   - https://slack.engineering/slack-ai-the-path-to-multi-cloud/
   - https://dropbox.tech/infrastructure/lessons-learned-in-incident-management
+  - https://dropbox.tech/infrastructure/disaster-readiness-test-failover-blackhole-sjc
   - https://shopify.engineering/four-steps-creating-effective-game-day-tests
 ---
 

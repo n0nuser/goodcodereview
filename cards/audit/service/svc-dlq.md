@@ -7,16 +7,16 @@ status: stable
 lang: core
 applies_when: The code consumes from a queue or stream.
 tool_gate: A config check that every consumed queue has a dead-letter target (for SQS in Terraform, a `redrive_policy` with `maxReceiveCount`), and an alarm on dead-letter queue depth.
-note: dead-letter queue and replay backed by AWS (alarm on any message, re-process after the fix), Netflix (failed events land in dead-letter queues, an offline job replays them) and Dropbox (a stated proposal - a retry cap, then a dead-letter queue and tools to reschedule); the depth alarm is AWS only and sits in Why
+note: dead-letter queue and replay backed by AWS (alarm on any message, re-process after the fix), Netflix (failed events land in dead-letter queues, an offline job replays them) and Dropbox (a stated proposal - a retry cap, then a dead-letter queue and tools to reschedule); the retry cap (AWS, Dropbox) and the depth alarm (AWS) sit in Why
 borrowed_from:
   - https://aws.amazon.com/builders-library/avoiding-insurmountable-queue-backlogs/
   - https://netflixtechblog.com/behind-the-scenes-evolving-netflixs-ads-event-pipeline-for-live-part-ii-826ebf9ad9fb
   - https://dropbox.tech/infrastructure/asynchronous-task-scheduling-at-dropbox
 ---
 
-**Rule.** Give every consumer queue a dead-letter queue, with a retry cap before a message moves there and a way to replay it after the fix.
+**Rule.** Give every consumer queue a dead-letter queue and a way to replay its messages after the fix.
 
-**Why.** A poison message otherwise loops forever, uses the consumers' capacity and hides the real backlog. Alarm on any message in the dead-letter queue, because each one is a bug to fix. Also keep the visibility timeout longer than the worst-case processing time (or extend it), or slow work is delivered twice.
+**Why.** A poison message otherwise loops forever, uses the consumers' capacity and hides the real backlog. Cap the retries, so that a failing message moves to the dead-letter queue after a few attempts. Alarm on any message in the dead-letter queue, because each one is a bug to fix. Also keep the visibility timeout longer than the worst-case processing time (or extend it), or slow work is delivered twice.
 
 **FAIL**
 
