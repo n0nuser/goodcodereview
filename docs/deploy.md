@@ -4,7 +4,9 @@
 
 ## Workers project settings
 
-Cloudflare points new static sites at Workers with static assets. `wrangler.jsonc` in the repo root sets the output directory (`site`) and `auto-trailing-slash` handling for `.html` files. `src/worker.js` runs only for `/` and for paths that match no file. It answers `Accept: text/markdown` on `/` with `index.md`, and it returns the `404.html` page, or a Markdown 404 for a Markdown request, with status 404. `site/_headers` is applied to every static response. Test the Worker with `node --test test/worker.test.mjs`. The free Workers plan allows 100,000 Worker requests a day, and only `/` and unknown paths count.
+Cloudflare points new static sites at Workers with static assets. `wrangler.jsonc` in the repo root sets the output directory (`site`) and `auto-trailing-slash` handling for `.html` files. `src/worker.js` runs only for paths that match no file. It returns the `404.html` page, or a short Markdown 404 for a Markdown request, with status 404. `site/_headers` applies to every static response. Test the Worker with `node --test test/worker.test.mjs`.
+
+Static files cost nothing and have no request limit, so the homepage, `cards.json`, and every `.md` file stay off the Worker. The free Workers plan allows 100,000 Worker requests a day. Past that, a Worker request gets a 429 instead of the static file, so only unknown paths may reach the Worker. Research: `docs/research/distribution-and-quota.md`.
 
 In the dashboard, choose Workers & Pages, Create, and connect `n0nuser/goodcodereview` on `main`. Set:
 
@@ -13,6 +15,26 @@ In the dashboard, choose Workers & Pages, Create, and connect `n0nuser/goodcoder
 - Preview command: the default
 
 The Pages build image has Python 3, and the build uses only the standard library. To use the legacy Pages workflow instead, choose Pages, Connect to Git, framework preset None, build command `python3 tools/build.py`, output directory `site`, and no deploy command.
+
+## Cloudflare rules
+
+Two rules serve `index.md` for `Accept: text/markdown` on the homepage without a Worker. They live in the dashboard (Rules, then Transform Rules) and not in the repo, so recreate them if the zone changes.
+
+1. Rewrite URL rule, named "Markdown for agents".
+   - When: `(http.host in {"goodcodereview.com" "www.goodcodereview.com"} and http.request.uri.path eq "/" and any(http.request.headers["accept"][*] contains "text/markdown"))`
+   - Then: rewrite the path to the static value `/index.md`.
+2. Modify Response Header rule, named "Vary on Accept".
+   - When: `(http.host in {"goodcodereview.com" "www.goodcodereview.com"} and http.request.uri.path in {"/" "/index.md"})`
+   - Then: set the static header `Vary` to `Accept`.
+
+Verify both:
+
+```
+curl -sS -i -H 'Accept: text/markdown' https://goodcodereview.com/
+curl -sS -i -H 'Accept: text/html' https://goodcodereview.com/
+```
+
+The first must return Markdown with `Content-Type: text/markdown` and `Vary: Accept`. The second must return HTML with `Vary: Accept`.
 
 ## Custom domain
 
