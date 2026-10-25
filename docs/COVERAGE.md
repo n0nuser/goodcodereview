@@ -167,7 +167,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | thermo-nuclear | Review: feature-gate leaks | `chg-flag-owner-retirement` | draft |
 | thermo-nuclear | Review: do not report an intended breakage | dropped: reviewer posture | dropped |
 | thermo-nuclear | Review: do not over-report priority | `chg-review-signal` | stable |
-| thermo-nuclear | Review: read bot comments only after own audit | `chg-agent-independent-review` | stable |
+| thermo-nuclear | Review: read bot comments only after own audit | `chg-agent-independent-review` | draft |
 | thermo-nuclear | Thermos: two parallel passes then merge | dropped: workflow mechanics; fresh context is chg-agent-independent-review | dropped |
 | research-gap | a change is too large to review (about 200-400 lines or 20+ fi | `chg-size-ceiling` | stable |
 | research-gap | a change mixes refactor or formatting with behavior change. | `chg-refactor-separate` | stable |
@@ -208,7 +208,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | change-codebase | Chesterton's fence | `chg-chestertons-fence` | draft |
 | change-codebase | Agent code: hallucinated APIs, re-implemented helpers | `chg-agent-grounded-code` | draft |
 | change-codebase | Agent code: mock-asserting tests | `chg-agent-mock-asserting-tests` | draft |
-| change-codebase | Agent code: same-session self-review | `chg-agent-independent-review` | stable |
+| change-codebase | Agent code: same-session self-review | `chg-agent-independent-review` | draft |
 | change-codebase | File-size ceiling 1k lines (gap: heuristic) | `code-file-lines-ceiling` | draft |
 | change-codebase | Dead code | `code-dead-code` | stable |
 | change-codebase | Dependency pinning | `code-dependency-pinning` | stable |
@@ -346,7 +346,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 19 Separate before serialising shared state; single writer; convention is not a lock | `mod-single-writer-per-state` | draft |
 | cursor-plugins | 20 Migrate callers and delete the legacy API in one change (no outside consumers) | `chg-delete-legacy-after-migration` | draft |
 | cursor-plugins | 21 Accept planned, scoped breakage between rewrite phases | dropped: planning posture; conflicts with per-commit green | dropped |
-| cursor-plugins | 22 Verify the real thing, not a proxy; re-runnable script as artifact | `chg-verify-before-claim`, `chg-agent-independent-review` | stable |
+| cursor-plugins | 22 Verify the real thing, not a proxy; re-runnable script as artifact | `chg-verify-before-claim`, `chg-agent-independent-review` | draft |
 | cursor-plugins | 23 Test must fail when behaviour breaks and survive an internals refactor | `chg-agent-mock-asserting-tests`, `mod-mock-at-boundaries-only`, `py-no-init-or-model-tests` | draft |
 | cursor-plugins | 24 Independent test oracle; pair a negative assertion with a positive case | `fn-test-oracle-independent` | draft |
 | cursor-plugins | 25 A performance number needs run count, spread and a named limiter | `chg-perf-claim-evidence` | stable |
@@ -380,7 +380,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 52 A 'don't do X' comment should be a type, lint or runtime check | `code-rule-has-enforcer` | stable |
 | cursor-plugins | 53 Legacy dual-paths with no external consumer | `chg-delete-legacy-after-migration` | draft |
 | cursor-plugins | 54 Trace the call chain or input path before claiming a bug or security issue | `chg-verify-before-claim` | stable |
-| cursor-plugins | 55 Reviewer judgement: nit inflation, unreachable hypotheticals, preference, independent agreement | `chg-review-signal`, `chg-agent-independent-review` | stable |
+| cursor-plugins | 55 Reviewer judgement: nit inflation, unreachable hypotheticals, preference, independent agreement | `chg-review-signal`, `chg-agent-independent-review` | draft |
 | cursor-plugins | 56 State intent first; findings bucketed by action and severity | `chg-matches-spec`, `chg-review-comment-format` | draft |
 | cursor-plugins | 57 Bug fix: each line traces to runtime evidence; repro before fix | `chg-fix-root-cause-not-symptom`, `chg-verify-before-claim` | draft |
 | cursor-plugins | 58 Refactor: pin behaviour with a characterization test before moving structure | `chg-refactor-has-behaviour-pin` | draft |

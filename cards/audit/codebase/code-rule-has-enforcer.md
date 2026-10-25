@@ -33,8 +33,10 @@ Review history: the same comment on 6 PRs
 
 **PASS**
 
-```text
-pyproject.toml: [tool.ruff.lint] select = ["S113"]   # request-without-timeout, run in CI
+```toml
+# pyproject.toml, checked by ruff in CI
+[tool.ruff.lint]
+extend-select = ["S113"]   # request-without-timeout
 ```
 
 **Counterpoint.** "Not every rule is checkable." Right, and judgement rules stay as prose. The FAIL is a checkable rule with no check. See [[code-ci-gates]] for where checks run, and [[chg-review-signal]] for what reviewers stop commenting on once a tool owns it.

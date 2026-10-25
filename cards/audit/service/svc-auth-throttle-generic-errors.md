@@ -20,7 +20,7 @@ borrowed_from:
 
 **Rule.** Limit failed attempts per account, and return the same message and status code whether or not the account exists.
 
-**Why.** Unlimited guesses make passwords and 6-digit codes brute-forceable. Different errors for "no such user" and "wrong password" let an attacker list valid accounts first. Limit per account, since a per-IP limit is bypassed by rotating addresses. Response time leaks the same fact: if the code hashes the password only when the user exists, a fast reply means "no such user", so hash on every attempt. Registration needs its own design, such as a confirmation email sent in both cases, because the form has to reject a taken address somehow.
+**Why.** Unlimited guesses make passwords and 6-digit codes brute-forceable. Different errors for "no such user" and "wrong password" let an attacker list valid accounts first. Limit per account, since a per-IP limit is bypassed by rotating addresses. Response time leaks the same fact: if the code hashes the password only when the user exists, a fast reply means "no such user", so hash on every attempt. Registration needs its own design: give the same reply whether or not the address is taken, and email the owner of an existing account instead of creating a second one.
 
 **FAIL**
 
