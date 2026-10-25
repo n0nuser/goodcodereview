@@ -4,7 +4,7 @@ level: service
 tags: [security, authn]
 severity: block
 status: draft
-lacks: unreviewed, MITRE, Microsoft, Django and Spring listed; check each recommends the practice rather than defining it
+lacks: evidence, only Microsoft and Spring say why auth by default; Django, Rails and NestJS describe the default without a reason
 lang: core
 applies_when: The service has routes that need a signed-in user next to routes that are public.
 tool_gate: A framework fallback that requires authentication (ASP.NET Core `FallbackPolicy`, Django `LoginRequiredMiddleware`, Spring Security `anyRequest().authenticated()`); a test that calls every route without credentials and expects 401 or a login redirect unless the route is on the public list.
