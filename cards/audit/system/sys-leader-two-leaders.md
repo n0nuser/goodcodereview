@@ -4,6 +4,7 @@ level: system
 tags: [reliability, leader-election, idempotency]
 severity: should-fix
 status: draft
+lacks: orgs, AWS is the only backer; needs two more orgs
 lang: core
 applies_when: A job runs only on an elected leader or lease holder.
 tool_gate: none

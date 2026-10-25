@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, design]
 severity: should-fix
 status: draft
+lacks: orgs, Metz and Dodds back inlining; the re-split remedy has no third org, and the Counterpoint still cites an unsourced count
 lang: core
 applies_when: A shared helper or base class has gained flags or conditionals so different callers can bend it.
 tool_gate: none

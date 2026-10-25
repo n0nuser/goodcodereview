@@ -4,6 +4,7 @@ level: change
 tags: [correctness, maintainability, process, errors, lint, ci]
 severity: should-fix
 status: draft
+lacks: orgs, reason and ticket on each suppression has cursor/plugins only; Stripe tracked suppressions as a group
 lang: core
 applies_when: The diff adds a suppression (lint ignore, type ignore, skipped test, swallowed error) or deletes a failing check.
 tool_gate: Linter rule that requires a reason and ticket on each suppression.

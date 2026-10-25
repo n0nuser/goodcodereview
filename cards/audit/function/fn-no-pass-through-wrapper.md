@@ -4,6 +4,7 @@ level: function
 tags: [maintainability, design, readability]
 severity: should-fix
 status: draft
+lacks: orgs, Ousterhout is the only backer, through two links to one author; needs two more orgs
 lang: core
 applies_when: A method's whole body calls a collaborator's method of the same name with the same arguments.
 tool_gate: none

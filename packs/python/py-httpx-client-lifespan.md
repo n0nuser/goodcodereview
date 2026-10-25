@@ -4,6 +4,7 @@ level: module
 tags: [performance, python, resources]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it, and its Counterpoint concedes the default timeout is fine
 lang: python
 applies_when: A Python service creates an `httpx` client.
 tool_gate: none

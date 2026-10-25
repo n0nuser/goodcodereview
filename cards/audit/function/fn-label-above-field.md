@@ -4,6 +4,7 @@ level: function
 tags: [usability, accessibility, frontend, forms, css]
 severity: discuss
 status: draft
+lacks: evidence, NN/g backs it for mobile and short forms, W3C lists it as one of two conventions; needs a third org that recommends it outright
 lang: core
 applies_when: Markup or styles lay out a form field and its visible label.
 tool_gate: none

@@ -4,6 +4,7 @@ level: function
 tags: [correctness, errors]
 severity: block
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: core
 applies_when: A handler catches an error and either drops it or raises a different one.
 tool_gate: ruff B904 (Python)

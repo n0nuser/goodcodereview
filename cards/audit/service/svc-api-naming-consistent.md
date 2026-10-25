@@ -4,6 +4,7 @@ level: service
 tags: [maintainability, api, naming]
 severity: discuss
 status: draft
+lacks: orgs, Zalando and Microsoft back it, and they disagree on casing; needs a third org that asks for consistency
 note: Zalando and Microsoft disagree on the convention, so the card checks consistency, not the choice
 lang: core
 applies_when: A service defines JSON fields, query parameters, headers or path segments for an HTTP API.

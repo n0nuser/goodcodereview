@@ -4,6 +4,7 @@ level: service
 tags: [security, secrets, http]
 severity: should-fix
 status: draft
+lacks: evidence, OWASP, IETF, MITRE and Mozilla are listed, but no stable pass has read them for a recommendation versus a definition
 lang: core
 applies_when: A client or server puts an API key, session token, bearer token, password, or personal data into a URL.
 tool_gate: none

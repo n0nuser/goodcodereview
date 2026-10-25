@@ -4,6 +4,7 @@ level: service
 tags: [correctness, asyncio, concurrency]
 severity: block
 status: draft
+lacks: orgs, the asyncio docs are the only backer; needs a second independent source on task lifetime
 lang: python
 applies_when: Python code calls asyncio.create_task or ensure_future.
 tool_gate: Ruff RUF006 (asyncio-dangling-task).

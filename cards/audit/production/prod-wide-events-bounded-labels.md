@@ -4,6 +4,7 @@ level: production
 tags: [observability, telemetry]
 severity: should-fix
 status: draft
+lacks: orgs, Honeycomb is the only backer, and the Rule does not mention bounded labels; needs two more orgs
 lang: core
 applies_when: A request handler or job emits telemetry.
 tool_gate: Lint for high-cardinality metric labels.

@@ -4,6 +4,7 @@ level: function
 tags: [maintainability, naming, readability]
 severity: discuss
 status: draft
+lacks: orgs, PEP 8 and LLVM give the rule and PEP 3131 argues the other way; needs a third org that mandates English
 lang: core
 applies_when: The project has a written language policy, or its code may be read by people outside one language group.
 tool_gate: Spell-check or non-ASCII identifier lint.

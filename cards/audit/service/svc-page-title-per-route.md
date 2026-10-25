@@ -4,6 +4,7 @@ level: service
 tags: [accessibility, usability, frontend, routing]
 severity: should-fix
 status: draft
+lacks: held, kept draft by Pablo's call; W3C, Mozilla and A11y Project back the Rule
 lang: core
 applies_when: An app serves several pages or client-side routes under one HTML shell.
 tool_gate: axe `document-title` catches a missing or empty title only; a test that navigates each route and asserts its `document.title`.

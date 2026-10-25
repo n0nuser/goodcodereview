@@ -4,6 +4,7 @@ level: change
 tags: [process, review]
 severity: should-fix
 status: draft
+lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
 lang: core
 applies_when: A review approval or verification result exists and the branch has been pushed or rebased since.
 tool_gate: Branch protection that dismisses stale approvals on new commits.

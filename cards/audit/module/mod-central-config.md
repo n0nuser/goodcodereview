@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, config]
 severity: should-fix
 status: draft
+lacks: orgs, "one settings module" has no org; Uber and Cabify back only keeping knobs out of code
 lang: core
 applies_when: Business code reads environment variables or holds configuration values.
 tool_gate: none

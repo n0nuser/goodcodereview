@@ -4,6 +4,7 @@ level: function
 tags: [correctness, api, errors]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: core
 applies_when: A function returns a list, set or map.
 tool_gate: type checker

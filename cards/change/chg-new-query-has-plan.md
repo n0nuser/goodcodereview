@@ -4,6 +4,7 @@ level: change
 tags: [performance, database]
 severity: should-fix
 status: draft
+lacks: failable, without "attach the plan" a change review has nothing to mark FAIL; attaching has GitLab only
 lang: core
 applies_when: The change adds or rewrites a SQL query against a table that grows with users or time.
 tool_gate: none

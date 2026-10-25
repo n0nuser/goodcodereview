@@ -4,6 +4,7 @@ level: service
 tags: [reliability, maintainability, cli, safety]
 severity: should-fix
 status: draft
+lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
 lang: core
 applies_when: A command-line tool has a command that deletes, overwrites or sends something.
 tool_gate: CLI test that runs the command with the preview flag and checks nothing changed.

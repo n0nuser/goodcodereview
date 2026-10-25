@@ -4,6 +4,7 @@ level: change
 tags: [correctness, testing, bugfix, verification]
 severity: block
 status: draft
+lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
 lang: core
 applies_when: A change fixes a bug, a failing test, or an incident.
 tool_gate: Lint rules for `as any`, `ts-ignore`, `.skip` and empty `catch`.

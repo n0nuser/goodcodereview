@@ -4,6 +4,7 @@ level: change
 tags: [process, scope, requirements]
 severity: block
 status: draft
+lacks: orgs, checking the change against the spec has Google, plus Dropbox for security only; needs a third org
 lang: core
 applies_when: The change links a ticket, spec or issue.
 tool_gate: none

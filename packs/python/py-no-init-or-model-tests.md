@@ -4,6 +4,7 @@ level: module
 tags: [testing, python]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: python
 applies_when: The diff adds `test_init_*` or a test file for a plain model or dataclass.
 tool_gate: none

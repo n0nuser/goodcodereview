@@ -4,6 +4,7 @@ level: function
 tags: [maintainability, python, docs]
 severity: discuss
 status: draft
+lacks: orgs, Google's review guide is the only backer; needs two more orgs
 lang: python
 applies_when: A Python function or class has, or lacks, a docstring.
 tool_gate: ruff D (convention=google, D1xx ignored)

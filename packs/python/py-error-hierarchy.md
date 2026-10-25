@@ -4,6 +4,7 @@ level: module
 tags: [correctness, python, errors]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: python
 applies_when: A Python package raises its own exceptions.
 tool_gate: none

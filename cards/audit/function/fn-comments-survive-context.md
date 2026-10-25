@@ -4,6 +4,7 @@ level: function
 tags: [maintainability, docs]
 severity: should-fix
 status: draft
+lacks: evidence, the only backer is a dev.to summary of Ousterhout; needs two orgs that ban time-bound comments
 lang: core
 applies_when: A comment or TODO refers to a ticket, a PR, a sprint or the present moment.
 tool_gate: none

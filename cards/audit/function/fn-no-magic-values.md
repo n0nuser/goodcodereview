@@ -4,6 +4,7 @@ level: function
 tags: [maintainability, readability, types]
 severity: should-fix
 status: draft
+lacks: orgs, Google's review guide is the only backer; needs two more orgs
 lang: core
 applies_when: A literal string or number carries meaning the reader must guess (status codes, mode names, limits).
 tool_gate: none (partial: ruff PLR2004)

@@ -4,6 +4,7 @@ level: service
 tags: [security, observability, logging]
 severity: should-fix
 status: draft
+lacks: held, kept draft by Pablo's call
 lang: core
 applies_when: The service authenticates users.
 tool_gate: Test that a failed login produces one structured log line with the account and a timestamp.

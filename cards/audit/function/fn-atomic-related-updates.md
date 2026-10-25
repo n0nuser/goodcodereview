@@ -4,6 +4,7 @@ level: function
 tags: [correctness, consistency, errors]
 severity: block
 status: draft
+lacks: orgs, only one vendor's review skill backs it; the all-or-nothing principle has no cited org
 lang: core
 applies_when: One operation writes to two or more places that must agree (rows, tables, stores, files).
 tool_gate: none

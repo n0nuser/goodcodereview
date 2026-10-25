@@ -4,6 +4,7 @@ level: service
 tags: [observability, logging]
 severity: should-fix
 status: draft
+lacks: evidence, the W3C spec does not mention logs; only Honeycomb backs putting the id on every log line
 lang: core
 applies_when: A service handles requests and writes logs while doing so.
 tool_gate: Logging middleware or formatter that injects the id; test that fails on a log line without it.

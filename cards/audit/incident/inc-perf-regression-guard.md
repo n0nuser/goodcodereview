@@ -4,6 +4,7 @@ level: incident
 tags: [performance, testing]
 severity: should-fix
 status: draft
+lacks: duplicate, the guard half is the stable code-perf-budget-in-ci Rule; the postmortem-action half has Google SRE and Cloudflare only
 lang: core
 applies_when: A postmortem covers a performance regression or a resource-exhaustion incident.
 tool_gate: none

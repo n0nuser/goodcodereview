@@ -4,6 +4,7 @@ level: codebase
 tags: [process, agents, contribution]
 severity: should-fix
 status: draft
+lacks: orgs, disclosure has the Linux kernel and Ghostty; needs a third org that asks for it and for an author who can explain the code
 lang: core
 applies_when: A pull request was written in whole or part by an AI tool.
 tool_gate: PR template checkbox for AI assistance; commit trailer check.

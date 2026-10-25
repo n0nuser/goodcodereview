@@ -4,6 +4,7 @@ level: function
 tags: [maintainability, readability, api]
 severity: discuss
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: core
 applies_when: A call passes a literal `True` or `False` for a parameter.
 tool_gate: ruff FBT

@@ -4,6 +4,7 @@ level: change
 tags: [maintainability, process, legacy, history]
 severity: should-fix
 status: draft
+lacks: orgs, only Feathers backs a characterization test before a rewrite; Spolsky backs not rewriting from scratch
 lang: core
 applies_when: The change removes, rewrites or "simplifies" odd-looking existing code, or rewrites a module.
 tool_gate: none

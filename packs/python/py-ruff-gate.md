@@ -4,6 +4,7 @@ level: change
 tags: [maintainability, python, tooling]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: python
 applies_when: The project is Python and has a linter configuration.
 tool_gate: ruff

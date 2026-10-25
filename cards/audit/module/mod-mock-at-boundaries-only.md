@@ -4,6 +4,7 @@ level: module
 tags: [testing]
 severity: should-fix
 status: draft
+lacks: evidence, Airbnb mocks services in load tests and Cabify runs a real gRPC server; neither states the Rule
 lang: core
 applies_when: A test uses mocks, patches or fakes.
 tool_gate: none

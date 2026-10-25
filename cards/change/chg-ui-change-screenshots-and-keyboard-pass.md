@@ -4,6 +4,7 @@ level: change
 tags: [accessibility, usability, frontend, process]
 severity: should-fix
 status: draft
+lacks: orgs, reporting the keyboard pass has two PR templates; the 200% zoom clause has W3C only
 lang: core
 applies_when: The change alters markup, styles, or behaviour a user sees or operates.
 tool_gate: A pull request template with a UI checklist; the screenshots and the keyboard result are the evidence.

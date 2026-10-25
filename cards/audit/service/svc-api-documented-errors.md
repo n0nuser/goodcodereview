@@ -4,6 +4,7 @@ level: service
 tags: [correctness, compatibility, api, contracts, errors]
 severity: should-fix
 status: draft
+lacks: orgs, OpenAPI requires one response per operation; the stricter rule is Zalando's alone
 note: OpenAPI requires only one response per operation; the stricter rule comes from Zalando rule 151
 lang: core
 applies_when: A service has an OpenAPI description, or callers depend on its error responses.

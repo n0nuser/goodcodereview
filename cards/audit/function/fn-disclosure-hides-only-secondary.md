@@ -4,6 +4,7 @@ level: function
 tags: [usability, frontend, html]
 severity: should-fix
 status: draft
+lacks: evidence, NN/g, GOV.UK and Appian back it, but no stable pass has read them; Appian endorses conditional reveals
 lang: core
 applies_when: Markup or a component hides content behind a `<details>`, an accordion, a "Show more" link, or an "Advanced" toggle.
 tool_gate: none

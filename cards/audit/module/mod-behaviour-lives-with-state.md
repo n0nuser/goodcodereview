@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, design, oop]
 severity: discuss
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: core
 applies_when: A service function computes something only from one object's own fields.
 tool_gate: none

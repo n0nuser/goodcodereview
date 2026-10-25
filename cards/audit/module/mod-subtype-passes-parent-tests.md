@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, oop, design]
 severity: should-fix
 status: draft
+lacks: evidence, Liskov and Wing state the substitution rule; none says to run the parent's tests, which is the card's proxy
 lang: core
 applies_when: The code adds a subclass or an implementation of an interface.
 tool_gate: Run the parent's test suite against every subclass; mypy flags incompatible overrides.

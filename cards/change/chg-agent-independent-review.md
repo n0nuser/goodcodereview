@@ -4,6 +4,7 @@ level: change
 tags: [process, agents, review]
 severity: should-fix
 status: draft
+lacks: orgs, a person's sign-off has Stripe and Dropbox; the fresh-context reviewer option has 0 orgs; needs one more firm org or that option cut
 lang: core
 applies_when: An agent wrote the change, and an agent or the same session is asked to review it.
 tool_gate: none

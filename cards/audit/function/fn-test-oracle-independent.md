@@ -4,6 +4,7 @@ level: function
 tags: [correctness, testing, tests]
 severity: should-fix
 status: draft
+lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
 lang: core
 applies_when: A test asserts on a computed value or asserts that something was not called.
 tool_gate: Mutation testing.

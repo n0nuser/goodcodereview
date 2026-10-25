@@ -4,6 +4,7 @@ level: system
 tags: [performance, reliability, caching, overload]
 severity: should-fix
 status: draft
+lacks: orgs, AWS is the only backer; needs two more orgs
 lang: core
 applies_when: Cache misses fall through to a database or downstream service.
 tool_gate: none

@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, architecture, naming]
 severity: should-fix
 status: draft
+lacks: evidence, the only backer is a dev.to summary of Ousterhout; needs two orgs that say to name helpers after a concept
 lang: core
 applies_when: The diff adds or grows a module named `utils`, `helpers`, `common`, or `misc`.
 tool_gate: none

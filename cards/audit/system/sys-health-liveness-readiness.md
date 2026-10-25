@@ -4,6 +4,7 @@ level: system
 tags: [reliability, health, availability]
 severity: block
 status: draft
+lacks: orgs, AWS is the only backer; needs two more orgs
 lang: core
 applies_when: A service exposes a health endpoint used by a load balancer, an orchestrator, or auto-replacement.
 tool_gate: none

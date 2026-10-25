@@ -4,6 +4,7 @@ level: codebase
 tags: [testing, process, ci, flaky-tests]
 severity: should-fix
 status: draft
+lacks: orgs, quarantine with owner and ticket has Dropbox and Shopify; rerun-verified return to the gate has Dropbox only
 note: report and route flaky tests - Dropbox (Quarantine Keeper removes tests that fail too often and files a bug against the owner), Shopify (retries a failed test up to three times and notifies developers of every pass after a retry); rerun-verified fix - Dropbox only (100 or more CI runs); causes - Shopify (fixed pauses instead of waits), Cabify (state kept between tests), Dropbox (short timeouts, leftover state); only 2 orgs back the Rule
 lang: core
 applies_when: Auditing how the codebase handles tests that pass and fail on the same code.

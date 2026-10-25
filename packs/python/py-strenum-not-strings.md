@@ -4,6 +4,7 @@ level: function
 tags: [correctness, python, types]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: python
 applies_when: Python code compares against string or number literals for a fixed set of values.
 tool_gate: ruff PLR2004 (partial)

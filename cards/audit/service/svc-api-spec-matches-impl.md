@@ -4,6 +4,7 @@ level: service
 tags: [compatibility, api, contracts]
 severity: should-fix
 status: draft
+lacks: contradiction, the Rule makes the spec the source of truth, then allows generating it from code; pick one
 note: source of truth has Zalando, Spotify and Stripe; generate-or-test has Stripe and Cloudflare (its old tests did not fail on a schema mismatch, which it calls a gap); a spec generated from code makes the code, not the document, the source of truth
 lang: core
 applies_when: A service publishes an OpenAPI (Swagger) description that callers, SDK generators or gateways read.

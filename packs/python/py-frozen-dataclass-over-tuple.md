@@ -4,6 +4,7 @@ level: function
 tags: [correctness, python, types]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: python
 applies_when: A Python function returns a tuple whose positions differ in meaning.
 tool_gate: none

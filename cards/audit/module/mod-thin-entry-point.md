@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, architecture]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: core
 applies_when: The application has a main module, an entry point, or a bootstrap file.
 tool_gate: none

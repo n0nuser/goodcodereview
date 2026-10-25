@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, naming]
 severity: should-fix
 status: draft
+lacks: evidence, Netflix backs the converse, one concept per name; Slack's aliases are narrow; no org states the Rule
 lang: core
 applies_when: The change introduces or reuses names for domain concepts.
 tool_gate: none

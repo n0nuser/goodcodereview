@@ -4,6 +4,7 @@ level: change
 tags: [reliability, release, rollback]
 severity: block
 status: draft
+lacks: orgs, no org says to state the undo in the change description; Uber and Stripe describe a rollback ability only
 lang: core
 applies_when: The change deploys schema, data, config or behaviour that is costly to undo.
 tool_gate: Migration linter requiring a down step; deploy pipeline with automatic abort.

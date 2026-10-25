@@ -4,6 +4,7 @@ level: change
 tags: [reliability, feature-flags, release]
 severity: should-fix
 status: draft
+lacks: orgs, the owner clause has Dropbox only; default, removal date and ticket have no company source
 lang: core
 applies_when: The change adds a feature flag, kill switch or config toggle.
 tool_gate: Flag registry linter that requires owner and expiry fields.

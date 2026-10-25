@@ -4,6 +4,7 @@ level: function
 tags: [maintainability, readability]
 severity: discuss
 status: draft
+lacks: evidence, the only backer is a dev.to summary of Ousterhout; needs two orgs that say to name sub-conditions
 lang: core
 applies_when: An `if` or `while` joins three or more terms in one expression.
 tool_gate: none

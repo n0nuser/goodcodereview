@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, python, structure]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: python
 applies_when: The change adds or edits an `__init__.py`.
 tool_gate: none

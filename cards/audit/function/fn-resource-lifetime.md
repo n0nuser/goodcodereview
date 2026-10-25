@@ -4,6 +4,7 @@ level: function
 tags: [correctness, concurrency, resources]
 severity: block
 status: draft
+lacks: orgs, one blog post on structured concurrency backs it; needs two more orgs
 lang: core
 applies_when: Code starts a task, thread, goroutine, or subprocess, or opens a handle (file, socket, connection).
 tool_gate: Leak detectors in tests (unclosed-resource warnings, goroutine leak checks).

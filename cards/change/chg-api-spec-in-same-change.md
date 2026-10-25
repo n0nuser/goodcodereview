@@ -4,6 +4,7 @@ level: change
 tags: [compatibility, api, contracts]
 severity: should-fix
 status: draft
+lacks: orgs, OpenAPI and Zalando back it; needs a third org
 lang: core
 applies_when: The diff adds, removes or changes an HTTP route, a request or response field, a status code or a header.
 tool_gate: Breaking-change diff of the spec in CI, plus a check that fails when route files change and the spec file does not.

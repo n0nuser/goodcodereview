@@ -4,6 +4,7 @@ level: function
 tags: [maintainability, types, readability]
 severity: discuss
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: core
 applies_when: Code reads or writes an attribute or field by a dynamic key when the name is known at write time.
 tool_gate: ruff B009 / B010

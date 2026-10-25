@@ -4,6 +4,7 @@ level: service
 tags: [maintainability, process, cli, automation]
 severity: should-fix
 status: draft
+lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
 lang: core
 applies_when: The code ships a command-line tool that scripts or agents may run.
 tool_gate: CLI test that runs every command with stdin closed.

@@ -4,6 +4,7 @@ level: service
 tags: [security, http, headers, xss]
 severity: should-fix
 status: draft
+lacks: evidence, OWASP, Mozilla and Google are listed, but no stable pass has read them; the nonce or hash form is stricter than the ASVS minimum
 lang: core
 applies_when: The service serves HTML pages to browsers.
 tool_gate: Google CSP Evaluator on the policy; a CI header check against a staging URL.

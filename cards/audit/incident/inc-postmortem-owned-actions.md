@@ -4,6 +4,7 @@ level: incident
 tags: [reliability, process, incident, learning]
 severity: should-fix
 status: draft
+lacks: orgs, an owner and due date on each action has no org; Dropbox and Shopify mention action items without naming either
 note: no source yet; first-hand reasoning
 lang: core
 applies_when: A postmortem or incident review is written or audited.

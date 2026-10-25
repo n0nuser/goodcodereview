@@ -4,6 +4,7 @@ level: function
 tags: [correctness, errors]
 severity: block
 status: draft
+lacks: orgs, the Go wiki and an Ousterhout summary back it; needs a third independent org
 lang: core
 applies_when: Code catches exceptions in business logic.
 tool_gate: ruff BLE001 / E722 (Python)

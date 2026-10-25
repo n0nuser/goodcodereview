@@ -4,6 +4,7 @@ level: production
 tags: [correctness, reliability, migration, release]
 severity: should-fix
 status: draft
+lacks: evidence, Netflix, Stripe, Airbnb and GitHub describe doing it; none recommends it as a practice for others
 note: Netflix (ran the old and new ad-event pipelines in parallel and diffed their output on live traffic), Stripe (compared point-in-time snapshots of source and target shards before the traffic switch), Airbnb (replayed captured production queries on MySQL 5.7 and 8.0 and diffed the results), GitHub (a Scientist experiment ran a candidate code block beside the control and compared results and timing); Cabify checks for zero replication lag before a swap, which is a precondition and not a diff, so it is not cited
 lang: core
 applies_when: Reads, writes, or a pipeline's traffic move from an old system to a new one, such as a new data store, a database upgrade, or a rewritten service.

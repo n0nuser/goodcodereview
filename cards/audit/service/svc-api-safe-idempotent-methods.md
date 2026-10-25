@@ -4,6 +4,7 @@ level: service
 tags: [compatibility, api, http]
 severity: block
 status: draft
+lacks: duplicate, the GET half is already in stable svc-csrf-state-changing; PUT and DELETE have IETF only
 note: RFC 9110 sections 9.2.1 and 9.2.2; Dropbox backs GET without side effects, which stable svc-csrf-state-changing also requires; PUT and DELETE idempotence has the IETF only
 lang: core
 applies_when: A service exposes HTTP endpoints, or a handler changes which method it accepts.

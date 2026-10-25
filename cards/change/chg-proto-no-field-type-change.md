@@ -4,6 +4,7 @@ level: change
 tags: [compatibility, api, protobuf]
 severity: block
 status: draft
+lacks: orgs, "no field type change" has Google only; Uber and Cabify back renumbering and the buf breaking gate instead
 lang: core
 applies_when: The diff changes an existing field's type, default, label or name in a `.proto` file.
 tool_gate: `buf breaking` with the wire and JSON rule sets.

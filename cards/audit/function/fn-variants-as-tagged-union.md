@@ -4,6 +4,7 @@ level: function
 tags: [maintainability, types, modelling]
 severity: should-fix
 status: draft
+lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
 lang: core
 applies_when: A type or function models a value that is one of several variants or states.
 tool_gate: A type checker with exhaustiveness checking (`never` in TypeScript, `assert_never` in Python).

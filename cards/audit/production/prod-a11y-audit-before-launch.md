@@ -4,6 +4,7 @@ level: production
 tags: [accessibility, usability, frontend, release]
 severity: should-fix
 status: draft
+lacks: orgs, "before a public launch" has GOV.UK only; the audit content has GOV.UK, W3C and Deque
 lang: core
 applies_when: A new UI service or a major redesign is about to open to the public.
 tool_gate: none; a launch checklist item that links the audit report.

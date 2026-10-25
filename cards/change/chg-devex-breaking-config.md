@@ -4,6 +4,7 @@ level: change
 tags: [compatibility, process, config]
 severity: should-fix
 status: draft
+lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
 lang: core
 applies_when: The change renames an environment variable, remaps a port, moves a secret source, or adds a step needed to run or build the project.
 tool_gate: Startup check that fails fast on missing or unknown config keys.

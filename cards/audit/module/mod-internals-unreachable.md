@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, encapsulation, boundaries]
 severity: should-fix
 status: draft
+lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
 lang: core
 applies_when: A module has an intended public surface and internal files or symbols.
 tool_gate: Import-boundary lint (import-linter, ESLint `no-restricted-imports`, package `exports`).

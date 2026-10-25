@@ -4,6 +4,7 @@ level: codebase
 tags: [accessibility, testing, frontend, ci]
 severity: should-fix
 status: draft
+lacks: held, kept draft by Pablo's call; no org backs failing the build on a violation
 lang: core
 applies_when: The repo builds a web UI and has an automated test suite.
 tool_gate: This card is the gate: axe (through `@axe-core/playwright` or similar) against rendered pages in the test step; `eslint-plugin-jsx-a11y` in the lint step for JSX code.

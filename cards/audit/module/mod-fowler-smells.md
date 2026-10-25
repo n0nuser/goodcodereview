@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, design, refactoring]
 severity: discuss
 status: draft
+lacks: evidence, no Fowler or Beck source; backers are an Ousterhout summary and Google's review guide, mapped by hand
 lang: core
 applies_when: A reviewer sees long methods, feature envy, data clumps, primitive obsession, speculative generality, or divergent change.
 tool_gate: none

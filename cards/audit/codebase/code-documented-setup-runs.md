@@ -4,6 +4,7 @@ level: codebase
 tags: [maintainability, process, docs, onboarding]
 severity: should-fix
 status: draft
+lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs that test the setup commands
 lang: core
 applies_when: Auditing a repo's README or contribution guide.
 tool_gate: CI job that runs the documented setup on a clean checkout.

@@ -4,6 +4,7 @@ level: function
 tags: [correctness, concurrency]
 severity: block
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: core
 applies_when: Code reads shared state, yields (await, I/O, a lock release), then writes based on the earlier read.
 tool_gate: none

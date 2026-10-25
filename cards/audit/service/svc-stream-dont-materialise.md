@@ -4,6 +4,7 @@ level: service
 tags: [performance, memory, io]
 severity: should-fix
 status: draft
+lacks: orgs, the Node.js backpressure guide is the only backer, and its claim is Node-specific
 lang: core
 applies_when: A handler reads, transforms, or returns a result whose size depends on the data (files, query results, response bodies).
 tool_gate: Memory limit in tests with a large fixture.

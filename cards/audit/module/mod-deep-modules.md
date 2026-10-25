@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, design]
 severity: discuss
 status: draft
+lacks: orgs, Ousterhout is the only backer, and Martin disagrees; needs two more orgs
 lang: core
 applies_when: A new class or module is introduced, or an existing interface grows.
 tool_gate: none

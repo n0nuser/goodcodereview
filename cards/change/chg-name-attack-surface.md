@@ -4,6 +4,7 @@ level: change
 tags: [security, process, review]
 severity: block
 status: draft
+lacks: orgs, no source says to list the attack surface in the description; OWASP and Mozilla back only a threat-model trigger
 lang: core
 applies_when: The change adds an endpoint, input parser, file upload, dependency, permission, secret or outbound call.
 tool_gate: SAST and dependency scanning in CI catch the mechanical part.

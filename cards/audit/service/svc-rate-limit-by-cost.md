@@ -4,6 +4,7 @@ level: service
 tags: [performance, reliability, overload, rate-limiting]
 severity: should-fix
 status: draft
+lacks: evidence, Shopify, GitHub and Airbnb describe cost-based limits; none recommends it, and Uber dropped a bytes-based quota
 note: Shopify (GraphQL query cost from static analysis, in points per second), GitHub (GraphQL API limits points per hour, not calls), Airbnb (key-value store charges request units from bytes read and latency, not raw requests per second); Uber tried a bytes-based quota and dropped it as imprecise, which is the Counterpoint
 lang: core
 applies_when: One API or store serves requests whose cost differs by orders of magnitude, such as GraphQL queries, scans next to point reads, or bulk endpoints.

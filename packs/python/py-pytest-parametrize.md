@@ -4,6 +4,7 @@ level: function
 tags: [testing, python]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: python
 applies_when: Tests differ only in inputs and expected values.
 tool_gate: ruff PT006/PT007 (style only)

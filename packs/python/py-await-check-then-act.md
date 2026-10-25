@@ -4,6 +4,7 @@ level: function
 tags: [correctness, python, concurrency]
 severity: block
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: python
 applies_when: An `async def` reads state, awaits, then writes based on that read.
 tool_gate: none

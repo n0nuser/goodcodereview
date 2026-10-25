@@ -4,6 +4,7 @@ level: function
 tags: [correctness, types]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: core
 applies_when: A function takes or returns a dictionary whose keys are fixed and known.
 tool_gate: mypy --strict (partial)

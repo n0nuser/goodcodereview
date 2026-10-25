@@ -4,6 +4,7 @@ level: service
 tags: [usability, performance, frontend, css]
 severity: should-fix
 status: draft
+lacks: orgs, injected content and ads have Google only; the image-dimensions part has Google and Mozilla
 lang: core
 applies_when: A page loads images, embeds, fonts, ads, or fetched content after the first paint.
 tool_gate: Lighthouse CI assertion on `cumulative-layout-shift`.

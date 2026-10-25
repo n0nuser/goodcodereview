@@ -4,6 +4,7 @@ level: function
 tags: [correctness, types]
 severity: should-fix
 status: draft
+lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
 lang: core
 applies_when: A function takes two or more arguments of one primitive type that mean different things (ids, amounts, units).
 tool_gate: Type checker with a newtype or branded-type pattern.

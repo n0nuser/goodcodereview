@@ -4,6 +4,7 @@ level: module
 tags: [correctness, maintainability, validation, design]
 severity: should-fix
 status: draft
+lacks: failable, nobody backs "once"; without it the FAIL, hand-rolled checks in the handler, would pass
 lang: core
 applies_when: Input checks appear in more than one layer, or hand-rolled checks appear on a dict.
 tool_gate: none

@@ -4,6 +4,7 @@ level: service
 tags: [reliability, correctness, asyncio, cancellation]
 severity: block
 status: draft
+lacks: orgs, the asyncio docs are the only backer; needs a second independent source on cancellation
 lang: python
 applies_when: Async code catches exceptions around awaits or uses asyncio.timeout.
 tool_gate: Ruff BLE001 / S110 for broad swallow; lint for CancelledError needs custom rule.

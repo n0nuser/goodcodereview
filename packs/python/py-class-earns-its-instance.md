@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, python, classes]
 severity: discuss
 status: draft
+lacks: orgs, the Go wiki and the author's own guide back it; needs a third independent org
 lang: python
 applies_when: A Python class has no state, only static methods, or a `Protocol` with one implementation.
 tool_gate: ruff PLR6301 (partial)

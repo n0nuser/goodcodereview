@@ -4,6 +4,7 @@ level: change
 tags: [maintainability, reuse, duplication]
 severity: should-fix
 status: draft
+lacks: evidence, the backers are the kernel style guide and secondary summaries; no source describes searching for an existing helper first
 lang: core
 applies_when: The change adds a helper, util, type or constant.
 tool_gate: Clone-detection in CI (jscpd, PMD CPD, or similar) can flag near-duplicate blocks.

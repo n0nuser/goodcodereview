@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, api-design, boundaries]
 severity: should-fix
 status: draft
+lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
 lang: core
 applies_when: A module exposes a public function, class or re-export.
 tool_gate: none

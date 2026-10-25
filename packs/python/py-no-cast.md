@@ -4,6 +4,7 @@ level: function
 tags: [correctness, python, types]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: python
 applies_when: Code calls `typing.cast(...)`.
 tool_gate: ruff TID251 (banned-api)

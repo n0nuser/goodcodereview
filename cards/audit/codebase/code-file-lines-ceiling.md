@@ -4,6 +4,7 @@ level: codebase
 tags: [maintainability, process, structure, size]
 severity: discuss
 status: draft
+lacks: evidence, backers are a dev.to summary and a blog post; no org states a file-length ceiling or the 1,000-line figure
 lang: core
 applies_when: Auditing a repo for files that have grown past comprehension.
 tool_gate: CI check on lines per file (cloc, wc) with an allowlist.

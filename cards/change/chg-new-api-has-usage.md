@@ -4,6 +4,7 @@ level: change
 tags: [maintainability, api, yagni]
 severity: should-fix
 status: draft
+lacks: duplicate, its FAIL shapes, an unused option and a one-implementation Protocol, are the stable mod-yagni Rule
 lang: core
 applies_when: The change adds a public function, endpoint, option, interface or extension point.
 tool_gate: Unused-export or dead-code detection in CI.

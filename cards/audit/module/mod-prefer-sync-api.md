@@ -4,6 +4,7 @@ level: module
 tags: [correctness, api, concurrency]
 severity: discuss
 status: draft
+lacks: evidence, the sans-io and async-pressure posts are opinion and neither states this as a rule; the card combines them
 lang: core
 applies_when: A module wraps protocol, parsing or business logic and offers it to callers that may be sync or async.
 tool_gate: none

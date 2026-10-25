@@ -4,6 +4,7 @@ level: production
 tags: [reliability, observability, slo]
 severity: discuss
 status: draft
+lacks: orgs, gating releases on the error budget has no backing row
 note: no source yet; first-hand reasoning
 lang: core
 applies_when: A service has users or dependents who rely on its availability.

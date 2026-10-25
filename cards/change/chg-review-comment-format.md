@@ -4,6 +4,7 @@ level: change
 tags: [process, reviewer, etiquette]
 severity: discuss
 status: draft
+lacks: evidence, Google and Orosz recommend labels; Cloudflare and Dropbox describe their own tool output, not a rule for reviewers
 lang: core
 applies_when: A reviewer writes feedback on a change.
 tool_gate: none

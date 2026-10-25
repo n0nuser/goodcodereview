@@ -4,6 +4,7 @@ level: change
 tags: [compatibility, database, migration, postgres]
 severity: block
 status: draft
+lacks: orgs, PostgreSQL docs are the only backer; needs two more orgs
 lang: core
 applies_when: A migration adds a column to a large PostgreSQL table.
 tool_gate: Migration linter that flags volatile defaults, stored generated columns and identity columns on ADD COLUMN.

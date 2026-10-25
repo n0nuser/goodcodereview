@@ -4,6 +4,7 @@ level: change
 tags: [compatibility, api, protobuf]
 severity: block
 status: draft
+lacks: orgs, protobuf.dev is the only backer; needs two more orgs that require reserved on removal
 lang: core
 applies_when: The diff deletes a field or enum value from a `.proto` message or enum.
 tool_gate: `buf breaking` or an equivalent descriptor diff in CI.

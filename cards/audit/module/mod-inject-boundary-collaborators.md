@@ -4,6 +4,7 @@ level: module
 tags: [testing, maintainability, design]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: core
 applies_when: A class uses a database, HTTP, cloud or clock collaborator.
 tool_gate: none

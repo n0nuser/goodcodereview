@@ -4,6 +4,7 @@ level: module
 tags: [compatibility, api, protobuf]
 severity: should-fix
 status: draft
+lacks: orgs, the _UNSPECIFIED name has Google only; a zero value with no meaning has Google and Dropbox
 lang: core
 applies_when: A `.proto` file defines an enum.
 tool_gate: Protobuf linter (`buf lint`, ENUM_ZERO_VALUE_SUFFIX).

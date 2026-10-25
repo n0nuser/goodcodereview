@@ -4,6 +4,7 @@ level: service
 tags: [reliability, resilience, isolation]
 severity: should-fix
 status: draft
+lacks: orgs, "per dependency" has Microsoft only; needs two more orgs that limit concurrency per downstream
 lang: core
 applies_when: A service calls several dependencies from shared pools, or retries a dependency that may be down.
 tool_gate: none

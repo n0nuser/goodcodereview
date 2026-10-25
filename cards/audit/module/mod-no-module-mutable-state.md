@@ -4,6 +4,7 @@ level: module
 tags: [correctness, testing, state]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: core
 applies_when: A module defines a variable that changes after load: a list, dict, counter, cache, client or singleton.
 tool_gate: none

@@ -4,6 +4,7 @@ level: module
 tags: [testing, maintainability, architecture]
 severity: block
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: core
 applies_when: A module does anything at import or load time other than defining names.
 tool_gate: none

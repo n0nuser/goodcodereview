@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, python, imports]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: python
 applies_when: A Python module has imports.
 tool_gate: ruff I, TID252, PLC0415

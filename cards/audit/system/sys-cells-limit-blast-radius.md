@@ -4,6 +4,7 @@ level: system
 tags: [reliability, isolation, availability]
 severity: discuss
 status: draft
+lacks: evidence, Netflix and Slack run cells; Airbnb's multi-cluster store and Cloudflare's postmortem describe failure domains, not cells
 note: Netflix (each Titus region is divided into independent cells that bound any one control plane), Slack (moved critical user-facing services to cells to limit the blast radius of site failures), Airbnb (moved its metrics store to multiple clusters to set up separate failure domains), Cloudflare (control-plane postmortem: test the blast radius of failures and minimise the services one failure hits); per-tenant caps are left to svc-rate-limit-quota
 lang: core
 applies_when: Many tenants, regions, or product surfaces share one cluster, control plane, or data store.

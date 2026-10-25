@@ -4,6 +4,7 @@ level: module
 tags: [correctness, python, pydantic]
 severity: discuss
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: python
 applies_when: A pydantic model or settings class uses `Field()`.
 tool_gate: none

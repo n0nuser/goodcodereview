@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, python, config]
 severity: should-fix
 status: draft
+lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: python
 applies_when: Python code reads configuration from the environment.
 tool_gate: ruff TID251 (banned-api) on `os.environ`

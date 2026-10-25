@@ -4,6 +4,7 @@ level: change
 tags: [testing, process, agents]
 severity: block
 status: draft
+lacks: orgs, Google and cursor/plugins back it; Go backs a side remark and Feathers points the other way
 lang: core
 applies_when: Tests were generated or edited alongside the code under test, especially by an agent.
 tool_gate: Mutation testing; fail the build if mutated code still passes.

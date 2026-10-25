@@ -4,6 +4,7 @@ level: module
 tags: [maintainability, architecture]
 severity: discuss
 status: draft
+lacks: failable, "one cohesive concept" is hard to mark FAIL; the Ousterhout backer is a secondary summary
 lang: core
 applies_when: A module or package is large, mixes concepts, or holds a very large literal.
 tool_gate: none
