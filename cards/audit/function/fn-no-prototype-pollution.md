@@ -4,7 +4,7 @@ level: function
 tags: [security, javascript, injection]
 severity: block
 status: draft
-lacks: evidence, OWASP, PortSwigger, GitHub and Snyk are listed, but no stable pass has read them for a recommendation versus a definition
+lacks: unreviewed, OWASP, PortSwigger, GitHub and Snyk listed; check each recommends the practice rather than defining it
 lang: core
 applies_when: JavaScript or TypeScript code merges, clones, or assigns properties whose key names come from JSON, a query string, or other untrusted input.
 tool_gate: CodeQL `js/prototype-pollution-utility` and `js/prototype-polluting-assignment`.

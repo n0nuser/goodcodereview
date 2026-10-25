@@ -4,7 +4,7 @@ level: service
 tags: [security, tls, network]
 severity: should-fix
 status: draft
-lacks: evidence, IETF, NIST, OWASP and Microsoft are listed, but no stable pass has read them; NIST allows TLS 1.0 and 1.1 when necessary
+lacks: unreviewed, IETF, NIST, OWASP and Microsoft listed; NIST still allows TLS 1.0 and 1.1 when necessary
 lang: core
 applies_when: The service or its load balancer terminates TLS.
 tool_gate: testssl.sh or a similar scan against the public endpoint in CI; the load balancer's named security policy checked in config review.

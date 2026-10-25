@@ -77,7 +77,8 @@ LACKS_LABEL = {"orgs": "too few organisations back a clause of the Rule",
                "evidence": "a source is a plan, a definition, or a summary rather than a stated practice",
                "failable": "a reviewer could not mark the Rule FAIL at its level",
                "duplicate": "it overlaps a stable card", "contradiction": "the card contradicts itself",
-               "held": "the maintainer keeps it as a draft"}
+               "held": "the maintainer keeps it as a draft",
+               "unreviewed": "its sources are listed, but no stable pass has checked them yet"}
 # One closing prompt for design-level reviews. It sits outside the PASS/FAIL ledger.
 DESIGN_NOTE = "For a system or codebase review, end with one note outside the ledger: name the decision you would most want written down and what its alternative costs. Cite file:line for the decision. Give no verdict and no severity for it."
 DRAFT_NOTE = "A draft card is not vetted. Read it for ideas, but do not use it for a verdict."

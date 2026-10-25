@@ -30,7 +30,7 @@ GitLab and GitHub are separate organisations. NIST, CISA, and NCSC are separate 
 
 ## What `lacks:` says
 
-Every draft has one line, `lacks: <reason>, <note>`. The reason is the first rule the card fails, in this order:
+Every draft has one line, `lacks: <reason>, <note>`. The reason is the first rule the card fails, in the order of this table. A draft that no stable pass has checked yet gets `unreviewed`.
 
 | Reason | Meaning | Rule |
 |---|---|---|
@@ -40,6 +40,7 @@ Every draft has one line, `lacks: <reason>, <note>`. The reason is the first rul
 | `failable` | No reviewer could mark the Rule `FAIL` at its level. | 4 |
 | `evidence` | A source is a plan, a definition, or a summary. | 3 |
 | `orgs` | A Rule clause has fewer than three organisations. | 1 |
+| `unreviewed` | The sources are listed, but no stable pass has checked them against rules 1 to 10. | all |
 
 The note says what is missing in one sentence of at most 160 characters. For example: `lacks: orgs, "per dependency" has Microsoft only; needs two more orgs that limit concurrency per downstream`. `tools/validate.py` checks the format and the reason. It rejects the line on a stable card, so remove it when you promote.
 

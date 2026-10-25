@@ -4,7 +4,7 @@ level: function
 tags: [security, xml, parsing]
 severity: block
 status: draft
-lacks: evidence, OWASP, PortSwigger and GitHub CodeQL are listed, but no stable pass has read them for a recommendation versus a definition
+lacks: unreviewed, OWASP, PortSwigger and GitHub CodeQL listed; check each recommends the practice rather than defining it
 lang: core
 applies_when: Code parses XML, SVG, SOAP, SAML, or an office document that a user or another system can supply.
 tool_gate: CodeQL `py/xxe`; Bandit B313 to B319 (stdlib XML parse calls) and B405 to B410 (XML imports).

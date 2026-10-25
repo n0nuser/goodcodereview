@@ -14,7 +14,7 @@ STATUSES = ["draft", "stable"]
 CONCERNS = ["correctness", "security", "performance", "reliability", "compatibility",
             "testing", "maintainability", "accessibility", "usability", "observability", "process"]
 # Closed list. Every draft names its main blocker as the first word of `lacks:`. docs/PROMOTION.md defines each one.
-LACKS = ["orgs", "evidence", "failable", "duplicate", "contradiction", "held"]
+LACKS = ["orgs", "evidence", "failable", "duplicate", "contradiction", "held", "unreviewed"]
 BODY_MARKS = ["**Rule.**", "**Why.**", "**FAIL**", "**PASS**", "**Counterpoint.**"]
 
 

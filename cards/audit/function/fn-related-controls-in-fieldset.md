@@ -4,7 +4,7 @@ level: function
 tags: [accessibility, usability, frontend, forms, html]
 severity: should-fix
 status: draft
-lacks: evidence, GOV.UK, W3C, USWDS and A11y Project are listed; the A11y Project line is generic and the multi-part value clause sits at three orgs
+lacks: unreviewed, GOV.UK, W3C, USWDS and A11y Project listed; the A11y Project line is generic
 lang: core
 applies_when: Markup or a component renders a radio group, a checkbox group, or a value split across several inputs, such as a date or an address.
 tool_gate: none

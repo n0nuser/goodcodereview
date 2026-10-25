@@ -4,7 +4,7 @@ level: function
 tags: [security, injection]
 severity: block
 status: draft
-lacks: evidence, OWASP, MITRE, Mozilla and PortSwigger are listed, but no stable pass has read them for a recommendation versus a definition
+lacks: unreviewed, OWASP, MITRE, Mozilla and PortSwigger listed; check each recommends the practice rather than defining it
 lang: core
 applies_when: Code runs `eval`, `exec`, `new Function`, an expression language, or compiles a template, and some of the text comes from a request, a file, a database row, or model output.
 tool_gate: Bandit B307 (`eval`) and B102 (`exec_used`); CodeQL `py/code-injection`; ESLint `no-eval` and `no-implied-eval`.
