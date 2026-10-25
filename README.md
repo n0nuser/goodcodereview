@@ -1,6 +1,8 @@
 # Good Code Review
 
-A checklist for reviewing code, for people and for agents. Every check ends in `PASS`, `FAIL`, or `N/A` with `file:line` evidence.
+A checklist for reviewing code, for people and for agents. Pick what you are reviewing (a diff, a function, a service, a whole codebase, a production setup, or an incident) and you get the checks for that level. Every check ends in `PASS`, `FAIL`, or `N/A` with `file:line` evidence, so anyone can check the review afterwards.
+
+Each stable check is backed by at least three independent organisations, such as OWASP, W3C, Google, and GOV.UK. Checks with less backing stay as drafts and never decide a verdict.
 
 ## Start a review
 
