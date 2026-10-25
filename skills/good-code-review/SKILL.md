@@ -92,6 +92,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `fn-no-shell-with-input` [block] {security}: Start processes with the program and each argument as separate list items, and never through a shell string.
 - `fn-object-level-authz` [block] {security}: Check that the caller may act on the specific record before returning or changing it.
 - `fn-password-slow-hash` [block] {security}: Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.
+- `fn-redirect-target-allowlist` [should-fix] {security}: Redirect only to a local path or to a host on a server-side allowlist, never to a URL taken from the request as is.
 - `fn-reduced-motion-respected` [should-fix] {accessibility, usability}: Switch off or replace large, repeating, or interaction-triggered motion when `prefers-reduced-motion: reduce` is set.
 - `fn-regex-compiled-once` [should-fix] {performance}: Compile a regular expression once, at module or startup level, and reuse it.
 - `fn-rerun-safe-after-crash` [block] {reliability}: Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.

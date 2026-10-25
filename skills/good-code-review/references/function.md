@@ -744,6 +744,33 @@ ph.verify(stored, attempt)             # rehash when check_needs_rehash()
 
 **Counterpoint.** "Argon2 is expensive at login." That cost is the defence; tune it to about a second on production hardware. Where FIPS compliance rules Argon2 out, PBKDF2-HMAC-SHA256 with a high iteration count is the accepted fallback.
 
+## fn-redirect-target-allowlist
+
+severity: should-fix  
+concerns: security  
+applies_when: A handler redirects to a URL taken from a query parameter, form field, header, or stored value, such as `?next=` after login.
+
+**Rule.** Redirect only to a local path or to a host on a server-side allowlist, never to a URL taken from the request as is.
+
+**Why.** A link such as `https://bank.example/login?next=https://evil.example` carries your domain, so users and mail filters trust it, and after login the user lands on a phishing page. When page script sets `location` from the same value, a `javascript:` URL runs as script. Parse the URL and compare its scheme and host. A `startswith("/")` check alone passes `//evil.example`, and browsers read `/\evil.example` the same way. Better still, accept a short name and map it to the URL on the server.
+
+**FAIL**
+
+```python
+return redirect(request.args["next"])
+```
+
+**PASS**
+
+```python
+target = urlparse(request.args.get("next", "/"))
+if target.scheme or target.netloc or not target.path.startswith("/") or "\\" in target.path:
+    target = urlparse("/")
+return redirect(target.path)
+```
+
+**Counterpoint.** "The redirect only matters after a successful login." That is when it hurts most: the user has just typed a password and trusts the next page. A phishing copy of the login form on that page collects the password a second time.
+
 ## fn-reduced-motion-respected
 
 severity: should-fix  

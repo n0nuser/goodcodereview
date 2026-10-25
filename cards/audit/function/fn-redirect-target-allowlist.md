@@ -3,8 +3,7 @@ id: fn-redirect-target-allowlist
 level: function
 tags: [security, redirect, url]
 severity: should-fix
-status: draft
-lacks: unreviewed, OWASP, Microsoft, PortSwigger and GitHub listed; check each recommends the practice rather than defining it
+status: stable
 lang: core
 applies_when: A handler redirects to a URL taken from a query parameter, form field, header, or stored value, such as `?next=` after login.
 tool_gate: CodeQL `py/url-redirection`; ASP.NET Core `LocalRedirect` or `Url.IsLocalUrl`.
