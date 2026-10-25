@@ -620,3 +620,25 @@ Source: `docs/research/security-gaps-pass-2.md`, which verifies sources for the 
 | security-gaps | TLS version and cipher policy for servers (ASVS 12.1.1, 12.1.2) | `svc-tls-modern-only` | draft |
 | security-gaps | Credential recovery, MFA enrolment, reset flows (ASVS 6.4) | dropped: no single Rule that can fail; `svc-auth-throttle-generic-errors` covers reset endpoints | dropped |
 | security-gaps | CWE-787, 125, 120, 121, 122, 416 memory safety | dropped: needs a `packs/<lang>/` pack that does not exist | dropped |
+
+## UX laws pass
+
+From `docs/research/ux-laws-pass.md`. The leads came from a social-media list of UX laws. The org count is the number of independent organisations behind the Rule.
+
+| Source | Item | Maps to | Status |
+|---|---|---|---|
+| ux-laws | Law of proximity: a field's label sits directly above it (4 orgs; checkbox and radio order 1, in Why) | `fn-label-above-field` | draft |
+| ux-laws | Law of proximity, common region: related controls share a fieldset and legend (4 orgs) | `fn-related-controls-in-fieldset` | draft |
+| ux-laws | Progressive disclosure: hide only what few users need (3 orgs; two-level cap 1, in Why) | `fn-disclosure-hides-only-secondary` | draft |
+| ux-laws | Recognition over recall | dropped: 2 orgs (NN/g, W3C in part) | dropped |
+| ux-laws | Doherty threshold, feedback within a time budget | dropped: `svc-slow-operation-shows-progress` covers waits; the 400 ms figure is unsourced | dropped |
+| ux-laws | Hick's law | dropped: no count a reviewer can apply; Baymard's range covers checkout drop-downs only | dropped |
+| ux-laws | Fitts's law | dropped: `fn-target-size` covers it with the WCAG 2.5.8 floor | dropped |
+| ux-laws | Aesthetic-usability effect | dropped: not reviewable in code or config | dropped |
+| ux-laws | Peak-end rule | dropped: not reviewable in code or config | dropped |
+| ux-laws | Goal-gradient effect | dropped: not reviewable in code or config | dropped |
+| ux-laws | Serial position effect | dropped: not reviewable in code or config | dropped |
+| ux-laws | Von Restorff effect | dropped: not reviewable in code or config | dropped |
+| ux-laws | Tesler's law | dropped: not reviewable in code or config | dropped |
+| ux-laws | Miller's law | dropped: weak; 7 plus or minus 2 is overstated for interface lists | dropped |
+| ux-laws | Postel's law | dropped: contested; RFC 9413 argues against it | dropped |
