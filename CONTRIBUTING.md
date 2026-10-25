@@ -12,7 +12,7 @@ A card is accepted when it has:
 - At least one concern in `tags`: `correctness`, `security`, `performance`, `reliability`, `compatibility`, `testing`, `maintainability`, `accessibility`, `usability`, `observability`, or `process`. Add topic tags such as `postgres` after it.
 - Your own words. Distil sources; never paste their text.
 
-New cards start as `status: draft`. Only `stable` cards ship in `SKILL.md`.
+New cards start as `status: draft`, with a `lacks:` line that says why the card is not stable yet. Only `stable` cards ship in `SKILL.md`. [docs/PROMOTION.md](docs/PROMOTION.md) gives the bar a draft must meet to become stable, and the reasons `lacks:` accepts.
 
 A stable card or glossary entry must not name a draft card id. `tools/validate.py` fails if one does. When you promote a draft to stable, add back the links to it that stable cards and glossary entries dropped.
 

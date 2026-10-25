@@ -99,7 +99,7 @@ ABOUT = """Good Code Review is a checklist for reviewing code, for people and fo
 
 # What stable and draft mean
 
-A stable card is vetted, and its FAIL and PASS lines are real verdicts. A draft card is not vetted. Read it for ideas, but do not use it for a verdict. The home page shows how many cards of each kind every level has.
+A stable card is vetted, and its FAIL and PASS lines are real verdicts. A draft card is not vetted. Read it for ideas, but do not use it for a verdict. Each draft says what it lacks, and [How a draft becomes stable](https://github.com/n0nuser/goodcodereview/blob/main/docs/PROMOTION.md) gives the bar. The home page shows how many cards of each kind every level has.
 
 # How the site is built
 
@@ -450,7 +450,7 @@ def listing(title, intro, cards, ids, links, cur, desc, empty=False, compact=Fal
     dbody = ('<div class="ckw"><ul class="ck">' + th + "".join(row(fm, b, ids, home_page(fm)) for _, fm, b in draft) + "</ul></div>"
              if compact else "".join(card_html(fm, b, ids) for _, fm, b in draft))
     drafts = (f'<h2>Draft cards</h2>{"" if stable or empty else "<p>No stable cards yet.</p>"}<details><summary id="dsum" data-n="{len(draft)}">{len(draft)} draft cards</summary>'
-              f"<p>{DRAFT_NOTE}{' Each row links to the full card.' if compact else ''}</p>" + dbody + "</details>") if draft else ""
+              f"<p>{DRAFT_NOTE}{' Each row links to the full card.' if compact else ''} <a href=\"{REPO}/blob/main/docs/PROMOTION.md\">How a draft becomes stable</a></p>" + dbody + "</details>") if draft else ""
     if empty:
         return page(title, NONE_NOTE + intro + LEGEND + drafts, True, links, cur, desc, cur[:-5])
     intro += EXAMPLE_HTML
