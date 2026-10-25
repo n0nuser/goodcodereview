@@ -3,8 +3,7 @@ id: fn-disclosure-hides-only-secondary
 level: function
 tags: [usability, frontend, html]
 severity: should-fix
-status: draft
-lacks: unreviewed, NN/g, GOV.UK and Appian listed and fetched in review; no stable pass has judged them
+status: stable
 lang: core
 applies_when: Markup or a component hides content behind a `<details>`, an accordion, a "Show more" link, or an "Advanced" toggle.
 tool_gate: none

@@ -72,6 +72,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `fn-csprng-for-secrets` [block] {security}: Draw every security-relevant random value from the platform CSPRNG.
 - `fn-destructive-confirm-or-undo` [should-fix] {usability}: Make a destructive action reversible with undo, or ask the user to confirm it before it runs.
 - `fn-dialog-focus-managed` [block] {accessibility, usability}: When a modal opens, move focus into it and keep Tab inside it. Make Escape close it.
+- `fn-disclosure-hides-only-secondary` [should-fix] {usability}: Do not hide a required field, the primary action, or information most users need behind a disclosure that starts closed.
 - `fn-error-says-what-and-how` [should-fix] {usability, accessibility}: Show each validation error next to its field, in plain words that name what is wrong and how to fix it.
 - `fn-fetch-only-needed-data` [should-fix] {performance}: Filter, count, and aggregate in the query, and select only the columns the code uses.
 - `fn-focus-indicator-visible` [block] {accessibility, usability}: Keep a visible focus indicator on every focusable element. Never set `outline: none` without a replacement.
