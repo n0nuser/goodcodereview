@@ -97,6 +97,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `fn-redirect-target-allowlist` [should-fix] {security}: Redirect only to a local path or to a host on a server-side allowlist, never to a URL taken from the request as is.
 - `fn-reduced-motion-respected` [should-fix] {accessibility, usability}: Switch off or replace large, repeating, or interaction-triggered motion when `prefers-reduced-motion: reduce` is set.
 - `fn-regex-compiled-once` [should-fix] {performance}: Compile a regular expression once, at module or startup level, and reuse it.
+- `fn-related-controls-in-fieldset` [should-fix] {accessibility, usability}: Wrap each radio group, checkbox group, and multi-part value, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.
 - `fn-rerun-safe-after-crash` [block] {reliability}: Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.
 - `fn-response-fields-explicit` [should-fix] {security, compatibility}: Return a response type that lists each field, never the stored model or a generic dump of it.
 - `fn-status-announced-live-region` [should-fix] {accessibility, usability}: Announce an async status message through a live region (`role="status"` or `role="alert"`) that is already in the markup before its text changes.
