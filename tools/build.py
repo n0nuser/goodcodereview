@@ -13,6 +13,7 @@ from urllib.parse import urlparse
 
 sys.path.insert(0, str(Path(__file__).parent))
 from validate import CONCERNS, LACKS, LEVELS, load_cards, validate  # noqa: E402
+import orgs  # noqa: E402
 import schema  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -105,7 +106,7 @@ A stable card is vetted: at least three independent organisations back its rule,
 
 # How to check the cards
 
-You do not have to take the cards on trust. Each stable card links its sources under the card, and at least three independent organisations, such as OWASP, W3C, Google, or GOV.UK, back its rule. [How a draft becomes stable](https://github.com/n0nuser/goodcodereview/blob/main/docs/PROMOTION.md) gives the bar, and the [Drafts by what they lack](drafts.html) page shows why each draft is not stable yet. Every change to a card is public in the [commit history](https://github.com/n0nuser/goodcodereview/commits/main).
+You do not have to take the cards on trust. Each card ends with a "Backed by" list that names every organisation behind it and links its sources. At least three independent organisations, such as OWASP, W3C, Google, or GOV.UK, back the rule of each stable card. [How a draft becomes stable](https://github.com/n0nuser/goodcodereview/blob/main/docs/PROMOTION.md) gives the bar, and the [Drafts by what they lack](drafts.html) page shows why each draft is not stable yet. Every change to a card is public in the [commit history](https://github.com/n0nuser/goodcodereview/commits/main).
 
 The skill and the plugin are Markdown files only: `SKILL.md` and one reference file per level. They run no code and install no dependencies, so an agent that loads them only reads text.
 
@@ -115,7 +116,7 @@ The skill and the plugin are Markdown files only: `SKILL.md` and one reference f
 
 # Cost and licence
 
-The site and the cards are free to read and use. The content is under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) and the code is under the MIT licence.
+The site and the cards are free to read and use. The content is under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) and the code is under the MIT licence. The organisation logos come from [Simple Icons](https://simpleicons.org) under CC0. They are trademarks of their owners, shown only to name a source, and no organisation endorses this site. An organisation without a logo gets a letter badge.
 
 # Contact
 
@@ -240,6 +241,11 @@ pre.wrap{max-inline-size:68ch;white-space:pre-wrap;overflow-wrap:anywhere}pre.wr
 .block{color:var(--bad)}.should-fix{color:var(--warn)}.stable{color:var(--fg)}.draft{border-style:dashed}
 .tags{display:flex;flex-wrap:wrap;gap:0 .7em;color:var(--mut);font:var(--step--1)/1.4 var(--ui)}
 .note{color:var(--mut);font:var(--step--1)/1.5 var(--ui)}
+.by{color:var(--mut);font:var(--step--1)/1.5 var(--ui)}.by .note{margin:0}
+.orgs{list-style:none;margin:0;padding:0}.orgs li{padding-inline-start:1.9em;text-indent:-1.9em}
+.orgs .oi{inline-size:1.25em;block-size:1.25em;vertical-align:-.3em;margin-inline-end:.5em;color:var(--fg)}.on{color:var(--fg);font-weight:600}
+.orgs a{display:inline-block;min-block-size:24px;line-height:24px;text-indent:0;overflow-wrap:anywhere}
+.sprite{position:absolute;inline-size:0;block-size:0;overflow:hidden}
 .legend{display:grid;grid-template-columns:max-content 1fr;gap:.4rem var(--space-s);padding:0;list-style:none;font:var(--step--1)/1.4 var(--ui)}
 .legend li{grid-column:1/-1;display:grid;grid-template-columns:subgrid;align-items:baseline}.legend .b{justify-self:start}.legend li.tg{display:block}
 .flt{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem .5rem}
@@ -390,7 +396,7 @@ def page(title, body, script=False, links=(), cur="", desc="", slug="", ld=None)
     jsonld = '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + "</script>" if ld else ""
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">'
             f'<link rel="icon" href="{FAVICON}">'
-            f"<title>{html.escape(full)}</title>{head_tags(full, desc, slug)}<style>{CSS}</style>{jsonld}</head><body><a class=skip href=#main>Skip to content</a>{nav}<main id=main tabindex=-1><h1>{html.escape(title)}</h1>{body}</main>"
+            f"<title>{html.escape(full)}</title>{head_tags(full, desc, slug)}<style>{CSS}</style>{jsonld}</head><body><a class=skip href=#main>Skip to content</a>{nav}<main id=main tabindex=-1><h1>{html.escape(title)}</h1>{body}</main>{sprite(body)}"
             f"{FOOTER}{'<p id=said class=vh role=status></p><script>' + JS + '</script>' if script else ''}</body></html>")
 
 
@@ -402,9 +408,37 @@ def chips(fm):
     return '<span class="tags">' + "".join(f"<span>{c}</span>" for c in concerns(fm)) + "</span>"
 
 
+def link_text(u):
+    """A short, distinct label for a source link: the host and the last path segment, such as "w3.org/…/target-size-minimum"."""
+    p = urlparse(u)
+    host, parts = p.netloc.removeprefix("www."), [s for s in p.path.split("/") if s]
+    return host + ("/" + "/".join(parts) if len(parts) < 2 else "/…/" + parts[-1]) + (f"#{p.fragment}" if p.fragment else "")
+
+
+def icon(oid):
+    return f'<svg class="oi" aria-hidden="true" focusable="false"><use href="#o-{oid}"/></svg>'
+
+
 def sources(fm):
-    urls = fm["borrowed_from"]
-    return ('<p class="note">Sources: ' + ", ".join(f'<a href="{html.escape(u)}">{html.escape(urlparse(u).netloc)}</a>' for u in urls) + "</p>") if urls else ""
+    groups = orgs.group(fm["borrowed_from"])
+    if not groups:
+        return '<div class="by"><p class="note"><strong>Backed by</strong> no organisation yet. This draft cites no source.</p></div>'
+    n = f"{len(groups)} organisation{'s' * (len(groups) != 1)}"
+    items = "".join(f'<li>{icon(o)}<span class="on">{html.escape(orgs.ORGS[o])}:</span> '
+                    + ", ".join(f'<a href="{html.escape(u)}">{html.escape(link_text(u))}</a>' for u in us) + "</li>" for o, us in groups)
+    return f'<div class="by"><p class="note"><strong>Backed by</strong> {n}:</p><ul class="orgs">{items}</ul></div>'
+
+
+def sprite(body):
+    """One hidden SVG with a symbol for each org icon the page uses: the logo, or a monogram badge."""
+    def sym(o):
+        if o in orgs.ICONS:
+            return f'<symbol id="o-{o}" viewBox="0 0 24 24"><path fill="currentColor" d="{orgs.ICONS[o]}"/></symbol>'
+        m = orgs.monogram(o)
+        return (f'<symbol id="o-{o}" viewBox="0 0 24 24"><rect x="1" y="1" width="22" height="22" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/>'
+                f'<text x="12" y="12" dy=".35em" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-weight="700" font-size="{[0, 12, 10, 8, 6.5][len(m)]}">{html.escape(m)}</text></symbol>')
+    used = sorted(set(re.findall(r'<use href="#o-([a-z0-9-]+)"/>', body)))
+    return f'<svg class="sprite" aria-hidden="true">{"".join(sym(o) for o in used)}</svg>' if used else ""
 
 
 def lacks(fm):
