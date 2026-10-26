@@ -4,6 +4,8 @@ import re
 import sys
 from pathlib import Path
 
+import orgs
+
 KEYS = ["id", "level", "tags", "severity", "status", "lang", "applies_when", "tool_gate", "borrowed_from"]
 LEVELS = ["change", "function", "module", "service", "system", "codebase", "production", "incident"]
 LEVEL_PREFIX = dict(zip(LEVELS, ["chg", "fn", "mod", "svc", "sys", "code", "prod", "inc"]))
@@ -110,6 +112,12 @@ def validate(root):
         for u in urls:
             if u not in research:
                 err(f"borrowed_from URL not in docs/research: {u}")
+            if orgs.org_of(u) is None:
+                err(f"borrowed_from URL has no organisation in tools/orgs.py: {u}")
+        # A floor for rule 1 of docs/PROMOTION.md: it counts per Rule clause, so three orgs per card is necessary, not sufficient.
+        found = {orgs.org_of(u) for u in urls} - {None}
+        if fm.get("status") == "stable" and len(found) < 3:
+            err(f"stable card has {len(found)} organisation(s) in borrowed_from; it needs at least 3")
         lacks = fm.get("lacks")
         if fm.get("status") == "stable" and lacks is not None:
             err("stable card has 'lacks:'; remove it on promotion")

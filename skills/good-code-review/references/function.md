@@ -4,7 +4,8 @@
 
 severity: should-fix  
 concerns: accessibility  
-applies_when: A custom widget sets `role` or an `aria-*` attribute because no native element fits.
+applies_when: A custom widget sets `role` or an `aria-*` attribute because no native element fits.  
+backed by: W3C, Mozilla, Heydon Pickering, Deque, Google
 
 **Rule.** When a native element cannot do the job, give the custom widget the state attribute and the keys its role promises.
 
@@ -32,7 +33,8 @@ applies_when: A custom widget sets `role` or an `aria-*` attribute because no na
 
 severity: should-fix  
 concerns: accessibility, usability  
-applies_when: Styles or markup show an error, a required field, a status, or a link using colour.
+applies_when: Styles or markup show an error, a required field, a status, or a link using colour.  
+backed by: W3C, Nielsen Norman Group, Apple, Heydon Pickering
 
 **Rule.** Pair every colour that carries meaning with a second cue: text, an icon, a shape, or an underline.
 
@@ -60,7 +62,8 @@ a { color: #0a58ca; text-decoration: none; }   /* no underline, no hover or focu
 
 severity: should-fix  
 concerns: maintainability  
-applies_when: A comment sits next to code, or the code needs one to be understood.
+applies_when: A comment sits next to code, or the code needs one to be understood.  
+backed by: Sébastien Portebois, Google, John Ousterhout, Henrik Warne
 
 **Rule.** Write comments that give a reason, a constraint, or a trade-off; rename before commenting, and never restate what the next line does.
 
@@ -87,7 +90,8 @@ retry = False  # see the PR, currently disabled
 
 severity: block  
 concerns: security  
-applies_when: Code opens, reads, writes or deletes a file whose name or path includes request data.
+applies_when: Code opens, reads, writes or deletes a file whose name or path includes request data.  
+backed by: OWASP, Google, GitHub
 
 **Rule.** Resolve the final path and check that it stays inside the intended base directory before using it.
 
@@ -113,7 +117,8 @@ return send_file(p)
 
 severity: block  
 concerns: security  
-applies_when: Code generates a token, session ID, password-reset code, API key, nonce or IV.
+applies_when: Code generates a token, session ID, password-reset code, API key, nonce or IV.  
+backed by: OWASP, Python Software Foundation, Mozilla, IETF, Google
 
 **Rule.** Draw every security-relevant random value from the platform CSPRNG.
 
@@ -139,7 +144,8 @@ token = secrets.token_urlsafe(32)           # os.urandom under the hood
 
 severity: should-fix  
 concerns: usability  
-applies_when: A handler deletes user data, spends money, or sends something that cannot be recalled.
+applies_when: A handler deletes user data, spends money, or sends something that cannot be recalled.  
+backed by: Nielsen Norman Group, Apple, W3C, Ben Shneiderman
 
 **Rule.** Make a destructive action reversible with undo, or ask the user to confirm it before it runs.
 
@@ -167,7 +173,8 @@ async function remove() {
 
 severity: block  
 concerns: accessibility, usability  
-applies_when: A component opens a modal dialog, drawer, or menu that covers the page.
+applies_when: A component opens a modal dialog, drawer, or menu that covers the page.  
+backed by: W3C, Mozilla, WebAIM
 
 **Rule.** When a modal opens, move focus into it and keep Tab inside it. Make Escape close it.
 
@@ -198,7 +205,8 @@ applies_when: A component opens a modal dialog, drawer, or menu that covers the 
 
 severity: should-fix  
 concerns: usability  
-applies_when: Markup or a component hides content behind a `<details>`, an accordion, a "Show more" link, or an "Advanced" toggle.
+applies_when: Markup or a component hides content behind a `<details>`, an accordion, a "Show more" link, or an "Advanced" toggle.  
+backed by: Nielsen Norman Group, GOV.UK, Appian
 
 **Rule.** Do not hide a required field, the primary action, or information most users need behind a disclosure that starts closed.
 
@@ -232,7 +240,8 @@ applies_when: Markup or a component hides content behind a `<details>`, an accor
 
 severity: should-fix  
 concerns: usability, accessibility  
-applies_when: Code builds the message shown when user input fails validation.
+applies_when: Code builds the message shown when user input fails validation.  
+backed by: Nielsen Norman Group, GOV.UK, W3C, USWDS, Ben Shneiderman
 
 **Rule.** Show each validation error next to its field, in plain words that name what is wrong and how to fix it.
 
@@ -260,7 +269,8 @@ applies_when: Code builds the message shown when user input fails validation.
 
 severity: should-fix  
 concerns: performance  
-applies_when: A function queries a database or an API and then filters, counts, or sums the result in application code.
+applies_when: A function queries a database or an API and then filters, counts, or sums the result in application code.  
+backed by: Microsoft, Django Software Foundation, Markus Winand, SQLAlchemy
 
 **Rule.** Filter, count, and aggregate in the query, and select only the columns the code uses.
 
@@ -288,7 +298,8 @@ emails = User.objects.values_list("email", flat=True)
 
 severity: block  
 concerns: accessibility, usability  
-applies_when: Styles or script change `outline`, `:focus`, or `:focus-visible`.
+applies_when: Styles or script change `outline`, `:focus`, or `:focus-visible`.  
+backed by: W3C, Google, WebAIM, The A11y Project
 
 **Rule.** Keep a visible focus indicator on every focusable element. Never set `outline: none` without a replacement.
 
@@ -313,7 +324,8 @@ a:focus { outline: 0; }
 
 severity: block  
 concerns: accessibility, usability  
-applies_when: Markup or a component renders an input, a select, or a textarea.
+applies_when: Markup or a component renders an input, a select, or a textarea.  
+backed by: W3C, Mozilla, Deque, The A11y Project, jsx-eslint project
 
 **Rule.** Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.
 
@@ -342,7 +354,8 @@ applies_when: Markup or a component renders an input, a select, or a textarea.
 
 severity: should-fix  
 concerns: accessibility, usability  
-applies_when: Markup or a component renders a title or a section heading.
+applies_when: Markup or a component renders a title or a section heading.  
+backed by: W3C, Mozilla, The A11y Project
 
 **Rule.** Mark every heading with a real `<h1>` to `<h6>` element, not a styled `div`, `span`, or `p`.
 
@@ -371,7 +384,8 @@ applies_when: Markup or a component renders a title or a section heading.
 
 severity: should-fix  
 concerns: accessibility  
-applies_when: Markup or a component renders an image, an icon, or a chart.
+applies_when: Markup or a component renders an image, an icon, or a chart.  
+backed by: W3C, Mozilla, Deque, The A11y Project, jsx-eslint project
 
 **Rule.** Give every `<img>` an `alt` attribute: text that serves the image's purpose, or `alt=""` when the image is decorative.
 
@@ -400,7 +414,8 @@ applies_when: Markup or a component renders an image, an icon, or a chart.
 
 severity: should-fix  
 concerns: performance, correctness  
-applies_when: A function awaits or calls several I/O operations that do not depend on each other.
+applies_when: A function awaits or calls several I/O operations that do not depend on each other.  
+backed by: Google, Cursor, Python Software Foundation, Mozilla
 
 **Rule.** Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.
 
@@ -427,7 +442,8 @@ user, orders, prefs = await asyncio.gather(
 
 severity: should-fix  
 concerns: performance  
-applies_when: A function builds a string from pieces in a loop whose length depends on input.
+applies_when: A function builds a string from pieces in a loop whose length depends on input.  
+backed by: Python Software Foundation, Google, Microsoft
 
 **Rule.** Build a string from a loop with a builder or a join, never with repeated `+=`.
 
@@ -453,7 +469,8 @@ out = "".join(f"{row.id},{row.name}\n" for row in rows)
 
 severity: block  
 concerns: security  
-applies_when: Code accepts a JWT as proof of identity or permission.
+applies_when: Code accepts a JWT as proof of identity or permission.  
+backed by: IETF, OWASP, Microsoft, Google, GitHub, PyJWT project
 
 **Rule.** Verify the signature against a fixed list of accepted algorithms, and check `iss` and `aud`, before reading any claim.
 
@@ -480,7 +497,8 @@ claims = jwt.decode(token, key, algorithms=["RS256"],
 
 severity: should-fix  
 concerns: usability  
-applies_when: A form handler or component re-renders after a failed validation or a failed submit.
+applies_when: A form handler or component re-renders after a failed validation or a failed submit.  
+backed by: Nielsen Norman Group, GOV.UK, Baymard Institute, Ben Shneiderman
 
 **Rule.** After a failed validation or submit, show the form again with every value the user entered, correct or not.
 
@@ -512,7 +530,8 @@ async function submit(e) {
 
 severity: discuss  
 concerns: usability, accessibility  
-applies_when: Markup or styles lay out a form field and its visible label.
+applies_when: Markup or styles lay out a form field and its visible label.  
+backed by: GOV.UK, Atlassian, Nielsen Norman Group, W3C
 
 **Rule.** Put the visible label of a text input, select, or textarea directly above it.
 
@@ -542,7 +561,8 @@ applies_when: Markup or styles lay out a form field and its visible label.
 
 severity: block  
 concerns: accessibility, usability  
-applies_when: A component handles a click or tap, or navigates.
+applies_when: A component handles a click or tap, or navigates.  
+backed by: W3C, Mozilla, WebAIM, jsx-eslint project, Don Norman
 
 **Rule.** Use `<button>` for an action and `<a href>` for navigation. Do not attach a click handler to a `div`, `span`, or `a` with no `href`.
 
@@ -570,7 +590,8 @@ applies_when: A component handles a click or tap, or navigates.
 
 severity: block  
 concerns: performance, correctness  
-applies_when: Code runs on an event loop or an async runtime (asyncio, Node.js, Tokio, ASP.NET async handlers).
+applies_when: Code runs on an event loop or an async runtime (asyncio, Node.js, Tokio, ASP.NET async handlers).  
+backed by: Python Software Foundation, OpenJS Foundation, Tokio project, Microsoft
 
 **Rule.** Never make a blocking I/O call or run long CPU work directly in async code; use the async API or hand the work to a thread or worker.
 
@@ -598,7 +619,8 @@ async def handler(req):
 
 severity: block  
 concerns: security  
-applies_when: Code runs `eval`, `exec`, or `new Function`, or compiles a template, and some of the text comes from a request, a file, a database row, or model output.
+applies_when: Code runs `eval`, `exec`, or `new Function`, or compiles a template, and some of the text comes from a request, a file, a database row, or model output.  
+backed by: OWASP, MITRE, Mozilla, PortSwigger, GitHub
 
 **Rule.** Never pass untrusted text to `eval`, `exec`, `new Function`, or a template compiler. Pass it to a fixed template or a parser as data.
 
@@ -624,7 +646,8 @@ html = render_template("hello.html", name=request.args["name"])
 
 severity: block  
 concerns: security  
-applies_when: A handler copies request fields into a model, ORM entity or settings object.
+applies_when: A handler copies request fields into a model, ORM entity or settings object.  
+backed by: OWASP, Microsoft, Ruby on Rails, Django Software Foundation
 
 **Rule.** Bind request data to a DTO or an explicit field allowlist, never straight onto the model.
 
@@ -651,7 +674,8 @@ user = User(**UserIn(**request.json).model_dump())
 
 severity: block  
 concerns: security  
-applies_when: Code turns bytes or text from outside the process into objects.
+applies_when: Code turns bytes or text from outside the process into objects.  
+backed by: OWASP, Python Software Foundation, Microsoft, Oracle, GitHub
 
 **Rule.** Parse untrusted input with a data-only format, never with a native object deserialiser.
 
@@ -677,7 +701,8 @@ cfg = yaml.safe_load(body)
 
 severity: should-fix  
 concerns: accessibility, usability  
-applies_when: Markup sets `tabindex`, or a layout reorders content with CSS.
+applies_when: Markup sets `tabindex`, or a layout reorders content with CSS.  
+backed by: W3C, Google, WebAIM, The A11y Project
 
 **Rule.** Write the DOM in reading order and never set `tabindex` above 0.
 
@@ -706,7 +731,8 @@ applies_when: Markup sets `tabindex`, or a layout reorders content with CSS.
 
 severity: block  
 concerns: security  
-applies_when: JavaScript or TypeScript code merges, clones, or assigns properties whose key names come from JSON, a query string, or other untrusted input.
+applies_when: JavaScript or TypeScript code merges, clones, or assigns properties whose key names come from JSON, a query string, or other untrusted input.  
+backed by: OWASP, MITRE, PortSwigger, GitHub, Snyk
 
 **Rule.** Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys.
 
@@ -740,7 +766,8 @@ for (const [k, v] of Object.entries(JSON.parse(body))) {
 
 severity: block  
 concerns: security  
-applies_when: Code writes a string into a page, a template or a rendered model-output view.
+applies_when: Code writes a string into a page, a template or a rendered model-output view.  
+backed by: OWASP, Mozilla, Meta, Google, CISA
 
 **Rule.** Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.
 
@@ -767,7 +794,8 @@ el.textContent = comment.body;
 
 severity: block  
 concerns: security  
-applies_when: Code starts a process and some part of the command comes from a request, a file or model output.
+applies_when: Code starts a process and some part of the command comes from a request, a file or model output.  
+backed by: OWASP, Python Software Foundation, Google, CISA
 
 **Rule.** Start processes with the program and each argument as separate list items, and never through a shell string.
 
@@ -793,7 +821,8 @@ subprocess.run(["git", "log", branch], check=True)   # branch checked against an
 
 severity: block  
 concerns: security  
-applies_when: A handler loads, changes or deletes a record by an ID that comes from the request.
+applies_when: A handler loads, changes or deletes a record by an ID that comes from the request.  
+backed by: OWASP, Microsoft, Cloudflare, NIST
 
 **Rule.** Check that the caller may act on the specific record before returning or changing it.
 
@@ -820,7 +849,8 @@ return order.to_json()
 
 severity: block  
 concerns: security  
-applies_when: Code stores or verifies a user password.
+applies_when: Code stores or verifies a user password.  
+backed by: OWASP, IETF, NIST
 
 **Rule.** Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.
 
@@ -846,7 +876,8 @@ ph.verify(stored, attempt)             # rehash when check_needs_rehash()
 
 severity: should-fix  
 concerns: security  
-applies_when: A handler redirects to a URL taken from a query parameter, form field, header, or stored value, such as `?next=` after login.
+applies_when: A handler redirects to a URL taken from a query parameter, form field, header, or stored value, such as `?next=` after login.  
+backed by: OWASP, MITRE, Microsoft, PortSwigger, GitHub
 
 **Rule.** Redirect only to a local path or to a host on a server-side allowlist, never to a URL taken from the request as is.
 
@@ -873,7 +904,8 @@ return redirect(target.path)
 
 severity: should-fix  
 concerns: accessibility, usability  
-applies_when: Styles or script add a transition, an animation, a parallax effect, or autoplay motion.
+applies_when: Styles or script add a transition, an animation, a parallax effect, or autoplay motion.  
+backed by: Mozilla, W3C, Apple, The A11y Project, Google
 
 **Rule.** Switch off or replace large, repeating, or interaction-triggered motion when `prefers-reduced-motion: reduce` is set.
 
@@ -904,7 +936,8 @@ applies_when: Styles or script add a transition, an animation, a parallax effect
 
 severity: should-fix  
 concerns: performance  
-applies_when: Code builds a regular expression or similar compiled matcher inside a loop or a function that runs per request.
+applies_when: Code builds a regular expression or similar compiled matcher inside a loop or a function that runs per request.  
+backed by: Rust project, Google, Python Software Foundation, Microsoft
 
 **Rule.** Compile a regular expression once, at module or startup level, and reuse it.
 
@@ -932,7 +965,8 @@ func valid(s string) bool { return lower.MatchString(s) }
 
 severity: should-fix  
 concerns: accessibility, usability  
-applies_when: Markup or a component renders a radio group, a checkbox group, or a value split across several inputs, such as a date or an address.
+applies_when: Markup or a component renders a radio group, a checkbox group, or a value split across several inputs, such as a date or an address.  
+backed by: GOV.UK, W3C, USWDS, The A11y Project
 
 **Rule.** Wrap each radio group, checkbox group, and multi-part value, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.
 
@@ -966,7 +1000,8 @@ applies_when: Markup or a component renders a radio group, a checkbox group, or 
 
 severity: block  
 concerns: reliability  
-applies_when: A function or job changes state and can be run twice, or can be killed partway.
+applies_when: A function or job changes state and can be run twice, or can be killed partway.  
+backed by: Cursor, Uber, Stripe, Dropbox, Netflix, GitHub
 
 **Rule.** Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.
 
@@ -996,7 +1031,8 @@ os.replace(tmp, path)  # the reader sees the old file or the new one, never half
 
 severity: should-fix  
 concerns: security, compatibility  
-applies_when: A handler returns a stored object or entity to the client.
+applies_when: A handler returns a stored object or entity to the client.  
+backed by: OWASP, Microsoft, Django REST framework, NIST
 
 **Rule.** Return a response type that lists each field, never the stored model or a generic dump of it.
 
@@ -1022,7 +1058,8 @@ return UserOut.model_validate(user)
 
 severity: should-fix  
 concerns: accessibility, usability  
-applies_when: Script shows a message after an async action without moving focus, such as "Saved", a result count, or an error.
+applies_when: Script shows a message after an async action without moving focus, such as "Saved", a result count, or an error.  
+backed by: W3C, Mozilla, Heydon Pickering
 
 **Rule.** Announce an async status message through a live region (`role="status"` or `role="alert"`) that is already in the markup before its text changes.
 
@@ -1051,7 +1088,8 @@ document.body.append(note);
 
 severity: should-fix  
 concerns: accessibility, usability  
-applies_when: Styles size a button, icon button, checkbox, or link that a pointer or finger operates.
+applies_when: Styles size a button, icon button, checkbox, or link that a pointer or finger operates.  
+backed by: W3C, Apple, The A11y Project, Deque, Mozilla
 
 **Rule.** Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.
 
@@ -1079,7 +1117,8 @@ applies_when: Styles size a button, icon button, checkbox, or link that a pointe
 
 severity: block  
 concerns: security  
-applies_when: Code makes an outbound HTTPS, database or message-broker connection.
+applies_when: Code makes an outbound HTTPS, database or message-broker connection.  
+backed by: OWASP, IETF, Google, GitHub, Python Software Foundation
 
 **Rule.** Leave certificate and hostname verification on in every environment that ships.
 
@@ -1104,7 +1143,8 @@ requests.get(url, verify="/etc/ssl/company-ca.pem")   # private CA added, check 
 
 severity: block  
 concerns: security  
-applies_when: Code parses XML, SVG, SOAP, SAML, or an office document that a user or another system can supply.
+applies_when: Code parses XML, SVG, SOAP, SAML, or an office document that a user or another system can supply.  
+backed by: OWASP, MITRE, PortSwigger, GitHub
 
 **Rule.** Parse untrusted XML with external entity resolution turned off, for example through a hardened parser such as `defusedxml`.
 

@@ -4,7 +4,8 @@
 
 severity: discuss  
 concerns: maintainability, process  
-applies_when: Auditing whether the reasons behind significant design choices are recorded.
+applies_when: Auditing whether the reasons behind significant design choices are recorded.  
+backed by: AWS, Microsoft, Google, GOV.UK, Spotify, Cognitect, Rich Hickey
 
 **Rule.** Keep a short written record for each significant design choice (datastore, framework, deviation from a pattern) that states the context, the decision, and its consequences.
 
@@ -28,7 +29,8 @@ docs/adr/0007-queue.md: context, decision, consequences, status, and the 2 optio
 
 severity: should-fix  
 concerns: process  
-applies_when: The repository has a build, a packaging, or a release step.
+applies_when: The repository has a build, a packaging, or a release step.  
+backed by: Google, Reproducible Builds, Airbnb, Slack, Dropbox
 
 **Rule.** Build from declared inputs only, so that the same source revision gives the same artifact.
 
@@ -57,7 +59,8 @@ steps:
 
 severity: should-fix  
 concerns: process  
-applies_when: Auditing which checks must pass before a change merges.
+applies_when: Auditing which checks must pass before a change merges.  
+backed by: OpenSSF, Palantir, Kubernetes, McIntosh et al.
 
 **Rule.** Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
 
@@ -81,7 +84,8 @@ Protected main: 1 approval + required checks (build, test, lint, types).
 
 severity: discuss  
 concerns: correctness, maintainability  
-applies_when: Auditing whether one concern is solved in several incompatible ways across the repo.
+applies_when: Auditing whether one concern is solved in several incompatible ways across the repo.  
+backed by: The Pragmatic Engineer, Google, Sébastien Portebois, Spotify, Uber, Cabify, Stripe
 
 **Rule.** For each recurring concern (errors, config, HTTP clients, logging), make one pattern the standard instead of leaving several as equal peers.
 
@@ -107,7 +111,8 @@ legacy sites listed in MIGRATION.md.
 
 severity: should-fix  
 concerns: maintainability  
-applies_when: Auditing for code, flags and files that nothing uses.
+applies_when: Auditing for code, flags and files that nothing uses.  
+backed by: Henrik Warne, tef (programmingisterrible), Palantir
 
 **Rule.** Remove unreferenced functions, commented-out code, expired flags, and orphaned files; history keeps them.
 
@@ -133,7 +138,8 @@ or each is allowlisted with a reason.
 
 severity: should-fix  
 concerns: security  
-applies_when: Auditing what third-party code the repo ships and under which terms.
+applies_when: Auditing what third-party code the repo ships and under which terms.  
+backed by: OWASP, OpenSSF, CISA, NIST, GitHub, Cabify
 
 **Rule.** Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule.
 
@@ -158,7 +164,8 @@ release artifacts attach the SBOM.
 
 severity: block  
 concerns: security  
-applies_when: Auditing how the repo resolves third-party packages.
+applies_when: Auditing how the repo resolves third-party packages.  
+backed by: OWASP, OpenSSF, Google, Python Software Foundation, npm
 
 **Rule.** Commit a lockfile with hashes and install from it in CI.
 
@@ -183,7 +190,8 @@ Update bot opens PRs; changes are rolled out in stages.
 
 severity: should-fix  
 concerns: performance, process  
-applies_when: The repo has a performance target (bundle size, page metrics, latency under load, or a benchmark) that matters to users.
+applies_when: The repo has a performance target (bundle size, page metrics, latency under load, or a benchmark) that matters to users.  
+backed by: Google, Size Limit project, Grafana Labs, Gatling, Microsoft, AWS, Mozilla
 
 **Rule.** Write the performance budget down as a CI check that fails the build when it is exceeded.
 
@@ -209,7 +217,8 @@ k6: thresholds: { http_req_duration: ["p(95)<300"] }        # non-zero exit fail
 
 severity: should-fix  
 concerns: maintainability  
-applies_when: Auditing a repo's instruction files, review history or comments that state a rule.
+applies_when: Auditing a repo's instruction files, review history or comments that state a rule.  
+backed by: Cursor, Spotify, Stripe, Cabify
 
 **Rule.** Back each rule that a type, lint or CI check could enforce with that check, not with a line in an instruction file or a repeated review comment.
 
@@ -236,7 +245,8 @@ extend-select = ["S113"]   # request-without-timeout
 
 severity: block  
 concerns: security, process  
-applies_when: Any repository, including its history, issues and pull requests.
+applies_when: Any repository, including its history, issues and pull requests.  
+backed by: GitHub, OWASP, CISA, GitLab
 
 **Rule.** Scan for committed credentials, and treat any hit as leaked: revoke and replace it first.
 
@@ -261,7 +271,8 @@ key revoked and reissued the same day; new value comes from the secret store
 
 severity: block  
 concerns: security, process  
-applies_when: Auditing CI workflow files and release pipelines.
+applies_when: Auditing CI workflow files and release pipelines.  
+backed by: OpenSSF, OWASP, GitHub, StepSecurity
 
 **Rule.** Pin every CI action to a full commit SHA.
 
