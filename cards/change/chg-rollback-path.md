@@ -4,11 +4,11 @@ level: change
 tags: [reliability, release, rollback]
 severity: block
 status: draft
-lacks: orgs, no org says to state the undo in the change description; Uber and Stripe describe a rollback ability only
+lacks: orgs, only Anthropic (a vendor) says to state the undo in the change description; Google SRE backs canary rollback, not the statement
 lang: core
 applies_when: The change deploys schema, data, config or behaviour that is costly to undo.
 tool_gate: Migration linter requiring a down step; deploy pipeline with automatic abort.
-note: thin sourcing: canarying with auto rollback only; migration rollback practice unsourced; Anthropic (a vendor) says to put "Testing", "Risk" and "How to revert" in the PR template
+note: thin sourcing; the programmingisterrible page returned 403 and is unverified: canarying with auto rollback only; migration rollback practice unsourced; Anthropic (a vendor) says to put "Testing", "Risk" and "How to revert" in the PR template
 borrowed_from:
   - https://x.com/addyosmani/status/2114604912520921136
   - https://sre.google/workbook/canarying-releases/

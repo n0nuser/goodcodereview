@@ -13,7 +13,7 @@ borrowed_from:
   - https://x.com/addyosmani/status/2114604912520921136
 ---
 
-**Rule.** Set the review tier from what the change touches, such as auth, billing, migrations or CI, and not from who wrote it.
+**Rule.** Set the review tier from what the change touches, such as auth, billing, CI or release workflows, and not from who wrote it.
 
 **Why.** An author's seniority says little about the blast radius of a diff. A tier keyed to the author lets a risky change from a trusted person skip the scrutiny it needs, and sends a docs fix from a newcomer through the same slow path as a billing change.
 

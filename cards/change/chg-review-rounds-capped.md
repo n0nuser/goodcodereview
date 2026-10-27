@@ -15,7 +15,7 @@ borrowed_from:
 
 **Rule.** Cap the number of review rounds; after the cap, re-review only the new diff and ask the author to rethink the approach if findings keep coming.
 
-**Why.** A reviewer that reads the whole change again each round keeps finding something new, and an agent author that answers each finding with a commit can loop without end. A cap forces the loop to converge.
+**Why.** A reviewer that reads the whole change again each round mostly re-reports old issues and adds a few more, and an agent author that answers each finding with a commit can loop without end. A cap forces the loop to converge.
 
 **FAIL**
 

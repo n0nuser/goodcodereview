@@ -13,7 +13,7 @@ borrowed_from:
   - https://x.com/addyosmani/status/2114604912520921136
 ---
 
-**Rule.** Every incident review names the check that should have caught the fault (a test, CI gate, review, canary or alert) and says what it would take to catch the next one there.
+**Rule.** Every incident review names the check that should have caught the fault (a test, CI gate, review, canary or alert) and turns the gap into a new or fixed check.
 
 **Why.** An incident that ends at "the author made a mistake" leaves the gaps in place. Asking which layer should have caught it turns one failure into a fix for the whole class.
 
