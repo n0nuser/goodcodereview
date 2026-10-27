@@ -9,7 +9,7 @@ from typing import Literal, Optional, Union, get_args, get_origin, get_type_hint
 
 from validate import LACKS
 
-SCHEMA_VERSION = 2  # 2 added Card.orgs
+SCHEMA_VERSION = 3  # 2 added Card.orgs; 3 made orgs organisations only and added Card.people
 Status = Literal["stable", "draft"]
 Severity = Literal["block", "should-fix", "discuss"]
 Kind = Literal["stable", "drafts"]
@@ -58,7 +58,8 @@ class Card:
     fail: Example
     pass_: Example = field(metadata={"alias": "pass"})
     sources: list[str]         # URLs the rule is drawn from
-    orgs: list[Org]            # every distinct organisation behind the sources, in first-cited order
+    orgs: list[Org]            # every distinct organisation behind the sources, in first-cited order; people are not organisations
+    people: list[Org]          # every person cited, same shape as orgs; references, never counted toward the three organisations
     url: str                   # the card on the site
     markdown_url: str          # the level page in Markdown
 

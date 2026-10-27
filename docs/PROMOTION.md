@@ -28,7 +28,9 @@ These groups count as one organisation each:
 
 GitLab and GitHub are separate organisations. NIST, CISA, and NCSC are separate organisations.
 
-`tools/orgs.py` maps every source URL to the organisation that publishes it, and follows these groups. On a code host such as GitHub, the organisation is the repository owner, not the host. `tools/validate.py` fails on a URL that the map does not cover. It also fails on a stable card with fewer than three organisations in `borrowed_from`. That check is a floor: rule 1 counts per Rule clause, so a card can pass the check and still fail rule 1. The map also counts publishers, not independence. Prometheus has its own entry, though the worked example below counts its alerting page as no new organisation. A reviewer still judges whether two publishers draw on the same source.
+A person is not an organisation. A blog, a talk, or a book by one author is a reference: the card lists the author under "People cited" and never counts it toward the three. `PERSONS` in `tools/orgs.py` lists the people. A person who speaks for a company counts only through the company's own page.
+
+`tools/orgs.py` maps every source URL to the organisation that publishes it, and follows these groups. On a code host such as GitHub, the organisation is the repository owner, not the host. `tools/validate.py` fails on a URL that the map does not cover. It warns about a stable card with fewer than three organisations in `borrowed_from`, and people do not count; set `ORG_FLOOR_STRICT = True` in that file to make the warning an error. That check is a floor: rule 1 counts per Rule clause, so a card can pass the check and still fail rule 1. The map also counts publishers, not independence. Prometheus has its own entry, though the worked example below counts its alerting page as no new organisation. A reviewer still judges whether two publishers draw on the same source.
 
 ## What `lacks:` says
 

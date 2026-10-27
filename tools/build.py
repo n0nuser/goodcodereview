@@ -106,7 +106,7 @@ A stable card is vetted: at least three independent organisations back its rule,
 
 # How to check the cards
 
-You do not have to take the cards on trust. Each card ends with a "Backed by" list that names every organisation behind it and links its sources. At least three independent organisations, such as OWASP, W3C, Google, or GOV.UK, back the rule of each stable card. [How a draft becomes stable](https://github.com/n0nuser/goodcodereview/blob/main/docs/PROMOTION.md) gives the bar, and the [Drafts by what they lack](drafts.html) page shows why each draft is not stable yet. Every change to a card is public in the [commit history](https://github.com/n0nuser/goodcodereview/commits/main).
+You do not have to take the cards on trust. Each card ends with a "Backed by" list that names every organisation behind it and links its sources. At least three independent organisations, such as OWASP, W3C, Google, or GOV.UK, back the rule of each stable card. People, such as an author or a maintainer, appear under "People cited" as references. A person is not an organisation, so a person never counts toward the three. A draft says "Cites" instead of "Backed by". [How a draft becomes stable](https://github.com/n0nuser/goodcodereview/blob/main/docs/PROMOTION.md) gives the bar, and the [Drafts by what they lack](drafts.html) page shows why each draft is not stable yet. Every change to a card is public in the [commit history](https://github.com/n0nuser/goodcodereview/commits/main).
 
 The skill and the plugin are Markdown files only: `SKILL.md` and one reference file per level. They run no code and install no dependencies, so an agent that loads them only reads text.
 
@@ -416,8 +416,11 @@ def link_text(u):
 
 
 def backers(fm):
-    """The organisation names behind a card, for the Markdown and text outputs."""
-    return ", ".join(orgs.ORGS[o] for o, _ in orgs.group(fm["borrowed_from"])) or "no organisation yet"
+    """The organisation and people lines for the Markdown and text outputs. A draft says "Cites", a stable card "Backed by"."""
+    os_, ps = orgs.split(fm["borrowed_from"])
+    names = lambda g: ", ".join(orgs.ORGS[o] for o, _ in g)
+    head = "Backed by" if fm["status"] == "stable" else "Cites"
+    return f"{head}: {names(os_) or 'no organisation yet'}." + (f" People cited: {names(ps)}." if ps else "")
 
 
 def icon(oid):
@@ -425,13 +428,18 @@ def icon(oid):
 
 
 def sources(fm):
-    groups = orgs.group(fm["borrowed_from"])
-    if not groups:
-        return '<div class="by"><p class="note"><strong>Backed by</strong> no organisation yet. This draft cites no source.</p></div>'
-    n = f"{len(groups)} organisation{'s' * (len(groups) != 1)}"
-    items = "".join(f'<li>{icon(o)}<span class="on">{html.escape(orgs.ORGS[o])}:</span> '
-                    + ", ".join(f'<a href="{html.escape(u)}">{html.escape(link_text(u))}</a>' for u in us) + "</li>" for o, us in groups)
-    return f'<div class="by"><p class="note"><strong>Backed by</strong> {n}:</p><ul class="orgs">{items}</ul></div>'
+    os_, ps = orgs.split(fm["borrowed_from"])
+    head = "Backed by" if fm["status"] == "stable" else "Cites"
+    if not os_ and not ps:
+        return f'<div class="by"><p class="note"><strong>{head}</strong> no organisation yet. This draft cites no source.</p></div>'
+    ul = lambda g: '<ul class="orgs">' + "".join(
+        f'<li>{icon(o)}<span class="on">{html.escape(orgs.ORGS[o])}:</span> '
+        + ", ".join(f'<a href="{html.escape(u)}">{html.escape(link_text(u))}</a>' for u in us) + "</li>" for o, us in g) + "</ul>"
+    out = (f'<p class="note"><strong>{head}</strong> {len(os_)} organisation{"s" * (len(os_) != 1)}:</p>{ul(os_)}' if os_
+           else f'<p class="note"><strong>{head}</strong> no organisation yet.</p>')
+    if ps:
+        out += f'<p class="note"><strong>People cited</strong> (references, not counted):</p>{ul(ps)}'
+    return f'<div class="by">{out}</div>'
 
 
 def sprite(body):
@@ -531,7 +539,8 @@ def corpus(kind, cs, cnt, date):
             lacks=schema.Lacks(*lacks(fm)) if lacks(fm) else None,
             rule=rule(body), why=section(body, "Why"), counterpoint=section(body, "Counterpoint"),
             fail=schema.example(body, "FAIL"), pass_=schema.example(body, "PASS"), sources=fm["borrowed_from"],
-            orgs=[schema.Org(o, orgs.ORGS[o], us) for o, us in orgs.group(fm["borrowed_from"])],
+            orgs=[schema.Org(o, orgs.ORGS[o], us) for o, us in orgs.split(fm["borrowed_from"])[0]],
+            people=[schema.Org(o, orgs.ORGS[o], us) for o, us in orgs.split(fm["borrowed_from"])[1]],
             url=f"{page_url(where)}#{fm['id']}", markdown_url=f"{BASE}/{where}.md")
     levels = [schema.LevelInfo(id=lv, name=NAME[lv], input=INPUT[lv], description=LEVEL_DESC[lv], stable_count=cnt[lv][0], draft_count=cnt[lv][1],
                                gives_verdict=bool(cnt[lv][0]), url=page_url(lv), markdown_url=f"{BASE}/{lv}.md") for lv in LEVELS]
@@ -704,8 +713,8 @@ def main():
            "Each card lists its concerns in braces: " + ", ".join(f"`{c}`" for c in CONCERNS) + ".",
            "To review only some concerns, such as a performance-only review, check only the cards that list them.", ""]
     line = lambda fm, b: f"- `{fm['id']}` [{fm['severity']}] {{{', '.join(concerns(fm))}}}: {rule(b)}"
-    dline = lambda fm, b: line(fm, b) + f" Backed by: {backers(fm)}." + (f" Lacks ({lacks(fm)[0]}): {lacks(fm)[1]}" if lacks(fm) else "")
-    section = lambda fm, b: f"## {fm['id']}\n\nseverity: {fm['severity']}  \nconcerns: {', '.join(concerns(fm))}  \napplies_when: {fm['applies_when']}  \nbacked by: {backers(fm)}\n\n{b.strip()}"
+    dline = lambda fm, b: line(fm, b) + f" {backers(fm)}" + (f" Lacks ({lacks(fm)[0]}): {lacks(fm)[1]}" if lacks(fm) else "")
+    section = lambda fm, b: f"## {fm['id']}\n\nseverity: {fm['severity']}  \nconcerns: {', '.join(concerns(fm))}  \napplies_when: {fm['applies_when']}  \n{backers(fm)}\n\n{b.strip()}"
     refs = {}
     twins = {}  # slug -> (title, description, markdown body). Each gets frontmatter and is written to site/<slug>.md.
     for lv in LEVELS:
@@ -745,7 +754,7 @@ def main():
             llms += [l, "", f"- [{NAME[l[3:]]}, full text]({BASE}/{l[3:]}.md): every stable {l[3:]} card with its FAIL and PASS examples."]
         else:
             m = re.match(r"- `([a-z0-9-]+)`", l)
-            llms.append(l + f" Backed by: {backers(by_id[m[1]])}." if m else l)
+            llms.append(l + f" {backers(by_id[m[1]])}" if m else l)
     llms += ["## Glossary", "", f"- [Glossary]({BASE}/glossary.md): terms the cards link to.", "",
              "## Draft cards", "", f"- [Draft cards]({BASE}/llms-drafts.txt): not vetted. {DRAFT_RULE}", "",
              "## Site", "",

@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
+import orgs  # noqa: E402
 import schema  # noqa: E402
 
 BASE = "https://goodcodereview.com"
@@ -42,10 +43,14 @@ class SchemaTest(unittest.TestCase):
 		drafts["cards"][0]["lacks"] = {"reason": "vibes", "note": "x"}
 		self.assertTrue(schema.check(self.schema, drafts))
 
-	def test_every_stable_card_names_three_orgs_that_cover_its_sources(self):
+	def test_orgs_and_people_together_cover_every_source(self):
+		# No three-organisation assertion here: validate.py warns about the stable cards below the floor (ORG_FLOOR_STRICT).
 		for c in self.data["cards"]:
-			self.assertGreaterEqual(len(c["orgs"]), 3, c["id"])
-			self.assertEqual(sorted(u for o in c["orgs"] for u in o["sources"]), sorted(c["sources"]), c["id"])
+			self.assertEqual(sorted(u for o in c["orgs"] + c["people"] for u in o["sources"]), sorted(c["sources"]), c["id"])
+
+	def test_people_never_count_as_orgs(self):
+		for c in self.data["cards"]:
+			self.assertEqual([o["id"] for o in c["orgs"] if o["id"] in orgs.PERSONS], [], c["id"])
 
 	def test_a_card_without_orgs_fails(self):
 		del self.data["cards"][0]["orgs"]

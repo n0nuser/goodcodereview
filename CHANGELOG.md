@@ -4,7 +4,7 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ## [Unreleased]
 
-- Each card ends with a "Backed by" list that names every organisation behind it, with a logo or a letter badge, and groups its source links under each one. `tools/orgs.py` maps every source URL to an organisation, and `python3 tools/validate.py` fails a stable card with fewer than three. `cards.json` has an `orgs` field per card, and its `schema_version` is now 2.
+- Each card ends with a "Backed by" list that names every organisation behind it, with a logo or a letter badge, and groups its source links under each one. `tools/orgs.py` maps every source URL to an organisation, and `python3 tools/validate.py` warns about a stable card with fewer than three. People are references: they appear under "People cited" and never count as organisations. A draft says "Cites" instead of "Backed by". `cards.json` has an `orgs` field (organisations only) and a `people` field per card, and its `schema_version` is now 3.
 - On the Concerns page, every card shows as one row that links to its full card, which shrinks the page below 100,000 characters of text (`python3 tools/agent_ready_check.py` reports the largest page). Level pages keep the full text.
 - 113 stable cards ship in `skills/good-code-review/SKILL.md` (the `stable cards:` count that `python3 tools/build.py` prints). Every level has at least one, and the incident level has one.
 - Cards cover a change review and seven audit levels: function, module, service, system, codebase, production, and incident (`ls cards/audit`).

@@ -9,7 +9,7 @@ lang: core                  # core | python | ...
 applies_when: The code calls anything over a network or process boundary.
 tool_gate: none             # what a linter/CI could own; if set, the review comment is "add the gate"
 borrowed_from:
-  - https://example.com/source
+  - https://example.com/source   # an organisation's page counts toward the three organisations a stable card needs; a person's page is a reference and does not
 ---
 
 **Rule.** One line, imperative.

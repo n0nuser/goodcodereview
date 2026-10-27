@@ -7,7 +7,7 @@ A card is accepted when it has:
 - A rule that a reviewer can mark `FAIL` in code or config. A topic with nothing to fail goes in `glossary/`.
 - A `FAIL` example and a `PASS` example.
 - A why, and the best counterpoint with an answer.
-- A source in `borrowed_from`, or a note of first-hand experience.
+- A source in `borrowed_from`, or a note of first-hand experience. A stable card needs three organisations. A person's blog or talk is a reference and does not count as an organisation.
 - Exactly one `level`.
 - At least one concern in `tags`: `correctness`, `security`, `performance`, `reliability`, `compatibility`, `testing`, `maintainability`, `accessibility`, `usability`, `observability`, or `process`. Add topic tags such as `postgres` after it.
 - Your own words. Distil sources; never paste their text.

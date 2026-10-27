@@ -5,7 +5,7 @@
 severity: should-fix  
 concerns: correctness  
 applies_when: Two callers can update the same resource through PUT, PATCH or DELETE.  
-backed by: IETF, Microsoft, Zalando
+Backed by: IETF, Microsoft, Zalando.
 
 **Rule.** Return an `ETag` on reads and honour `If-Match` on writes, answering 412 when the entity tag is stale.
 
@@ -33,7 +33,7 @@ PUT /docs/4  If-Match: "v7"  -> 412 Precondition Failed
 severity: should-fix  
 concerns: compatibility  
 applies_when: A service retires an endpoint, field, version or parameter that outside callers use.  
-backed by: IETF, Zalando, OpenAPI Initiative
+Backed by: IETF, Zalando, OpenAPI Initiative.
 
 **Rule.** Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers, with the `Sunset` date no earlier than the `Deprecation` date.
 
@@ -63,7 +63,7 @@ spec: deprecated: true
 severity: should-fix  
 concerns: compatibility  
 applies_when: Callers of an HTTP or RPC API branch on the kind of error.  
-backed by: IETF, Google, Microsoft
+Backed by: IETF, Google, Microsoft.
 
 **Rule.** Give each error a stable machine-readable code that callers branch on, and never make them parse the message text.
 
@@ -91,7 +91,7 @@ if response.json()["type"] == "https://api.example.com/problems/order-exists":  
 severity: should-fix  
 concerns: compatibility  
 applies_when: A service offers an HTTP API to callers you do not deploy together with it.  
-backed by: Zalando, Microsoft, Stripe
+Backed by: Zalando, Microsoft, Stripe.
 
 **Rule.** Write down one versioning scheme for the API, and ship no breaking change inside a version it has published.
 
@@ -119,7 +119,7 @@ the rename ships under api-version=2026-09-01
 severity: block  
 concerns: security  
 applies_when: The service has a login, password-reset or one-time-code endpoint.  
-backed by: OWASP, NIST, PortSwigger, Microsoft, Okta (Auth0), Google
+Backed by: OWASP, NIST, PortSwigger, Microsoft, Okta (Auth0), Google.
 
 **Rule.** Limit failed attempts per account, and return the same message and status code whether or not the account exists.
 
@@ -147,7 +147,7 @@ if not (user and ok): record_failure(account_key); return "Invalid credentials",
 severity: block  
 concerns: security  
 applies_when: The service exposes routes or functions that different roles may call.  
-backed by: OWASP, PortSwigger, AWS, NIST
+Backed by: OWASP, PortSwigger, AWS, NIST.
 
 **Rule.** Route every request through one authorization layer that denies when no rule allows it.
 
@@ -175,7 +175,7 @@ def gate(): require_role(policy.get(request.endpoint))   # missing entry -> 403
 severity: should-fix  
 concerns: security  
 applies_when: A request parameter or body sets how many records, bytes, items or operations the server handles.  
-backed by: OWASP, NIST, Google, Django Software Foundation
+Backed by: OWASP, NIST, Google, Django Software Foundation.
 
 **Rule.** Cap every client-controlled size and count on the server: body bytes, string length, array items, page size and batch size.
 
@@ -203,7 +203,7 @@ items: list[Item] = Field(max_length=100)            # body capped at 1 MB by th
 severity: block  
 concerns: reliability, correctness  
 applies_when: The code starts a task, goroutine, or thread per item, request, or message.  
-backed by: Google, Python Software Foundation, Tokio project, Cabify
+Backed by: Google, Python Software Foundation, Tokio project, Cabify.
 
 **Rule.** Cap how many background tasks run at once, and never spawn one per input with no limit.
 
@@ -240,7 +240,7 @@ async with asyncio.TaskGroup() as tg:
 severity: should-fix  
 concerns: security  
 applies_when: The service sends `Access-Control-Allow-Origin` or similar CORS headers.  
-backed by: OWASP, Mozilla, PortSwigger, GitHub
+Backed by: OWASP, Mozilla, PortSwigger, GitHub.
 
 **Rule.** Allow cross-origin access only to a fixed list of named origins, and never echo the request `Origin` header back unchecked.
 
@@ -269,7 +269,7 @@ resp.headers["Vary"] = "Origin"                # caches keep one copy per origin
 severity: should-fix  
 concerns: security  
 applies_when: The service serves HTML pages to browsers.  
-backed by: OWASP, Mozilla, Google
+Backed by: OWASP, Mozilla, Google.
 
 **Rule.** Send a `Content-Security-Policy` whose `script-src` uses a per-response nonce or script hashes, with `object-src 'none'` and `base-uri 'none'`.
 
@@ -295,7 +295,7 @@ Content-Security-Policy: script-src 'nonce-r4nd0m' 'strict-dynamic'; object-src 
 severity: block  
 concerns: security  
 applies_when: The service authenticates browsers with cookies and changes state on requests.  
-backed by: OWASP, Mozilla, Django Software Foundation, IETF
+Backed by: OWASP, Mozilla, Django Software Foundation, IETF.
 
 **Rule.** Require a CSRF token (or an equivalent header check) on every cookie-authenticated request that changes state, and never change state on GET.
 
@@ -323,7 +323,7 @@ Set-Cookie: sid=...; SameSite=Lax; Secure; HttpOnly
 severity: block  
 concerns: reliability, correctness  
 applies_when: A non-idempotent operation (charge, create, send) can be retried by a client, a queue, or a saga.  
-backed by: Microsoft, IETF, Stripe
+Backed by: Microsoft, IETF, Stripe.
 
 **Rule.** Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.
 
@@ -352,7 +352,7 @@ INSERT ... ON CONFLICT (idem_key) DO UPDATE SET idem_key = EXCLUDED.idem_key RET
 severity: should-fix  
 concerns: performance  
 applies_when: The service exposes an endpoint or RPC that returns a collection.  
-backed by: Google, Microsoft, Zalando, GitHub, Stripe
+Backed by: Google, Microsoft, Zalando, GitHub, Stripe.
 
 **Rule.** Paginate every list endpoint, with a default page size and a server-side maximum.
 
@@ -379,7 +379,7 @@ response: { "items": [...], "next_page_token": "def" }
 severity: should-fix  
 concerns: usability, accessibility  
 applies_when: A multi-step flow, such as checkout or signup, asks for data in more than one step.  
-backed by: W3C, Nielsen Norman Group, Ben Shneiderman
+Backed by: W3C, Nielsen Norman Group. People cited: Ben Shneiderman.
 
 **Rule.** Do not ask for information the user already gave in the same flow. Fill it in, or let the user pick it.
 
@@ -407,7 +407,7 @@ backed by: W3C, Nielsen Norman Group, Ben Shneiderman
 severity: should-fix  
 concerns: security  
 applies_when: A client or server puts an API key, session token, bearer token, password, or personal data into a URL.  
-backed by: OWASP, IETF, MITRE, Mozilla
+Backed by: OWASP, IETF, MITRE, Mozilla.
 
 **Rule.** Send tokens, keys, passwords, and personal data in a header or the request body, never in the path or query string.
 
@@ -439,7 +439,7 @@ Content-Type: application/json
 severity: should-fix  
 concerns: security, reliability  
 applies_when: A shared API or queue serves several tenants or callers.  
-backed by: AWS, Google, Microsoft, NIST
+Backed by: AWS, Google, Microsoft, NIST.
 
 **Rule.** Enforce a per-tenant quota on shared APIs and queues.
 
@@ -466,7 +466,7 @@ per-tenant semaphore on workers
 severity: should-fix  
 concerns: accessibility, usability  
 applies_when: A page or app is served to browsers on screens of any size.  
-backed by: W3C, Deque, The A11y Project
+Backed by: W3C, Deque, The A11y Project.
 
 **Rule.** Make the page usable at 320 CSS pixels wide and at 200% text zoom, with no sideways scrolling, no clipped content, and no blocked pinch-zoom.
 
@@ -502,7 +502,7 @@ backed by: W3C, Deque, The A11y Project
 severity: block  
 concerns: reliability  
 applies_when: The code retries a failed call, or wraps a client that retries.  
-backed by: Microsoft, AWS, Google
+Backed by: Microsoft, AWS, Google.
 
 **Rule.** Retry only transient errors, with capped attempts and jittered exponential backoff.
 
@@ -537,7 +537,7 @@ for i in range(3):
 severity: block  
 concerns: security  
 applies_when: The service sets a session cookie or session ID after login.  
-backed by: OWASP, Mozilla, NIST, Spring, Ruby on Rails
+Backed by: OWASP, Mozilla, NIST, Spring, Ruby on Rails.
 
 **Rule.** Issue a new session ID at login, and set `Secure`, `HttpOnly` and `SameSite` on the session cookie.
 
@@ -564,7 +564,7 @@ login():  session.regenerate()
 severity: should-fix  
 concerns: usability, accessibility  
 applies_when: A page action, such as a save, an upload, a search, or a page load, can take more than about a second.  
-backed by: Nielsen Norman Group, Apple, Ben Shneiderman, W3C
+Backed by: Nielsen Norman Group, Apple, W3C. People cited: Ben Shneiderman.
 
 **Rule.** Show that a slow action is under way, and show its progress when it runs long.
 
@@ -593,7 +593,7 @@ backed by: Nielsen Norman Group, Apple, Ben Shneiderman, W3C
 severity: block  
 concerns: security  
 applies_when: The code builds a SQL query that includes request data or other untrusted input.  
-backed by: OWASP, Python Software Foundation, GitHub, PortSwigger, Google
+Backed by: OWASP, Python Software Foundation, GitHub, PortSwigger, Google.
 
 **Rule.** Pass untrusted data to queries as bound parameters, never by string concatenation or formatting.
 
@@ -620,7 +620,7 @@ db.execute("SELECT * FROM users WHERE name = %s", (name,))
 severity: block  
 concerns: performance, reliability  
 applies_when: The code calls anything over a network or process boundary.  
-backed by: Python Software Foundation, Microsoft, Google, AWS
+Backed by: Python Software Foundation, Microsoft, Google, AWS.
 
 **Rule.** Set an explicit timeout on every remote call.
 
@@ -651,7 +651,7 @@ def GetProfile(self, request, context):
 severity: should-fix  
 concerns: security  
 applies_when: The service or its load balancer terminates TLS.  
-backed by: IETF, NIST, OWASP, Microsoft
+Backed by: IETF, NIST, OWASP, Microsoft.
 
 **Rule.** Accept only TLS 1.2 and TLS 1.3 on servers.
 
@@ -678,7 +678,7 @@ ctx.minimum_version = ssl.TLSVersion.TLSv1_2
 severity: block  
 concerns: security  
 applies_when: The service accepts file uploads.  
-backed by: OWASP, Microsoft, PortSwigger, Django Software Foundation
+Backed by: OWASP, Microsoft, PortSwigger, Django Software Foundation.
 
 **Rule.** Allowlist the file type, cap the size, and store each upload under a generated name where the server will not execute it.
 

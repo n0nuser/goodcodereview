@@ -5,7 +5,7 @@
 severity: block  
 concerns: security, process  
 applies_when: An LLM agent can call tools, run code, or act on external systems.  
-backed by: OWASP, NCSC, Microsoft
+Backed by: OWASP, NCSC, Microsoft.
 
 **Rule.** Give the agent only the narrow tools and the minimal credentials its task needs.
 
@@ -31,7 +31,7 @@ creds = user_scoped_token(user, scopes=["tickets:rw"])       # downstream checks
 severity: should-fix  
 concerns: performance  
 applies_when: The code adds an in-process or shared cache.  
-backed by: AWS, Redis, Caffeine project, IETF
+Backed by: AWS, Redis, Caffeine project, IETF.
 
 **Rule.** Bound every cache by size and give its entries an expiry.
 
@@ -58,7 +58,7 @@ redis.conf: maxmemory 2gb, maxmemory-policy allkeys-lru
 severity: discuss  
 concerns: usability, accessibility  
 applies_when: Several screens or apps show the same action, status, or concept to the same users.  
-backed by: Nielsen Norman Group, Ben Shneiderman, W3C, GOV.UK
+Backed by: Nielsen Norman Group, W3C, GOV.UK. People cited: Ben Shneiderman.
 
 **Rule.** Use one label and one icon for the same action and the same concept across all screens.
 
@@ -86,7 +86,7 @@ A different outcome, such as archive, gets a different label: [Archive].
 severity: should-fix  
 concerns: performance, reliability  
 applies_when: A request fans out to several backends, shards, or replicas and combines the answers.  
-backed by: Google, Apache Software Foundation, Elastic, Envoy
+Backed by: Google, Apache Software Foundation, Elastic, Envoy.
 
 **Rule.** Give every leg of a fan-out its own deadline, and decide in code what happens when a leg misses it: a partial result, a hedged request, or an error.
 
@@ -115,7 +115,7 @@ return merge(hits, partial=len(hits) < len(shards))
 severity: block  
 concerns: reliability  
 applies_when: Work is buffered in a queue, a channel, or a thread pool between components.  
-backed by: AWS, Google, Netflix
+Backed by: AWS, Google, Netflix.
 
 **Rule.** Bound every queue and reject excess work cheaply.
 
@@ -142,7 +142,7 @@ alarm on age of oldest item; spillover queue for old deltas
 severity: block  
 concerns: reliability, correctness  
 applies_when: A TTL lock or lease guards a write to an external store.  
-backed by: Martin Kleppmann, Salvatore Sanfilippo, AWS
+Backed by: AWS. People cited: Martin Kleppmann, Salvatore Sanfilippo.
 
 **Rule.** Check a correctness lock on the resource side (fencing token or compare-and-set), never by lock possession alone.
 
@@ -172,7 +172,7 @@ db.update(row, where fence < token, set fence = token)
 severity: block  
 concerns: reliability, compatibility  
 applies_when: A change drops, renames, or retypes a column, or mixes schema change with a data backfill.  
-backed by: GitLab, Stripe, Andrew Kane
+Backed by: GitLab, Stripe. People cited: Andrew Kane.
 
 **Rule.** Run data backfills in batches, in a migration separate from the schema change.
 
@@ -197,7 +197,7 @@ N: add b, dual-write, ignore a in code ; N+1: batched backfill ; N+2: drop a
 severity: should-fix  
 concerns: performance  
 applies_when: Code loads related rows in a loop, or opens database connections per request.  
-backed by: Django Software Foundation, Ruby on Rails, SQLAlchemy, Microsoft, OpenJS Foundation, PgBouncer project, PostgreSQL
+Backed by: Django Software Foundation, Ruby on Rails, SQLAlchemy, Microsoft, OpenJS Foundation, PgBouncer project, PostgreSQL.
 
 **Rule.** Fetch related rows in one query or batch, never one query per row.
 
@@ -224,7 +224,7 @@ for o in Order.objects.select_related("user"):
 severity: should-fix  
 concerns: security  
 applies_when: The system stores, copies or logs personal or otherwise sensitive data.  
-backed by: OWASP, ICO, intersoft consulting
+Backed by: OWASP, ICO, intersoft consulting.
 
 **Rule.** Give every store of personal or sensitive data a retention period, and delete or anonymise the data when it ends.
 
@@ -251,7 +251,7 @@ logs: id field masked; table has a retention policy and an owner
 severity: block  
 concerns: security  
 applies_when: An LLM reads untrusted text (user input, web pages, documents) and can call tools or produce output that code acts on.  
-backed by: OWASP, NCSC, Microsoft, Google
+Backed by: OWASP, NCSC, Microsoft, Google.
 
 **Rule.** Validate model output deterministically before code acts on it.
 
@@ -277,7 +277,7 @@ destructive actions -> human confirm ; untrusted text labelled in the prompt
 severity: block  
 concerns: security, correctness  
 applies_when: The code handles credentials, logs data, or returns errors to clients.  
-backed by: OWASP, MITRE, Heroku, MIT, IETF
+Backed by: OWASP, MITRE, Heroku, MIT, IETF.
 
 **Rule.** Fail closed: a validation or auth error must deny, never continue, and an error response must not carry internals such as stack traces, SQL or tokens.
 
@@ -307,7 +307,7 @@ except Exception as err:
 severity: block  
 concerns: security  
 applies_when: The server fetches a URL that a user or external data supplies.  
-backed by: OWASP, GitHub, AWS, PortSwigger
+Backed by: OWASP, GitHub, AWS, PortSwigger.
 
 **Rule.** Fetch a user-supplied URL only when its host matches a server-side allowlist.
 

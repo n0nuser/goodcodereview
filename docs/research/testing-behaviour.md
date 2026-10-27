@@ -23,3 +23,15 @@ https://engineering.atspotify.com/2018/01/11/testing-of-microservices
 - "Now we are able to refactor the internals without touching any tests."
 - Too many unit tests "also restricts how we can change the code without also having to change the tests."
 - Spotify still keeps tests of implementation details for isolated, complex logic. The card's counterpoint covers this.
+
+## Kent Beck: Test Desiderata (a person, not counted as an organisation)
+
+https://testdesiderata.com/
+
+- "Structure-insensitive — tests should not change their result if the structure of the code changes."
+
+## Kent C. Dodds: Testing Implementation Details (a person, not counted as an organisation)
+
+https://kentcdodds.com/blog/testing-implementation-details
+
+- "Tests which test implementation details can give you a false negative when you refactor your code."

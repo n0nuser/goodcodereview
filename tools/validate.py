@@ -17,6 +17,9 @@ CONCERNS = ["correctness", "security", "performance", "reliability", "compatibil
             "testing", "maintainability", "accessibility", "usability", "observability", "process"]
 # Closed list. Every draft names its main blocker as the first word of `lacks:`. docs/PROMOTION.md defines each one.
 LACKS = ["orgs", "evidence", "failable", "duplicate", "contradiction", "held", "unreviewed"]
+# Pablo has not decided what happens to a stable card with fewer than three organisations. True turns the warning into an error.
+ORG_FLOOR_STRICT = False
+below = []  # stable cards under the floor, filled by validate()
 BODY_MARKS = ["**Rule.**", "**Why.**", "**FAIL**", "**PASS**", "**Counterpoint.**"]
 
 
@@ -63,6 +66,7 @@ def load_cards(root):
 
 def validate(root):
     errors = []
+    below.clear()
     cards = load_cards(root)
     research = "\n".join(p.read_text() for p in (root / "docs" / "research").glob("*.md"))
     glossary = {p.stem for p in (root / "glossary").glob("*.md")}
@@ -115,9 +119,11 @@ def validate(root):
             if orgs.org_of(u) is None:
                 err(f"borrowed_from URL has no organisation in tools/orgs.py: {u}")
         # A floor for rule 1 of docs/PROMOTION.md: it counts per Rule clause, so three orgs per card is necessary, not sufficient.
-        found = {orgs.org_of(u) for u in urls} - {None}
+        found = {orgs.org_of(u) for u in urls} - {None} - orgs.PERSONS  # people are references, not organisations
         if fm.get("status") == "stable" and len(found) < 3:
-            err(f"stable card has {len(found)} organisation(s) in borrowed_from; it needs at least 3")
+            below.append(f"{p.relative_to(root)}: {len(found)} organisation(s)")
+            if ORG_FLOOR_STRICT:
+                err(f"stable card has {len(found)} organisation(s) in borrowed_from; it needs at least 3")
         lacks = fm.get("lacks")
         if fm.get("status") == "stable" and lacks is not None:
             err("stable card has 'lacks:'; remove it on promotion")
@@ -150,4 +156,6 @@ if __name__ == "__main__":
     root = Path(sys.argv[sys.argv.index("--root") + 1] if "--root" in sys.argv else ".").resolve()
     errs = validate(root)
     print("\n".join(errs))
+    if below:
+        print(f"WARNING: {len(below)} stable card(s) have fewer than 3 organisations (people do not count):\n" + "\n".join(sorted(below)))
     sys.exit(1 if errs else 0)

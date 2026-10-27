@@ -5,7 +5,7 @@
 severity: should-fix  
 concerns: process  
 applies_when: Every change submitted for review.  
-backed by: Linux kernel, Phacility, Palantir, Kubernetes
+Backed by: Linux kernel, Phacility, Palantir, Kubernetes.
 
 **Rule.** Self-review the diff and write the description before requesting review.
 
@@ -32,7 +32,7 @@ Author left inline notes on the two non-obvious hunks.
 severity: block  
 concerns: compatibility  
 applies_when: The change alters anything a caller can observe, documented or not.  
-backed by: Hyrum Wright, Michael Feathers, Python Software Foundation
+Backed by: Python Software Foundation. People cited: Hyrum Wright, Michael Feathers.
 
 **Rule.** Treat any observable difference in signature, return shape, error type, ordering, timing, defaults, or side effects as breaking until a consumer check says otherwise.
 
@@ -59,7 +59,7 @@ flag orders_newest_first defaults off for one release".
 severity: block  
 concerns: compatibility  
 applies_when: The change renames, removes or reshapes a column, API field, message, config key or exported symbol that other code reads.  
-backed by: Hyrum Wright, Python Software Foundation, GitLab
+Backed by: Python Software Foundation, GitLab. People cited: Hyrum Wright.
 
 **Rule.** Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.
 
@@ -86,7 +86,7 @@ ALTER TABLE users RENAME COLUMN name TO full_name;  -- app v1 still reads name
 severity: should-fix  
 concerns: correctness, maintainability  
 applies_when: The change adds code that solves a problem the codebase already solves somewhere.  
-backed by: Google, The Pragmatic Engineer, Python Software Foundation, Microsoft
+Backed by: Google, The Pragmatic Engineer, Python Software Foundation, Microsoft.
 
 **Rule.** Follow the established pattern nearby.
 
@@ -115,7 +115,7 @@ Code the PR touches anyway is improved in passing.
 severity: should-fix  
 concerns: process  
 applies_when: Every change.  
-backed by: Linux kernel, Python Software Foundation, Phacility, Palantir
+Backed by: Linux kernel, Python Software Foundation, Phacility, Palantir.
 
 **Rule.** Make each change do one logical thing; if the description needs "and" between unrelated outcomes, split it.
 
@@ -141,7 +141,7 @@ PR 1: dependency bump.  PR 2: rename (no logic change).  PR 3: export button.
 severity: should-fix  
 concerns: performance, testing  
 applies_when: The change or its description claims a speed, throughput, memory or cost improvement.  
-backed by: Cursor, Linux kernel, Phacility
+Backed by: Cursor, Linux kernel, Phacility.
 
 **Rule.** Back a performance claim with measured before-and-after numbers.
 
@@ -167,7 +167,7 @@ Median of 7 alternating runs: 412 ms -> 301 ms, range 398-421 vs 295-310.
 severity: should-fix  
 concerns: testing, maintainability  
 applies_when: The change restructures code and claims to keep its behaviour.  
-backed by: Cursor, GitHub, Stripe
+Backed by: Cursor, GitHub, Stripe.
 
 **Rule.** Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
 
@@ -193,7 +193,7 @@ Commit 2: the split. The same test passes unchanged.
 severity: should-fix  
 concerns: maintainability, process  
 applies_when: The change both restructures or reformats code and changes behaviour, or moves code between files.  
-backed by: Linux kernel, Henrik Warne, Kent Beck, Google
+Backed by: Linux kernel, Google. People cited: Henrik Warne, Kent Beck.
 
 **Rule.** Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
 
@@ -220,7 +220,7 @@ commit 2: fix off-by-one + test
 severity: discuss  
 concerns: process  
 applies_when: A reviewer is deciding what to comment on.  
-backed by: Google, Slack, The Pragmatic Engineer, Meta
+Backed by: Google, Slack, The Pragmatic Engineer, Meta.
 
 **Rule.** Do not comment on what a tool enforces or on taste with no written rule; spend comments on a few high-conviction findings, and if there are many, talk to the author.
 
@@ -247,7 +247,7 @@ one nit. Formatting left to the formatter, which CI enforces.
 severity: discuss  
 concerns: process  
 applies_when: The diff exceeds roughly 400 changed lines or about 20 files and is not generated or a pure move.  
-backed by: Google, Microsoft, SmartBear, The Pragmatic Engineer
+Backed by: Google, Microsoft, SmartBear, The Pragmatic Engineer.
 
 **Rule.** Split a change past about 400 changed lines or about 20 files, or say in the description why not; aim for about 200.
 
@@ -272,7 +272,7 @@ Stack of 6 changes of 150-300 lines, each builds and passes tests alone.
 severity: block  
 concerns: testing  
 applies_when: The change alters behaviour of non-trivial code.  
-backed by: Kubernetes, Python Software Foundation, Google
+Backed by: Kubernetes, Python Software Foundation, Google.
 
 **Rule.** Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks; a code-only change needs a stated reason.
 
@@ -299,7 +299,7 @@ PR adds discount.py change and test_discount.py with the edge cases
 severity: block  
 concerns: testing, process  
 applies_when: The author or reviewer asserts the change works or a finding is real.  
-backed by: Python Software Foundation, Phacility, Dan Luu, Google
+Backed by: Python Software Foundation, Phacility, Google. People cited: Dan Luu.
 
 **Rule.** Back every "works" or "bug" claim with something run: a repro, a test or command output.
 

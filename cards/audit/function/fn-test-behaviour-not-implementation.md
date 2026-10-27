@@ -12,6 +12,8 @@ borrowed_from:
   - https://abseil.io/resources/swe-book/html/ch12.html
   - https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices
   - https://engineering.atspotify.com/2018/01/11/testing-of-microservices
+  - https://testdesiderata.com/
+  - https://kentcdodds.com/blog/testing-implementation-details
 ---
 
 **Rule.** Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.

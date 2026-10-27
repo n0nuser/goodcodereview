@@ -62,7 +62,7 @@ PREFIXES = {
     "inclusive-components.design": "heydon", "jnd.org": "jnd", "kentcdodds.com": "kent-c-dodds", "learn.microsoft.com": "microsoft",
     "microsoft.github.io": "microsoft", "microsoft.com": "microsoft", "playwright.dev": "microsoft", "learn.snyk.io": "snyk",
     "llvm.org": "llvm", "lucumr.pocoo.org": "lucumr", "martin.kleppmann.com": "kleppmann", "michaelfeathers.silvrback.com": "feathers",
-    "mypy.readthedocs.io": "mypy", "netflixtechblog.com": "netflix", "newsletter.kentbeck.com": "kent-beck", "nodejs.org": "nodejs",
+    "mypy.readthedocs.io": "mypy", "netflixtechblog.com": "netflix", "newsletter.kentbeck.com": "kent-beck", "testdesiderata.com": "kent-beck", "nodejs.org": "nodejs",
     "nist.gov": "nist", "opensource.zalando.com": "zalando", "opentelemetry.io": "opentelemetry", "pkg.go.dev": "google",
     "portswigger.net": "portswigger", "programmingisterrible.com": "tef", "prometheus.io": "prometheus", "pyjwt.readthedocs.io": "pyjwt",
     "rebels.cs.uwaterloo.ca/papers/msr2014_mcintosh.pdf": "mcintosh", "redis.io": "redis", "refactoring.guru": "refactoring-guru",
@@ -85,6 +85,13 @@ PREFIXES = {
     "github.com/microsoft/": "microsoft", "github.com/mozilla/": "mozilla", "github.com/ossf/": "openssf",
     "raw.githubusercontent.com/OWASP/": "owasp", "raw.githubusercontent.com/WordPress/": "wordpress",
     "raw.githubusercontent.com/elastic/": "elastic", "raw.githubusercontent.com/mozilla/": "mozilla",
+}
+
+# Org ids that are people, not organisations. They stay visible as references and never count toward the three organisations a stable card needs.
+PERSONS = {
+    "brendan-gregg", "dan-luu", "feathers", "hickey", "hyrum", "joel", "jnd", "kent-beck", "kent-c-dodds", "kleppmann", "lucumr",
+    "ousterhout", "portebois", "salvatore", "sandi-metz", "shneiderman", "tef", "vorpus", "warne", "wayne", "heydon", "kane",
+    "winand", "liskov-wing",
 }
 
 ICONS = json.loads((Path(__file__).with_name("org_icons.json")).read_text())  # org id -> SVG path from Simple Icons 15.22.0 (CC0), https://simpleicons.org
@@ -112,6 +119,12 @@ def group(urls):
             raise KeyError(f"no organisation for {u}; add a prefix to tools/orgs.py")
         out.setdefault(o, []).append(u)
     return list(out.items())
+
+
+def split(urls):
+    """(organisations, people), each [(id, [urls])] in first-cited order."""
+    g = group(urls)
+    return [x for x in g if x[0] not in PERSONS], [x for x in g if x[0] in PERSONS]
 
 
 def monogram(oid):
