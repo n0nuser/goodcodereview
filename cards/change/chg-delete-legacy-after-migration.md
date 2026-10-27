@@ -30,8 +30,10 @@ borrowed_from:
 **PASS**
 
 ```text
-- def fetch_user(id): ...
-+ def fetch_user(id): ...        # new behaviour; all 14 callers updated in this diff
+- def fetch_user(id): ...        # old API deleted
++ def fetch_user_v2(id): ...     # new API
+- user = fetch_user(uid)         # x14, every caller moved to fetch_user_v2 in this diff
++ user = fetch_user_v2(uid)
 ```
 
-**Counterpoint.** This rule applies only when no consumer sits outside the repo: a published library, a public API, a client on an older release, or data written by older code. For those, follow [[chg-expand-contract]] and remove the old form later. Check the consumer claim before you mark `FAIL`.
+**Counterpoint.** This rule applies only when no consumer sits outside the repo: a published library, a public API, a client on an older release, or data written by older code. For those, follow [[chg-expand-contract]] and remove the old form later. Check the consumer claim before you mark `FAIL`. Even with all callers in the repo, a team may keep the old path on purpose: Stripe kept Flow support for part of its codebase while it moved the rest to TypeScript. A stated, scoped exception is not a FAIL.

@@ -4,7 +4,7 @@ level: change
 tags: [compatibility, process, config]
 severity: should-fix
 status: draft
-lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
+lacks: orgs, one vendor's review skill (cursor/plugins) backs it; needs two more orgs
 lang: core
 applies_when: The change renames an environment variable, remaps a port, moves a secret source, or adds a step needed to run or build the project.
 tool_gate: Startup check that fails fast on missing or unknown config keys.
@@ -13,9 +13,9 @@ borrowed_from:
   - https://github.com/cursor/plugins/blob/main/thermos/skills/thermo-nuclear-review/SKILL.md
 ---
 
-**Rule.** When a change breaks how developers or operators run the project, ship a migration note with it: old name, new name, and what to do.
+**Rule.** Flag a change that renames or removes an environment variable, moves a secret, or remaps a port as breaking for developers and operators, and update every place that documents or sets it.
 
-**Why.** A renamed variable or moved secret fails on the next machine that pulls, often with a vague error far from the cause. The diff looks harmless because nothing in the code breaks.
+**Why.** A renamed variable or moved secret fails on the next machine that pulls, often with a vague error far from the cause. The diff looks harmless because nothing in the code breaks. A short migration note with the old name, the new name, and what to do saves each person from finding that out alone.
 
 **FAIL**
 
@@ -28,7 +28,7 @@ borrowed_from:
 
 ```text
 + DB_DSN=...            # reads DATABASE_URL with a deprecation warning for one release
-+ CHANGELOG / PR text: "rename DATABASE_URL to DB_DSN; update .env and CI secrets"
++ PR text flags the break: "DATABASE_URL renamed to DB_DSN; update .env and CI secrets"
 + .env.example updated
 ```
 

@@ -36,4 +36,4 @@ svc.create(u)
 assert svc.get(u.id).email == u.email   # fails if create loses data
 ```
 
-**Counterpoint.** Mocks isolate slow dependencies. Mock at real boundaries and still assert on observable outcomes. To check a test, break the code deliberately once: if the test stays green, it fails this card. Test messages should show the input, the actual value, and the expected value.
+**Counterpoint.** Mocks isolate slow dependencies. Mock at real boundaries and still assert on observable outcomes. To check a test, break the code deliberately once: if the test stays green, it fails this card. Characterization tests are the exception: when you pin down legacy code you do not yet understand, copying observed output is the point, and the test should say so and be replaced as the behaviour becomes understood. Test messages should show the input, the actual value, and the expected value.
