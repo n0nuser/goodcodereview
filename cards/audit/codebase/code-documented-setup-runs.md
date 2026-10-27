@@ -13,7 +13,7 @@ borrowed_from:
   - https://github.com/cursor/plugins/blob/main/agent-compatibility/agents/docs-reliability-review.md
 ---
 
-**Rule.** Make every setup, build and run command in the README or contribution guide succeed on a clean checkout.
+**Rule.** Keep the setup, build and run commands in the README or contribution guide accurate: they work as written on a clean checkout, and any drift is fixed or reported.
 
 **Why.** A stale step costs each new contributor and each agent the same time, and they cannot tell a doc error from their own mistake.
 

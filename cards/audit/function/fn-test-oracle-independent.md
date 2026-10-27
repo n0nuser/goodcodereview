@@ -28,7 +28,8 @@ mailer.send.assert_not_called()                      # no case where it is calle
 
 ```python
 assert total([Item(price=300), Item(price=450)]) == 750
-assert_not_called_when(free_plan); assert_called_when(paid_plan)
+checkout(free_plan);  mailer.send.assert_not_called()
+checkout(paid_plan);  mailer.send.assert_called_once()
 ```
 
 **Counterpoint.** "Recomputing keeps the test short." It also repeats the bug. Use a literal from the spec or a worked example. See [[chg-agent-mock-asserting-tests]] for tests that only check their own mocks.

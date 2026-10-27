@@ -4,7 +4,7 @@ level: codebase
 tags: [testing, process, onboarding]
 severity: discuss
 status: draft
-lacks: evidence, every backer describes CI test selection, not a documented local command; needs orgs that document one
+lacks: orgs, one vendor's local-loop review backs it; needs two more orgs that document a scoped local command
 lang: core
 applies_when: Auditing how a contributor checks a small change.
 tool_gate: A documented command that runs tests and lint for one path or package.

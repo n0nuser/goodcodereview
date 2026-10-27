@@ -32,7 +32,14 @@ type Job =
   | { kind: "failed"; error: string }
   | { kind: "done"; result: Result }
 
-default: { const _: never = job; throw new Error("unhandled") }
+function label(job: Job): string {
+  switch (job.kind) {
+    case "running": return "running"
+    case "failed": return job.error
+    case "done": return "done"
+    default: { const _exhaustive: never = job; throw new Error("unhandled") }
+  }
+}
 ```
 
 **Counterpoint.** "Two booleans are simpler." They are until a third state appears or the booleans disagree. For a true on/off flag with no related fields, a boolean is fine.

@@ -13,7 +13,7 @@ borrowed_from:
   - https://github.com/cursor/plugins/blob/main/thermos/skills/thermo-nuclear-code-quality-review/SKILL.md
 ---
 
-**Rule.** Make related writes succeed or fail together: one transaction, or an ordered sequence with a defined undo.
+**Rule.** Make related writes succeed or fail together.
 
 **Why.** If step two fails after step one, the system holds a half-applied change that no later code expects, such as an order without its items.
 
@@ -32,4 +32,4 @@ with db.transaction():
     db.insert_many(items)
 ```
 
-**Counterpoint.** "The writes go to different systems; no transaction spans them." Then order the steps so a partial failure is harmless and retryable, or use an outbox or saga ([[svc-saga-steps]]). Do not leave it to chance. [[fn-no-check-then-act-across-await]] covers check-then-write races.
+**Counterpoint.** "The writes go to different systems; no transaction spans them." Then use one transaction per system and order the steps so a partial failure is harmless and retryable, or use an outbox or saga ([[svc-saga-steps]]). Do not leave it to chance. [[fn-no-check-then-act-across-await]] covers check-then-write races.
