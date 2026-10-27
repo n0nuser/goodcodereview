@@ -98,7 +98,7 @@ ABOUT = """Good Code Review is a checklist for reviewing code, for people and fo
 
 # Who makes it
 
-[Pablo González](https://pablogonzalez.me) created and edits the site and the cards. The cards, the build script, and the skill files are in the [GitHub repository](https://github.com/n0nuser/goodcodereview).
+[Pablo Jesús González Rubio](https://pablogonzalez.me) created and edits the site and the cards. The cards, the build script, and the skill files are in the [GitHub repository](https://github.com/n0nuser/goodcodereview).
 
 # What stable and draft mean
 
@@ -378,7 +378,7 @@ def head_tags(title, desc, slug):
             '<link rel="sitemap" type="application/xml" href="/sitemap.xml"><meta name="is-agentic-site-type" content="content">')
 
 
-FOOTER = (f'<footer><p>Created and edited by <a href="https://pablogonzalez.me">Pablo González</a> · Content CC BY 4.0 · Code MIT · <a href="{REPO}">Source</a></p>'
+FOOTER = (f'<footer><p>Created and edited by <a href="https://pablogonzalez.me">Pablo Jesús González Rubio</a> · Content CC BY 4.0 · Code MIT · <a href="{REPO}">Source</a></p>'
           '<ul class="fl"><li><a href="drafts.html">Drafts by what they lack</a></li><li><a href="about.html">About</a></li><li><a href="privacy.html">Privacy</a></li>'
           f'<li><a href="{REPO}/issues">Contact (GitHub Issues)</a></li><li><a href="llms.txt">llms.txt</a></li><li><a href="sitemap.xml">Sitemap</a></li>'
           f'<li><a href="{REPO}/blob/main/AGENTS.md">AGENTS.md</a></li><li><a href="{REPO}/tree/main/skills/good-code-review">Skill folder</a></li></ul></footer>')
@@ -652,7 +652,7 @@ def main():
     rows = '<ul class="idx">' + "".join(
         f'<li><a href="{lv}.html">{NAME[lv]}</a><span>{LEVEL_DESC[lv]} Input: {INPUT[lv]}.</span>'
         f'<span class="n">{cnt[lv][0]} stable, {cnt[lv][1]} draft{f" · {EMPTY_MARK}" if lv in none else ""}</span></li>' for lv in LEVELS) + "</ul>"
-    person = {"@type": "Person", "name": "Pablo González", "url": "https://pablogonzalez.me",
+    person = {"@type": "Person", "name": "Pablo Jesús González Rubio", "url": "https://pablogonzalez.me",
               "description": "Maintainer of Good Code Review.", "sameAs": ["https://github.com/n0nuser"]}
     ld = {"@context": "https://schema.org", "@graph": [
         {"@type": "WebSite", "@id": f"{BASE}/#website", "url": f"{BASE}/", "name": SITE_NAME, "description": SITE_DESC, "inLanguage": "en",

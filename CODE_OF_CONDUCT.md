@@ -13,6 +13,6 @@ The rules apply in issues, pull requests, and any other space where you speak fo
 
 ## Report a problem
 
-To report a problem privately, contact the maintainer through [their GitHub profile](https://github.com/n0nuser). To report abuse to GitHub, use **Report content** in the comment's menu.
+To report a problem privately, email the maintainer at [contact@pablogonzalez.me](mailto:contact@pablogonzalez.me). To report abuse to GitHub, use **Report content** in the comment's menu.
 
 The maintainer reviews every report and keeps the reporter's identity private.

@@ -3,8 +3,9 @@ message: If you use this checklist, cite it as below.
 title: Good Code Review
 type: software
 authors:
-  - family-names: González
-    given-names: Pablo
+  - family-names: González Rubio
+    given-names: Pablo Jesús
+    email: contact@pablogonzalez.me
 url: https://goodcodereview.com
 repository-code: https://github.com/n0nuser/goodcodereview
 license:

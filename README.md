@@ -54,4 +54,4 @@ See also [docs/COVERAGE.md](docs/COVERAGE.md), which maps sources to cards, and 
 
 Code (`tools/`, workflows) is under the [MIT licence](LICENSE). Content (`cards/`, `packs/`, `glossary/`, `docs/`) is under [CC BY 4.0](LICENSE-CONTENT).
 
-Created and maintained by [Pablo González](https://pablogonzalez.me).
+Created and maintained by [Pablo Jesús González Rubio](https://pablogonzalez.me).

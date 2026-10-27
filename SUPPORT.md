@@ -3,6 +3,7 @@
 - To ask a question, open a [blank issue](https://github.com/n0nuser/goodcodereview/issues/new).
 - To report a wrong card, use the [card correction form](https://github.com/n0nuser/goodcodereview/issues/new?template=card-correction.yml).
 - To report a security issue, follow [SECURITY.md](SECURITY.md).
+- For anything else, email [contact@pablogonzalez.me](mailto:contact@pablogonzalez.me).
 
 The docs live in the repository:
 
