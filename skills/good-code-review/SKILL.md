@@ -51,7 +51,7 @@ To review only some concerns, such as a performance-only review, check only the 
 ## change
 
 - `chg-author-hygiene` [should-fix] {process}: Self-review the diff and write the description before requesting review.
-- `chg-breaking-change-taxonomy` [block] {compatibility}: Treat any observable difference in signature, return shape, error type, ordering, timing, defaults, or side effects as breaking until a consumer check says otherwise.
+- `chg-breaking-change-taxonomy` [block] {compatibility}: Treat any change that callers can observe in a signature, return values, error types, defaults, or side effects as breaking until a consumer check says otherwise.
 - `chg-expand-contract` [block] {compatibility}: Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.
 - `chg-match-codebase-pattern` [should-fix] {correctness, maintainability}: Follow the established pattern nearby.
 - `chg-one-concern` [should-fix] {process}: Make each change do one logical thing; if the description needs "and" between unrelated outcomes, split it.
@@ -67,7 +67,7 @@ To review only some concerns, such as a performance-only review, check only the 
 
 - `fn-aria-role-has-state-and-keys` [should-fix] {accessibility}: When a native element cannot do the job, give the custom widget the state attribute and the keys its role promises.
 - `fn-colour-not-sole-cue` [should-fix] {accessibility, usability}: Pair every colour that carries meaning with a second cue: text, an icon, a shape, or an underline.
-- `fn-comments-explain-why` [should-fix] {maintainability}: Write comments that give a reason, a constraint, or a trade-off; rename before commenting, and never restate what the next line does.
+- `fn-comments-explain-why` [should-fix] {maintainability}: Write comments that give a reason, a constraint, or a trade-off, and never restate what the next line does.
 - `fn-confine-file-path` [block] {security}: Resolve the final path and check that it stays inside the intended base directory before using it.
 - `fn-csprng-for-secrets` [block] {security}: Draw every security-relevant random value from the platform CSPRNG.
 - `fn-destructive-confirm-or-undo` [should-fix] {usability}: Make a destructive action reversible with undo, or ask the user to confirm it before it runs.
@@ -101,7 +101,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `fn-related-controls-in-fieldset` [should-fix] {accessibility, usability}: Wrap each radio group, checkbox group, and multi-part value, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.
 - `fn-rerun-safe-after-crash` [block] {reliability}: Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.
 - `fn-response-fields-explicit` [should-fix] {security, compatibility}: Return a response type that lists each field, never the stored model or a generic dump of it.
-- `fn-status-announced-live-region` [should-fix] {accessibility, usability}: Announce an async status message through a live region (`role="status"` or `role="alert"`) that is already in the markup before its text changes.
+- `fn-status-announced-live-region` [should-fix] {accessibility, usability}: Announce an async status message through a live region (`role="status"` or `role="alert"`), and put a `role="status"` or `aria-live` region in the markup before its text changes.
 - `fn-target-size` [should-fix] {accessibility, usability}: Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.
 - `fn-test-behaviour-not-implementation` [should-fix] {testing, maintainability}: Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.
 - `fn-tls-verify-on` [block] {security}: Leave certificate and hostname verification on in every environment that ships.
@@ -114,7 +114,6 @@ To review only some concerns, such as a performance-only review, check only the 
 - `mod-pooled-clients-built-once` [should-fix] {performance}: Build pooled clients once at startup and reuse them.
 - `mod-single-writer-per-state` [should-fix] {correctness}: Let only one writer change a piece of state at a time, through a single owner, a queue that serialises the writes, or compare-and-swap, never by convention.
 - `mod-vetted-crypto-only` [block] {security}: Encrypt with an authenticated mode such as AES-GCM, and never reuse a nonce under one key.
-- `mod-yagni` [should-fix] {maintainability, process}: Add an abstraction only when the logic is reused, non-trivial, or clutters the main flow; do not build for a need that does not exist yet.
 
 ## service
 
@@ -164,7 +163,6 @@ To review only some concerns, such as a performance-only review, check only the 
 - `code-build-hermetic` [should-fix] {process}: Build from declared inputs only, so that the same source revision gives the same artifact.
 - `code-ci-gates` [should-fix] {process}: Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
 - `code-consistency-drift` [discuss] {correctness, maintainability}: For each recurring concern (errors, config, HTTP clients, logging), make one pattern the standard instead of leaving several as equal peers.
-- `code-dead-code` [should-fix] {maintainability}: Remove unreferenced functions, commented-out code, expired flags, and orphaned files; history keeps them.
 - `code-dependency-licence-sbom` [should-fix] {security}: Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule.
 - `code-dependency-pinning` [block] {security}: Commit a lockfile with hashes and install from it in CI.
 - `code-perf-budget-in-ci` [should-fix] {performance, process}: Write the performance budget down as a CI check that fails the build when it is exceeded.

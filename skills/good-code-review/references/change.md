@@ -32,11 +32,11 @@ Author left inline notes on the two non-obvious hunks.
 severity: block  
 concerns: compatibility  
 applies_when: The change alters anything a caller can observe, documented or not.  
-Backed by: Python Software Foundation. People cited: Hyrum Wright, Michael Feathers.
+Backed by: Python Software Foundation, Google, Microsoft, Kubernetes. People cited: Hyrum Wright, Michael Feathers.
 
-**Rule.** Treat any observable difference in signature, return shape, error type, ordering, timing, defaults, or side effects as breaking until a consumer check says otherwise.
+**Rule.** Treat any change that callers can observe in a signature, return values, error types, defaults, or side effects as breaking until a consumer check says otherwise.
 
-**Why.** With enough users, every observable behaviour is depended on, so "undocumented" does not mean "safe to change".
+**Why.** With enough users, every observable behaviour is depended on, so "undocumented" does not mean "safe to change". Result ordering and timing can break callers too, but no published guide treats them as breaking, so weigh them case by case.
 
 **FAIL**
 
@@ -59,7 +59,7 @@ flag orders_newest_first defaults off for one release".
 severity: block  
 concerns: compatibility  
 applies_when: The change renames, removes or reshapes a column, API field, message, config key or exported symbol that other code reads.  
-Backed by: Python Software Foundation, GitLab. People cited: Hyrum Wright.
+Backed by: Python Software Foundation, GitLab, Stripe, Kubernetes. People cited: Hyrum Wright.
 
 **Rule.** Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.
 
@@ -193,7 +193,7 @@ Commit 2: the split. The same test passes unchanged.
 severity: should-fix  
 concerns: maintainability, process  
 applies_when: The change both restructures or reformats code and changes behaviour, or moves code between files.  
-Backed by: Linux kernel, Google. People cited: Henrik Warne, Kent Beck.
+Backed by: Linux kernel, Google, Apache Software Foundation, Python Software Foundation. People cited: Henrik Warne, Kent Beck.
 
 **Rule.** Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
 

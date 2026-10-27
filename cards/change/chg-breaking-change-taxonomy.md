@@ -7,15 +7,19 @@ status: stable
 lang: core
 applies_when: The change alters anything a caller can observe, documented or not.
 tool_gate: Contract tests and API-diff tooling.
+note: 3 orgs (Google AIP-180, Microsoft, Kubernetes). The Python devguide states nothing on this and does not count. Ordering and timing have no support, and Microsoft allows performance changes
 borrowed_from:
   - https://www.hyrumslaw.com/
   - https://michaelfeathers.silvrback.com/characterization-testing
   - https://devguide.python.org/getting-started/pull-request-lifecycle/
+  - https://google.aip.dev/180
+  - https://learn.microsoft.com/en-us/dotnet/core/compatibility/library-change-rules
+  - https://kubernetes.io/docs/reference/using-api/deprecation-policy/
 ---
 
-**Rule.** Treat any observable difference in signature, return shape, error type, ordering, timing, defaults, or side effects as breaking until a consumer check says otherwise.
+**Rule.** Treat any change that callers can observe in a signature, return values, error types, defaults, or side effects as breaking until a consumer check says otherwise.
 
-**Why.** With enough users, every observable behaviour is depended on, so "undocumented" does not mean "safe to change".
+**Why.** With enough users, every observable behaviour is depended on, so "undocumented" does not mean "safe to change". Result ordering and timing can break callers too, but no published guide treats them as breaking, so weigh them case by case.
 
 **FAIL**
 

@@ -379,7 +379,7 @@ response: { "items": [...], "next_page_token": "def" }
 severity: should-fix  
 concerns: usability, accessibility  
 applies_when: A multi-step flow, such as checkout or signup, asks for data in more than one step.  
-Backed by: W3C, Nielsen Norman Group. People cited: Ben Shneiderman.
+Backed by: W3C, Nielsen Norman Group, GOV.UK, Baymard Institute. People cited: Ben Shneiderman.
 
 **Rule.** Do not ask for information the user already gave in the same flow. Fill it in, or let the user pick it.
 

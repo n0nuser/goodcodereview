@@ -17,8 +17,8 @@ CONCERNS = ["correctness", "security", "performance", "reliability", "compatibil
             "testing", "maintainability", "accessibility", "usability", "observability", "process"]
 # Closed list. Every draft names its main blocker as the first word of `lacks:`. docs/PROMOTION.md defines each one.
 LACKS = ["orgs", "evidence", "failable", "duplicate", "contradiction", "held", "unreviewed"]
-# Pablo has not decided what happens to a stable card with fewer than three organisations. True turns the warning into an error.
-ORG_FLOOR_STRICT = False
+# True: a stable card with fewer than three organisations (people excluded) is an error. False: it only prints the warning list.
+ORG_FLOOR_STRICT = True
 below = []  # stable cards under the floor, filled by validate()
 BODY_MARKS = ["**Rule.**", "**Why.**", "**FAIL**", "**PASS**", "**Counterpoint.**"]
 

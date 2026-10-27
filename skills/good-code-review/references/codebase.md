@@ -60,7 +60,7 @@ steps:
 severity: should-fix  
 concerns: process  
 applies_when: Auditing which checks must pass before a change merges.  
-Backed by: OpenSSF, Palantir, Kubernetes, McIntosh et al..
+Backed by: OpenSSF, Palantir, Kubernetes. People cited: McIntosh et al..
 
 **Rule.** Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
 
@@ -106,33 +106,6 @@ legacy sites listed in MIGRATION.md.
 ```
 
 **Counterpoint.** "Forcing one way can block a better tool." Allow change through a proposal that updates the standard and the migration list, not through a quiet second pattern. Consistency breaks ties. It does not outrank a measured reason to switch.
-
-## code-dead-code
-
-severity: should-fix  
-concerns: maintainability  
-applies_when: Auditing for code, flags and files that nothing uses.  
-Backed by: Palantir. People cited: Henrik Warne, tef (programmingisterrible).
-
-**Rule.** Remove unreferenced functions, commented-out code, expired flags, and orphaned files; history keeps them.
-
-**Why.** Dead code costs reading time, misleads searches, and gets "fixed" and tested for no benefit.
-
-**FAIL**
-
-```text
-# def old_export(): ...   (commented out since 2022)
-if FLAGS["legacy_ui"]:     # flag permanently false since release 4
-```
-
-**PASS**
-
-```text
-Code deleted; git log -S shows where it went. Detector reports 0 unused symbols
-or each is allowlisted with a reason.
-```
-
-**Counterpoint.** Code may be called by reflection, plugins, or external users. Check with the detector's config and a grep of consumers. For public API, deprecate first (see `chg-expand-contract`).
 
 ## code-dependency-licence-sbom
 

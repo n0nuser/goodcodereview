@@ -3,7 +3,8 @@ id: mod-yagni
 level: module
 tags: [maintainability, process, design, scope]
 severity: should-fix
-status: stable
+status: draft
+lacks: orgs, only Google states it; needs two more orgs
 lang: core
 applies_when: The change adds an abstraction, parameter, hook or option.
 tool_gate: none
@@ -11,6 +12,7 @@ borrowed_from:
   - https://kentcdodds.com/blog/aha-programming
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
   - https://henrikwarne.com/2024/01/10/tidy-first/
+  - https://github.com/NVIDIA/Model-Optimizer/blob/main/CONTRIBUTING.md
 ---
 
 **Rule.** Add an abstraction only when the logic is reused, non-trivial, or clutters the main flow; do not build for a need that does not exist yet.

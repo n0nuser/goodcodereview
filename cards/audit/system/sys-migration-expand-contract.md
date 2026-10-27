@@ -7,11 +7,14 @@ status: stable
 lang: core
 applies_when: A change drops, renames, or retypes a column, or mixes schema change with a data backfill.
 tool_gate: Migration linter for DROP/RENAME COLUMN.
+note: 3 orgs per clause. Batching rests on GitLab, Ecto, and CockroachDB (a database vendor). The separate migration rests on GitLab, Ecto, and Stripe, which shows it by structure and never says batches
 borrowed_from:
   - https://docs.gitlab.com/development/database/avoiding_downtime_in_migrations/
   - https://docs.gitlab.com/development/migration_style_guide/
   - https://stripe.com/blog/online-migrations
   - https://github.com/ankane/strong_migrations
+  - https://ecto-sql.hexdocs.pm/backfilling_data.html
+  - https://docs.cockroachlabs.com/docs/stable/bulk-update-data
 ---
 
 **Rule.** Run data backfills in batches, in a migration separate from the schema change.

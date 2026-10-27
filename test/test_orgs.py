@@ -83,7 +83,7 @@ class OrgsTest(unittest.TestCase):
 
 	def test_persons_are_known_ids_and_orgs_are_not_persons(self):
 		self.assertLessEqual(orgs.PERSONS, set(orgs.ORGS))
-		self.assertEqual(len(orgs.PERSONS), 24)
+		self.assertEqual(len(orgs.PERSONS), 25)
 		self.assertTrue({"kent-beck", "kent-c-dodds"} <= orgs.PERSONS)
 		self.assertNotIn("google", orgs.PERSONS)
 
@@ -95,6 +95,10 @@ class OrgsTest(unittest.TestCase):
 		two = ["https://www.w3.org/a", "https://web.dev/a", "https://developer.chrome.com/a"]
 		self.assertIn("has 2 organisation(s)", " ".join(errors_for(two)))
 		self.assertEqual(errors_for(two + ["https://owasp.org/a"]), [])
+
+	def test_a_person_does_not_count_as_an_org(self):
+		urls = ["https://www.w3.org/a", "https://web.dev/a", "https://martin.kleppmann.com/a"]
+		self.assertIn("has 2 organisation(s)", " ".join(errors_for(urls)))
 
 
 if __name__ == "__main__":

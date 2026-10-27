@@ -7,11 +7,15 @@ status: stable
 lang: core
 applies_when: The change both restructures or reformats code and changes behaviour, or moves code between files.
 tool_gate: A formatter check in CI removes the reformatting case.
+note: 3 orgs (Google, Apache Flink, Linux kernel). The kernel says one logical change per patch, which covers refactors only by extension. The Python devguide backs the reformatting clause
 borrowed_from:
   - https://docs.kernel.org/process/submitting-patches.html
   - https://henrikwarne.com/2024/01/10/tidy-first/
   - https://newsletter.kentbeck.com/p/getting-untangled
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
+  - https://google.github.io/eng-practices/review/developer/small-cls.html
+  - https://flink.apache.org/how-to-contribute/code-style-and-quality-pull-requests/
+  - https://devguide.python.org/getting-started/pull-request-lifecycle/
 ---
 
 **Rule.** Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
