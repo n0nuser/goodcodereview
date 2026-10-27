@@ -107,6 +107,34 @@ legacy sites listed in MIGRATION.md.
 
 **Counterpoint.** "Forcing one way can block a better tool." Allow change through a proposal that updates the standard and the migration list, not through a quiet second pattern. Consistency breaks ties. It does not outrank a measured reason to switch.
 
+## code-dead-code
+
+severity: should-fix  
+concerns: maintainability  
+applies_when: Auditing for code, flags and files that nothing uses.  
+Backed by: Palantir, Google, Meta, Carnegie Mellon SEI, Linux kernel, NVIDIA, Microsoft, GitLab, Uber, Statsig, JetBrains, Lockheed Martin. People cited: Henrik Warne, tef (programmingisterrible).
+
+**Rule.** Delete unreferenced functions and variables, and the branches of expired feature flags; history keeps them.
+
+**Why.** Dead code costs reading time, misleads searches, and gets "fixed" and tested for no benefit. The same holds for the common cases of commented-out code and files nothing links to: delete them too and let version control remember.
+
+**FAIL**
+
+```text
+def old_export(): ...      # no caller anywhere in the repo
+if FLAGS["legacy_ui"]:     # flag permanently false since release 4
+    render_legacy()
+```
+
+**PASS**
+
+```text
+Unused function and expired-flag branch deleted; version history shows where they went.
+The unused-code linter reports 0 symbols, or each is allowlisted with a reason.
+```
+
+**Counterpoint.** Code may be called by reflection, plugins, or external users. Check with the detector's config and a grep of consumers. For public API, deprecate first (see `chg-expand-contract`).
+
 ## code-dependency-licence-sbom
 
 severity: should-fix  

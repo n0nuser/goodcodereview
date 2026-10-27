@@ -114,6 +114,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `mod-pooled-clients-built-once` [should-fix] {performance}: Build pooled clients once at startup and reuse them.
 - `mod-single-writer-per-state` [should-fix] {correctness}: Let only one writer change a piece of state at a time, through a single owner, a queue that serialises the writes, or compare-and-swap, never by convention.
 - `mod-vetted-crypto-only` [block] {security}: Encrypt with an authenticated mode such as AES-GCM, and never reuse a nonce under one key.
+- `mod-yagni` [should-fix] {maintainability, process}: Do not build an abstraction or capability for a need that does not exist yet; add it when the need or a second use appears.
 
 ## service
 
@@ -163,6 +164,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `code-build-hermetic` [should-fix] {process}: Build from declared inputs only, so that the same source revision gives the same artifact.
 - `code-ci-gates` [should-fix] {process}: Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
 - `code-consistency-drift` [discuss] {correctness, maintainability}: For each recurring concern (errors, config, HTTP clients, logging), make one pattern the standard instead of leaving several as equal peers.
+- `code-dead-code` [should-fix] {maintainability}: Delete unreferenced functions and variables, and the branches of expired feature flags; history keeps them.
 - `code-dependency-licence-sbom` [should-fix] {security}: Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule.
 - `code-dependency-pinning` [block] {security}: Commit a lockfile with hashes and install from it in CI.
 - `code-perf-budget-in-ci` [should-fix] {performance, process}: Write the performance budget down as a CI check that fails the build when it is exceeded.

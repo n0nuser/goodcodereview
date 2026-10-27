@@ -83,7 +83,7 @@ class OrgsTest(unittest.TestCase):
 
 	def test_persons_are_known_ids_and_orgs_are_not_persons(self):
 		self.assertLessEqual(orgs.PERSONS, set(orgs.ORGS))
-		self.assertEqual(len(orgs.PERSONS), 25)
+		self.assertEqual(len(orgs.PERSONS), 26)
 		self.assertTrue({"kent-beck", "kent-c-dodds"} <= orgs.PERSONS)
 		self.assertNotIn("google", orgs.PERSONS)
 

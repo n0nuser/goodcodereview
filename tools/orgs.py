@@ -38,13 +38,14 @@ ORGS = {
     "wordpress": "WordPress", "w3c": "W3C", "envoy": "Envoy", "hyrum": "Hyrum Wright", "owasp": "OWASP", "zalando": "Zalando",
     "jetbrains": "JetBrains", "nvidia": "NVIDIA", "statsig": "Statsig", "etcd": "etcd", "hazelcast": "Hazelcast",
     "ecto": "Ecto", "cockroach": "CockroachDB", "anthropic": "Anthropic",
+    "cmu-sei": "Carnegie Mellon SEI", "wikimedia": "Wikimedia (MediaWiki)", "lockheed": "Lockheed Martin", "fowler": "Martin Fowler",
 }
 
 # Orgs that are one author. They show in "Backed by" but never count toward the three organisations a stable card needs.
 PERSONS = {
     "brendan-gregg", "dan-luu", "feathers", "heydon", "hickey", "hyrum", "jnd", "joel", "kane", "kent-beck", "kent-c-dodds",
     "kleppmann", "liskov-wing", "lucumr", "mcintosh", "ousterhout", "portebois", "salvatore", "sandi-metz", "shneiderman",
-    "tef", "vorpus", "warne", "wayne", "winand",
+    "tef", "fowler", "vorpus", "warne", "wayne", "winand",
 }
 
 # URL prefix (no scheme) -> org id. The longest matching prefix wins. A prefix without "/" also matches subdomains,
@@ -95,6 +96,8 @@ PREFIXES = {
     "github.com/dequelabs/": "deque", "github.com/ghostty-org/": "ghostty", "github.com/johnousterhout/": "ousterhout",
     "github.com/jsx-eslint/": "jsx-eslint", "github.com/matthiasn/talk-transcripts/blob/master/Hickey_Rich/": "hickey",
     "github.com/microsoft/": "microsoft", "github.com/mozilla/": "mozilla", "github.com/ossf/": "openssf",
+    "cmu-sei.github.io": "cmu-sei", "sei.cmu.edu": "cmu-sei", "mediawiki.org": "wikimedia",
+    "stroustrup.com/JSF-AV-rules.pdf": "lockheed", "martinfowler.com": "fowler",
     "x.com/addyosmani/status/2114604912520921136": "anthropic",
     "raw.githubusercontent.com/OWASP/": "owasp", "raw.githubusercontent.com/WordPress/": "wordpress",
     "raw.githubusercontent.com/elastic/": "elastic", "raw.githubusercontent.com/mozilla/": "mozilla",
