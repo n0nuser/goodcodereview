@@ -30,6 +30,8 @@ GitLab and GitHub are separate organisations. NIST, CISA, and NCSC are separate 
 
 A person is not an organisation. A blog, a talk, or a book by one author is a reference: the card lists the author under "People cited" and never counts it toward the three. `PERSONS` in `tools/orgs.py` lists the people. A person who speaks for a company counts only through the company's own page.
 
+A person has standing on a card when both hold: (a) a publisher or a programme-selected venue published their work on the card's subject, or they created or lead the thing the card is about; and (b) the page the card cites states a practice that backs the card's Rule. A person's own site, imprint or newsletter does not satisfy (a). Standing lets a card name the person under "People cited" with confidence; it never adds to the three organisations. `STANDING` in `tools/orgs.py` records the verdict and evidence for each person checked.
+
 `tools/orgs.py` maps every source URL to the organisation that publishes it, and follows these groups. On a code host such as GitHub, the organisation is the repository owner, not the host. `tools/validate.py` fails on a URL that the map does not cover. It warns about a stable card with fewer than three organisations in `borrowed_from`, and people do not count; set `ORG_FLOOR_STRICT = True` in that file to make the warning an error. That check is a floor: rule 1 counts per Rule clause, so a card can pass the check and still fail rule 1. The map also counts publishers, not independence. Prometheus has its own entry, though the worked example below counts its alerting page as no new organisation. A reviewer still judges whether two publishers draw on the same source.
 
 ## What `lacks:` says

@@ -48,6 +48,15 @@ PERSONS = {
     "tef", "fowler", "vorpus", "warne", "wayne", "winand",
 }
 
+# Standing of a person under the test in docs/PROMOTION.md (checked 2026-10-28): id -> (yes|no, deciding evidence). Standing never makes a person count toward the three organisations.
+STANDING = {
+    "kent-beck": ("yes", "Tidy First?, O'Reilly 2023, ISBN 9781098151232; TDD by Example, Addison-Wesley 2002, ISBN 9780321146533; created Extreme Programming and TDD, en.wikipedia.org/wiki/Kent_Beck"),
+    "joel": ("yes", "Joel on Software, Apress 2004, ISBN 9781590593899, chapter doi.org/10.1007/978-1-4302-0753-5_24"),
+    "hickey": ("yes", "Created Clojure; Clojure/Conj 2010 keynote, web.archive.org/web/20101021055240/http://clojure-conj.org/schedule; A History of Clojure, ACM HOPL 2020, doi.org/10.1145/3386321. The cited page backs code-adr, not chg-matches-spec"),
+    "jnd": ("no", "The Design of Everyday Things, Basic Books 2013, ISBN 9780465050659, but the cited essay states no rule for fn-native-button-or-link"),
+    "salvatore": ("no", "Created Redis and Redlock, but sys-lock-fencing is about fencing, not Redlock; the cited page argues against requiring fencing tokens"),
+}
+
 # URL prefix (no scheme) -> org id. The longest matching prefix wins. A prefix without "/" also matches subdomains,
 # so "owasp.org" covers cheatsheetseries.owasp.org. On code hosts the org is the repository owner, never the host.
 PREFIXES = {
