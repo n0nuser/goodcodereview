@@ -141,7 +141,7 @@ PR 1: dependency bump.  PR 2: rename (no logic change).  PR 3: export button.
 severity: should-fix  
 concerns: performance, testing  
 applies_when: The change or its description claims a speed, throughput, memory or cost improvement.  
-Backed by: Cursor, Linux kernel, Phacility.
+Backed by: Cursor, Linux kernel, GitLab, Phacility.
 
 **Rule.** Back a performance claim with measured before-and-after numbers.
 
@@ -220,7 +220,7 @@ commit 2: fix off-by-one + test
 severity: discuss  
 concerns: process  
 applies_when: A reviewer is deciding what to comment on.  
-Backed by: Google, Slack, The Pragmatic Engineer, Meta, Anthropic.
+Backed by: Google, Slack, The Pragmatic Engineer, Microsoft, Meta, Anthropic.
 
 **Rule.** Do not spend review comments on what a tool enforces or on minor style points; spend them on the findings that matter.
 
@@ -272,9 +272,9 @@ Stack of 6 changes of 150-300 lines, each builds and passes tests alone.
 severity: block  
 concerns: testing  
 applies_when: The change alters behaviour of non-trivial code.  
-Backed by: Kubernetes, Python Software Foundation, Google.
+Backed by: Kubernetes, Python Software Foundation, Google, Rust project, Ruby on Rails, Microsoft, Mozilla.
 
-**Rule.** Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks; a code-only change needs a stated reason.
+**Rule.** Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks.
 
 **Why.** "Tests later" mostly means never, and the reviewer cannot tell from reading whether the code does what the author intended.
 
@@ -292,7 +292,7 @@ PR adds discount.py change and test_discount.py with the edge cases
 (zero quantity, stacked coupons); the test was seen failing before the fix.
 ```
 
-**Counterpoint.** "Holding a good change for tests blocks progress." Approve changes that improve the code even when imperfect, but the test is part of the change, not polish. Untestable cases exist (config, pure docs, emergency fixes), and the rule allows them with a written reason and a ticket for the test.
+**Counterpoint.** "Holding a good change for tests blocks progress." Approve changes that improve the code even when imperfect, but the test is part of the change, not polish. Untestable cases exist (config, pure docs, emergency fixes), and a written reason plus a ticket for the test is the usual way to ship without one.
 
 ## chg-verify-before-claim
 

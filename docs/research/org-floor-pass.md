@@ -65,3 +65,11 @@ Ten cards had fewer than three organisations behind them once single authors wer
 - Statsig, https://statsig.com/blog/feature-flag-code-cleanup: stale flags make code "harder to read, reason about, and refactor". Statsig is a vendor.
 
 Only the kernel and NVIDIA state the rule on unused code, commented-out code has one source, and nobody but Google states the rule on speculative abstraction. Both cards are drafts for that reason.
+
+## Pass 9: short clauses on three change cards
+
+- GitLab, https://docs.gitlab.com/development/performance/: "Once a change has been deployed make sure to again measure for at least 24 hours to see if your changes have any impact on the production environment." Backs before-and-after measurement in `chg-perf-claim-evidence`.
+- Rust, https://rustc-dev-guide.rust-lang.org/tests/adding.html: "every PR that fixes a bug in rustc [comes] accompanied by a regression test of some kind. This test should fail in main but pass after the PR."
+- Rails, https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html: "Include tests that fail without your code, and pass with it."
+- Microsoft, https://microsoft.github.io/code-with-engineering-playbook/code-reviews/process-guidance/reviewer-guidance/: "Tests should always be committed in the same PR as the code itself" and "Since parts of reviews can be automated via linters and such, human reviewers can focus on architectural and functional correctness." Backs the same-change clause of `chg-tests-ship-with-change` and the tool-enforced clause of `chg-review-signal`.
+- Mozilla, https://firefox-source-docs.mozilla.org/testing/testing-policy/index.html: a landing without tests "requires a comment from the reviewer explaining why it's appropriate". The reviewer writes the reason, not the author, so it does not back the author's stated-reason clause.

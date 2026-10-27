@@ -7,12 +7,13 @@ status: stable
 lang: core
 applies_when: The change or its description claims a speed, throughput, memory or cost improvement.
 tool_gate: none
-note: the kernel and Phabricator back the Rule (numbers for an optimisation claim); the run count, spread and limiter in the Why come from benchmark-checklist/SKILL.md
+note: the kernel, Phabricator and GitLab (measure again after deploy, report percentiles) back the Rule (numbers for an optimisation claim); the run count, spread and limiter in the Why come from benchmark-checklist/SKILL.md
 borrowed_from:
   - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-explain-the-number/SKILL.md
   - https://github.com/cursor/plugins/blob/main/pstack/skills/benchmark-checklist/SKILL.md
   - https://github.com/cursor/plugins/blob/main/cursor-team-kit/skills/verify-this/SKILL.md
   - https://docs.kernel.org/process/submitting-patches.html
+  - https://docs.gitlab.com/development/performance/
   - https://secure.phabricator.com/book/phabflavor/article/writing_reviewable_code/
 ---
 
