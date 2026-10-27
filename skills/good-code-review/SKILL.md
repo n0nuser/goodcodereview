@@ -58,7 +58,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `chg-perf-claim-evidence` [should-fix] {performance, testing}: Back a performance claim with measured before-and-after numbers.
 - `chg-refactor-has-behaviour-pin` [should-fix] {testing, maintainability}: Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
 - `chg-refactor-separate` [should-fix] {maintainability, process}: Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
-- `chg-review-signal` [discuss] {process}: Do not comment on what a tool enforces or on taste with no written rule; spend comments on a few high-conviction findings, and if there are many, talk to the author.
+- `chg-review-signal` [discuss] {process}: Do not spend review comments on what a tool enforces or on minor style points; spend them on the findings that matter.
 - `chg-size-ceiling` [discuss] {process}: Split a change past about 400 changed lines or about 20 files, or say in the description why not; aim for about 200.
 - `chg-tests-ship-with-change` [block] {testing}: Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks; a code-only change needs a stated reason.
 - `chg-verify-before-claim` [block] {testing, process}: Back every "works" or "bug" claim with something run: a repro, a test or command output.
@@ -164,7 +164,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `code-build-hermetic` [should-fix] {process}: Build from declared inputs only, so that the same source revision gives the same artifact.
 - `code-ci-gates` [should-fix] {process}: Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
 - `code-consistency-drift` [discuss] {correctness, maintainability}: For each recurring concern (errors, config, HTTP clients, logging), make one pattern the standard instead of leaving several as equal peers.
-- `code-dead-code` [should-fix] {maintainability}: Delete unreferenced functions and variables, and the branches of expired feature flags; history keeps them.
+- `code-dead-code` [should-fix] {maintainability}: Delete unreferenced functions and variables, and the branches of expired feature flags.
 - `code-dependency-licence-sbom` [should-fix] {security}: Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule.
 - `code-dependency-pinning` [block] {security}: Commit a lockfile with hashes and install from it in CI.
 - `code-perf-budget-in-ci` [should-fix] {performance, process}: Write the performance budget down as a CI check that fails the build when it is exceeded.

@@ -222,9 +222,9 @@ concerns: process
 applies_when: A reviewer is deciding what to comment on.  
 Backed by: Google, Slack, The Pragmatic Engineer, Meta, Anthropic.
 
-**Rule.** Do not comment on what a tool enforces or on taste with no written rule; spend comments on a few high-conviction findings, and if there are many, talk to the author.
+**Rule.** Do not spend review comments on what a tool enforces or on minor style points; spend them on the findings that matter.
 
-**Why.** Noise buries the real defects and trains authors to dismiss review. A rubber-stamp approval is just as harmful: an approval must reflect real reading.
+**Why.** Noise buries the real defects and trains authors to dismiss review. Prefer a few high-conviction comments, and when a first pass turns up many, talk to the author instead of posting a long list; both are common advice but have fewer than three organisations behind them, and a style point outside the written guide is the reviewer's taste. A rubber-stamp approval is just as harmful: an approval must reflect real reading.
 
 **FAIL**
 

@@ -7,7 +7,7 @@ status: stable
 lang: core
 applies_when: Auditing for code, flags and files that nothing uses.
 tool_gate: An unused-code linter in CI (vulture, knip, or deadcode); allowlist each intentional exception with a reason.
-note: Commented-out code (Lockheed Martin JSF, JetBrains) and orphaned files (no source) have fewer than three organisations, so they sit in the Why. Palantir was unverified (403). JetBrains and Statsig are vendors.
+note: Commented-out code (Lockheed Martin JSF, JetBrains) and orphaned files (no source) have fewer than three organisations, so they sit in the Why. Palantir's page loads and backs only the commented-out-code case in the Why. Version-control history as the reason to delete has two organisations (Google, JetBrains), so it stays in the Why. JetBrains and Statsig are vendors.
 borrowed_from:
   - https://henrikwarne.com/2024/01/10/tidy-first/
   - https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to
@@ -26,7 +26,7 @@ borrowed_from:
   - https://www.stroustrup.com/JSF-AV-rules.pdf
 ---
 
-**Rule.** Delete unreferenced functions and variables, and the branches of expired feature flags; history keeps them.
+**Rule.** Delete unreferenced functions and variables, and the branches of expired feature flags.
 
 **Why.** Dead code costs reading time, misleads searches, and gets "fixed" and tested for no benefit. The same holds for the common cases of commented-out code and files nothing links to: delete them too and let version control remember.
 

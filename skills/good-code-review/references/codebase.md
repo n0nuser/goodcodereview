@@ -114,7 +114,7 @@ concerns: maintainability
 applies_when: Auditing for code, flags and files that nothing uses.  
 Backed by: Palantir, Google, Meta, Carnegie Mellon SEI, Linux kernel, NVIDIA, Microsoft, GitLab, Uber, Statsig, JetBrains, Lockheed Martin. People cited: Henrik Warne, tef (programmingisterrible).
 
-**Rule.** Delete unreferenced functions and variables, and the branches of expired feature flags; history keeps them.
+**Rule.** Delete unreferenced functions and variables, and the branches of expired feature flags.
 
 **Why.** Dead code costs reading time, misleads searches, and gets "fixed" and tested for no benefit. The same holds for the common cases of commented-out code and files nothing links to: delete them too and let version control remember.
 
