@@ -7,11 +7,13 @@ status: stable
 lang: core
 applies_when: A reviewer is deciding what to comment on.
 tool_gate: Formatter, linter and type checker own style and mechanical rules.
+note: Anthropic (a vendor) backs only the tool-owned clause: its reviewer filters out findings that are only style, diagnostics or cleanup; not a counted third org and not the taste clause
 borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/standard.html
   - https://slack.engineering/how-about-code-reviews/
   - https://blog.pragmaticengineer.com/good-code-reviews-better-code-reviews/
   - https://engineering.fb.com/2022/11/16/culture/meta-code-review-time-improving/
+  - https://x.com/addyosmani/status/2114604912520921136
 ---
 
 **Rule.** Do not comment on what a tool enforces or on taste with no written rule; spend comments on a few high-conviction findings, and if there are many, talk to the author.

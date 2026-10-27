@@ -37,7 +37,7 @@ ORGS = {
     "warne": "Henrik Warne", "wayne": "Hillel Wayne", "webaim": "WebAIM", "whatwg": "WHATWG", "winand": "Markus Winand",
     "wordpress": "WordPress", "w3c": "W3C", "envoy": "Envoy", "hyrum": "Hyrum Wright", "owasp": "OWASP", "zalando": "Zalando",
     "jetbrains": "JetBrains", "nvidia": "NVIDIA", "statsig": "Statsig", "etcd": "etcd", "hazelcast": "Hazelcast",
-    "ecto": "Ecto", "cockroach": "CockroachDB",
+    "ecto": "Ecto", "cockroach": "CockroachDB", "anthropic": "Anthropic",
 }
 
 # Orgs that are one author. They show in "Backed by" but never count toward the three organisations a stable card needs.
@@ -95,6 +95,7 @@ PREFIXES = {
     "github.com/dequelabs/": "deque", "github.com/ghostty-org/": "ghostty", "github.com/johnousterhout/": "ousterhout",
     "github.com/jsx-eslint/": "jsx-eslint", "github.com/matthiasn/talk-transcripts/blob/master/Hickey_Rich/": "hickey",
     "github.com/microsoft/": "microsoft", "github.com/mozilla/": "mozilla", "github.com/ossf/": "openssf",
+    "x.com/addyosmani/status/2114604912520921136": "anthropic",
     "raw.githubusercontent.com/OWASP/": "owasp", "raw.githubusercontent.com/WordPress/": "wordpress",
     "raw.githubusercontent.com/elastic/": "elastic", "raw.githubusercontent.com/mozilla/": "mozilla",
 }

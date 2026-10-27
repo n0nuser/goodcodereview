@@ -7,11 +7,13 @@ status: stable
 lang: core
 applies_when: A change, config or dependency update is rolled out to production.
 tool_gate: Deploy pipeline with canary stage and automatic abort.
+note: Anthropic (a vendor) backs only staged rollout, "changes go to the latest channel first"; its post says it has no circuit breaker yet, so it does not back abort by rule; not a counted third org
 borrowed_from:
   - https://sre.google/workbook/canarying-releases/
   - https://sre.google/sre-book/release-engineering/
   - https://aws.amazon.com/builders-library/minimizing-correlated-failures-in-distributed-systems/
   - https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/
+  - https://x.com/addyosmani/status/2114604912520921136
 ---
 
 **Rule.** Roll out in stages behind a canary, and abort by rule, not by judgment.

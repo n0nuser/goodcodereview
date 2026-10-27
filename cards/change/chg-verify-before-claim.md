@@ -7,11 +7,13 @@ status: stable
 lang: core
 applies_when: The author or reviewer asserts the change works or a finding is real.
 tool_gate: none
+note: Anthropic (a vendor) also backs the run-it-and-show-the-result clause, "Instead of saying the task is done, we ask it to show us the result"; it is not a counted third org
 borrowed_from:
   - https://devguide.python.org/getting-started/pull-request-lifecycle/
   - https://secure.phabricator.com/book/phabflavor/article/writing_reviewable_code/
   - https://danluu.com/tests-v-reason/
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
+  - https://x.com/addyosmani/status/2114604912520921136
 ---
 
 **Rule.** Back every "works" or "bug" claim with something run: a repro, a test or command output.

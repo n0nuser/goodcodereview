@@ -220,7 +220,7 @@ commit 2: fix off-by-one + test
 severity: discuss  
 concerns: process  
 applies_when: A reviewer is deciding what to comment on.  
-Backed by: Google, Slack, The Pragmatic Engineer, Meta.
+Backed by: Google, Slack, The Pragmatic Engineer, Meta, Anthropic.
 
 **Rule.** Do not comment on what a tool enforces or on taste with no written rule; spend comments on a few high-conviction findings, and if there are many, talk to the author.
 
@@ -299,7 +299,7 @@ PR adds discount.py change and test_discount.py with the edge cases
 severity: block  
 concerns: testing, process  
 applies_when: The author or reviewer asserts the change works or a finding is real.  
-Backed by: Python Software Foundation, Phacility, Google. People cited: Dan Luu.
+Backed by: Python Software Foundation, Phacility, Google, Anthropic. People cited: Dan Luu.
 
 **Rule.** Back every "works" or "bug" claim with something run: a repro, a test or command output.
 

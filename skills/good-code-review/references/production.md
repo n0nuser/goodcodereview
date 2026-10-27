@@ -32,7 +32,7 @@ latency p50/p99 histogram, errors split from successes
 severity: block  
 concerns: reliability  
 applies_when: A change, config or dependency update is rolled out to production.  
-Backed by: Google, AWS, OWASP.
+Backed by: Google, AWS, OWASP, Anthropic.
 
 **Rule.** Roll out in stages behind a canary, and abort by rule, not by judgment.
 
@@ -60,7 +60,7 @@ deploy: all hosts at once, no comparison, rollback = "ask someone"
 severity: should-fix  
 concerns: reliability  
 applies_when: A new risky feature or a dependency fallback is added.  
-Backed by: AWS, Cloudflare, GitHub, Slack, Dropbox, Shopify.
+Backed by: AWS, Cloudflare, GitHub, Slack, Dropbox, Shopify, Anthropic.
 
 **Rule.** Make a risky feature switchable off without a deploy, and exercise every fallback path in test or in production on a schedule.
 

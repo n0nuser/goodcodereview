@@ -8,9 +8,10 @@ lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more org
 lang: core
 applies_when: A review approval or verification result exists and the branch has been pushed or rebased since.
 tool_gate: Branch protection that dismisses stale approvals on new commits.
-note: one vendor's engineering guidance (opinion), from poteto-mode/playbooks/shipping.md; patch-id comparison is the source's method
+note: one vendor's engineering guidance (opinion), from poteto-mode/playbooks/shipping.md; patch-id comparison is the source's method; Anthropic (a vendor) adds "A PR approval is only good for one commit" with reapproval after an untrusted commit, but no patch-id carve-outs
 borrowed_from:
   - https://github.com/cursor/plugins/blob/main/pstack/skills/poteto-mode/playbooks/shipping.md
+  - https://x.com/addyosmani/status/2114604912520921136
 ---
 
 **Rule.** Treat an approval or verification verdict as current only if the patch is unchanged: compare `git patch-id` at the verdict commit with the current head. If the patches differ only in tests, docs, or lint config, the verdict can stand when the built output is the same; any other difference needs a fresh check.
