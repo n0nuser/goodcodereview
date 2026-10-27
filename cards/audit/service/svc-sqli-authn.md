@@ -29,8 +29,8 @@ db.execute(f"SELECT * FROM users WHERE name = '{name}'")
 **PASS**
 
 ```python
-db.execute("SELECT * FROM users WHERE id = %s", (req.id,))
-db.execute("SELECT * FROM users WHERE name = %s", (name,))
+db.execute("SELECT * FROM users WHERE id = ?", (req.id,))     # the placeholder style depends on the driver
+db.execute("SELECT * FROM users WHERE name = ?", (name,))
 ```
 
 **Counterpoint.** "An ORM makes this moot." Raw fragments still bypass it, and so do table, column and `ORDER BY` names, which cannot be bound. Map those to a fixed allowlist in code.

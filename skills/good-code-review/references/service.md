@@ -397,7 +397,7 @@ Backed by: W3C, Nielsen Norman Group, GOV.UK, Baymard Institute. People cited: B
 ```html
 <!-- step 2 -->
 <label><input type="checkbox" name="same" checked> Billing address is the same as shipping</label>
-<input name="billing_address" value="12 Elm Road, Leeds" hidden>   <!-- shown, filled in, if the box is unchecked -->
+<input name="billing_address" value="12 Elm Road, Leeds" hidden>   <!-- hidden while the box is checked; shown, pre-filled, when it is unchecked -->
 ```
 
 **Counterpoint.** "Retyping a new password confirms it." That is a fair exception. So is data that is no longer valid, and re-entry that is the point of the task, such as a memory test. Browser autofill does not count: the page itself must supply the value.
@@ -609,8 +609,8 @@ db.execute(f"SELECT * FROM users WHERE name = '{name}'")
 **PASS**
 
 ```python
-db.execute("SELECT * FROM users WHERE id = %s", (req.id,))
-db.execute("SELECT * FROM users WHERE name = %s", (name,))
+db.execute("SELECT * FROM users WHERE id = ?", (req.id,))     # the placeholder style depends on the driver
+db.execute("SELECT * FROM users WHERE name = ?", (name,))
 ```
 
 **Counterpoint.** "An ORM makes this moot." Raw fragments still bypass it, and so do table, column and `ORDER BY` names, which cannot be bound. Map those to a fixed allowlist in code.
@@ -694,7 +694,7 @@ file.save(path)                       # any type, any size, public URL
 **PASS**
 
 ```python
-if ext(file.filename) not in {".png", ".jpg"} or size > 5_000_000: abort(400)
+if sniff_type(file.stream) not in {"image/png", "image/jpeg"} or size > 5_000_000: abort(400)   # type from the content, not the name
 file.save(STORE / f"{uuid4()}.bin")   # outside web root; served by /files/<id>
 ```
 

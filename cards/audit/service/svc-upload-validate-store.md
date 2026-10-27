@@ -29,7 +29,7 @@ file.save(path)                       # any type, any size, public URL
 **PASS**
 
 ```python
-if ext(file.filename) not in {".png", ".jpg"} or size > 5_000_000: abort(400)
+if sniff_type(file.stream) not in {"image/png", "image/jpeg"} or size > 5_000_000: abort(400)   # type from the content, not the name
 file.save(STORE / f"{uuid4()}.bin")   # outside web root; served by /files/<id>
 ```
 

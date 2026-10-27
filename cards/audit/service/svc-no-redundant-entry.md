@@ -32,7 +32,7 @@ borrowed_from:
 ```html
 <!-- step 2 -->
 <label><input type="checkbox" name="same" checked> Billing address is the same as shipping</label>
-<input name="billing_address" value="12 Elm Road, Leeds" hidden>   <!-- shown, filled in, if the box is unchecked -->
+<input name="billing_address" value="12 Elm Road, Leeds" hidden>   <!-- hidden while the box is checked; shown, pre-filled, when it is unchecked -->
 ```
 
 **Counterpoint.** "Retyping a new password confirms it." That is a fair exception. So is data that is no longer valid, and re-entry that is the point of the task, such as a memory test. Browser autofill does not count: the page itself must supply the value.
