@@ -751,10 +751,10 @@ def main():
             if not seen_level:
                 llms += SEVERITY
                 seen_level = True
-            llms += [l, "", f"- [{NAME[l[3:]]}, full text]({BASE}/{l[3:]}.md): every stable {l[3:]} card with its FAIL and PASS examples."]
+            llms += [l, "", f"- [{NAME[l[3:]]}, full text]({BASE}/{l[3:]}.md): every stable {l[3:]} card with its FAIL and PASS examples and who backs it."]
         else:
             m = re.match(r"- `([a-z0-9-]+)`", l)
-            llms.append(l + f" {backers(by_id[m[1]])}" if m else l)
+            llms.append(l)  # who backs each card is in the level file behind the link, not in this index
     llms += ["## Glossary", "", f"- [Glossary]({BASE}/glossary.md): terms the cards link to.", "",
              "## Draft cards", "", f"- [Draft cards]({BASE}/llms-drafts.txt): not vetted. {DRAFT_RULE}", "",
              "## Site", "",
