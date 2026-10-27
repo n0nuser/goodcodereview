@@ -8,7 +8,7 @@ lacks: orgs, reason and ticket on each suppression has cursor/plugins only; Stri
 lang: core
 applies_when: The diff adds a suppression (lint ignore, type ignore, skipped test, swallowed error) or deletes a failing check.
 tool_gate: Linter rule that requires a reason and ticket on each suppression.
-note: extends Palantir (TODO without issue, red checks) and Go (discarded errors) to suppressions
+note: Palantir URL returned 403 and was not verified; extends Palantir (TODO without issue, red checks) and Go (discarded errors) to suppressions
 borrowed_from:
   - https://go.dev/wiki/CodeReviewComments
   - https://blog.palantir.com/code-review-best-practices-19e02780015f
@@ -34,7 +34,7 @@ except Exception: pass
 ```python
 x = load(cfg)  # type: ignore[arg-type]  # lib stub wrong, TICKET-42
 try: sync()
-except SyncTimeout as e: log.warning("sync timeout", exc_info=e); retry()
+@pytest.mark.skip(reason="flaky on CI clock skew, TICKET-43, remove by 2026-12-01")
 ```
 
 **Counterpoint.** Sometimes a warning is a false positive. Then suppress narrowly with a reason and an expiry date, which keeps the gate useful. A suppression of a rule that guards correctness or safety should be removed, not documented. Palantir's list covers TODOs without issue references and merging with checks red. The Go list covers discarded errors. This card extends both to suppressions.
