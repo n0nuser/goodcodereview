@@ -7,13 +7,15 @@ status: stable
 lang: core
 applies_when: Markup or a component renders an input, a select, or a textarea.
 tool_gate: ESLint `jsx-a11y/label-has-associated-control` and axe `label`.
-note: 5 orgs back the rule; USWDS covers only fieldset and legend
+note: Label tie: W3C, MDN, A11y Project, jsx-a11y. A placeholder is not a label: Deque, GOV.UK, WebAIM. USWDS covers only fieldset and legend
 borrowed_from:
   - https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html
   - https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility/HTML
   - https://dequeuniversity.com/rules/axe/html/4.10/label
   - https://www.a11yproject.com/checklist/
   - https://github.com/jsx-eslint/eslint-plugin-jsx-a11y
+  - https://design-system.service.gov.uk/components/text-input/
+  - https://webaim.org/techniques/forms/advanced
 ---
 
 **Rule.** Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.

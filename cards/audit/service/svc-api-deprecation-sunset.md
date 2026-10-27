@@ -7,16 +7,19 @@ status: stable
 lang: core
 applies_when: A service retires an endpoint, field, version or parameter that outside callers use.
 tool_gate: Middleware that adds both headers for routes tagged deprecated; a spec linter on `deprecated: true` without a sunset date; a dashboard counting calls that carry the headers.
+note: Mark deprecated: Zalando, OpenAPI, Google AIP-185 (marks deprecation in the API definition, not literally an OpenAPI document). Send both headers: IETF, Zalando, GitHub (a vendor). Sunset not before Deprecation: IETF RFC 9745 only, so it is in Why
 borrowed_from:
   - https://www.rfc-editor.org/rfc/rfc9745.html
   - https://www.rfc-editor.org/rfc/rfc8594.html
   - https://opensource.zalando.com/restful-api-guidelines/
   - https://spec.openapis.org/oas/v3.1.0.html
+  - https://docs.github.com/en/rest/about-the-rest-api/api-versions
+  - https://google.aip.dev/185
 ---
 
-**Rule.** Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers, with the `Sunset` date no earlier than the `Deprecation` date.
+**Rule.** Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers.
 
-**Why.** Callers cannot read your roadmap. A removal with no signal in the responses is an outage for whoever has not read the changelog. Counting calls that carry the headers also tells you when removal is safe.
+**Why.** The `Sunset` date must not be earlier than the `Deprecation` date (RFC 9745). Callers cannot read your roadmap. A removal with no signal in the responses is an outage for whoever has not read the changelog. Counting calls that carry the headers also tells you when removal is safe.
 
 **FAIL**
 

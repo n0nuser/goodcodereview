@@ -32,7 +32,7 @@ latency p50/p99 histogram, errors split from successes
 severity: block  
 concerns: reliability  
 applies_when: A change, config or dependency update is rolled out to production.  
-Backed by: Google, AWS, OWASP, Anthropic.
+Backed by: Google, AWS, OWASP, Anthropic, Microsoft.
 
 **Rule.** Roll out in stages behind a canary, and abort by rule, not by judgment.
 
@@ -89,7 +89,7 @@ if flags.enabled("checkout_v2"):   # runtime toggle, default off
 severity: should-fix  
 concerns: performance, observability  
 applies_when: A latency SLO, dashboard, or alert is defined for a service.  
-Backed by: Google, AWS, Prometheus, OpenTelemetry.
+Backed by: Google, AWS, Prometheus, OpenTelemetry, Microsoft.
 
 **Rule.** Define latency SLOs and alerts on high percentiles, never on the mean.
 

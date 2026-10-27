@@ -4,7 +4,7 @@ level: function
 tags: [performance, correctness, concurrency]
 severity: should-fix
 status: stable
-note: Python, Mozilla, and Go (errgroup) docs back the Rule; the cursor/plugins skill is opinion and supports it
+note: Start independent work together: Python, Mozilla, Go (errgroup). Sequence only when one call needs another's result: Mozilla, Microsoft (a vendor), Apple (a vendor); the cursor/plugins skill is opinion and supports it
 lang: core
 applies_when: A function awaits or calls several I/O operations that do not depend on each other.
 tool_gate: none
@@ -13,6 +13,8 @@ borrowed_from:
   - https://github.com/cursor/plugins/blob/main/thermos/skills/thermo-nuclear-code-quality-review/SKILL.md
   - https://docs.python.org/3/library/asyncio-task.html
   - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
+  - https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/
+  - https://developer.apple.com/videos/play/wwdc2025/268/
 ---
 
 **Rule.** Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.

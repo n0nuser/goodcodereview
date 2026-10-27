@@ -91,7 +91,7 @@ PREFIXES = {
     "flink.apache.org": "apache", "hadoop.apache.org": "apache", "kubernetes.io": "kubernetes", "research.google": "google",
     "jetbrains.com": "jetbrains", "github.com/NVIDIA/": "nvidia", "statsig.com": "statsig", "etcd.io": "etcd",
     "docs.hazelcast.com": "hazelcast", "ecto-sql.hexdocs.pm": "ecto", "docs.cockroachlabs.com": "cockroach",
-    "github.com/GoogleChrome/": "google", "github.com/Netflix/": "netflix", "github.com/ai/size-limit": "sitnik",
+    "primer.style": "github", "github.com/GoogleChrome/": "google", "github.com/Netflix/": "netflix", "github.com/ai/size-limit": "sitnik",
     "github.com/ankane/": "kane", "github.com/ben-manes/caffeine": "ben-manes", "github.com/cursor/plugins/": "cursor",
     "github.com/dequelabs/": "deque", "github.com/ghostty-org/": "ghostty", "github.com/johnousterhout/": "ousterhout",
     "github.com/jsx-eslint/": "jsx-eslint", "github.com/matthiasn/talk-transcripts/blob/master/Hickey_Rich/": "hickey",

@@ -33,11 +33,11 @@ PUT /docs/4  If-Match: "v7"  -> 412 Precondition Failed
 severity: should-fix  
 concerns: compatibility  
 applies_when: A service retires an endpoint, field, version or parameter that outside callers use.  
-Backed by: IETF, Zalando, OpenAPI Initiative.
+Backed by: IETF, Zalando, OpenAPI Initiative, GitHub, Google.
 
-**Rule.** Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers, with the `Sunset` date no earlier than the `Deprecation` date.
+**Rule.** Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers.
 
-**Why.** Callers cannot read your roadmap. A removal with no signal in the responses is an outage for whoever has not read the changelog. Counting calls that carry the headers also tells you when removal is safe.
+**Why.** The `Sunset` date must not be earlier than the `Deprecation` date (RFC 9745). Callers cannot read your roadmap. A removal with no signal in the responses is an outage for whoever has not read the changelog. Counting calls that carry the headers also tells you when removal is safe.
 
 **FAIL**
 

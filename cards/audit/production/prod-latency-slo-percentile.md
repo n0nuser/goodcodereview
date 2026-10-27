@@ -7,12 +7,14 @@ status: stable
 lang: core
 applies_when: A latency SLO, dashboard, or alert is defined for a service.
 tool_gate: Lint alert rules for avg() over latency or over pre-computed quantiles.
+note: Never the mean: Google, AWS (a vendor), Microsoft (a vendor). Prometheus warns only against averaging quantiles; OpenTelemetry is a definition page
 borrowed_from:
   - https://sre.google/sre-book/service-level-objectives/
   - https://sre.google/sre-book/monitoring-distributed-systems/
   - https://builder.aws.com/content/3EuxPBdIiiUhB5IK47p3O3fxhy7/instrumenting-distributed-systems-for-operational-visibility
   - https://prometheus.io/docs/practices/histograms/
   - https://opentelemetry.io/docs/specs/otel/metrics/api/
+  - https://learn.microsoft.com/en-us/azure/well-architected/performance-efficiency/monitoring
 ---
 
 **Rule.** Define latency SLOs and alerts on high percentiles, never on the mean.

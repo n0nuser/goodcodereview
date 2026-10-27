@@ -5,7 +5,7 @@
 severity: should-fix  
 concerns: accessibility, usability  
 applies_when: A design-system module or theme defines foreground and background colour tokens.  
-Backed by: W3C, Deque, The A11y Project, Apple, Google.
+Backed by: W3C, Deque, The A11y Project, Apple, Google, WebAIM.
 
 **Rule.** Make every text and background token pair meet 4.5:1 (3:1 for large text), and every border, icon, and focus colour meet 3:1 against its neighbour.
 

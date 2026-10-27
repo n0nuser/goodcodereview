@@ -7,7 +7,7 @@ status: stable
 lang: core
 applies_when: A design-system module or theme defines foreground and background colour tokens.
 tool_gate: axe `color-contrast` on rendered components; a unit test that computes the ratio for each token pair. axe cannot see text on images or gradients.
-note: 5 orgs; the 3:1 figure for non-text parts is cited through the A11y Project and web.dev pages, and SC 1.4.11 was not read as its own page
+note: 3:1 for non-text parts (borders, icons, focus): A11y Project, web.dev, WebAIM. WebAIM's checklist restates WCAG 1.4.11; SC 1.4.11 was not read as its own page
 borrowed_from:
   - https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html
   - https://dequeuniversity.com/rules/axe/html/4.10/color-contrast
@@ -15,6 +15,7 @@ borrowed_from:
   - https://developer.apple.com/tutorials/data/design/human-interface-guidelines/accessibility.json
   - https://web.dev/learn/accessibility/focus
   - https://www.w3.org/WAI/test-evaluate/preliminary/
+  - https://webaim.org/standards/wcag/checklist
 ---
 
 **Rule.** Make every text and background token pair meet 4.5:1 (3:1 for large text), and every border, icon, and focus colour meet 3:1 against its neighbour.

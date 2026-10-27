@@ -174,7 +174,7 @@ async function remove() {
 severity: block  
 concerns: accessibility, usability  
 applies_when: A component opens a modal dialog, drawer, or menu that covers the page.  
-Backed by: W3C, Mozilla, WebAIM.
+Backed by: W3C, Mozilla, WebAIM, GitHub.
 
 **Rule.** When a modal opens, move focus into it and keep Tab inside it. Make Escape close it.
 
@@ -208,7 +208,7 @@ concerns: usability
 applies_when: Markup or a component hides content behind a `<details>`, an accordion, a "Show more" link, or an "Advanced" toggle.  
 Backed by: Nielsen Norman Group, GOV.UK, Appian.
 
-**Rule.** Do not hide a required field, the primary action, or information most users need behind a disclosure that starts closed.
+**Rule.** Do not hide a required field or information most users need behind a disclosure that starts closed.
 
 **Why.** Users who never open the disclosure must still be able to finish the task. A closed `<details>` that holds the delivery date, or an "Advanced" section that holds a required field, sends most users hunting. Disclosure is for what only some users need. A field that appears because of the user's own answer, such as a follow-up field shown after they pick "Yes", is a conditional reveal, not a disclosure, and passes. Nesting adds its own cost. NN/g counts the first view as level one, so a disclosure inside a disclosure is already level three, and NN/g found designs past two levels lose people as they move between levels. In a step-by-step flow, such as picking a make and then a model, Appian says to disable fields that are not ready yet rather than hide them.
 
@@ -325,7 +325,7 @@ a:focus { outline: 0; }
 severity: block  
 concerns: accessibility, usability  
 applies_when: Markup or a component renders an input, a select, or a textarea.  
-Backed by: W3C, Mozilla, Deque, The A11y Project, jsx-eslint project.
+Backed by: W3C, Mozilla, Deque, The A11y Project, jsx-eslint project, GOV.UK, WebAIM.
 
 **Rule.** Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.
 
@@ -415,7 +415,7 @@ Backed by: W3C, Mozilla, Deque, The A11y Project, jsx-eslint project.
 severity: should-fix  
 concerns: performance, correctness  
 applies_when: A function awaits or calls several I/O operations that do not depend on each other.  
-Backed by: Google, Cursor, Python Software Foundation, Mozilla.
+Backed by: Google, Cursor, Python Software Foundation, Mozilla, Microsoft, Apple.
 
 **Rule.** Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.
 

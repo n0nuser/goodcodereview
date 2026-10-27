@@ -7,12 +7,13 @@ status: stable
 lang: core
 applies_when: A component opens a modal dialog, drawer, or menu that covers the page.
 tool_gate: none; a component test that opens the dialog, presses Tab and Escape, and asserts `document.activeElement`.
-note: 3 orgs (W3C, Mozilla, WebAIM) for focus in, Tab kept inside, and Escape. Return focus to the opener has 2 (W3C APG, WebAIM; MDN does not state it), so it is in Why
+note: Focus into the modal, Tab kept inside: W3C APG, Mozilla, GitHub (Primer). Escape and return focus to the opener are in W3C APG and WebAIM; MDN does not state return focus, so that part is in Why
 borrowed_from:
   - https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
   - https://www.w3.org/WAI/WCAG22/Understanding/no-keyboard-trap.html
   - https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog
   - https://webaim.org/techniques/keyboard/
+  - https://primer.style/product/components/dialog/accessibility
 ---
 
 **Rule.** When a modal opens, move focus into it and keep Tab inside it. Make Escape close it.
