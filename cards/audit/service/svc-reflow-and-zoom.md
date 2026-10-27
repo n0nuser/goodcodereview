@@ -7,13 +7,17 @@ status: stable
 lang: core
 applies_when: A page or app is served to browsers on screens of any size.
 tool_gate: axe `meta-viewport`; a rendered check at a 320 px viewport and at 200% text zoom.
-note: 3 orgs (W3C, Deque, A11y Project). The A11y Project checklist asks for zoom left on, text at 200%, and no horizontal scrolling
+note: The 320 px width and no sideways scrolling are backed by W3C, WebAIM and Microsoft; WebAIM partly restates the WCAG wording but adds its own zoom test, and Microsoft states only a 320 px design floor. 200% text zoom is backed by W3C, A11y Project, Mozilla and Google. No blocked pinch-zoom is backed by Deque, A11y Project and Mozilla, and Google adds a fourth voice. The A11y Project checklist asks for zoom left on, text at 200%, and no horizontal scrolling
 borrowed_from:
   - https://www.w3.org/WAI/WCAG22/Understanding/reflow.html
   - https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html
   - https://dequeuniversity.com/rules/axe/html/4.10/meta-viewport
   - https://www.w3.org/WAI/test-evaluate/preliminary/
   - https://www.a11yproject.com/checklist/
+  - https://webaim.org/techniques/reflow/
+  - https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/name/viewport
+  - https://web.dev/articles/accessible-responsive-design
+  - https://learn.microsoft.com/en-us/microsoftteams/platform/concepts/design/design-teams-app-layout-scaling
 ---
 
 **Rule.** Make the page usable at 320 CSS pixels wide and at 200% text zoom, with no sideways scrolling, no clipped content, and no blocked pinch-zoom.

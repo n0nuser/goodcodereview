@@ -7,12 +7,13 @@ status: stable
 lang: core
 applies_when: The system stores, copies or logs personal or otherwise sensitive data.
 tool_gate: Retention jobs with a TTL on tables and buckets; a data inventory checked in CI.
-note: the legal retention periods differ by jurisdiction; the source gives only the engineering principle
+note: The retention period is backed by ICO and Microsoft; GDPR Art. 5 is the only other statement and it is law, not an organisation. Delete or anonymise is backed by ICO, OWASP and Microsoft. Microsoft is a vendor and its page covers Microsoft 365 content, not application tables or logs. The legal retention periods differ by jurisdiction; the source gives only the engineering principle
 borrowed_from:
   - https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures
   - https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html
   - https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/data-protection-principles/a-guide-to-the-data-protection-principles/storage-limitation/
   - https://gdpr-info.eu/art-5-gdpr/
+  - https://learn.microsoft.com/en-us/purview/retention
 ---
 
 **Rule.** Give every store of personal or sensitive data a retention period, and delete or anonymise the data when it ends.

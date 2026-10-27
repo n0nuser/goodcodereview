@@ -203,7 +203,7 @@ items: list[Item] = Field(max_length=100)            # body capped at 1 MB by th
 severity: block  
 concerns: reliability, correctness  
 applies_when: The code starts a task, goroutine, or thread per item, request, or message.  
-Backed by: Google, Python Software Foundation, Tokio project, Cabify.
+Backed by: Google, Python Software Foundation, Tokio project, Cabify, AWS.
 
 **Rule.** Cap how many background tasks run at once, and never spawn one per input with no limit.
 
@@ -466,7 +466,7 @@ per-tenant semaphore on workers
 severity: should-fix  
 concerns: accessibility, usability  
 applies_when: A page or app is served to browsers on screens of any size.  
-Backed by: W3C, Deque, The A11y Project.
+Backed by: W3C, Deque, The A11y Project, WebAIM, Mozilla, Google, Microsoft.
 
 **Rule.** Make the page usable at 320 CSS pixels wide and at 200% text zoom, with no sideways scrolling, no clipped content, and no blocked pinch-zoom.
 
@@ -502,7 +502,7 @@ Backed by: W3C, Deque, The A11y Project.
 severity: block  
 concerns: reliability  
 applies_when: The code retries a failed call, or wraps a client that retries.  
-Backed by: Microsoft, AWS, Google.
+Backed by: Microsoft, AWS, Google, Stripe, GitHub.
 
 **Rule.** Retry only transient errors, with capped attempts and jittered exponential backoff.
 
@@ -564,7 +564,7 @@ login():  session.regenerate()
 severity: should-fix  
 concerns: usability, accessibility  
 applies_when: A page action, such as a save, an upload, a search, or a page load, can take more than about a second.  
-Backed by: Nielsen Norman Group, Apple, W3C. People cited: Ben Shneiderman.
+Backed by: Nielsen Norman Group, Apple, W3C, Microsoft, Atlassian. People cited: Ben Shneiderman.
 
 **Rule.** Show that a slow action is under way, and show its progress when it runs long.
 

@@ -7,13 +7,14 @@ status: stable
 lang: core
 applies_when: A request fans out to several backends, shards, or replicas and combines the answers.
 tool_gate: none
-note: a cap on fan-out width has one org (Google) and is left out of the Rule
+note: Elastic states a per-shard deadline and Envoy a per-try deadline; AWS states a timeout on any remote call, which is the leg rule applied to a dependency but is not written about fan-out, so it only partly states the clause. A cap on fan-out width has one org (Google) and is left out of the Rule
 borrowed_from:
   - https://www.barroso.org/publications/TheTailAtScale.pdf
   - https://grpc.io/docs/guides/request-hedging/
   - https://cassandra.apache.org/doc/latest/cassandra/developing/cql/ddl.html
   - https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search
   - https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/route/v3/route_components.proto
+  - https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/
 ---
 
 **Rule.** Give every leg of a fan-out its own deadline, and decide in code what happens when a leg misses it: a partial result, a hedged request, or an error.

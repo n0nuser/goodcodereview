@@ -7,7 +7,7 @@ status: stable
 lang: core
 applies_when: A page action, such as a save, an upload, a search, or a page load, can take more than about a second.
 tool_gate: none; throttle the network and run the action.
-note: 3 orgs (NN/g, Apple, Shneiderman) for feedback and graded progress. The 1 s and 10 s limits and the Cancel button come from NN/g, and Cancel also from Apple, so they are in Why. Norman's feedback principle is topic only
+note: Showing that a slow action is under way is backed by NN/g, Apple, Microsoft and Atlassian. Showing progress when it runs long is backed by NN/g, Apple and Microsoft, and Microsoft gives the determinate and indeterminate split the PASS example uses. The 1 s and 10 s limits and the Cancel button come from NN/g, and Cancel also from Apple, so they are in Why. Norman's feedback principle is topic only, and Shneiderman's golden rules are a person's list, not an organisation
 borrowed_from:
   - https://www.nngroup.com/articles/response-times-3-important-limits/
   - https://www.nngroup.com/articles/skeleton-screens/
@@ -15,6 +15,8 @@ borrowed_from:
   - https://developer.apple.com/tutorials/data/design/human-interface-guidelines/feedback.json
   - https://www.cs.umd.edu/users/ben/goldenrules.html
   - https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html
+  - https://learn.microsoft.com/en-us/windows/apps/design/controls/progress-controls
+  - https://atlassian.design/components/spinner/usage
 ---
 
 **Rule.** Show that a slow action is under way, and show its progress when it runs long.

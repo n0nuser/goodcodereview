@@ -4,7 +4,7 @@ level: service
 tags: [reliability, resilience, retries]
 severity: block
 status: stable
-note: Google SRE gives a retry budget (about 10% of requests); the card leaves the number to the team
+note: Transient errors are backed by Microsoft, Google SRE and AWS (a vendor), though AWS frames retries as the tool for transient failures rather than forbidding permanent ones. Capped attempts are backed by Microsoft, Google SRE, AWS and GitHub (a vendor). Jittered exponential backoff is backed by Google SRE, AWS and Stripe (a vendor). Google SRE gives a retry budget (about 10% of requests); the card leaves the number to the team
 lang: core
 applies_when: The code retries a failed call, or wraps a client that retries.
 tool_gate: none
@@ -13,6 +13,9 @@ borrowed_from:
   - https://aws.amazon.com/builders-library/minimizing-correlated-failures-in-distributed-systems/
   - https://sre.google/sre-book/addressing-cascading-failures/
   - https://sre.google/sre-book/handling-overload/
+  - https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/
+  - https://docs.stripe.com/rate-limits
+  - https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api
 ---
 
 **Rule.** Retry only transient errors, with capped attempts and jittered exponential backoff.

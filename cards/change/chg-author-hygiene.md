@@ -7,11 +7,13 @@ status: stable
 lang: core
 applies_when: Every change submitted for review.
 tool_gate: PR template with required sections; branch protection requiring green CI.
+note: Linux kernel and Kubernetes state the pre-submit self-check; GitLab states self-review of the merge request as a checklist item, and it is a vendor but this is contributor guidance. Phabricator covers the commit message only and Palantir is unreviewed
 borrowed_from:
   - https://docs.kernel.org/process/submitting-patches.html
   - https://secure.phabricator.com/book/phabflavor/article/writing_reviewable_code/
   - https://blog.palantir.com/code-review-best-practices-19e02780015f
   - https://www.kubernetes.dev/docs/guide/pull-requests/
+  - https://docs.gitlab.com/development/code_review/
 ---
 
 **Rule.** Self-review the diff and write the description before requesting review.

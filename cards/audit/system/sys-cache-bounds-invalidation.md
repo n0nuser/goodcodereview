@@ -4,7 +4,7 @@ level: system
 tags: [performance, caching, memory]
 severity: should-fix
 status: stable
-note: bounds and expiry have 3 orgs (AWS, Redis, Caffeine); invalidation has one (IETF, HTTP only) and value versioning none, so both sit in Why
+note: Expiry is backed by AWS, Microsoft, Google Cloud and Cloudflare. Google Cloud and Cloudflare are vendors and state their own product knobs, and Google Cloud partly restates Redis's maxmemory and TTL pair. Size is not claimed here: Redis is the only clean organisation, the Caffeine wiki is one maintainer, and Microsoft's page only gives the consequence of an unbounded cache. Invalidation has one org (IETF, HTTP only) and value versioning none, so both sit in Why
 lang: core
 applies_when: The code adds an in-process or shared cache.
 tool_gate: none
@@ -13,6 +13,9 @@ borrowed_from:
   - https://redis.io/docs/latest/develop/reference/eviction/
   - https://github.com/ben-manes/caffeine/wiki/Eviction
   - https://www.rfc-editor.org/rfc/rfc9111.html#name-invalidating-stored-response
+  - https://learn.microsoft.com/en-us/azure/architecture/best-practices/caching
+  - https://cloud.google.com/memorystore/docs/redis/memory-management-best-practices
+  - https://developers.cloudflare.com/cache/how-to/edge-browser-cache-ttl/
 ---
 
 **Rule.** Bound every cache by size and give its entries an expiry.

@@ -4,7 +4,7 @@ level: system
 tags: [security, correctness, secrets, errors]
 severity: block
 status: stable
-note: Rule backed by OWASP, MITRE CWE-636/209, Saltzer and Schroeder, and RFC 9457 (security section); secrets in source rest on 12factor and OWASP only, so they stay in the Why
+note: Fail closed is backed by OWASP, MITRE (CWE-636 and CWE-209) and Microsoft, whose page states it only for certificate-validation errors. RFC 9457 backs the no-internals half. Secrets in source rest on 12factor and OWASP only, so they stay in the Why
 lang: core
 applies_when: The code handles credentials, logs data, or returns errors to clients.
 tool_gate: Secret scanner in CI; log-redaction tests.
@@ -16,6 +16,7 @@ borrowed_from:
   - https://12factor.net/config
   - https://web.mit.edu/Saltzer/www/publications/protection/Basic.html
   - https://www.rfc-editor.org/rfc/rfc9457.html
+  - https://learn.microsoft.com/en-us/azure/developer/azure-mcp-server/security
 ---
 
 **Rule.** Fail closed: a validation or auth error must deny, never continue, and an error response must not carry internals such as stack traces, SQL or tokens.

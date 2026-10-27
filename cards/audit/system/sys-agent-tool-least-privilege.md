@@ -7,11 +7,13 @@ status: stable
 lang: core
 applies_when: An LLM agent can call tools, run code, or act on external systems.
 tool_gate: Tool registry reviewed in code; downstream credentials scoped in IAM and tested as the agent identity.
+note: The narrow tool set is backed by OWASP, NCSC and Microsoft. This Microsoft page is not the MSRC prompt-injection post already cited and states least privilege and least action for the tools, data and operations an agent may use
 borrowed_from:
   - https://genai.owasp.org/llmrisk/llm062025-excessive-agency/
   - https://genai.owasp.org/llmrisk/llm052025-improper-output-handling/
   - https://www.ncsc.gov.uk/blog-post/prompt-injection-is-not-sql-injection
   - https://www.microsoft.com/en-us/msrc/blog/2025/07/how-microsoft-defends-against-indirect-prompt-injection-attacks
+  - https://learn.microsoft.com/en-us/security/zero-trust/sfi/manage-agentic-risk
 ---
 
 **Rule.** Give the agent only the narrow tools and the minimal credentials its task needs.

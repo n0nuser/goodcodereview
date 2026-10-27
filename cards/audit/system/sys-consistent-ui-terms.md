@@ -7,13 +7,15 @@ status: stable
 lang: core
 applies_when: Several screens or apps show the same action, status, or concept to the same users.
 tool_gate: none; list the labels and icons for one action across all screens.
-note: This card is about words and controls a user sees. It does not cover names in code or API field names.
+note: One icon is backed by W3C, GSA (USWDS) and Atlassian; Atlassian asks for existing icons to keep meanings consistent, which is softer than one icon per action. One label is backed by W3C, NN/g and GOV.UK. This card is about words and controls a user sees. It does not cover names in code or API field names.
 borrowed_from:
   - https://www.nngroup.com/articles/ten-usability-heuristics/
   - https://www.cs.umd.edu/users/ben/goldenrules.html
   - https://www.w3.org/WAI/WCAG22/Understanding/consistent-identification.html
   - https://www.gov.uk/guidance/government-design-principles
   - https://design-system.service.gov.uk/components/error-message/
+  - https://designsystem.digital.gov/components/icon/
+  - https://atlassian.design/foundations/iconography
 ---
 
 **Rule.** Use one label and one icon for the same action and the same concept across all screens.

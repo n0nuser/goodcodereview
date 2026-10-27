@@ -7,13 +7,14 @@ status: stable
 lang: core
 applies_when: The code starts a task, goroutine, or thread per item, request, or message.
 tool_gate: none
-note: Go blog, Tokio and Cabify back the Rule; errgroup and asyncio supply the limiting tools
+note: Both clauses are backed by Google (the Go blog, flagged as a vendor), Cabify and AWS (a vendor). AWS states a semaphore and per-workload thread pools that limit concurrency, and its page names the same thread-pool exhaustion the Why describes. errgroup and asyncio supply the limiting tools
 borrowed_from:
   - https://pkg.go.dev/golang.org/x/sync/errgroup
   - https://go.dev/blog/pipelines
   - https://docs.python.org/3/library/asyncio-sync.html
   - https://docs.rs/tokio/latest/tokio/sync/struct.Semaphore.html
   - https://tech.cabify.com/blog/engineering/shadow-routing-providers
+  - https://aws.amazon.com/builders-library/avoiding-insurmountable-queue-backlogs/
 ---
 
 **Rule.** Cap how many background tasks run at once, and never spawn one per input with no limit.

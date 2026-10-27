@@ -7,13 +7,14 @@ status: stable
 lang: core
 applies_when: The change renames, removes or reshapes a column, API field, message, config key or exported symbol that other code reads.
 tool_gate: Schema or API diff tools (breaking-change detectors) in CI.
-note: 3 orgs (GitLab, Stripe, Kubernetes). Kubernetes states the add-both-versions-then-remove rule for API versions, not expand-contract by name. Config keys and exported symbols have no source
+note: GitLab and Stripe state migrating every consumer before the old path goes; Microsoft's six-phase post states expand, move writes, data and reads, validate, then contract. Kubernetes states add-both-versions-then-remove for API versions, not expand-contract by name. Config keys and exported symbols have no source
 borrowed_from:
   - https://www.hyrumslaw.com/
   - https://devguide.python.org/getting-started/pull-request-lifecycle/
   - https://docs.gitlab.com/development/database/avoiding_downtime_in_migrations/
   - https://stripe.com/blog/online-migrations
   - https://kubernetes.io/docs/reference/using-api/deprecation-policy/
+  - https://devblogs.microsoft.com/azure-sql/schema-change/
 ---
 
 **Rule.** Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.

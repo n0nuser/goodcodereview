@@ -31,7 +31,7 @@ creds = user_scoped_token(user, scopes=["tickets:rw"])       # downstream checks
 severity: should-fix  
 concerns: performance  
 applies_when: The code adds an in-process or shared cache.  
-Backed by: AWS, Redis, Caffeine project, IETF.
+Backed by: AWS, Redis, Caffeine project, IETF, Microsoft, Google, Cloudflare.
 
 **Rule.** Bound every cache by size and give its entries an expiry.
 
@@ -58,7 +58,7 @@ redis.conf: maxmemory 2gb, maxmemory-policy allkeys-lru
 severity: discuss  
 concerns: usability, accessibility  
 applies_when: Several screens or apps show the same action, status, or concept to the same users.  
-Backed by: Nielsen Norman Group, W3C, GOV.UK. People cited: Ben Shneiderman.
+Backed by: Nielsen Norman Group, W3C, GOV.UK, USWDS, Atlassian. People cited: Ben Shneiderman.
 
 **Rule.** Use one label and one icon for the same action and the same concept across all screens.
 
@@ -86,7 +86,7 @@ A different outcome, such as archive, gets a different label: [Archive].
 severity: should-fix  
 concerns: performance, reliability  
 applies_when: A request fans out to several backends, shards, or replicas and combines the answers.  
-Backed by: Google, Apache Software Foundation, Elastic, Envoy.
+Backed by: Google, Apache Software Foundation, Elastic, Envoy, AWS.
 
 **Rule.** Give every leg of a fan-out its own deadline, and decide in code what happens when a leg misses it: a partial result, a hedged request, or an error.
 
@@ -142,7 +142,7 @@ alarm on age of oldest item; spillover queue for old deltas
 severity: block  
 concerns: reliability, correctness  
 applies_when: A TTL lock or lease guards a write to an external store.  
-Backed by: AWS, Google, Apache Software Foundation, Hazelcast. People cited: Martin Kleppmann, Salvatore Sanfilippo.
+Backed by: AWS, Google, Apache Software Foundation, Hazelcast, Microsoft. People cited: Martin Kleppmann, Salvatore Sanfilippo.
 
 **Rule.** Check a correctness lock on the resource side (fencing token or compare-and-set), never by lock possession alone.
 
@@ -224,7 +224,7 @@ for o in Order.objects.select_related("user"):
 severity: should-fix  
 concerns: security  
 applies_when: The system stores, copies or logs personal or otherwise sensitive data.  
-Backed by: OWASP, ICO, intersoft consulting.
+Backed by: OWASP, ICO, intersoft consulting, Microsoft.
 
 **Rule.** Give every store of personal or sensitive data a retention period, and delete or anonymise the data when it ends.
 
@@ -277,7 +277,7 @@ destructive actions -> human confirm ; untrusted text labelled in the prompt
 severity: block  
 concerns: security, correctness  
 applies_when: The code handles credentials, logs data, or returns errors to clients.  
-Backed by: OWASP, MITRE, Heroku, MIT, IETF.
+Backed by: OWASP, MITRE, Heroku, MIT, IETF, Microsoft.
 
 **Rule.** Fail closed: a validation or auth error must deny, never continue, and an error response must not carry internals such as stack traces, SQL or tokens.
 

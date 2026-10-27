@@ -5,7 +5,7 @@
 severity: should-fix  
 concerns: process  
 applies_when: Every change submitted for review.  
-Backed by: Linux kernel, Phacility, Palantir, Kubernetes.
+Backed by: Linux kernel, Phacility, Palantir, Kubernetes, GitLab.
 
 **Rule.** Self-review the diff and write the description before requesting review.
 
@@ -59,7 +59,7 @@ flag orders_newest_first defaults off for one release".
 severity: block  
 concerns: compatibility  
 applies_when: The change renames, removes or reshapes a column, API field, message, config key or exported symbol that other code reads.  
-Backed by: Python Software Foundation, GitLab, Stripe, Kubernetes. People cited: Hyrum Wright.
+Backed by: Python Software Foundation, GitLab, Stripe, Kubernetes, Microsoft. People cited: Hyrum Wright.
 
 **Rule.** Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.
 
@@ -193,7 +193,7 @@ Commit 2: the split. The same test passes unchanged.
 severity: should-fix  
 concerns: maintainability, process  
 applies_when: The change both restructures or reformats code and changes behaviour, or moves code between files.  
-Backed by: Linux kernel, Google, Apache Software Foundation, Python Software Foundation. People cited: Henrik Warne, Kent Beck.
+Backed by: Linux kernel, Google, Apache Software Foundation, Python Software Foundation, LLVM. People cited: Henrik Warne, Kent Beck.
 
 **Rule.** Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
 
@@ -299,7 +299,7 @@ PR adds discount.py change and test_discount.py with the edge cases
 severity: block  
 concerns: testing, process  
 applies_when: The author or reviewer asserts the change works or a finding is real.  
-Backed by: Python Software Foundation, Phacility, Google, Anthropic. People cited: Dan Luu.
+Backed by: Python Software Foundation, Phacility, Google, Anthropic, GitLab. People cited: Dan Luu.
 
 **Rule.** Back every "works" or "bug" claim with something run: a repro, a test or command output.
 
