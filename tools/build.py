@@ -827,6 +827,16 @@ def main():
         (SITE / name).write_text(json.dumps(data, indent=1, ensure_ascii=False) + "\n")
     (SITE / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {BASE}/sitemap.xml\n")
     (SITE / "_headers").write_text(headers_file(slugs))
+    # RFC 9116. Expires is 180 days after the build date, so each rebuild renews it.
+    (SITE / ".well-known").mkdir(exist_ok=True)
+    expires = (datetime.date.fromisoformat(date) + datetime.timedelta(days=180)).isoformat()
+    (SITE / ".well-known" / "security.txt").write_text(
+        "Contact: mailto:contact@pablogonzalez.me\n"
+        f"Contact: {REPO}/security/advisories/new\n"
+        f"Expires: {expires}T00:00:00Z\n"
+        "Preferred-Languages: en, es\n"
+        f"Canonical: {BASE}/.well-known/security.txt\n"
+        f"Policy: {REPO}/blob/main/SECURITY.md\n")
 
     # Agent Skills discovery: serve the skill and its references, and list it with the sha256 digest of the served SKILL.md.
     wk = SITE / ".well-known" / "agent-skills"
