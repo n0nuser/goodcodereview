@@ -438,7 +438,7 @@ def sources(fm):
     out = (f'<p class="note"><strong>{head}</strong> {len(os_)} organisation{"s" * (len(os_) != 1)}:</p>{ul(os_)}' if os_
            else f'<p class="note"><strong>{head}</strong> no organisation yet.</p>')
     if ps:
-        out += f'<p class="note"><strong>People cited</strong> (references, not counted):</p>{ul(ps)}'
+        out += f'<p class="note"><strong>People cited:</strong></p>{ul(ps)}'
     return f'<div class="by">{out}</div>'
 
 
