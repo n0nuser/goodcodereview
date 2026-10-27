@@ -17,6 +17,8 @@ CONCERNS = ["correctness", "security", "performance", "reliability", "compatibil
             "testing", "maintainability", "accessibility", "usability", "observability", "process"]
 # Closed list. Every draft names its main blocker as the first word of `lacks:`. docs/PROMOTION.md defines each one.
 LACKS = ["orgs", "evidence", "failable", "duplicate", "contradiction", "held", "unreviewed"]
+# True: a stable card with fewer than three organisations (people excluded) is an error. False: it only prints a warning.
+ORG_FLOOR_STRICT = True
 BODY_MARKS = ["**Rule.**", "**Why.**", "**FAIL**", "**PASS**", "**Counterpoint.**"]
 
 
@@ -115,9 +117,12 @@ def validate(root):
             if orgs.org_of(u) is None:
                 err(f"borrowed_from URL has no organisation in tools/orgs.py: {u}")
         # A floor for rule 1 of docs/PROMOTION.md: it counts per Rule clause, so three orgs per card is necessary, not sufficient.
-        found = {orgs.org_of(u) for u in urls} - {None}
+        found = {orgs.org_of(u) for u in urls} - {None} - orgs.PERSONS
         if fm.get("status") == "stable" and len(found) < 3:
-            err(f"stable card has {len(found)} organisation(s) in borrowed_from; it needs at least 3")
+            if ORG_FLOOR_STRICT:
+                err(f"stable card has {len(found)} organisation(s) in borrowed_from; it needs at least 3")
+            else:
+                print(f"warning: {rel}: {len(found)} organisation(s) in borrowed_from; needs at least 3", file=sys.stderr)
         lacks = fm.get("lacks")
         if fm.get("status") == "stable" and lacks is not None:
             err("stable card has 'lacks:'; remove it on promotion")

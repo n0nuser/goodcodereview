@@ -36,6 +36,15 @@ ORGS = {
     "tef": "tef (programmingisterrible)", "tokio": "Tokio project", "uber": "Uber", "uswds": "USWDS", "utsa": "University of Texas at San Antonio", "vorpus": "Nathaniel J. Smith",
     "warne": "Henrik Warne", "wayne": "Hillel Wayne", "webaim": "WebAIM", "whatwg": "WHATWG", "winand": "Markus Winand",
     "wordpress": "WordPress", "w3c": "W3C", "envoy": "Envoy", "hyrum": "Hyrum Wright", "owasp": "OWASP", "zalando": "Zalando",
+    "jetbrains": "JetBrains", "nvidia": "NVIDIA", "statsig": "Statsig", "etcd": "etcd", "hazelcast": "Hazelcast",
+    "ecto": "Ecto", "cockroach": "CockroachDB",
+}
+
+# Orgs that are one author. They show in "Backed by" but never count toward the three organisations a stable card needs.
+PERSONS = {
+    "brendan-gregg", "dan-luu", "feathers", "heydon", "hickey", "hyrum", "jnd", "joel", "kane", "kent-beck", "kent-c-dodds",
+    "kleppmann", "liskov-wing", "lucumr", "mcintosh", "ousterhout", "portebois", "salvatore", "sandi-metz", "shneiderman",
+    "tef", "vorpus", "warne", "wayne", "winand",
 }
 
 # URL prefix (no scheme) -> org id. The longest matching prefix wins. A prefix without "/" also matches subdomains,
@@ -78,6 +87,9 @@ PREFIXES = {
     "kubernetes.dev": "kubernetes", "pgbouncer.org": "pgbouncer", "postgresql.org": "postgresql", "nngroup.com": "nngroup",
     "rfc-editor.org": "ietf", "section508.gov": "section508", "sqlite.org": "sqlite", "stepsecurity.io": "stepsecurity",
     "uber.com": "uber", "w3.org": "w3c",
+    "flink.apache.org": "apache", "hadoop.apache.org": "apache", "kubernetes.io": "kubernetes", "research.google": "google",
+    "jetbrains.com": "jetbrains", "github.com/NVIDIA/": "nvidia", "statsig.com": "statsig", "etcd.io": "etcd",
+    "docs.hazelcast.com": "hazelcast", "ecto-sql.hexdocs.pm": "ecto", "docs.cockroachlabs.com": "cockroach",
     "github.com/GoogleChrome/": "google", "github.com/Netflix/": "netflix", "github.com/ai/size-limit": "sitnik",
     "github.com/ankane/": "kane", "github.com/ben-manes/caffeine": "ben-manes", "github.com/cursor/plugins/": "cursor",
     "github.com/dequelabs/": "deque", "github.com/ghostty-org/": "ghostty", "github.com/johnousterhout/": "ousterhout",

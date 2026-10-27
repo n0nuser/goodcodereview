@@ -63,11 +63,11 @@ a { color: #0a58ca; text-decoration: none; }   /* no underline, no hover or focu
 severity: should-fix  
 concerns: maintainability  
 applies_when: A comment sits next to code, or the code needs one to be understood.  
-backed by: Sébastien Portebois, Google, John Ousterhout, Henrik Warne
+backed by: Sébastien Portebois, Google, John Ousterhout, Henrik Warne, Mozilla, Python Software Foundation, Apache Software Foundation
 
-**Rule.** Write comments that give a reason, a constraint, or a trade-off; rename before commenting, and never restate what the next line does.
+**Rule.** Write comments that give a reason, a constraint, or a trade-off, and never restate what the next line does.
 
-**Why.** A restating comment rots silently and adds nothing. A missing reason makes the next person delete the code that mattered.
+**Why.** A restating comment rots silently and adds nothing. A missing reason makes the next person delete the code that mattered. Rename before commenting: clearer code needs fewer comments.
 
 **FAIL**
 
@@ -1059,11 +1059,11 @@ return UserOut.model_validate(user)
 severity: should-fix  
 concerns: accessibility, usability  
 applies_when: Script shows a message after an async action without moving focus, such as "Saved", a result count, or an error.  
-backed by: W3C, Mozilla, Heydon Pickering
+backed by: W3C, Mozilla, Heydon Pickering, WebAIM
 
-**Rule.** Announce an async status message through a live region (`role="status"` or `role="alert"`) that is already in the markup before its text changes.
+**Rule.** Announce an async status message through a live region (`role="status"` or `role="alert"`), and put a `role="status"` or `aria-live` region in the markup before its text changes.
 
-**Why.** A sighted user sees "Saved" appear. A screen-reader user hears nothing, because focus did not move. Most readers announce a change only in a region that existed first, so a region created together with its message is often skipped.
+**Why.** A sighted user sees "Saved" appear. A screen-reader user hears nothing, because focus did not move. Most readers announce a change only in a region that existed first, so a status region created together with its message is often skipped. A `role="alert"` region is the exception: readers announce it even when script injects it.
 
 **FAIL**
 

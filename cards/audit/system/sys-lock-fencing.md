@@ -7,10 +7,14 @@ status: stable
 lang: core
 applies_when: A TTL lock or lease guards a write to an external store.
 tool_gate: none
+note: 3 orgs (Google Chubby, Apache Hadoop, Hazelcast). Hazelcast is a vendor and its page draws on Chubby and Kleppmann. The AWS Builders Library supports the Why only; it names the hazard and never says to check at the resource
 borrowed_from:
   - https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html
   - https://antirez.com/news/101
   - https://aws.amazon.com/builders-library/leader-election-in-distributed-systems/
+  - https://research.google/pubs/the-chubby-lock-service-for-loosely-coupled-distributed-systems/
+  - https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html
+  - https://docs.hazelcast.com/hazelcast/5.7/data-structures/fencedlock
 ---
 
 **Rule.** Check a correctness lock on the resource side (fencing token or compare-and-set), never by lock possession alone.

@@ -142,7 +142,7 @@ alarm on age of oldest item; spillover queue for old deltas
 severity: block  
 concerns: reliability, correctness  
 applies_when: A TTL lock or lease guards a write to an external store.  
-backed by: Martin Kleppmann, Salvatore Sanfilippo, AWS
+backed by: Martin Kleppmann, Salvatore Sanfilippo, AWS, Google, Apache Software Foundation, Hazelcast
 
 **Rule.** Check a correctness lock on the resource side (fencing token or compare-and-set), never by lock possession alone.
 
@@ -172,7 +172,7 @@ db.update(row, where fence < token, set fence = token)
 severity: block  
 concerns: reliability, compatibility  
 applies_when: A change drops, renames, or retypes a column, or mixes schema change with a data backfill.  
-backed by: GitLab, Stripe, Andrew Kane
+backed by: GitLab, Stripe, Andrew Kane, Ecto, CockroachDB
 
 **Rule.** Run data backfills in batches, in a migration separate from the schema change.
 

@@ -7,11 +7,13 @@ status: stable
 lang: core
 applies_when: A multi-step flow, such as checkout or signup, asks for data in more than one step.
 tool_gate: none; a walk through the flow that lists each field asked twice.
-note: 3 orgs (W3C, NN/g, Shneiderman)
+note: 3 orgs (W3C, GOV.UK, Baymard); Baymard sells research, so it is closer to a vendor. NN/g and Shneiderman back the Why (recognition over recall), not the practice
 borrowed_from:
   - https://www.w3.org/WAI/WCAG22/Understanding/redundant-entry.html
   - https://www.nngroup.com/articles/ten-usability-heuristics/
   - https://www.cs.umd.edu/users/ben/goldenrules.html
+  - https://design-system.service.gov.uk/patterns/question-pages
+  - https://baymard.com/blog/set-billing-equal-to-shipping
 ---
 
 **Rule.** Do not ask for information the user already gave in the same flow. Fill it in, or let the user pick it.

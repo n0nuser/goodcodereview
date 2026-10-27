@@ -7,18 +7,19 @@ status: stable
 lang: core
 applies_when: Script shows a message after an async action without moving focus, such as "Saved", a result count, or an error.
 tool_gate: none; a screen-reader pass, or a test that the region exists with a role before the text changes.
-note: 3 orgs (W3C, Mozilla, Heydon Pickering); W3C technique ARIA22 is the W3C source for the region existing first. USWDS reports that VoiceOver on macOS does not support `role="alert"`, so test the target reader
+note: 3 orgs (W3C, Mozilla, WebAIM); W3C technique ARIA22 is the W3C source for the region existing first, and MDN says role="alert" is announced even when injected. USWDS reports that VoiceOver on macOS does not support `role="alert"`, so test the target reader
 borrowed_from:
   - https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html
   - https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Guides/Live_regions
   - https://inclusive-components.design/notifications/
   - https://www.w3.org/WAI/tutorials/forms/notifications/
   - https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA22
+  - https://webaim.org/techniques/aria/
 ---
 
-**Rule.** Announce an async status message through a live region (`role="status"` or `role="alert"`) that is already in the markup before its text changes.
+**Rule.** Announce an async status message through a live region (`role="status"` or `role="alert"`), and put a `role="status"` or `aria-live` region in the markup before its text changes.
 
-**Why.** A sighted user sees "Saved" appear. A screen-reader user hears nothing, because focus did not move. Most readers announce a change only in a region that existed first, so a region created together with its message is often skipped.
+**Why.** A sighted user sees "Saved" appear. A screen-reader user hears nothing, because focus did not move. Most readers announce a change only in a region that existed first, so a status region created together with its message is often skipped. A `role="alert"` region is the exception: readers announce it even when script injects it.
 
 **FAIL**
 
