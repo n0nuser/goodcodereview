@@ -10,6 +10,16 @@
 
 Without a checkout, read https://goodcodereview.com/llms.txt.
 
+## llms.txt follows llmstxt.org
+
+`site/llms.txt` follows https://llmstxt.org/ completely, and `python3 tools/build.py` writes it. Keep it that way:
+
+- An H1 with the site name, then a `>` blockquote summary, then sections with no headings, then H2 sections.
+- Every H2 section is a file list: `- [name](url): notes`. Each stable card is a link to its level file, `[id](https://goodcodereview.com/<level>.md#<id>): [severity] {concerns}: rule`.
+- Secondary links go under the last section, `## Optional`.
+- The file stays small enough to fit in context; the detail lives in the level files behind the links. The spec sets no size limit, and `tools/agent_ready_check.py` item 16 checks the shape.
+- Every page that agents may need also has a clean `.md` twin at the same URL.
+
 ## Contribute a card
 
 1. Copy `cards/_template.md` to `cards/change/` or `cards/audit/<level>/`. Set `status: draft` and a `lacks:` line that says why it is not stable yet. `docs/PROMOTION.md` lists the reasons and the bar for stable.

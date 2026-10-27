@@ -14,7 +14,7 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
 BASE = "https://goodcodereview.com"
-LLMS_MAX = 30_000
+LLMS_MAX = 35_000  # llmstxt.org sets no limit ("small enough to fit in context"); the Ora scanner flags files above 30,000 characters
 PAGE_MAX = 100_000
 FAILS = []
 
@@ -155,12 +155,24 @@ def main():
 
     # 15, 16, 17, 19: llms.txt
     llms = (SITE / "llms.txt").read_text()
-    check(16, 100 <= len(llms) < LLMS_MAX and re.match(r"# \S", llms) and re.search(r"(?m)^> \S", llms) and re.search(r"(?m)^## \S", llms),
-          f"llms.txt is {len(llms)} characters (limit {LLMS_MAX}) with an H1, a blockquote summary, and H2 sections")
+    # llmstxt.org: H1, then a blockquote, then headingless sections, then H2 file lists of `- [name](url): notes`; "Optional" last.
+    lines = llms.split("\n")
+    first_h2 = next((i for i, l in enumerate(lines) if l.startswith("## ")), len(lines))
+    fence, bad_items = False, []
+    for l in lines[first_h2:]:
+        if l.startswith("```"):
+            fence = not fence
+        elif not fence and l.strip() and not l.startswith("## ") and not re.match(r"- \[[^\]]+\]\(\S+\)(: .*)?$", l):
+            bad_items.append(l[:50])
+    h2s = [l for l in lines if l.startswith("## ")]
+    shape = (re.match(r"# \S", llms) and re.match(r"(?s)# [^\n]+\n\n> \S", llms) and not any(l.startswith("#") for l in lines[1:first_h2])
+             and not bad_items and h2s and h2s[-1] == "## Optional")
+    check(16, 100 <= len(llms) < LLMS_MAX and shape,
+          f"llms.txt follows llmstxt.org ({len(llms)} characters, limit {LLMS_MAX}): H1, blockquote, headingless intro, H2 file lists, Optional last{'; not a file-list line: ' + bad_items[0] if bad_items else ''}")
     own = [u.rstrip(".,)") for u in re.findall(r"\]\((https?://[^)\s]+)\)", llms) if urlparse(u).netloc == "goodcodereview.com"]
     dead = [u for u in own if resolve(u) is None]
     check(17, own and not dead, f"{len(own)} own-site links in llms.txt resolve to files in site/{': dead ' + ', '.join(dead) if dead else ''}")
-    check(19, re.search(r"(?m)^## When to use", llms) is not None, "llms.txt has a `When to use` section")
+    check(19, "Use this site when you are asked to review" in llms, "llms.txt opens with a `When to use` paragraph")
     unbalanced = [f.name for f in [*SITE.glob("*.md"), SITE / "llms.txt", SITE / "llms-drafts.txt"] if len(re.findall(r"(?m)^```", f.read_text())) % 2]
     check(15, not unbalanced and all('<code class="language-' in (SITE / f"{lv}.html").read_text() for lv in ("change", "function")),
           f"code fences are balanced in served Markdown and tagged with a language class in HTML{': ' + ', '.join(unbalanced) if unbalanced else ''}")

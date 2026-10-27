@@ -4,6 +4,7 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ## [Unreleased]
 
+- `llms.txt` follows llmstxt.org: an H1, a blockquote, headingless intro sections, then H2 file lists of `[name](url): notes` links, with draft cards and site pages under `## Optional`. Each stable card links to its entry in the level file. `/.well-known/security.txt` is served.
 - `code-dead-code` and `mod-yagni` are stable again. Each Rule is narrowed to the clauses that three organisations back (`docs/research/dead-code-yagni-pass.md`), and commented-out code and orphaned files moved to the Why.
 - Two cards moved to draft, six gained sources, and two Rules narrowed, so every stable card has three organisations that are not single authors (`python3 tools/validate.py` enforces it).
 - Each card ends with a "Backed by" list that names every organisation behind it, with a logo or a letter badge, and groups its source links under each one. `tools/orgs.py` maps every source URL to an organisation, and `python3 tools/validate.py` fails a stable card with fewer than three. People are references: they appear under "People cited" and never count as organisations. A draft says "Cites" instead of "Backed by". `cards.json` has an `orgs` field (organisations only) and a `people` field per card, and its `schema_version` is now 3.

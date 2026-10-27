@@ -743,21 +743,25 @@ def main():
     body = list(sk[5:])
     k = next(i for i, l in enumerate(body) if l.startswith("The full text"))
     del body[k:body.index("", k) + 1]  # the shared pointer lines; llms.txt has its own Glossary and Draft sections
-    llms = [body[0], "", "> " + sk[2][len("description: "):], "", "## When to use this site", "", WHEN_TO_USE, ""]
-    by_id = {fm["id"]: fm for _, fm, _ in stable}
-    seen_level = False
+    # Follows https://llmstxt.org/ : H1, blockquote, headingless sections, then H2 file lists of `[name](url): notes` links,
+    # with secondary links under "Optional". tools/agent_ready_check.py checks the shape.
+    bold = lambda l: f"**{l[3:]}**" if l.startswith("## ") else l
+    llms = [body[0], "", "> " + sk[2][len("description: "):], "", WHEN_TO_USE, ""]
+    seen_level, cur = False, None
     for l in body[2:]:
         if l.startswith("## ") and l[3:] in LEVELS:
             if not seen_level:
-                llms += SEVERITY
+                llms += [bold(x) for x in SEVERITY]
                 seen_level = True
-            llms += [l, "", f"- [{NAME[l[3:]]}, full text]({BASE}/{l[3:]}.md): every stable {l[3:]} card with its FAIL and PASS examples and who backs it."]
+            cur = l[3:]
+            llms += [l, "", f"- [{NAME[cur]}, full text]({BASE}/{cur}.md): every stable {cur} card with its FAIL and PASS examples and who backs it."]
+        elif cur and (m := re.match(r"- `([a-z0-9-]+)`(.*)", l)):
+            llms.append(f"- [{m[1]}]({BASE}/{cur}.md#{m[1]}):{m[2]}")
         else:
-            m = re.match(r"- `([a-z0-9-]+)`", l)
-            llms.append(l)  # who backs each card is in the level file behind the link, not in this index
+            llms.append(bold(l))
     llms += ["## Glossary", "", f"- [Glossary]({BASE}/glossary.md): terms the cards link to.", "",
-             "## Draft cards", "", f"- [Draft cards]({BASE}/llms-drafts.txt): not vetted. {DRAFT_RULE}", "",
-             "## Site", "",
+             "## Optional", "",
+             f"- [Draft cards]({BASE}/llms-drafts.txt): not vetted. {DRAFT_RULE}",
              f"- [About]({BASE}/about.html): who makes this and under which licence.",
              f"- [Privacy]({BASE}/privacy.html): the site collects nothing.",
              f"- [Drafts by what they lack]({BASE}/drafts.md): every draft grouped by what keeps it from stable.",
@@ -777,7 +781,8 @@ def main():
         dr += [f"## pack {pk}", "", f"Full text: {url(cs[0][1])}", ""] + [dline(fm, b) for _, fm, b in cs] + [""]
     text, dtext = "\n".join(llms), "\n".join(dr)
     idre = lambda t: re.findall(r"^- `([^`]+)` \[", t, re.M)
-    if idre(text) != idre("\n".join(sk)) or {fm["id"] for _, fm, _ in draft} & set(idre(text)):
+    lre = lambda t: re.findall(r"^- \[([a-z0-9-]+)\]\(\S+#\1\):", t, re.M)  # llms.txt links each card as [id](level.md#id)
+    if lre(text) != idre("\n".join(sk)) or {fm["id"] for _, fm, _ in draft} & set(lre(text)):
         sys.exit("llms.txt: stable ids differ from SKILL.md, or a draft id sits in it")
     if sorted(idre(dtext)) != sorted(fm["id"] for _, fm, _ in draft):
         sys.exit("llms-drafts.txt: ids differ from the draft cards")
