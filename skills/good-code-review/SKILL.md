@@ -103,6 +103,7 @@ To review only some concerns, such as a performance-only review, check only the 
 - `fn-response-fields-explicit` [should-fix] {security, compatibility}: Return a response type that lists each field, never the stored model or a generic dump of it.
 - `fn-status-announced-live-region` [should-fix] {accessibility, usability}: Announce an async status message through a live region (`role="status"` or `role="alert"`) that is already in the markup before its text changes.
 - `fn-target-size` [should-fix] {accessibility, usability}: Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.
+- `fn-test-behaviour-not-implementation` [should-fix] {testing, maintainability}: Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.
 - `fn-tls-verify-on` [block] {security}: Leave certificate and hostname verification on in every environment that ships.
 - `fn-xml-no-external-entities` [block] {security}: Parse untrusted XML with external entity resolution turned off, for example through a hardened parser such as `defusedxml`.
 

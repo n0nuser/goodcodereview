@@ -56,7 +56,7 @@ PREFIXES = {
     "docs.rs/regex/": "rust", "docs.rs/tokio/": "tokio", "docs.spring.io": "spring", "docs.sqlalchemy.org": "sqlalchemy",
     "stripe.com": "stripe", "stripe.dev": "stripe", "dropbox.tech": "dropbox", "engineering.atspotify.com": "spotify",
     "engineering.fb.com": "meta", "react.dev": "meta", "gdpr-info.eu": "gdpr-info", "owasp.org": "owasp",
-    "chrome.com": "google", "chromium.org": "google", "go.dev": "google", "google.aip.dev": "google", "google.github.io": "google", "sre.google": "google", "web.dev": "google",
+    "chrome.com": "google", "chromium.org": "google", "go.dev": "google", "google.aip.dev": "google", "google.github.io": "google", "sre.google": "google", "abseil.io": "google", "testing.googleblog.com": "google", "web.dev": "google",
     "grafana.com": "grafana", "grpc.io": "google", "protobuf.dev": "google", "guides.rubyonrails.org": "rails",
     "henrikwarne.com": "warne", "honeycomb.io": "honeycomb", "html.spec.whatwg.org": "whatwg", "ico.org.uk": "ico",
     "inclusive-components.design": "heydon", "jnd.org": "jnd", "kentcdodds.com": "kent-c-dodds", "learn.microsoft.com": "microsoft",
