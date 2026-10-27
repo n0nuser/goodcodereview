@@ -44,7 +44,7 @@ Ten cards had fewer than three organisations behind them once single authors wer
 
 ## sys-lock-fencing
 
-- Google, https://research.google/pubs/the-chubby-lock-service-for-loosely-coupled-distributed-systems/ (the OSDI 2006 paper by Burrows): "The recipient server is expected to test whether the sequencer is still valid and has the appropriate mode; if not, it should reject the request."
+- Google, https://www.usenix.org/legacy/event/osdi06/tech/full_papers/burrows/burrows.pdf (the OSDI 2006 Chubby paper by Burrows, section 2.4): "The recipient server is expected to test whether the sequencer is still valid and has the appropriate mode; if not, it should reject the request."
 - Apache Hadoop, https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html: "the JournalNodes will only ever allow a single NameNode to be a writer at a time." The resource side rejects the stale writer by epoch.
 - Hazelcast, https://docs.hazelcast.com/hazelcast/5.7/data-structures/fencedlock: "Lock holders are ordered by a monotonic fencing token ... passed to external services or resources to ensure sequential execution of the side effects." Hazelcast is a vendor, and the page draws on Chubby and Kleppmann.
 - AWS, https://aws.amazon.com/builders-library/leader-election-in-distributed-systems/: "garbage collection pauses between a lock being checked and work being done can lead to incorrect behavior". It names the hazard and never says to check at the resource, so it backs the Why only.

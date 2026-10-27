@@ -52,7 +52,7 @@ PERSONS = {
 # so "owasp.org" covers cheatsheetseries.owasp.org. On code hosts the org is the repository owner, never the host.
 PREFIXES = {
     "12factor.net": "heroku", "airbnb.tech": "airbnb", "alphagov.github.io": "govuk", "angular.dev": "google",
-    "antirez.com": "salvatore", "arxiv.org/abs/2406.10279": "utsa", "atlassian.design": "atlassian", "auth0.com": "auth0",
+    "antirez.com": "salvatore", "usenix.org/legacy/event/osdi06/tech/full_papers/burrows/burrows.pdf": "google", "arxiv.org/abs/2406.10279": "utsa", "atlassian.design": "atlassian", "auth0.com": "auth0",
     "aws.amazon.com": "aws", "aws.com": "aws", "baymard.com": "baymard", "bazel.build": "google", "blog.google": "google",
     "blog.palantir.com": "palantir", "blog.pragmaticengineer.com": "pragmatic-engineer", "newsletter.pragmaticengineer.com": "pragmatic-engineer",
     "cassandra.apache.org": "apache", "cloudflare.com": "cloudflare", "codeql.github.com": "github", "cwe.mitre.org": "mitre",
