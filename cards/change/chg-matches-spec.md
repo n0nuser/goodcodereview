@@ -10,7 +10,6 @@ applies_when: The change links a ticket, spec or issue.
 tool_gate: none
 borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
-  - https://github.com/matthiasn/talk-transcripts/blob/master/Hickey_Rich/HammockDrivenDev.md
 ---
 
 **Rule.** Trace every behaviour change in the diff to the stated requirement, and flag missing requirements and any change nobody asked for.
