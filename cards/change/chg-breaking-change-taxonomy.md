@@ -7,7 +7,7 @@ status: stable
 lang: core
 applies_when: The change alters anything a caller can observe, documented or not.
 tool_gate: Contract tests and API-diff tooling.
-note: 3 orgs (Google AIP-180, Microsoft, Kubernetes). The Python devguide states nothing on this and does not count. Ordering and timing have no support, and Microsoft allows performance changes
+note: Google AIP-180, Microsoft and Kubernetes cover observable behaviour and defaults. Python PEP 387 names return values, side effects and raised exceptions; OpenJDK treats a changed thrown error as a compatibility issue. The consumer check has AWS (contract tests on every producer change), Pact (can-i-deploy against known consumers; a vendor) and Spring Cloud Contract (a vendor). The Python devguide states nothing on this and does not count. Ordering and timing have no support, and Microsoft allows performance changes
 borrowed_from:
   - https://www.hyrumslaw.com/
   - https://michaelfeathers.silvrback.com/characterization-testing
@@ -15,6 +15,11 @@ borrowed_from:
   - https://google.aip.dev/180
   - https://learn.microsoft.com/en-us/dotnet/core/compatibility/library-change-rules
   - https://kubernetes.io/docs/reference/using-api/deprecation-policy/
+  - https://peps.python.org/pep-0387/
+  - https://wiki.openjdk.org/spaces/csr/pages/32342052/Kinds+of+Compatibility
+  - https://docs.aws.amazon.com/wellarchitected/latest/devops-guidance/qa.nt.7-verify-service-integrations-through-contract-testing.html
+  - https://docs.pact.io/pact_broker/can_i_deploy
+  - https://docs.spring.io/spring-cloud-contract/reference/project-features-stubrunner/stub-runner-stubs-per-consumer.html
 ---
 
 **Rule.** Treat any change that callers can observe in a signature, return values, error types, defaults, or side effects as breaking until a consumer check says otherwise.

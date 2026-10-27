@@ -32,7 +32,7 @@ Author left inline notes on the two non-obvious hunks.
 severity: block  
 concerns: compatibility  
 applies_when: The change alters anything a caller can observe, documented or not.  
-Backed by: Python Software Foundation, Google, Microsoft, Kubernetes. People cited: Hyrum Wright, Michael Feathers.
+Backed by: Python Software Foundation, Google, Microsoft, Kubernetes, OpenJDK, AWS, Pact, Spring. People cited: Hyrum Wright, Michael Feathers.
 
 **Rule.** Treat any change that callers can observe in a signature, return values, error types, defaults, or side effects as breaking until a consumer check says otherwise.
 
@@ -167,7 +167,7 @@ Median of 7 alternating runs: 412 ms -> 301 ms, range 398-421 vs 295-310.
 severity: should-fix  
 concerns: testing, maintainability  
 applies_when: The change restructures code and claims to keep its behaviour.  
-Backed by: Cursor, GitHub, Stripe.
+Backed by: Cursor, GitHub, Stripe, SonarSource, JetBrains, Apache Software Foundation.
 
 **Rule.** Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
 
@@ -247,7 +247,7 @@ one nit. Formatting left to the formatter, which CI enforces.
 severity: discuss  
 concerns: process  
 applies_when: The diff exceeds roughly 400 changed lines or about 20 files and is not generated or a pure move.  
-Backed by: Google, Microsoft, SmartBear, The Pragmatic Engineer.
+Backed by: Google, Microsoft, SmartBear, The Pragmatic Engineer, US Department of Veterans Affairs, USGS, Apache Software Foundation, Godot Engine, Ethereum Foundation.
 
 **Rule.** Split a change past about 400 changed lines or about 20 files, or say in the description why not; aim for about 200.
 

@@ -25,7 +25,7 @@ ORGS = {
     "microsoft": "Microsoft", "mit": "MIT", "mitre": "MITRE", "mozilla": "Mozilla", "mypy": "mypy project",
     "ncsc": "NCSC", "netflix": "Netflix", "nist": "NIST", "nngroup": "Nielsen Norman Group", "nodejs": "OpenJS Foundation",
     "npm": "npm", "openapi": "OpenAPI Initiative", "openssf": "OpenSSF", "opentelemetry": "OpenTelemetry",
-    "oracle": "Oracle", "ousterhout": "John Ousterhout", "pact": "Pact", "palantir": "Palantir", "pgbouncer": "PgBouncer project",
+    "oracle": "Oracle", "sonarsource": "SonarSource", "openjdk": "OpenJDK", "godot": "Godot Engine", "usgs": "USGS", "va": "US Department of Veterans Affairs", "ethereum": "Ethereum Foundation", "ousterhout": "John Ousterhout", "pact": "Pact", "palantir": "Palantir", "pgbouncer": "PgBouncer project",
     "phacility": "Phacility", "portswigger": "PortSwigger", "portebois": "Sébastien Portebois", "postgresql": "PostgreSQL",
     "pragmatic-engineer": "The Pragmatic Engineer", "prometheus": "Prometheus", "psf": "Python Software Foundation",
     "pyjwt": "PyJWT project", "rails": "Ruby on Rails", "redis": "Redis", "refactoring-guru": "Refactoring.Guru",
@@ -52,7 +52,7 @@ PERSONS = {
 # so "owasp.org" covers cheatsheetseries.owasp.org. On code hosts the org is the repository owner, never the host.
 PREFIXES = {
     "12factor.net": "heroku", "airbnb.tech": "airbnb", "alphagov.github.io": "govuk", "angular.dev": "google",
-    "antirez.com": "salvatore", "rustc-dev-guide.rust-lang.org": "rust", "edgeguides.rubyonrails.org": "rails", "usenix.org/legacy/event/osdi06/tech/full_papers/burrows/burrows.pdf": "google", "arxiv.org/abs/2406.10279": "utsa", "atlassian.design": "atlassian", "auth0.com": "auth0",
+    "antirez.com": "salvatore", "flex.apache.org": "apache", "cwiki.apache.org/confluence/display/QUICKSTEP": "apache", "github.com/google/": "google", "wiki.openjdk.org": "openjdk", "sonarsource.com": "sonarsource", "contributing.godotengine.org": "godot", "astrogeology.usgs.gov": "usgs", "depo-platform-documentation.scrollhelp.site": "va", "geth.ethereum.org": "ethereum", "rustc-dev-guide.rust-lang.org": "rust", "edgeguides.rubyonrails.org": "rails", "usenix.org/legacy/event/osdi06/tech/full_papers/burrows/burrows.pdf": "google", "arxiv.org/abs/2406.10279": "utsa", "atlassian.design": "atlassian", "auth0.com": "auth0",
     "aws.amazon.com": "aws", "aws.com": "aws", "baymard.com": "baymard", "bazel.build": "google", "blog.google": "google",
     "blog.palantir.com": "palantir", "blog.pragmaticengineer.com": "pragmatic-engineer", "newsletter.pragmaticengineer.com": "pragmatic-engineer",
     "cassandra.apache.org": "apache", "cloudflare.com": "cloudflare", "codeql.github.com": "github", "cwe.mitre.org": "mitre",

@@ -73,3 +73,25 @@ Only the kernel and NVIDIA state the rule on unused code, commented-out code has
 - Rails, https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html: "Include tests that fail without your code, and pass with it."
 - Microsoft, https://microsoft.github.io/code-with-engineering-playbook/code-reviews/process-guidance/reviewer-guidance/: "Tests should always be committed in the same PR as the code itself" and "Since parts of reviews can be automated via linters and such, human reviewers can focus on architectural and functional correctness." Backs the same-change clause of `chg-tests-ship-with-change` and the tool-enforced clause of `chg-review-signal`.
 - Mozilla, https://firefox-source-docs.mozilla.org/testing/testing-policy/index.html: a landing without tests "requires a comment from the reviewer explaining why it's appropriate". The reviewer writes the reason, not the author, so it does not back the author's stated-reason clause.
+
+## Pass 10: second round on three change cards
+
+Quotes were fetched from each page; the vendor flag is in `note:` on the card.
+
+- `chg-size-ceiling`
+  - VA.gov, https://depo-platform-documentation.scrollhelp.site/developer-docs/writing-small-prs: "we try to limit pull requests to 400-500 lines, because that's roughly the upper limit of what a reviewer can effectively review in an hour." For a larger one: "Write more in depth descriptions of the changes".
+  - USGS, https://astrogeology.usgs.gov/docs/how-to-guides/software-management/guidelines-for-pull-requests/: "The PR should not change more than 250 lines of code."
+  - Apache Quickstep, https://cwiki.apache.org/confluence/display/QUICKSTEP/Code+Review+Guidelines: "preferably be below 500 lines of code".
+  - Godot, https://contributing.godotengine.org/en/latest/development/contribution_rules.html: "if your change is large ... we expect you to be more thorough with your explanation."
+  - go-ethereum, https://geth.ethereum.org/docs/developers/geth-developer/code-review-guidelines: "If there isn't enough description content or the diff is too large, request an explanation."
+  - Google, https://github.com/google/langextract/blob/main/CONTRIBUTING.md: "Clearly explaining in the PR description why a larger change is necessary".
+- `chg-breaking-change-taxonomy`
+  - Python, https://peps.python.org/pep-0387/: "the return value, side effects, and raised exceptions of a function".
+  - OpenJDK, https://wiki.openjdk.org/spaces/csr/pages/32342052/Kinds+of+Compatibility: a method changed "to throw an error instead of compute a useful result" is "certainly a compatibility issue".
+  - AWS, https://docs.aws.amazon.com/wellarchitected/latest/devops-guidance/qa.nt.7-verify-service-integrations-through-contract-testing.html: "When any modification is made in a producer service, run contract tests to assess the contracts' validity."
+  - Pact, https://docs.pact.io/pact_broker/can_i_deploy: whether the version you are about to deploy "is compatible with the versions of the other apps that already exist in that environment".
+  - Spring Cloud Contract, https://docs.spring.io/spring-cloud-contract/reference/project-features-stubrunner/stub-runner-stubs-per-consumer.html: "If none fails, you can safely delete that part of the response, because nobody uses it."
+- `chg-refactor-has-behaviour-pin`
+  - SonarSource, https://www.sonarsource.com/blog/legacy-codebases-are-a-devops-issue/: "consider starting with approval tests" for refactoring, after "integrating tests for the most critical functionalities before embarking on any changes".
+  - JetBrains, https://junie.jetbrains.com/blog/work-with-legacy-code-efficiently/: "Write them [characterization tests] before any refactoring".
+  - Apache Flex, https://flex.apache.org/flexunit/tutorial/flexunit/Unit-15.html: "Never refactor without tests to back up the refactor."
