@@ -102,6 +102,7 @@ DRAFTS_DESC = "Every draft card grouped by what it lacks to become stable, with 
 # One closing prompt for design-level reviews. It sits outside the PASS/FAIL ledger.
 DESIGN_NOTE = "For an unscoped system or codebase review, end with one short line outside the ledger: name the decision you would most want written down and what its alternative costs. Cite file:line for the decision. Give no verdict and no severity for it."
 INVOKE = "After you install the skill, name it in your request, such as `/good-code-review review this PR`. An agent that is not told may review without it."
+FEEDBACK = f"Reviewed something with it? Tell us what was noisy, wrong, or missing: [open an issue]({REPO}/issues/new/choose)."
 BACKING = ("Every rule is curated: a card is stable only when at least three independent organisations, such as Google, Microsoft, OWASP, GitHub, Mozilla, AWS, W3C, and NIST, "
            "have published the same practice, and each card links its sources. Those organisations did not write or endorse this site.")
 DRAFT_NOTE = "A draft card is not vetted. Read it for ideas, but do not use it for a verdict."
@@ -204,6 +205,10 @@ To install it as a Claude Code plugin, run:
 ```text
 {example}
 ```
+
+## Feedback
+
+{feedback}
 
 ## Packs
 
@@ -356,6 +361,7 @@ b.onclick=()=>{s.has(v)?s.delete(v):s.add(v);b.setAttribute('aria-pressed',s.has
 if(R)R.onchange=()=>{G=R.value;go(1)};
 if(X)X.onclick=()=>{Object.values(S).forEach(s=>s.clear());G='';q('button[data-k]').forEach(b=>b.setAttribute('aria-pressed',false));go(1)};
 q('details.fg').forEach(d=>{if(S[d.dataset.k].size)d.open=true});
+if(matchMedia('(max-width:40rem)').matches)q('details.fg').forEach(d=>{if(!S[d.dataset.k].size)d.open=false});
 go();
 const V=document.getElementById('said'),say=(b,m)=>{b.textContent=m;V.textContent=m+'.'};
 q('button[data-copy]').forEach(b=>{const l=b.textContent;b.hidden=false;b.onclick=()=>{
@@ -759,6 +765,7 @@ def main():
         "<h2>Scope a review</h2><p>To review only some concerns, such as performance, use the <a href=\"concerns.html\">Concerns</a> page. "
         "Its filters live in the address, so <a href=\"concerns.html?concern=security,performance\">concerns.html?concern=security,performance</a> opens the security and performance cards.</p>"
         "<h2>Report format</h2><p>" + VERDICT + "</p>" + EXAMPLE_HTML +
+        "<h2>Feedback</h2><p>" + inline(FEEDBACK, {}) + "</p>"
         "<h2>Packs</h2><p>A pack adds language-specific cards on top of the levels. Use one with the level that matches your input.</p>"
         "<p>" + (", ".join(f'<a href="pack-{p}.html">{p.capitalize()} pack</a>' for p in packs) or "No packs yet.") + "</p>"
         '<p class="note">Writing CSS? <a href="https://good-css.com">good-css.com</a> has rules for reviewing CSS.</p>'), True, links, "index.html", SITE_DESC, "index", ld))
@@ -870,7 +877,7 @@ def main():
     xlink = lambda t: re.sub(r"\[\[([^\]]+)\]\]", lambda m: f"[{m[1]}]({BASE}/{home[m[1]]}.md#{m[1]})" if m[1] in home
                              else f"[{m[1]}]({BASE}/{ids[m[1]]})" if m[1] in ids else m[1], t)
     twins["index"] = ("Good Code Review", SITE_DESC, INDEX_MD.format(
-        verdict=plain, example=EXAMPLE, backing=BACKING, invoke=INVOKE, npx=npx, plugin=plugin,
+        verdict=plain, example=EXAMPLE, backing=BACKING, invoke=INVOKE, feedback=FEEDBACK, npx=npx, plugin=plugin,
         levels="\n".join(f"- [{NAME[lv]}]({BASE}/{lv}.md): {LEVEL_DESC[lv]} Input: {INPUT[lv]}. {cnt[lv][0]} stable, {cnt[lv][1]} draft." for lv in LEVELS if lv not in none)
         + "".join(f"\n- {NAME[lv]}: {LEVEL_DESC[lv]} Input: {INPUT[lv]}. {EMPTY_MARK.capitalize()}." for lv in LEVELS if lv in none),
         packs="\n".join(f"- [{pk.capitalize()} pack]({BASE}/pack-{pk}.md)" for pk in packs) or "No packs yet."))

@@ -1,0 +1,8 @@
+{
+  "prompt": "Review the change in change.diff.",
+  "first_line": "^Verdict: request changes",
+  "must_fail": [
+    {"id": "svc-idempotency-key", "alt": "(?i)idempoten|charged twice|double.charge|duplicate charge"}
+  ],
+  "must_not_contain": []
+}

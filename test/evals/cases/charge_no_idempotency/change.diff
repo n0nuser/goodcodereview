@@ -1,0 +1,43 @@
+Pull request: Add POST /payments/charge for the checkout page.
+
+diff --git a/api/payments.py b/api/payments.py
+new file mode 100644
+--- /dev/null
++++ b/api/payments.py
+@@ -0,0 +1,20 @@
++from flask import Blueprint, jsonify, request
++
++from api.gateway import gateway
++from api.db import save_charge
++
++bp = Blueprint("payments", __name__)
++
++
++@bp.post("/payments/charge")
++def charge():
++    body = request.get_json()
++    result = gateway.charge(card_token=body["card_token"], amount_cents=body["amount_cents"])
++    save_charge(order_id=body["order_id"], gateway_id=result["id"], amount_cents=body["amount_cents"])
++    return jsonify({"id": result["id"]}), 201
+diff --git a/web/checkout.js b/web/checkout.js
+--- a/web/checkout.js
++++ b/web/checkout.js
+@@ -10,3 +10,12 @@
++export async function pay(order) {
++  // The network is flaky on mobile, so retry up to three times.
++  for (let attempt = 0; attempt < 3; attempt++) {
++    try {
++      return await post("/payments/charge", order);
++    } catch (e) {
++      if (attempt === 2) throw e;
++    }
++  }
++}
+diff --git a/tests/test_payments.py b/tests/test_payments.py
+new file mode 100644
+--- /dev/null
++++ b/tests/test_payments.py
+@@ -0,0 +1,9 @@
++def test_charge_returns_201(client, fake_gateway):
++    resp = client.post("/payments/charge", json={"card_token": "tok", "amount_cents": 500, "order_id": 1})
++    assert resp.status_code == 201

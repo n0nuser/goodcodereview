@@ -1,0 +1,35 @@
+Pull request: Let customers download their invoices.
+
+diff --git a/api/invoices.py b/api/invoices.py
+new file mode 100644
+--- /dev/null
++++ b/api/invoices.py
+@@ -0,0 +1,18 @@
++from flask import Blueprint, abort, jsonify
++from flask_login import login_required
++
++from api.models import Invoice
++
++bp = Blueprint("invoices", __name__)
++
++
++@bp.get("/invoices/<int:invoice_id>")
++@login_required
++def get_invoice(invoice_id):
++    invoice = Invoice.query.get(invoice_id)
++    if invoice is None:
++        abort(404)
++    return jsonify(id=invoice.id, customer_id=invoice.customer_id, total=invoice.total, lines=invoice.lines)
+diff --git a/tests/test_invoices.py b/tests/test_invoices.py
+new file mode 100644
+--- /dev/null
++++ b/tests/test_invoices.py
+@@ -0,0 +1,8 @@
++def test_logged_in_user_gets_invoice(client, login, invoice):
++    login(invoice.customer_id)
++    assert client.get(f"/invoices/{invoice.id}").status_code == 200
++
++
++def test_unknown_invoice_is_404(client, login):
++    login(1)
++    assert client.get("/invoices/9999").status_code == 404
