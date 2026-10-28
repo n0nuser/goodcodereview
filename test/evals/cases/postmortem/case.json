@@ -1,0 +1,18 @@
+{
+  "prompt": "Review the incident in postmortem.md.",
+  "first_line": "^Verdict: request changes",
+  "must_fail": [
+    {
+      "id": "chg-expand-contract",
+      "alt": "(?i)expand|renam.*drop|same migration|one migration"
+    },
+    {
+      "id": "inc-perf-fix-has-profile-evidence",
+      "alt": "(?i)profil|no evidence|did not profile"
+    }
+  ],
+  "must_contain": [
+    "(?i)postmortem|Cause:|Fix:"
+  ],
+  "must_not_contain": []
+}
