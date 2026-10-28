@@ -60,14 +60,6 @@ test("concerns.md reports unknown values and groups on request", async () => {
 	assert.doesNotMatch(body, /## security/);
 });
 
-test("/concerns serves the filtered Markdown for Accept: text/markdown and the page otherwise", async () => {
-	files["/concerns"] = ["<h1>page</h1>", "text/html"];
-	const md = await get("/concerns?concern=usability", "text/markdown");
-	assert.equal(md.headers.get("content-type"), "text/markdown; charset=utf-8");
-	assert.match(await md.text(), /`c`/);
-	assert.equal(await (await get("/concerns?concern=usability")).text(), "<h1>page</h1>");
-});
-
 test("cards.json filters to the matching cards and keeps the corpus fields", async () => {
 	const res = await get("/cards.json?level=change");
 	assert.equal(res.headers.get("content-type"), "application/json; charset=utf-8");

@@ -257,6 +257,7 @@ pre.wrap{max-inline-size:68ch;white-space:pre-wrap;overflow-wrap:anywhere}pre.wr
 select{padding:.4rem .5rem;color:var(--fg);background:var(--bg);border:1px solid var(--edge);border-radius:3px;font:500 var(--step--1)/1.2 var(--ui);min-block-size:44px}
 #clr{min-block-size:44px}
 h3.gh{margin-block:var(--space-m) .25rem;font:700 var(--step-0)/1.2 var(--ui);text-transform:capitalize}
+details.fg>summary{font-weight:600}.sel{color:var(--mut);font-weight:400}details.fg>.flt{padding-block:.25rem .75rem}
 .lab{flex:none;inline-size:6.5rem;color:var(--mut);font:600 var(--step--1)/1.3 var(--ui)}
 button{position:relative;padding:.4rem .7rem;color:var(--fg);background:none;border:1px solid var(--edge);border-radius:3px;font:500 var(--step--1)/1.2 var(--ui);cursor:pointer;transition:background-color .15s,border-color .15s}
 button::after{content:"";position:absolute;inset:min(0px,(100% - 44px)/2)}
@@ -320,8 +321,10 @@ const on=S.c.size+S.t.size+S.l.size>0,rows=q('#flat li[data-tags]:not([hidden])'
 if(E){E.hidden=!on||s>0;E.textContent='No stable cards match.'+(d?' '+d+' draft '+(d>1?'cards match':'card matches')+' below.':'')}
 if(D)D.textContent=D.dataset.n+' draft cards'+(on?' ('+d+' match)':'')
 if(C)C.textContent=on?s+' stable and '+d+' draft '+(s+d==1?'card matches.':'cards match.'):'';
+q('details.fg').forEach(d=>{const n=S[d.dataset.k].size;d.querySelector('.sel').textContent=n?'('+n+' selected)':''});
 if(X)X.hidden=!on&&!G;if(R){R.hidden=false;R.value=G}
 if(F)group(rows);
+if($('gnote'))$('gnote').hidden=!(G=='concern'||G=='topic');
 const p=[...Object.keys(K)].filter(k=>S[k].size).map(k=>K[k]+'='+[...S[k]].join(',')),g=G?['group='+G]:[],qs=[...p,...g].join('&');
 if(sync)history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash);
 if(H){const m=H.dataset.md;H.hidden=!qs;H.textContent='';if(qs){H.append('This view: ');
@@ -331,7 +334,7 @@ q('button[data-k]').forEach(b=>{const s=S[b.dataset.k],v=b.dataset.v;b.setAttrib
 b.onclick=()=>{s.has(v)?s.delete(v):s.add(v);b.setAttribute('aria-pressed',s.has(v));go(1)}});
 if(R)R.onchange=()=>{G=R.value;go(1)};
 if(X)X.onclick=()=>{Object.values(S).forEach(s=>s.clear());G='';q('button[data-k]').forEach(b=>b.setAttribute('aria-pressed',false));go(1)};
-if(S.t.size&&$('tdet'))$('tdet').open=true;
+q('details.fg').forEach(d=>{if(S[d.dataset.k].size)d.open=true});
 go();
 const V=document.getElementById('said'),say=(b,m)=>{b.textContent=m;V.textContent=m+'.'};
 q('button[data-copy]').forEach(b=>{const l=b.textContent;b.hidden=false;b.onclick=()=>{
@@ -512,10 +515,12 @@ def row(fm, body, ids, href=""):
             f'<span class="b {fm["severity"]}">{fm["severity"]}</span>{chips(fm)}<span class="r">{inline(rule(body), ids)}</span></li>')
 
 
-def buttons(label, key, values, count=None):
+def buttons(label, key, values, count=None, open_=True):
+    """One collapsible filter group. The summary shows how many picks it holds; the script fills it in."""
     n = lambda v: f' <span class="n">{count[v]}</span>' if count else ""
-    return (f'<div class="flt" role="group" aria-label="{label}"><span class="lab">{label}</span>'
-            + "".join(f'<button type="button" data-k="{key}" data-v="{html.escape(v)}" aria-pressed="false">{html.escape(v)}{n(v)}</button>' for v in values) + "</div>")
+    return (f'<details class="fg" data-k="{key}"{" open" if open_ else ""}><summary>{label} <span class="sel"></span></summary>'
+            f'<div class="flt" role="group" aria-label="{label}">'
+            + "".join(f'<button type="button" data-k="{key}" data-v="{html.escape(v)}" aria-pressed="false">{html.escape(v)}{n(v)}</button>' for v in values) + "</div></details>")
 
 
 def copy_pre(text, label):
@@ -533,11 +538,12 @@ def listing(title, intro, cards, ids, links, cur, desc, empty=False, compact=Fal
         flt += buttons("Levels", "l", levels, {lv: sum(fm["level"] == lv for _, fm, _ in stable) for lv in levels})
     topics = sorted(t for t in seen - set(CONCERNS) if not compact or tally([t])[t])
     if topics:
-        flt += '<details id="tdet"><summary>Topics</summary>' + buttons("Topics", "t", topics, tally(topics)) + "</details>"
+        flt += buttons("Topics", "t", topics, tally(topics), False)
     groups = [g for g, on in (("concern", True), ("level", len(levels) > 1), ("topic", bool(topics))) if on]
     flt += ('<div class="flt"><label class="lab" for="grp">Group by</label><select id="grp" hidden><option value="">Nothing</option>'
             + "".join(f'<option value="{g}">{g.capitalize()}</option>' for g in groups) + "</select>"
-            '<button type="button" id="clr" hidden>Clear filters</button></div>')
+            '<button type="button" id="clr" hidden>Clear filters</button></div>'
+            '<p id="gnote" class="note" hidden>A card appears under each concern or topic it lists, so a group view can repeat a card.</p>')
     share = (f'<p id="share" class="note" data-md="{"concerns" if compact else ""}" hidden></p>')
     th = '<li class="th" aria-hidden="true"><span>Card</span><span>Severity</span><span>Concerns</span><span>Rule</span></li>'
     # compact: one row per draft, linked to the page that holds the full card
@@ -552,9 +558,9 @@ def listing(title, intro, cards, ids, links, cur, desc, empty=False, compact=Fal
     if not stable:
         return page(title, intro + LEGEND + drafts, True, links, cur, desc, cur[:-5])
     ck = ('<button type="button" data-copy="ck" hidden>Copy checklist as markdown</button><div class="ckw" id="flat"><ul class="ck">' + th
-          + "".join(row(fm, b, ids, home_page(fm) if compact else "") for _, fm, b in stable) + '</ul></div><div id="grouped" hidden></div>')
+          + "".join(row(fm, b, ids, home_page(fm) if compact else "") for _, fm, b in stable) + '</ul></div><div id="grouped" hidden></div><p class="note"><a href="#filters">Back to filters</a></p>')
     nojs = "<noscript><p>The filters need JavaScript. Without it, the page lists every card. Add <code>?concern=security</code> to the Markdown or JSON address for a filtered list.</p></noscript>" if compact else ""
-    body = (intro + f'<h2>Filters</h2>{nojs}{flt}<p id="count" class="note" role="status"></p>{share}<p id="empty" hidden></p>'
+    body = (intro + f'<h2 id="filters">Filters</h2>{nojs}{flt}<p id="count" class="note" role="status"></p>{share}<p id="empty" hidden></p>'
             + f"<h2>Checklist</h2>{ck}" + LEGEND
             + ("" if compact else "<h2>Cards</h2>" + "".join(card_html(fm, b, ids) for _, fm, b in stable)) + drafts)
     return page(title, body, True, links, cur, desc, cur[:-5])

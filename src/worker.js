@@ -1,4 +1,4 @@
-// Serves site/ as static assets. The Worker runs for paths that match no file, and for the three paths in wrangler.jsonc `run_worker_first`.
+// Serves site/ as static assets. The Worker runs for paths that match no file, and for the two paths in wrangler.jsonc `run_worker_first`.
 // Cloudflare rules, not this Worker, serve index.md for Accept: text/markdown on "/" (see docs/deploy.md).
 const MD = "text/markdown; charset=utf-8";
 const wantsMarkdown = (req) => /\btext\/markdown\b/i.test(req.headers.get("accept") || "");
@@ -48,7 +48,7 @@ export default {
 		const url = new URL(req.url);
 		const filtered = ["concern", "topic", "level", "group"].some((k) => url.searchParams.has(k));
 		const path = url.pathname;
-		const asMarkdown = path === "/concerns.md" || (path === "/concerns" && wantsMarkdown(req));
+		const asMarkdown = path === "/concerns.md";
 		if (filtered && (asMarkdown || path === "/cards.json") && req.method === "GET") {
 			const res = await env.ASSETS.fetch(new Request(new URL("/cards.json", req.url), { headers: { accept: "application/json" } }));
 			if (res.ok) {

@@ -4,7 +4,7 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ## [Unreleased]
 
-- The Concerns page filters through the address: `?concern=`, `?topic=`, `?level=`, and `?group=`, with comma-separated or repeated values. Filters now sit above the checklist, show counts, list only topics that have a stable card, and have a Group by menu, a Clear button, and a link to the same view as Markdown and JSON. `/concerns.md`, `/concerns` with `Accept: text/markdown`, and `/cards.json` apply the same filters in the Worker (`run_worker_first`).
+- The Concerns page filters through the address: `?concern=`, `?topic=`, `?level=`, and `?group=`, with comma-separated or repeated values. Filters now sit above the checklist in collapsible groups, show counts, list only topics that have a stable card, and have a Group by menu, a Clear button, and a link to the same view as Markdown and JSON. `/concerns.md` and `/cards.json` apply the same filters in the Worker (`run_worker_first`).
 - The home page opens with the agent prompt and says the rules are curated and backed by named organisations. The README says the same.
 - `llms.txt` follows llmstxt.org: an H1, a blockquote, headingless intro sections, then H2 file lists of `[name](url): notes` links, with draft cards and site pages under `## Optional`. Each stable card links to its entry in the level file. `/.well-known/security.txt` is served.
 - `code-dead-code` and `mod-yagni` are stable again. Each Rule is narrowed to the clauses that three organisations back (`docs/research/dead-code-yagni-pass.md`), and commented-out code and orphaned files moved to the Why.
