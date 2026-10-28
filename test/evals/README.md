@@ -42,6 +42,8 @@ python3 tools/eval.py grade injected reply.txt # grade a saved reply
 python3 tools/eval.py run injected --agent opencode --model opencode-go/deepseek-v4.1-flash --mode forced --runs 1
 ```
 
+`--save DIR` writes each raw reply to a file, and a failed run prints which checks it missed.
+
 `--agent opencode` runs the cases through `opencode run`, with the skill in `.opencode/skills/`. Use it to see whether a cheaper model follows the skill and finds the planted defects. The adapter is written from opencode's documented CLI and has not been run against a real install, so try one case with `--runs 1` first. Compare `bare` and `forced` for the same model: a checklist should help a weaker model more.
 
 The `eval` workflow (Actions, Run workflow) runs the same command with the repository secret `ANTHROPIC_API_KEY`; it never runs on its own. It is untested until someone starts it once.

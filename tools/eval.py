@@ -136,6 +136,7 @@ def main():
     r.add_argument("--mode", choices=["skill", "forced", "bare", "all"], default="all")
     r.add_argument("--runs", type=int, default=3)
     r.add_argument("--model")
+    r.add_argument("--save", metavar="DIR", help="write each raw reply to DIR/<case>-<mode>-<n>.txt")
     r.add_argument("--agent", choices=["claude", "opencode"], default="claude")
     a = ap.parse_args()
     if a.cmd == "grade":
@@ -148,7 +149,16 @@ def main():
     for n in names:
         for m in modes:
             try:
-                res = [grade(load(n), run_one(n, m, a.model, a.agent), m) for _ in range(a.runs)]
+                res = []
+                for i in range(a.runs):
+                    reply = run_one(n, m, a.model, a.agent)
+                    res.append(grade(load(n), reply, m))
+                    if a.save:
+                        Path(a.save).mkdir(parents=True, exist_ok=True)
+                        (Path(a.save) / f"{n}-{m}-{i + 1}.txt").write_text(reply)
+                    for tier, problems in res[-1].items():
+                        for pr in problems:
+                            print(f"    run {i + 1} {tier}: {pr}")
             except HarnessError as e:
                 print(f"{n:<16}{m:<7} harness error: {e}")
                 continue
