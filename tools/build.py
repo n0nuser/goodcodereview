@@ -771,7 +771,8 @@ def main():
     link = lambda t: re.sub(r"\[\[([^\]]+)\]\]", lambda m: f"[{m[1]}]({home[m[1]]}.md#{m[1]})" if m[1] in home else m[1], t)
     plain = VERDICT.replace("<code>", "`").replace("</code>", "`")
     sk = ["---", "name: good-code-review",
-          "description: Code review checklist of vetted rules, each marked PASS, FAIL, or N/A with file:line evidence. Use when asked to review a pull request, PR, diff, commit, file, package, service, design doc, repository, release, or incident postmortem, or for a code review, security review, accessibility review, performance review, or code audit.",
+          "description: Run a checklist code review with vetted rules, each marked PASS, FAIL, or N/A with file:line evidence. Use for any request to review, audit, or check code, such as a pull request, diff, commit, file, package, service, design doc, repo, release, or incident postmortem, including security, accessibility, and performance reviews. Load it before you review by hand.",
+
           "---", "", "# Good Code Review", "", "## Routing", "", "| Input | Entry point |", "|---|---|"]
     sk += [f"| {i} | {lv}{f' ({EMPTY_MARK})' if lv in empty else ''} |" for i, lv in ROUTES]
     sk += ["", DIFF_RULE, "", INCIDENT_RULE, ""] + ([EMPTY_RULE, ""] if empty else [])

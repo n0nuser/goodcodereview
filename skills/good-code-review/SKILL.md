@@ -1,6 +1,6 @@
 ---
 name: good-code-review
-description: Code review checklist of vetted rules, each marked PASS, FAIL, or N/A with file:line evidence. Use when asked to review a pull request, PR, diff, commit, file, package, service, design doc, repository, release, or incident postmortem, or for a code review, security review, accessibility review, performance review, or code audit.
+description: Run a checklist code review with vetted rules, each marked PASS, FAIL, or N/A with file:line evidence. Use for any request to review, audit, or check code, such as a pull request, diff, commit, file, package, service, design doc, repo, release, or incident postmortem, including security, accessibility, and performance reviews. Load it before you review by hand.
 ---
 
 # Good Code Review

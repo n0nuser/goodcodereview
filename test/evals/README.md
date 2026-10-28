@@ -23,7 +23,8 @@ Each result has two tiers. `substance` asks whether the review found what it mus
 | `postmortem` | 2/2, 2/2 | 3/3, 3/3 | 2/2 |
 
 - Once invoked, the skill follows its format and finds what each case plants, and it resists the injected comment.
-- Left to itself, the agent rarely invoked the skill: the test environment lists about 60 skills, including two other code-review skills, and the agent often reviewed without calling the skill. Trigger wording is the next thing to tune.
+- After the description was reworded ("Run a checklist code review ... Use for any request to review, audit, or check code ... Load it before you review by hand"), `skill` mode with 3 runs per case gave substance 3/3, 3/3, 0/3, 2/3, 0/3 and format 3/3, 0/3, 2/3, 3/3, 0/3 for `a11y_scoped`, `clean_refactor`, `injected`, `postmortem`, `sqli_no_test`. Across the five cases that is 8 of 15 runs for substance and 8 of 15 for format, against 4 of 10 and 3 of 10 before. A single rerun of `sqli_no_test` passed, so the samples are noisy and the improvement is small.
+- Left to itself, the agent often did not invoke the skill: the test environment lists about 60 skills, including two other code-review skills, and the agent often reviewed without calling the skill. Trigger wording is the next thing to tune.
 - A bare agent finds the planted defects too (the `alt` regexes are lenient), so on these cases the skill's measured lift is the format and the card ids, not extra findings. Harder cases are needed to show a lift in substance.
 - The first `clean_refactor` diff renamed a public function, which the skill correctly flagged as breaking. The case now renames a private helper.
 
