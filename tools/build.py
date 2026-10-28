@@ -101,6 +101,7 @@ LACKS_LABEL = {"unreviewed": "its sources are listed, but no stable pass has che
 DRAFTS_DESC = "Every draft card grouped by what it lacks to become stable, with what each one needs."
 # One closing prompt for design-level reviews. It sits outside the PASS/FAIL ledger.
 DESIGN_NOTE = "For an unscoped system or codebase review, end with one short line outside the ledger: name the decision you would most want written down and what its alternative costs. Cite file:line for the decision. Give no verdict and no severity for it."
+INVOKE = "After you install the skill, name it in your request, such as `/good-code-review review this PR`. An agent that is not told may review without it."
 BACKING = ("Every rule is curated: a card is stable only when at least three independent organisations, such as Google, Microsoft, OWASP, GitHub, Mozilla, AWS, W3C, and NIST, "
            "have published the same practice, and each card links its sources. Those organisations did not write or endorse this site.")
 DRAFT_NOTE = "A draft card is not vetted. Read it for ideas, but do not use it for a verdict."
@@ -187,6 +188,8 @@ To install it as a skill, run:
 ```text
 {npx}
 ```
+
+{invoke}
 
 To install it as a Claude Code plugin, run:
 
@@ -743,6 +746,7 @@ def main():
              + copy_pre("Read https://goodcodereview.com/llms.txt and use it to review my code.", "Copy prompt") +
              "<p>To install it as a skill (Claude Code, Codex, Cursor, and other tools that read <code>skills/&lt;name&gt;/SKILL.md</code>), run:</p>"
              + copy_pre(npx, "Copy install command") +
+             f"<p>{inline(INVOKE, {})}</p>"
              "<p>To install it as a Claude Code plugin, run:</p>"
              + copy_pre(plugin, "Copy plugin commands"))
     (SITE / "index.html").write_text(page("Good Code Review", (
@@ -866,7 +870,7 @@ def main():
     xlink = lambda t: re.sub(r"\[\[([^\]]+)\]\]", lambda m: f"[{m[1]}]({BASE}/{home[m[1]]}.md#{m[1]})" if m[1] in home
                              else f"[{m[1]}]({BASE}/{ids[m[1]]})" if m[1] in ids else m[1], t)
     twins["index"] = ("Good Code Review", SITE_DESC, INDEX_MD.format(
-        verdict=plain, example=EXAMPLE, backing=BACKING, npx=npx, plugin=plugin,
+        verdict=plain, example=EXAMPLE, backing=BACKING, invoke=INVOKE, npx=npx, plugin=plugin,
         levels="\n".join(f"- [{NAME[lv]}]({BASE}/{lv}.md): {LEVEL_DESC[lv]} Input: {INPUT[lv]}. {cnt[lv][0]} stable, {cnt[lv][1]} draft." for lv in LEVELS if lv not in none)
         + "".join(f"\n- {NAME[lv]}: {LEVEL_DESC[lv]} Input: {INPUT[lv]}. {EMPTY_MARK.capitalize()}." for lv in LEVELS if lv in none),
         packs="\n".join(f"- [{pk.capitalize()} pack]({BASE}/pack-{pk}.md)" for pk in packs) or "No packs yet."))

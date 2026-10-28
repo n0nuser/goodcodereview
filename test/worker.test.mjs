@@ -68,3 +68,11 @@ test("cards.json filters to the matching cards and keeps the corpus fields", asy
 	assert.deepEqual(data.concerns, corpus.concerns);
 	assert.equal((await (await get("/cards.json")).json()).cards.length, 3);
 });
+
+test("a group name that is an Object.prototype key is ignored, not a 500", async () => {
+	for (const g of ["constructor", "toString", "__proto__"]) {
+		const res = await get(`/concerns.md?group=${g}`);
+		assert.equal(res.status, 200, g);
+		assert.match(await res.text(), /`a`/);
+	}
+});

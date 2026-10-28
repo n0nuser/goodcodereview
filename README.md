@@ -16,6 +16,8 @@ To install it as a skill (Claude Code, Codex, Cursor, and other tools that read 
 npx skills add n0nuser/goodcodereview
 ```
 
+After you install the skill, name it in your request, such as `/good-code-review review this PR`. An agent that is not told may review without it.
+
 To install it as a Claude Code plugin, run:
 
 ```

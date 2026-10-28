@@ -25,13 +25,13 @@ const line = (c) => `- [\`${c.id}\`](${c.url}) [${c.severity}] {${c.concerns.joi
 
 export function markdown(corpus, params) {
 	const { cards, picked, unknown, known } = select(corpus, params);
-	const group = params.get("group");
+	const group = Object.hasOwn(GROUPS, params.get("group")) ? params.get("group") : "";
 	const picks = Object.entries(picked).filter(([, v]) => v.length).map(([k, v]) => `${k}: ${v.join(", ")}`);
 	const out = ["# Concerns", "", picks.length ? `Stable cards that match ${picks.join("; ")}. A card matches when it lists any value given for each filter.` : "All stable cards.",
 		`${cards.length} of ${corpus.cards.length} cards.`];
 	if (unknown.length) out.push("", `Ignored, not a known value: ${unknown.join(", ")}. Known concerns: ${[...known.concern].join(", ")}. Known levels: ${[...known.level].join(", ")}.`);
 	out.push("", "Report each check as `PASS`, `FAIL`, or `N/A` with `file:line` evidence. A `FAIL` carries the card's severity. Any `block` `FAIL` means request changes.");
-	if (GROUPS[group]) {
+	if (group) {
 		const keys = group === "concern" ? corpus.concerns : group === "level" ? corpus.levels.map((l) => l.id) : [...known.topic].sort();
 		for (const k of keys.filter((k) => !picked[group].length || picked[group].includes(k))) {
 			const hit = cards.filter((c) => GROUPS[group](c).includes(k));
