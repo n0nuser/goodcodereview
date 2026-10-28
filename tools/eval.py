@@ -15,7 +15,7 @@ A case.json holds:
   must_not_fail_severity  severities that may not appear as `FAIL [sev]` (skill mode)
   scope             concerns the review is limited to: a FAIL or PASS line for a card with none of them is a problem
   must_contain / must_not_contain  regexes over the whole reply
-`--agent opencode` drives `opencode run` instead (model as `provider/model`, such as `deepseek/deepseek-v4-flash`), with the skill
+`--agent opencode` drives `opencode run` instead (model as `provider/model`, such as `opencode-go/deepseek-v4.1-flash`), with the skill
 copied to `.opencode/skills/`. In forced mode, which has no slash command there, the prompt starts with an instruction to load the
 skill. That adapter has not been run against a real opencode install; start with one case and `--runs 1`.
 

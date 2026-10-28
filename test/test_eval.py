@@ -56,8 +56,8 @@ class Grade(unittest.TestCase):
     def test_command_per_agent_and_mode(self):
         cmd, skills = ev.command("claude", "Review x.", None, "forced")
         self.assertEqual((cmd[:3], skills), (["claude", "-p", "/good-code-review Review x."], ".claude/skills"))
-        cmd, skills = ev.command("opencode", "Review x.", "deepseek/deepseek-v4-flash", "skill")
-        self.assertEqual(cmd, ["opencode", "run", "Review x.", "--model", "deepseek/deepseek-v4-flash"])
+        cmd, skills = ev.command("opencode", "Review x.", "opencode-go/deepseek-v4.1-flash", "skill")
+        self.assertEqual(cmd, ["opencode", "run", "Review x.", "--model", "opencode-go/deepseek-v4.1-flash"])
         self.assertEqual(skills, ".opencode/skills")
         self.assertTrue(ev.command("opencode", "Review x.", None, "forced")[0][2].startswith("Load and follow the good-code-review skill."))
 
