@@ -2,7 +2,7 @@
 """Run and grade the skill evals in test/evals/cases.
 
     python3 tools/eval.py grade CASE OUTPUT_FILE [--mode skill|bare]
-    python3 tools/eval.py run [--mode skill|forced|bare|all] [--runs N] [--model M] [CASE ...]
+    python3 tools/eval.py run [--agent claude|opencode] [--mode skill|forced|bare|all] [--runs N] [--model M] [CASE ...]
 
 `run` starts `claude -p` in a scratch copy of each case and grades the reply. Modes: `skill` installs the skill and leaves it
 to the agent to invoke (measures triggering and adherence), `forced` installs it and starts the prompt with `/good-code-review`
@@ -15,6 +15,10 @@ A case.json holds:
   must_not_fail_severity  severities that may not appear as `FAIL [sev]` (skill mode)
   scope             concerns the review is limited to: a FAIL or PASS line for a card with none of them is a problem
   must_contain / must_not_contain  regexes over the whole reply
+`--agent opencode` drives `opencode run` instead (model as `provider/model`, such as `deepseek/deepseek-v4-flash`), with the skill
+copied to `.opencode/skills/`. In forced mode, which has no slash command there, the prompt starts with an instruction to load the
+skill. That adapter has not been run against a real opencode install; start with one case and `--runs 1`.
+
 Each result has two tiers: `substance` (did it find what a reviewer must find) and `format` (did it follow the report format).
 """
 import argparse
@@ -29,6 +33,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CASES = ROOT / "test" / "evals" / "cases"
 SKILL = ROOT / "skills" / "good-code-review"
+ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
 FAIL_LINE = re.compile(r"^\s*(?:[-*]\s*)?(?:`)?FAIL\s*(?:\[([a-z-]+)\])?\s*(?:`)?\s*([a-z0-9-]+)?", re.M)
 
 
@@ -86,26 +91,37 @@ def load(name):
     return json.loads((CASES / name / "case.json").read_text())
 
 
-def run_one(name, mode, model):
+def command(agent, prompt, model, mode):
+    """The argv for one run, and where the agent looks for skills under the scratch copy."""
+    if agent == "opencode":
+        if mode == "forced":
+            prompt = "Load and follow the good-code-review skill. " + prompt
+        return ["opencode", "run", prompt] + (["--model", model] if model else []), ".opencode/skills"
+    if mode == "forced":
+        prompt = "/good-code-review " + prompt
+    cmd = ["claude", "-p", prompt, "--allowedTools", "Read,Grep,Glob,Skill", "--output-format", "text"]
+    return cmd + (["--model", model] if model else []), ".claude/skills"
+
+
+def run_one(name, mode, model, agent="claude"):
     case = load(name)
     with tempfile.TemporaryDirectory() as tmp:
         work = Path(tmp)
         for f in (CASES / name).iterdir():
             if f.name != "case.json":
                 shutil.copy(f, work / f.name)
+        cmd, skills = command(agent, case["prompt"], model, mode)
         if mode in ("skill", "forced"):
-            shutil.copytree(SKILL, work / ".claude" / "skills" / "good-code-review")
-        prompt = ("/good-code-review " if mode == "forced" else "") + case["prompt"]
-        cmd = ["claude", "-p", prompt, "--allowedTools", "Read,Grep,Glob,Skill", "--output-format", "text"]
-        if model:
-            cmd += ["--model", model]
+            shutil.copytree(SKILL, work / skills / "good-code-review")
         try:
             out = subprocess.run(cmd, cwd=work, capture_output=True, text=True, timeout=600)
+        except FileNotFoundError:
+            raise HarnessError(f"{name} {mode}: {cmd[0]} is not installed or not on PATH")
         except subprocess.TimeoutExpired:
-            raise HarnessError(f"{name} {mode}: claude -p timed out after 600 s")
+            raise HarnessError(f"{name} {mode}: {cmd[0]} timed out after 600 s")
     if out.returncode or not out.stdout.strip():
-        raise HarnessError(f"{name} {mode}: claude -p exited {out.returncode}: {out.stderr.strip()[:200]}")
-    return out.stdout
+        raise HarnessError(f"{name} {mode}: {cmd[0]} exited {out.returncode}: {out.stderr.strip()[:200]}")
+    return ANSI.sub("", out.stdout)
 
 
 def main():
@@ -120,6 +136,7 @@ def main():
     r.add_argument("--mode", choices=["skill", "forced", "bare", "all"], default="all")
     r.add_argument("--runs", type=int, default=3)
     r.add_argument("--model")
+    r.add_argument("--agent", choices=["claude", "opencode"], default="claude")
     a = ap.parse_args()
     if a.cmd == "grade":
         res = grade(load(a.case), Path(a.output).read_text(), a.mode)
@@ -131,7 +148,7 @@ def main():
     for n in names:
         for m in modes:
             try:
-                res = [grade(load(n), run_one(n, m, a.model), m) for _ in range(a.runs)]
+                res = [grade(load(n), run_one(n, m, a.model, a.agent), m) for _ in range(a.runs)]
             except HarnessError as e:
                 print(f"{n:<16}{m:<7} harness error: {e}")
                 continue

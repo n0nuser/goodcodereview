@@ -39,7 +39,10 @@ Each result has two tiers. `substance` asks whether the review found what it mus
 python3 tools/eval.py run                      # all cases, skill and bare, 3 runs each
 python3 tools/eval.py run injected --mode skill --runs 1
 python3 tools/eval.py grade injected reply.txt # grade a saved reply
+python3 tools/eval.py run injected --agent opencode --model deepseek/deepseek-v4-flash --mode forced --runs 1
 ```
+
+`--agent opencode` runs the cases through `opencode run`, with the skill in `.opencode/skills/`. Use it to see whether a cheaper model follows the skill and finds the planted defects. The adapter is written from opencode's documented CLI and has not been run against a real install, so try one case with `--runs 1` first. Compare `bare` and `forced` for the same model: a checklist should help a weaker model more.
 
 The `eval` workflow (Actions, Run workflow) runs the same command with the repository secret `ANTHROPIC_API_KEY`; it never runs on its own. It is untested until someone starts it once.
 
