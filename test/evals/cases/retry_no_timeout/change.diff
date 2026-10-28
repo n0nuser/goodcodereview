@@ -1,0 +1,40 @@
+Pull request: Sync invoices to the billing provider when an order is paid.
+
+diff --git a/sync/provider.py b/sync/provider.py
+new file mode 100644
+--- /dev/null
++++ b/sync/provider.py
+@@ -0,0 +1,22 @@
++import requests
++
++PROVIDER_URL = "https://billing.example.com/v2/invoices"
++
++
++def push_invoice(invoice: dict, token: str) -> dict:
++    """Send one invoice to the provider and return its record."""
++    while True:
++        try:
++            resp = requests.post(
++                PROVIDER_URL,
++                json=invoice,
++                headers={"Authorization": f"Bearer {token}"},
++            )
++            resp.raise_for_status()
++            return resp.json()
++        except Exception:
++            continue
+diff --git a/tests/test_provider.py b/tests/test_provider.py
+new file mode 100644
+--- /dev/null
++++ b/tests/test_provider.py
+@@ -0,0 +1,14 @@
++from unittest import mock
++
++from sync.provider import push_invoice
++
++
++def test_push_invoice_returns_provider_record():
++    resp = mock.Mock()
++    resp.json.return_value = {"id": "inv_1"}
++    with mock.patch("sync.provider.requests.post", return_value=resp):
++        assert push_invoice({"total": 10}, "t") == {"id": "inv_1"}

@@ -1,0 +1,8 @@
+{
+  "prompt": "Review the change in change.diff.",
+  "first_line": "^Verdict: request changes",
+  "must_fail": [
+    {"id": "fn-object-level-authz", "alt": "(?i)authoriz|ownership|IDOR|another (user|customer)|any (logged|user|customer)"}
+  ],
+  "must_not_contain": []
+}

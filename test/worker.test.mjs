@@ -3,7 +3,16 @@ import assert from "node:assert/strict";
 import worker from "../src/worker.js";
 
 // A stand-in for the ASSETS binding: it serves the 404 page and applies one shared header like _headers does.
-const files = { "/404.html": ["<h1>missing</h1>", "text/html"] };
+const corpus = {
+	concerns: ["security", "performance", "usability"],
+	levels: [{ id: "change" }, { id: "function" }],
+	cards: [
+		{ id: "a", level: "function", severity: "block", concerns: ["security"], topics: ["injection"], rule: "Bind parameters.", url: "https://x/function#a" },
+		{ id: "b", level: "function", severity: "should-fix", concerns: ["performance"], topics: ["io"], rule: "Batch.", url: "https://x/function#b" },
+		{ id: "c", level: "change", severity: "discuss", concerns: ["security", "usability"], topics: [], rule: "Small.", url: "https://x/change#c" },
+	],
+};
+const files = { "/404.html": ["<h1>missing</h1>", "text/html"], "/cards.json": [JSON.stringify(corpus), "application/json"], "/concerns.md": ["static", "text/markdown"] };
 const env = {
 	ASSETS: {
 		async fetch(req) {
@@ -27,4 +36,55 @@ test("an unknown path returns a Markdown 404 with a link to llms.txt", async () 
 	assert.equal(res.headers.get("content-type"), "text/markdown; charset=utf-8");
 	assert.equal(res.headers.get("x-content-type-options"), "nosniff");
 	assert.match(await res.text(), /\(\/llms\.txt\)/);
+});
+
+test("concerns.md with no filter is served as the static file", async () => {
+	assert.equal(await (await get("/concerns.md")).text(), "static");
+});
+
+test("concerns.md filters by concern, topic, and level; any value in one filter matches", async () => {
+	const all = await (await get("/concerns.md?concern=security,performance")).text();
+	assert.match(all, /2 of 3|3 of 3/);
+	const body = await (await get("/concerns.md?concern=security&level=function")).text();
+	assert.match(body, /`a`/);
+	assert.doesNotMatch(body, /`b`|`c`/);
+	const topic = await (await get("/concerns.md?topic=io&topic=injection")).text();
+	assert.match(topic, /`a`[\s\S]*`b`/);
+	assert.doesNotMatch(topic, /`c`/);
+});
+
+test("concerns.md reports unknown values and groups on request", async () => {
+	const body = await (await get("/concerns.md?concern=nope,usability&group=concern")).text();
+	assert.match(body, /Ignored, not a known value: concern=nope/);
+	assert.match(body, /## usability\n\n- \[`c`\]/);
+	assert.doesNotMatch(body, /## security/);
+});
+
+test("cards.json filters to the matching cards and keeps the corpus fields", async () => {
+	const res = await get("/cards.json?level=change");
+	assert.equal(res.headers.get("content-type"), "application/json; charset=utf-8");
+	const data = await res.json();
+	assert.deepEqual(data.cards.map((c) => c.id), ["c"]);
+	assert.deepEqual(data.concerns, corpus.concerns);
+	assert.equal((await (await get("/cards.json")).json()).cards.length, 3);
+});
+
+test("a group name that is an Object.prototype key is ignored, not a 500", async () => {
+	for (const g of ["constructor", "toString", "__proto__"]) {
+		const res = await get(`/concerns.md?group=${g}`);
+		assert.equal(res.status, 200, g);
+		assert.match(await res.text(), /`a`/);
+	}
+});
+
+test("a filter with only unknown values matches nothing", async () => {
+	const data = await (await get("/cards.json?concern=securty")).json();
+	assert.deepEqual(data.cards, []);
+	assert.match(await (await get("/concerns.md?concern=securty")).text(), /0 of 3 cards[\s\S]*Ignored/);
+});
+
+test("HEAD gets the filtered headers and no body", async () => {
+	const res = await worker.fetch(new Request("https://example.com/cards.json?level=change", { method: "HEAD" }), env);
+	assert.equal(res.headers.get("cache-control"), "public, max-age=300");
+	assert.equal(await res.text(), "");
 });

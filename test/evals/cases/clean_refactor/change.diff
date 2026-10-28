@@ -1,0 +1,34 @@
+Pull request: Rename the private helper `_calc` to `_calculate_total`. No behaviour change; `rg '_calc\b'` finds no other user, and the function is not exported.
+
+diff --git a/billing/totals.py b/billing/totals.py
+index 1a2b3c4..5d6e7f8 100644
+--- a/billing/totals.py
++++ b/billing/totals.py
+@@ -1,6 +1,6 @@
+-def _calc(items):
++def _calculate_total(items):
+     return sum(i.price * i.qty for i in items)
+ 
+ 
+ def apply_discount(total, pct):
+     return round(total * (1 - pct / 100), 2)
+ 
+ 
+ def invoice_total(items, pct):
+-    return apply_discount(_calc(items), pct)
++    return apply_discount(_calculate_total(items), pct)
+diff --git a/tests/test_totals.py b/tests/test_totals.py
+new file mode 100644
+--- /dev/null
++++ b/tests/test_totals.py
+@@ -0,0 +1,10 @@
++from collections import namedtuple
++
++from billing.totals import invoice_total
++
++Item = namedtuple("Item", "price qty")
++
++
++def test_invoice_total_sums_and_discounts():
++    assert invoice_total([Item(2, 3), Item(1, 4)], 0) == 10
++    assert invoice_total([Item(10, 1)], 10) == 9.0

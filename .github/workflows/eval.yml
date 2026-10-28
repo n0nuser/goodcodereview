@@ -1,0 +1,28 @@
+name: eval
+# Runs the skill evals (tools/eval.py) against the real model. It spends tokens, so it runs only when you start it.
+# Needs the repository secret ANTHROPIC_API_KEY. See test/evals/README.md.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: skill, forced, bare, or all
+        default: all
+      runs:
+        description: Runs per case and mode
+        default: "3"
+permissions:
+  contents: read
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: "3.12"
+      - run: python3 tools/build.py
+      - run: npm install -g @anthropic-ai/claude-code
+      - run: python3 -u tools/eval.py run --mode "${{ inputs.mode }}" --runs "${{ inputs.runs }}"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

@@ -1,0 +1,18 @@
+{
+  "prompt": "Review form.jsx for accessibility only.",
+  "first_line": "^Verdict: request changes",
+  "must_fail": [
+    {
+      "id": "fn-native-button-or-link",
+      "alt": "(?i)<button>|div.*onclick|native button"
+    },
+    {
+      "id": "fn-form-control-has-label",
+      "alt": "(?i)placeholder.*(not|isn.t|no).*label|no (visible )?<?label"
+    }
+  ],
+  "must_not_contain": [],
+  "scope": [
+    "accessibility"
+  ]
+}

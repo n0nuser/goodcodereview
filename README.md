@@ -2,7 +2,7 @@
 
 A checklist for reviewing code, for people and for agents. Pick what you are reviewing (a diff, a function, a service, a whole codebase, a production setup, or an incident) and you get the checks for that level. Every check ends in `PASS`, `FAIL`, or `N/A` with `file:line` evidence, so anyone can check the review afterwards.
 
-Each stable check is backed by at least three independent organisations, such as OWASP, W3C, Google, and GOV.UK. Checks with less backing stay as drafts and never decide a verdict.
+The rules are curated, not invented. Each stable check is backed by at least three independent organisations that have published the same practice, and the card links every source. Across the stable cards, the sources come from big companies and standards bodies such as Google, Microsoft, GitHub, AWS, Stripe, Cloudflare, Mozilla, OWASP, W3C, IETF, NIST, and GOV.UK. They did not write or endorse this project. Checks with less backing stay as drafts and never decide a verdict.
 
 ## Start a review
 
@@ -15,6 +15,8 @@ To install it as a skill (Claude Code, Codex, Cursor, and other tools that read 
 ```
 npx skills add n0nuser/goodcodereview
 ```
+
+After you install the skill, name it in your request, such as `/good-code-review review this PR`. An agent that is not told may review without it.
 
 To install it as a Claude Code plugin, run:
 
@@ -29,6 +31,18 @@ To review by hand, open https://goodcodereview.com, pick a level, and work throu
 
 - To review a change, start with `cards/change/`.
 - To audit existing code, pick a level in `cards/audit/`: function, module, service, system, codebase, production, or incident.
+
+## Scope a review
+
+Pick concerns, topics, and levels on the [Concerns page](https://goodcodereview.com/concerns). The picks live in the address, so you can share them and agents can fetch them:
+
+```
+https://goodcodereview.com/concerns?concern=security,performance&level=function
+https://goodcodereview.com/concerns.md?concern=security,performance
+https://goodcodereview.com/cards.json?topic=forms
+```
+
+`concern`, `topic`, and `level` take comma-separated values or repeat. A card matches when it has any value given for each filter. `group=concern|level|topic` groups the list.
 
 ## Verdict format
 

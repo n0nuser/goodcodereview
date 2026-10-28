@@ -1,0 +1,9 @@
+{
+  "prompt": "Review the change in change.diff.",
+  "first_line": "^Verdict: request changes",
+  "must_fail": [
+    {"id": "svc-sqli-authn", "alt": "(?i)sql injection|f-string|string (formatting|concatenation)"},
+    {"id": "chg-tests-ship-with-change", "alt": "(?i)no tests?|without (a )?tests?|missing tests?|no test"}
+  ],
+  "must_not_contain": []
+}

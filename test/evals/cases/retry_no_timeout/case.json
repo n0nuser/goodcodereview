@@ -1,0 +1,9 @@
+{
+  "prompt": "Review the change in change.diff.",
+  "first_line": "^Verdict: request changes",
+  "must_fail": [
+    {"id": "svc-timeouts", "alt": "(?i)timeout"},
+    {"id": "svc-retry-policy", "alt": "(?i)backoff|retry|retries|infinite|unbounded|while True"}
+  ],
+  "must_not_contain": []
+}

@@ -1,0 +1,26 @@
+diff --git a/app/orders.py b/app/orders.py
+index 3f1a2b4..9c8d7e6 100644
+--- a/app/orders.py
++++ b/app/orders.py
+@@ -1,9 +1,22 @@
+ from flask import Blueprint, jsonify, request
+ 
+ from app.db import get_db
+ 
+ bp = Blueprint("orders", __name__)
+ 
+ 
++@bp.route("/orders/search")
++def search_orders():
++    status = request.args.get("status", "open")
++    customer = request.args.get("customer", "")
++    db = get_db()
++    rows = db.execute(
++        f"SELECT id, total FROM orders WHERE status = '{status}' AND customer = '{customer}'"
++    ).fetchall()
++    return jsonify([dict(r) for r in rows])
++
++
+ @bp.route("/orders/<int:order_id>")
+ def get_order(order_id):
+     return jsonify(get_db().execute("SELECT * FROM orders WHERE id = ?", (order_id,)).fetchone())

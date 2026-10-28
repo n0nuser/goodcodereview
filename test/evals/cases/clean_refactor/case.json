@@ -1,0 +1,7 @@
+{
+  "prompt": "Review the change in change.diff.",
+  "first_line": "^Verdict: approve",
+  "must_fail": [],
+  "must_not_fail_severity": ["block"],
+  "must_not_contain": ["\\[block\\]", "(?im)^\\W*verdict: request changes"]
+}
