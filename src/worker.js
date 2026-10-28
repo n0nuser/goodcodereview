@@ -4,7 +4,7 @@ const MD = "text/markdown; charset=utf-8";
 const wantsMarkdown = (req) => /\btext\/markdown\b/i.test(req.headers.get("accept") || "");
 
 const KEYS = { concern: (c) => c.concerns, topic: (c) => c.topics, level: (c) => [c.level] };
-const GROUPS = { concern: (c) => c.concerns, topic: (c) => c.topics, level: (c) => [c.level] };
+const GROUPS = KEYS;
 const list = (params, key) => params.getAll(key).flatMap((v) => v.split(",")).map((v) => v.trim().toLowerCase()).filter(Boolean);
 
 // A card matches when, for each of concern, topic, and level that is given, it has any of the given values.
@@ -17,7 +17,9 @@ export function select(corpus, params) {
 		picked[key] = values.filter((v) => known[key].has(v));
 		unknown.push(...values.filter((v) => !known[key].has(v)).map((v) => `${key}=${v}`));
 	}
-	const cards = corpus.cards.filter((c) => Object.entries(KEYS).every(([key, of]) => !picked[key].length || picked[key].some((v) => of(c).includes(v))));
+	// A filter whose values are all unknown matches nothing, so a typo cannot pass for "all cards".
+	const given = Object.fromEntries(Object.keys(KEYS).map((key) => [key, list(params, key).length > 0]));
+	const cards = corpus.cards.filter((c) => Object.entries(KEYS).every(([key, of]) => !given[key] || picked[key].some((v) => of(c).includes(v))));
 	return { cards, picked, unknown, known };
 }
 
@@ -49,17 +51,17 @@ export default {
 		const filtered = ["concern", "topic", "level", "group"].some((k) => url.searchParams.has(k));
 		const path = url.pathname;
 		const asMarkdown = path === "/concerns.md";
-		if (filtered && (asMarkdown || path === "/cards.json") && req.method === "GET") {
+		if (filtered && (asMarkdown || path === "/cards.json") && (req.method === "GET" || req.method === "HEAD")) {
 			const res = await env.ASSETS.fetch(new Request(new URL("/cards.json", req.url), { headers: { accept: "application/json" } }));
 			if (res.ok) {
 				const corpus = await res.json();
 				const headers = new Headers({ "Cache-Control": "public, max-age=300", "X-Content-Type-Options": "nosniff", Vary: "Accept" });
 				if (asMarkdown) {
 					headers.set("Content-Type", MD);
-					return new Response(markdown(corpus, url.searchParams), { headers });
+					return new Response(req.method === "HEAD" ? null : markdown(corpus, url.searchParams), { headers });
 				}
 				headers.set("Content-Type", "application/json; charset=utf-8");
-				return new Response(JSON.stringify({ ...corpus, cards: select(corpus, url.searchParams).cards }, null, 1) + "\n", { headers });
+				return new Response(req.method === "HEAD" ? null : JSON.stringify({ ...corpus, cards: select(corpus, url.searchParams).cards }, null, 1) + "\n", { headers });
 			}
 		}
 		const asset = await env.ASSETS.fetch(req);

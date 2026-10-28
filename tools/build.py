@@ -330,7 +330,7 @@ for(const k in K)p.getAll(K[k]).flatMap(v=>v.split(',')).map(v=>v.trim().toLower
 if(R){q('#grp option').forEach(o=>o.value&&p.get('group')==o.value&&(G=o.value))}}
 const tg=a=>a.dataset.tags.split(' ');
 function group(rows){Q.hidden=!G;F.hidden=!!G;if(!G){Q.textContent='';return}
-const k=G[0],vals=[...have[k]],th=F.querySelector('.th');
+const k=G[0],vals=[...have[k]].filter(v=>!S[k].size||S[k].has(v)),th=F.querySelector('.th');
 const mine=(a,v)=>k=='l'?a.dataset.level==v:tg(a).includes(v),other=rows.filter(a=>!vals.some(v=>mine(a,v)));
 Q.textContent='';
 [...vals.map(v=>[v,rows.filter(a=>mine(a,v))]),['no '+G,other]].forEach(([v,rs])=>{if(!rs.length)return;
@@ -349,8 +349,8 @@ if($('gnote'))$('gnote').hidden=!(G=='concern'||G=='topic');
 const p=[...Object.keys(K)].filter(k=>S[k].size).map(k=>K[k]+'='+[...S[k]].join(',')),g=G?['group='+G]:[],qs=[...p,...g].join('&');
 if(sync)history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash);
 if(H){const m=H.dataset.md;H.hidden=!qs;H.textContent='';if(qs){H.append('This view: ');
-const add=(t,h)=>{const a=document.createElement('a');a.href=h;a.textContent=t;H.append(a)};add(location.pathname.split('/').pop()+'?'+qs,'?'+qs);
-if(m){H.append(' · as text for agents: ');add(m+'.md','/'+m+'.md?'+p.join('&'));H.append(' · as JSON: ');add('cards.json','/cards.json?'+p.join('&'))}}}}
+const add=(t,h)=>{const a=document.createElement('a');a.href=h;a.textContent=t;H.append(a)};add('?'+qs,'?'+qs);
+if(m){H.append(' · as text for agents: ');add(m+'.md','/'+m+'.md?'+[...p,...g].join('&'));H.append(' · as JSON: ');add('cards.json','/cards.json?'+p.join('&'))}}}}
 q('button[data-k]').forEach(b=>{const s=S[b.dataset.k],v=b.dataset.v;b.setAttribute('aria-pressed',s.has(v));
 b.onclick=()=>{s.has(v)?s.delete(v):s.add(v);b.setAttribute('aria-pressed',s.has(v));go(1)}});
 if(R)R.onchange=()=>{G=R.value;go(1)};
@@ -359,7 +359,7 @@ q('details.fg').forEach(d=>{if(S[d.dataset.k].size)d.open=true});
 go();
 const V=document.getElementById('said'),say=(b,m)=>{b.textContent=m;V.textContent=m+'.'};
 q('button[data-copy]').forEach(b=>{const l=b.textContent;b.hidden=false;b.onclick=()=>{
-const t=b.dataset.copy=='ck'?q('ul.ck li[data-tags]:not([hidden])').filter(r=>!r.closest('details')).map(r=>'- `'+r.querySelector('a').textContent+'` ['+r.querySelector('.b').textContent+'] '+r.querySelector('.r').textContent+' PASS/FAIL/N/A: ').join('\\n'):b.previousElementSibling.textContent;
+const t=b.dataset.copy=='ck'?q('#flat li[data-tags]:not([hidden])').map(r=>'- `'+r.querySelector('a').textContent+'` ['+r.querySelector('.b').textContent+'] '+r.querySelector('.r').textContent+' PASS/FAIL/N/A: ').join('\\n'):b.previousElementSibling.textContent;
 (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>say(b,'Copied'),()=>say(b,'Copy failed'));setTimeout(()=>{b.textContent=l;V.textContent=''},1500)}});
 const op=()=>{const e=document.getElementById(location.hash.slice(1)),d=e&&e.closest('details');if(d){d.open=true;e.scrollIntoView()}};
 addEventListener('hashchange',op);op()"""
@@ -554,7 +554,7 @@ def listing(title, intro, cards, ids, links, cur, desc, empty=False, compact=Fal
     seen = {t for _, fm, _ in cards for t in fm["tags"]}
     levels = [lv for lv in LEVELS if any(c[1]["level"] == lv for c in cards)]
     tally = lambda keep: {k: sum(k in fm["tags"] for _, fm, _ in stable) for k in keep}
-    flt = buttons("Concerns", "c", [c for c in CONCERNS if c in seen], tally(CONCERNS))
+    flt = buttons("Concerns", "c", [c for c in CONCERNS if c in seen and (not compact or tally([c])[c])], tally(CONCERNS))
     if len(levels) > 1:
         flt += buttons("Levels", "l", levels, {lv: sum(fm["level"] == lv for _, fm, _ in stable) for lv in levels})
     topics = sorted(t for t in seen - set(CONCERNS) if not compact or tally([t])[t])

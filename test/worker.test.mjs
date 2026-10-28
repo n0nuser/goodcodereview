@@ -76,3 +76,15 @@ test("a group name that is an Object.prototype key is ignored, not a 500", async
 		assert.match(await res.text(), /`a`/);
 	}
 });
+
+test("a filter with only unknown values matches nothing", async () => {
+	const data = await (await get("/cards.json?concern=securty")).json();
+	assert.deepEqual(data.cards, []);
+	assert.match(await (await get("/concerns.md?concern=securty")).text(), /0 of 3 cards[\s\S]*Ignored/);
+});
+
+test("HEAD gets the filtered headers and no body", async () => {
+	const res = await worker.fetch(new Request("https://example.com/cards.json?level=change", { method: "HEAD" }), env);
+	assert.equal(res.headers.get("cache-control"), "public, max-age=300");
+	assert.equal(await res.text(), "");
+});

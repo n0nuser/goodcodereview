@@ -46,8 +46,12 @@ class Grade(unittest.TestCase):
         self.assertTrue(res["format"])
 
     def test_scoped_review_may_not_cite_other_concerns(self):
-        text = "Verdict: request changes\nFAIL [should-fix] fn-native-button-or-link - form.jsx:11 - div\nFAIL [block] fn-form-control-has-label - form.jsx:5 - x\nFAIL [block] svc-timeouts - a:1 - b\n"
-        self.assertTrue(ev.grade(ev.load("a11y_scoped"), text)["substance"])
+        base = "Verdict: request changes\nFAIL [should-fix] fn-native-button-or-link - form.jsx:11 - div\nFAIL [block] fn-form-control-has-label - form.jsx:5 - x\n"
+        self.assertEqual(ev.grade(ev.load("a11y_scoped"), base)["substance"], [])
+        out = ev.grade(ev.load("a11y_scoped"), base + "FAIL [block] svc-timeouts - a:1 - b\n")["substance"]
+        self.assertEqual(len(out), 1)
+        self.assertIn("svc-timeouts", out[0])
+        self.assertEqual(ev.grade(ev.load("a11y_scoped"), base + "Prod-like, code-level notes.\n")["substance"], [])
 
 
 if __name__ == "__main__":
