@@ -1,0 +1,106 @@
+{
+  "skill": "good-code-review",
+  "note": "Trigger eval queries. Positives are requests the skill should take, sometimes without the word 'review'. Negatives are near-misses that share words with the skill but need other work. 'split' is fixed: tune the description on train, check it on validation.",
+  "queries": [
+    {
+      "query": "is this safe to merge? it's the PR that moves our login to the new session store, diff is in change.diff",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "can u look over my PR before standup, touches src/billing/charge.py and the retry wrapper",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "my manager wants a security pass on services/api/ before the launch, nothing fancy, just flag anything scary",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "audit this repo for stuff we'd regret in prod: CI config, lockfiles, secrets, the usual",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "we had an outage last night, postmortem is in docs/pm-2026-10-27.md, did we miss anything obvious in the fix?",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "quick sanity check on this react form component, a11y mostly (src/SignupForm.tsx)",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "review utils/paths.py::safe_join, i think it's fine but i'm paranoid",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Please review the attached design doc for the new payments fan-out across three services.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "go through the release notes and rollout plan for v4.2 and tell me what could bite us at launch",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "does this commit look ok? git show HEAD",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "write a python function that retries a request with exponential backoff and jitter",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "fix the failing test in tests/test_orders.py, it started failing after the rename",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "run the linter and the test suite and tell me what fails",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "explain what this regex does: ^(?=.*[A-Z])(?=.*\\d).{8,}$",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "review my resume bullet points for my backend engineer application",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "add pagination to the /invoices endpoint and update the openapi spec",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "proofread this README and fix the typos",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "what's the difference between idempotency keys and optimistic locking? i'm preparing for an interview",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "refactor src/db.py to use a connection pool, keep behaviour the same",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "summarise what changed between v1.3 and v1.4 from the git log",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}
