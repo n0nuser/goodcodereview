@@ -794,10 +794,11 @@ def main():
     # A stable card links only to another stable card, as a relative path inside references/. Any other target is plain text.
     link = lambda t: re.sub(r"\[\[([^\]]+)\]\]", lambda m: f"[{m[1]}]({home[m[1]]}.md#{m[1]})" if m[1] in home else m[1], t)
     plain = VERDICT.replace("<code>", "`").replace("</code>", "`")
-    skfm = ["---", "name: good-code-review", f"description: {SKILL_DESC}",
-          "license: CC-BY-4.0 for the content, MIT for the code",
-          "compatibility: Reads Markdown only. Needs a file-read tool and, to triage, grep. No network, no code to run.",
-          "metadata:", '  author: "Pablo Jesus Gonzalez Rubio"', '  version: "1.0"', "---"]
+    q = lambda t: json.dumps(t, ensure_ascii=False)  # a JSON string is a valid YAML scalar; a plain one breaks on ": " inside it
+    skfm = ["---", "name: good-code-review", f"description: {q(SKILL_DESC)}",
+          f"license: {q('CC-BY-4.0 for the content, MIT for the code')}",
+          f"compatibility: {q('Reads Markdown only. Needs a file-read tool and, to triage, grep. No network, no code to run.')}",
+          "metadata:", f"  author: {q('Pablo Jesús González Rubio')}", '  version: "1.0"', "---"]
     head = ["# Good Code Review", "", "## Routing", "", "| Input | Entry point |", "|---|---|"]
     head += [f"| {i} | {lv}{f' ({EMPTY_MARK})' if lv in empty else ''} |" for i, lv in ROUTES]
     head += ["", DIFF_RULE, "", INCIDENT_RULE, ""] + ([EMPTY_RULE, ""] if empty else [])
@@ -843,11 +844,11 @@ def main():
     # "when to use" paragraph, a Severity section and a described link to each level's Markdown file added.
     # Drafts live in llms-drafts.txt, never mixed into the vetted file.
     url = lambda fm: f"{BASE}/pack-{fm['lang']}.html" if fm["lang"] != "core" else f"{BASE}/{fm['level']}.html"
-    body = head + gotchas + llms_scope + idx  # SKILL.md's pointer lines and grep scoping are left out; llms.txt has its own Glossary and Draft sections
+    body = head + llms_scope + idx  # SKILL.md's pointer lines, Gotchas, and grep scoping are left out; llms.txt has its own Glossary and Draft sections
     # Follows https://llmstxt.org/ : H1, blockquote, headingless sections, then H2 file lists of `[name](url): notes` links,
     # with secondary links under "Optional". tools/agent_ready_check.py checks the shape.
     bold = lambda l: f"**{l[3:]}**" if l.startswith("## ") else l
-    llms = [body[0], "", "> " + sk[2][len("description: "):], "", WHEN_TO_USE, ""]
+    llms = [body[0], "", "> " + SKILL_DESC, "", WHEN_TO_USE, ""]
     seen_level, cur = False, None
     for l in body[2:]:
         if l.startswith("## ") and l[3:] in LEVELS:
@@ -950,7 +951,7 @@ def main():
     digest = hashlib.sha256((wk / "good-code-review" / "SKILL.md").read_bytes()).hexdigest()
     (wk / "index.json").write_text(json.dumps({
         "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
-        "skills": [{"name": "good-code-review", "type": "skill-md", "description": sk[2][len("description: "):],
+        "skills": [{"name": "good-code-review", "type": "skill-md", "description": SKILL_DESC,
                     "url": f"{BASE}/.well-known/agent-skills/good-code-review/SKILL.md", "digest": f"sha256:{digest}"}]}, indent=2) + "\n")
     print(f"site: {len(slugs) + 1} pages; SKILL.md: {n} lines; stable cards: {len(stable)}; llms.txt: {len(text)} chars; lastmod: {date}")
 

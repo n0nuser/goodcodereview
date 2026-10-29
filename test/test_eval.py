@@ -65,8 +65,6 @@ class Grade(unittest.TestCase):
         self.assertEqual(ev.ANSI.sub("", "\x1b[1mVerdict: approve\x1b[0m"), "Verdict: approve")
 
 
-if __name__ == "__main__":
-    unittest.main()
 
 
 class Triggers(unittest.TestCase):
@@ -86,3 +84,7 @@ class Triggers(unittest.TestCase):
         for split in ("train", "validation"):
             part = [q for q in qs if q["split"] == split]
             self.assertTrue(any(q["should_trigger"] for q in part) and any(not q["should_trigger"] for q in part), split)
+
+
+if __name__ == "__main__":
+    unittest.main()

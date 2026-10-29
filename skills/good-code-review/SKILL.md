@@ -1,10 +1,10 @@
 ---
 name: good-code-review
-description: Run a checklist code review with vetted rules, each marked PASS, FAIL, or N/A with file:line evidence. Use this skill whenever the user asks to review, audit, check, or sanity-check code, even if they do not say "review": a pull request, diff, commit, file, package, service, design doc, repo, release, or incident postmortem, including "is this safe to merge", "look over my PR", and security, accessibility, or performance checks. Load it before you review by hand. Do not use it to write code, run tests, or fix a bug.
-license: CC-BY-4.0 for the content, MIT for the code
-compatibility: Reads Markdown only. Needs a file-read tool and, to triage, grep. No network, no code to run.
+description: "Run a checklist code review with vetted rules, each marked PASS, FAIL, or N/A with file:line evidence. Use this skill whenever the user asks to review, audit, check, or sanity-check code, even if they do not say \"review\": a pull request, diff, commit, file, package, service, design doc, repo, release, or incident postmortem, including \"is this safe to merge\", \"look over my PR\", and security, accessibility, or performance checks. Load it before you review by hand. Do not use it to write code, run tests, or fix a bug."
+license: "CC-BY-4.0 for the content, MIT for the code"
+compatibility: "Reads Markdown only. Needs a file-read tool and, to triage, grep. No network, no code to run."
 metadata:
-  author: "Pablo Jesus Gonzalez Rubio"
+  author: "Pablo Jesús González Rubio"
   version: "1.0"
 ---
 
