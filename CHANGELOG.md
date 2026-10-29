@@ -4,6 +4,7 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ## [Unreleased]
 
+- Skill, from the Agent Skills guides: `SKILL.md` drops from about 5.9k to about 1.6k tokens by moving the card index to `llms.txt` (each rule stays in `references/<level>.md`; `grep` lists a level's concerns). It gains a Gotchas section, `license`, `compatibility`, and `metadata` frontmatter, and a description that names indirect phrasings and what the skill is not for. `test/evals/triggers.json` and `tools/eval.py triggers` measure how often the description triggers.
 - The skill description says to use it for any request to review, audit, or check code and to load it before reviewing by hand. In the evals, the agent invoked it unprompted in about half the runs, up from about a third.
 - Skill evals: `tools/eval.py` runs five cases in `test/evals/` through `claude -p` in `skill`, `forced`, and `bare` modes and grades each reply on substance and format. CI runs only the grader's tests.
 - Skill, from a 26-repository test-suite audit: cards whose `applies_when` fails collapse to one `N/A` count and the `change` cards are skipped when there is no diff; one defect goes under one card; each `FAIL` is tagged `proven`, `inferred`, or `could not check`; draft findings go in a Notes section at `discuss` at most; the closing design note is one short line and only for an unscoped review.

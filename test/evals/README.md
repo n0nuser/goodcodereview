@@ -49,3 +49,7 @@ python3 tools/eval.py run injected --agent opencode --model opencode-go/deepseek
 The `eval` workflow (Actions, Run workflow) runs the same command with the repository secret `ANTHROPIC_API_KEY`; it never runs on its own. It is untested until someone starts it once.
 
 `run` calls `claude -p`, which spends tokens, so CI runs only the grader's tests (`test/test_eval.py`). Rerun the evals after a change to the skill text in `tools/build.py`, and add a case when a reviewer reports a miss.
+
+## Trigger evals
+
+`test/evals/triggers.json` holds 20 queries (10 should trigger, 10 near-miss negatives) with a fixed train/validation split, as the Agent Skills guide on [optimizing descriptions](https://agentskills.io/skill-creation/optimizing-descriptions.md) describes. `python3 tools/eval.py triggers --split train` reports the trigger rate per query. Tune `SKILL_DESC` in `tools/build.py` on `train` and confirm on `validation`. Not yet run against a real install: it spends tokens, so start with `--runs 1`.

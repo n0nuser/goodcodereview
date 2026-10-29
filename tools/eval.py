@@ -3,6 +3,7 @@
 
     python3 tools/eval.py grade CASE OUTPUT_FILE [--mode skill|bare]
     python3 tools/eval.py run [--agent claude|opencode] [--mode skill|forced|bare|all] [--runs N] [--model M] [CASE ...]
+    python3 tools/eval.py triggers [--split train|validation|all] [--runs N] [--model M]
 
 `run` starts `claude -p` in a scratch copy of each case and grades the reply. Modes: `skill` installs the skill and leaves it
 to the agent to invoke (measures triggering and adherence), `forced` installs it and starts the prompt with `/good-code-review`
@@ -18,6 +19,10 @@ A case.json holds:
 `--agent opencode` drives `opencode run` instead (model as `provider/model`, such as `opencode-go/deepseek-v4.1-flash`), with the skill
 copied to `.opencode/skills/`. In forced mode, which has no slash command there, the prompt starts with an instruction to load the
 skill. That adapter has not been run against a real opencode install; start with one case and `--runs 1`.
+
+`triggers` runs the queries in test/evals/triggers.json with the skill installed and reports how often the agent loaded it
+(`claude -p --output-format stream-json`; the skill counts as loaded on a `Skill` call for it or a read of its SKILL.md). A query passes when
+its trigger rate is above 0.5 for a should-trigger query and at or below 0.5 for the rest. Tune the description on `train`, confirm on `validation`.
 
 Each result has two tiers: `substance` (did it find what a reviewer must find) and `format` (did it follow the report format).
 """
@@ -87,6 +92,41 @@ class HarnessError(Exception):
     """The CLI failed, which says nothing about the skill."""
 
 
+def triggered(stream):
+    """True if a stream-json transcript shows the agent loading the skill: a Skill call for it, or a read of its SKILL.md."""
+    for raw in stream.splitlines():
+        try:
+            ev = json.loads(raw)
+        except ValueError:
+            continue
+        content = (ev.get("message") or {}).get("content") if ev.get("type") == "assistant" else None
+        for block in content if isinstance(content, list) else []:
+            if block.get("type") != "tool_use":
+                continue
+            inp = block.get("input") or {}
+            if block.get("name") == "Skill" and inp.get("skill", "").endswith("good-code-review"):
+                return True
+            if block.get("name") == "Read" and "good-code-review/SKILL.md" in inp.get("file_path", ""):
+                return True
+    return False
+
+
+def trigger_run(query, model):
+    with tempfile.TemporaryDirectory() as tmp:
+        work = Path(tmp)
+        shutil.copytree(SKILL, work / ".claude/skills/good-code-review")
+        cmd = ["claude", "-p", query, "--allowedTools", "Read,Grep,Glob,Skill", "--output-format", "stream-json", "--verbose"]
+        try:
+            out = subprocess.run(cmd + (["--model", model] if model else []), cwd=work, capture_output=True, text=True, timeout=600)
+        except FileNotFoundError:
+            raise HarnessError("claude is not installed or not on PATH")
+        except subprocess.TimeoutExpired:
+            raise HarnessError("claude timed out after 600 s")
+    if out.returncode or not out.stdout.strip():
+        raise HarnessError(f"claude exited {out.returncode}: {out.stderr.strip()[:200]}")
+    return triggered(out.stdout)
+
+
 def load(name):
     return json.loads((CASES / name / "case.json").read_text())
 
@@ -138,7 +178,30 @@ def main():
     r.add_argument("--model")
     r.add_argument("--save", metavar="DIR", help="write each raw reply to DIR/<case>-<mode>-<n>.txt")
     r.add_argument("--agent", choices=["claude", "opencode"], default="claude")
+    t = sub.add_parser("triggers")
+    t.add_argument("--split", choices=["train", "validation", "all"], default="all")
+    t.add_argument("--runs", type=int, default=3)
+    t.add_argument("--model")
     a = ap.parse_args()
+    if a.cmd == "triggers":
+        queries = json.loads((CASES.parent / "triggers.json").read_text())["queries"]
+        passed = {"train": [0, 0], "validation": [0, 0]}
+        for q in queries:
+            if a.split not in ("all", q["split"]):
+                continue
+            try:
+                hits = sum(trigger_run(q["query"], a.model) for _ in range(a.runs))
+            except HarnessError as e:
+                sys.exit(f"harness error: {e}")
+            rate = hits / a.runs
+            ok = (rate > 0.5) == q["should_trigger"]
+            passed[q["split"]][0] += ok
+            passed[q["split"]][1] += 1
+            print(f"{'ok  ' if ok else 'FAIL'} {q['split']:<11}{'want' if q['should_trigger'] else 'skip'} rate {rate:.2f}  {q['query'][:70]}")
+        for k, (n, d) in passed.items():
+            if d:
+                print(f"{k}: {n}/{d} pass")
+        return
     if a.cmd == "grade":
         res = grade(load(a.case), Path(a.output).read_text(), a.mode)
         print(json.dumps(res, indent=2))

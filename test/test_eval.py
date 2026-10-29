@@ -65,5 +65,26 @@ class Grade(unittest.TestCase):
         self.assertEqual(ev.ANSI.sub("", "\x1b[1mVerdict: approve\x1b[0m"), "Verdict: approve")
 
 
+
+
+class Triggers(unittest.TestCase):
+    def stream(self, name, **inp):
+        return json.dumps({"type": "assistant", "message": {"content": [{"type": "tool_use", "name": name, "input": inp}]}})
+
+    def test_skill_call_or_skill_md_read_counts(self):
+        self.assertTrue(ev.triggered(self.stream("Skill", skill="good-code-review")))
+        self.assertTrue(ev.triggered(self.stream("Read", file_path="/w/.claude/skills/good-code-review/SKILL.md")))
+
+    def test_other_skill_or_no_call_does_not(self):
+        self.assertFalse(ev.triggered(self.stream("Skill", skill="code-review")))
+        self.assertFalse(ev.triggered("not json\n" + self.stream("Read", file_path="/w/app.py")))
+
+    def test_query_file_is_balanced_and_split(self):
+        qs = json.loads((Path(ev.__file__).parent.parent / "test/evals/triggers.json").read_text())["queries"]
+        for split in ("train", "validation"):
+            part = [q for q in qs if q["split"] == split]
+            self.assertTrue(any(q["should_trigger"] for q in part) and any(not q["should_trigger"] for q in part), split)
+
+
 if __name__ == "__main__":
     unittest.main()
