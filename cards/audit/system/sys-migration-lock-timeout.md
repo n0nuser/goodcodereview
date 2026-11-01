@@ -2,12 +2,13 @@
 id: sys-migration-lock-timeout
 level: system
 tags: [compatibility, database, migration, postgres]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, PostgreSQL and GitLab back it; the lock-queue reason is inferred; needs a third org
 note: lock-queue consequence is inference, not stated in the Postgres page read
 lang: core
 applies_when: A migration runs ALTER TABLE on a busy PostgreSQL table.
+context: [data]
 tool_gate: Migration linter (e.g. flag ALTER without lock_timeout).
 borrowed_from:
   - https://www.postgresql.org/docs/current/runtime-config-client.html

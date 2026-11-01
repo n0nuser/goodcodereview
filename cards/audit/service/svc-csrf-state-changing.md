@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: The service authenticates browsers with cookies and changes state on requests.
+context: [server]
 tool_gate: Framework CSRF middleware enabled; test that a POST without the token returns 403.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html

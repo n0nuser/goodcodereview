@@ -7,6 +7,7 @@ status: draft
 lacks: held, kept draft by Pablo's call
 lang: core
 applies_when: The service serves HTML pages or sets cookies for browsers over HTTPS.
+context: [server]
 tool_gate: Header check in CI against a staging URL; framework middleware that sets defaults.
 note: the Rule covers HSTS only; nosniff and frame-ancestors each have two orgs (OWASP, Mozilla), so they sit in Why
 borrowed_from:

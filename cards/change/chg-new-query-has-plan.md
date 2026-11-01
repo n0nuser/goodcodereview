@@ -7,6 +7,7 @@ status: draft
 lacks: failable, without "attach the plan" a change review has nothing to mark FAIL; attaching has GitLab only
 lang: core
 applies_when: The change adds or rewrites a SQL query against a table that grows with users or time.
+context: [data]
 tool_gate: none
 note: PostgreSQL, MySQL, and SQLite docs describe the plan, not a review practice; "check the plan before it ships" has 2 orgs (AWS, GitLab); "attach it to the change" has 1 (GitLab); "production-sized data" has 2 (GitLab, PostgreSQL)
 borrowed_from:

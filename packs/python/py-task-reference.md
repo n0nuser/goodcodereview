@@ -2,7 +2,7 @@
 id: py-task-reference
 level: service
 tags: [correctness, asyncio, concurrency]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, the asyncio docs are the only backer; needs a second independent source on task lifetime
 lang: python

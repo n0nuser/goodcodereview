@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: A form handler or component re-renders after a failed validation or a failed submit.
+context: [ui]
 tool_gate: none; a test that submits an invalid form and asserts the entered values are still there.
 note: GOV.UK says validate on submit and Baymard says validate when the user leaves a field; this card takes no side on timing. Shneiderman's rule 8 is about re-entry across screens and is related, not the same.
 borrowed_from:

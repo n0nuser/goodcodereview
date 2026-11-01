@@ -2,7 +2,7 @@
 id: chg-agent-grounded-code
 level: change
 tags: [maintainability, process, agents, ai-generated, reuse]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, only an arXiv package-hallucination study backs checking every import and call; needs two more orgs
 lang: core

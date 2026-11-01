@@ -9,7 +9,7 @@ from typing import Literal, Optional, Union, get_args, get_origin, get_type_hint
 
 from validate import LACKS
 
-SCHEMA_VERSION = 3  # 2 added Card.orgs; 3 made orgs organisations only and added Card.people
+SCHEMA_VERSION = 4  # 2 added Card.orgs; 3 made orgs organisations only and added Card.people; 4 added Card.context
 Status = Literal["stable", "draft"]
 Severity = Literal["block", "should-fix", "discuss"]
 Kind = Literal["stable", "drafts"]
@@ -49,6 +49,7 @@ class Card:
     topics: list[str]          # the remaining tags, such as "postgres"
     lang: str                  # "core", or the pack name such as "python"
     applies_when: str
+    context: list[str]         # parts of an input the card needs: ui, server, data, cli; empty means any input
     tool_gate: Optional[str]   # a check a tool can run, or null when none exists
     note: Optional[str]        # a scope note, or null
     lacks: Optional[Lacks]     # why a draft is not stable yet; null on stable cards

@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: A shared API or queue serves several tenants or callers.
+context: [server]
 tool_gate: none
 borrowed_from:
   - https://aws.amazon.com/builders-library/fairness-in-multi-tenant-systems/

@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: The service exposes routes or functions that different roles may call.
+context: [server]
 tool_gate: Router that denies routes with no policy; a test that lists every route and its required role.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html

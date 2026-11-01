@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: The service serves HTML pages to browsers.
+context: [server]
 tool_gate: Google CSP Evaluator on the policy; a CI header check against a staging URL.
 note: follows OWASP, MDN and web.dev, which are stricter than the ASVS 3.4.3 minimum (that minimum still allows a host allowlist); fn-no-raw-html-sink is the first defence against XSS and CSP is the second
 borrowed_from:

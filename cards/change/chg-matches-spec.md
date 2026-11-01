@@ -2,7 +2,7 @@
 id: chg-matches-spec
 level: change
 tags: [process, scope, requirements]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, checking the change against the spec has Google, plus Dropbox for security only; needs a third org
 lang: core

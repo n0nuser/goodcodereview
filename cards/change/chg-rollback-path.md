@@ -2,7 +2,7 @@
 id: chg-rollback-path
 level: change
 tags: [reliability, release, rollback]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, only Anthropic (a vendor) says to state the undo in the change description; Google SRE backs canary rollback, not the statement
 lang: core

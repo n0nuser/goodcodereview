@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: A request parameter or body sets how many records, bytes, items or operations the server handles.
+context: [server]
 tool_gate: Gateway request-size limit; schema `maxLength`/`maxItems`; test with a 10 MB body and `limit=1000000`.
 borrowed_from:
   - https://api-security.owasp.org/editions/2023/en/0xa4-unrestricted-resource-consumption

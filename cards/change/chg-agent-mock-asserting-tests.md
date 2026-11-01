@@ -2,7 +2,7 @@
 id: chg-agent-mock-asserting-tests
 level: change
 tags: [testing, process, agents]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, Google and cursor/plugins back it; Go backs a side remark and Feathers points the other way
 lang: core

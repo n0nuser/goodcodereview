@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: A non-idempotent operation (charge, create, send) can be retried by a client, a queue, or a saga.
+context: [server]
 tool_gate: none
 borrowed_from:
   - https://learn.microsoft.com/en-us/azure/architecture/patterns/retry

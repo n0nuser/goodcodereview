@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: Styles or script add a transition, an animation, a parallax effect, or autoplay motion.
+context: [ui]
 tool_gate: Stylelint `a11y/media-prefers-reduced-motion` from the `stylelint-a11y` plugin. A browser run with reduced motion emulated.
 note: WCAG 2.3.3 is level AAA, so this is good practice and not an AA floor
 borrowed_from:

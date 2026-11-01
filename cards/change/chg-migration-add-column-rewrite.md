@@ -2,11 +2,12 @@
 id: chg-migration-add-column-rewrite
 level: change
 tags: [compatibility, database, migration, postgres]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, PostgreSQL docs are the only backer; needs two more orgs
 lang: core
 applies_when: A migration adds a column to a large PostgreSQL table.
+context: [data]
 tool_gate: Migration linter that flags volatile defaults, stored generated columns and identity columns on ADD COLUMN.
 borrowed_from:
   - https://www.postgresql.org/docs/current/sql-altertable.html

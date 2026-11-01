@@ -2,7 +2,7 @@
 id: fn-specific-exceptions-only
 level: function
 tags: [correctness, errors]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, the Go wiki and an Ousterhout summary back it; needs a third independent org
 lang: core

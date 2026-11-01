@@ -7,6 +7,7 @@ status: draft
 lacks: orgs, reporting the keyboard pass has two PR templates; the 200% zoom clause has W3C only
 lang: core
 applies_when: The change alters markup, styles, or behaviour a user sees or operates.
+context: [ui]
 tool_gate: A pull request template with a UI checklist; the screenshots and the keyboard result are the evidence.
 note: running a keyboard pass is backed by W3C, WebAIM, GOV.UK, but reporting it in the change only by the WordPress and Elastic PR templates (2); 200% zoom is W3C only; screenshots rest on three PR templates (WordPress, Elastic, Mozilla), and WordPress's section is optional
 borrowed_from:

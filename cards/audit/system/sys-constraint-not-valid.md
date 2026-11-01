@@ -2,12 +2,13 @@
 id: sys-constraint-not-valid
 level: system
 tags: [compatibility, database, migration, postgres]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, PostgreSQL docs are the only backer; needs two more orgs that add constraints in two steps
 note: ADD CONSTRAINT ... USING INDEX route not independently verified; PostgreSQL is the example dialect
 lang: core
 applies_when: A migration adds a CHECK, FOREIGN KEY, or NOT NULL constraint to a large existing table.
+context: [data]
 tool_gate: Migration linter.
 borrowed_from:
   - https://www.postgresql.org/docs/current/sql-altertable.html

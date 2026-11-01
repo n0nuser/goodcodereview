@@ -5,6 +5,7 @@
 severity: should-fix  
 concerns: accessibility, usability  
 applies_when: A design-system module or theme defines foreground and background colour tokens.  
+context: ui  
 Backed by: W3C, Deque, The A11y Project, Apple, Google, WebAIM.
 
 **Rule.** Make every text and background token pair meet 4.5:1 (3:1 for large text), and every border, icon, and focus colour meet 3:1 against its neighbour.
@@ -62,6 +63,43 @@ status.py is generated from openapi.yaml in the build, or a test asserts the two
 ```
 
 **Counterpoint.** "Generated code is awkward to read." A parity test gives the same safety with hand-written types. The rule fails only when neither derivation nor a check exists.
+
+## mod-no-module-mutable-state
+
+severity: should-fix  
+concerns: correctness, testing  
+applies_when: A module defines a variable that changes after load: a list, dict, counter, cache, client or singleton.  
+Backed by: Google, Uber, Microsoft.
+
+**Rule.** Keep no mutable state at module level.
+
+**Why.** Hidden global state leaks between tests, between requests, and between threads, and its order of mutation is unreadable. A frozen, load-once constant such as settings is the exception. A singleton used to dodge injection is not.
+
+**FAIL**
+
+```python
+_cache = {}
+
+def get(key):
+    if key not in _cache:
+        _cache[key] = load(key)
+    return _cache[key]
+```
+
+**PASS**
+
+```python
+class Loader:
+    def __init__(self, cache):
+        self._cache = cache
+
+    def get(self, key):
+        if key not in self._cache:
+            self._cache[key] = load(key)
+        return self._cache[key]
+```
+
+**Counterpoint.** "A module global is the simplest cache." It is also unbounded and shared by everything. If you need one, bound it (LRU or TTL), inject it, and tie its lifetime to what it caches.
 
 ## mod-pooled-clients-built-once
 

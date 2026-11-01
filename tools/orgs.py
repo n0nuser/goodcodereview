@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 
 # id -> display name. An org with an entry in org_icons.json shows its logo. Every other org shows a monogram.
 ORGS = {
+    "debian": "Debian", "hashicorp": "HashiCorp", "git": "Git", "gnu": "GNU Project", "tuf": "The Update Framework", "sparkle": "Sparkle", "sigstore": "Sigstore", "mender": "Mender", "opengroup": "The Open Group", "clig": "Command Line Interface Guidelines", "go-update": "go-update (Alan Shreve)",
     "a11yproject": "The A11y Project", "airbnb": "Airbnb", "apache": "Apache Software Foundation", "appian": "Appian",
     "apple": "Apple", "atlassian": "Atlassian", "auth0": "Okta (Auth0)", "aws": "AWS", "baymard": "Baymard Institute",
     "ben-manes": "Caffeine project", "brendan-gregg": "Brendan Gregg", "cabify": "Cabify", "cisa": "CISA",
@@ -25,7 +26,7 @@ ORGS = {
     "microsoft": "Microsoft", "mit": "MIT", "mitre": "MITRE", "mozilla": "Mozilla", "mypy": "mypy project",
     "ncsc": "NCSC", "netflix": "Netflix", "nist": "NIST", "nngroup": "Nielsen Norman Group", "nodejs": "OpenJS Foundation",
     "npm": "npm", "openapi": "OpenAPI Initiative", "openssf": "OpenSSF", "opentelemetry": "OpenTelemetry",
-    "oracle": "Oracle", "sonarsource": "SonarSource", "openjdk": "OpenJDK", "godot": "Godot Engine", "usgs": "USGS", "va": "US Department of Veterans Affairs", "ethereum": "Ethereum Foundation", "ousterhout": "John Ousterhout", "pact": "Pact", "palantir": "Palantir", "pgbouncer": "PgBouncer project",
+    "docker": "Docker", "oracle": "Oracle", "sonarsource": "SonarSource", "openjdk": "OpenJDK", "godot": "Godot Engine", "usgs": "USGS", "va": "US Department of Veterans Affairs", "ethereum": "Ethereum Foundation", "ousterhout": "John Ousterhout", "pact": "Pact", "palantir": "Palantir", "pgbouncer": "PgBouncer project",
     "phacility": "Phacility", "portswigger": "PortSwigger", "portebois": "Sébastien Portebois", "postgresql": "PostgreSQL",
     "pragmatic-engineer": "The Pragmatic Engineer", "prometheus": "Prometheus", "psf": "Python Software Foundation",
     "pyjwt": "PyJWT project", "rails": "Ruby on Rails", "redis": "Redis", "refactoring-guru": "Refactoring.Guru",
@@ -38,11 +39,12 @@ ORGS = {
     "wordpress": "WordPress", "w3c": "W3C", "envoy": "Envoy", "hyrum": "Hyrum Wright", "owasp": "OWASP", "zalando": "Zalando",
     "jetbrains": "JetBrains", "nvidia": "NVIDIA", "statsig": "Statsig", "etcd": "etcd", "hazelcast": "Hazelcast",
     "ecto": "Ecto", "cockroach": "CockroachDB", "anthropic": "Anthropic",
-    "cmu-sei": "Carnegie Mellon SEI", "wikimedia": "Wikimedia (MediaWiki)", "lockheed": "Lockheed Martin", "fowler": "Martin Fowler",
+    "vitest": "Vitest", "typescript-eslint": "typescript-eslint project", "testing-library": "Testing Library", "cmu-sei": "Carnegie Mellon SEI", "wikimedia": "Wikimedia (MediaWiki)", "lockheed": "Lockheed Martin", "fowler": "Martin Fowler",
 }
 
 # Orgs that are one author. They show in "Backed by" but never count toward the three organisations a stable card needs.
 PERSONS = {
+    "clig", "go-update",
     "brendan-gregg", "dan-luu", "feathers", "heydon", "hickey", "hyrum", "jnd", "joel", "kane", "kent-beck", "kent-c-dodds",
     "kleppmann", "liskov-wing", "lucumr", "mcintosh", "ousterhout", "portebois", "salvatore", "sandi-metz", "shneiderman",
     "tef", "fowler", "vorpus", "warne", "wayne", "winand",
@@ -60,6 +62,7 @@ STANDING = {
 # URL prefix (no scheme) -> org id. The longest matching prefix wins. A prefix without "/" also matches subdomains,
 # so "owasp.org" covers cheatsheetseries.owasp.org. On code hosts the org is the repository owner, never the host.
 PREFIXES = {
+    "wiki.debian.org": "debian", "source.android.com": "google", "docs.mender.io": "mender", "pubs.opengroup.org": "opengroup", "rust-cli.github.io": "rust", "developer.hashicorp.com": "hashicorp", "git-scm.com": "git", "gnu.org": "gnu", "theupdateframework.io": "tuf", "sparkle-project.org": "sparkle", "docs.sigstore.dev": "sigstore", "clig.dev": "clig", "pkg.go.dev/github.com/inconshreveable/go-update": "go-update", "devcenter.heroku.com": "heroku", "raw.githubusercontent.com/Azure/": "microsoft", "github.com/Azure/": "microsoft",
     "12factor.net": "heroku", "airbnb.tech": "airbnb", "alphagov.github.io": "govuk", "angular.dev": "google",
     "antirez.com": "salvatore", "flex.apache.org": "apache", "cwiki.apache.org/confluence/display/QUICKSTEP": "apache", "github.com/google/": "google", "wiki.openjdk.org": "openjdk", "sonarsource.com": "sonarsource", "contributing.godotengine.org": "godot", "astrogeology.usgs.gov": "usgs", "depo-platform-documentation.scrollhelp.site": "va", "geth.ethereum.org": "ethereum", "rustc-dev-guide.rust-lang.org": "rust", "edgeguides.rubyonrails.org": "rails", "usenix.org/legacy/event/osdi06/tech/full_papers/burrows/burrows.pdf": "google", "arxiv.org/abs/2406.10279": "utsa", "atlassian.design": "atlassian", "auth0.com": "auth0",
     "aws.amazon.com": "aws", "aws.com": "aws", "baymard.com": "baymard", "bazel.build": "google", "blog.google": "google",
@@ -70,7 +73,7 @@ PREFIXES = {
     "developer.apple.com": "apple", "mozilla.org": "mozilla", "cloud.google.com": "google", "developers.google.com": "google",
     "devguide.python.org": "psf", "docs.python.org": "psf", "peps.python.org": "psf", "pip.pypa.io": "psf",
     "requests.readthedocs.io": "requests", "docs.appian.com": "appian", "docs.djangoproject.com": "django", "dev.mysql.com": "oracle",
-    "docs.oracle.com": "oracle", "docs.gatling.io": "gatling", "docs.github.com": "github", "github.blog": "github",
+    "docs.oracle.com": "oracle", "docs.gatling.io": "gatling", "docs.github.com": "github", "cli.github.com": "github", "github.blog": "github",
     "docs.gitlab.com": "gitlab", "kernel.org": "kernel", "docs.npmjs.com": "npm", "docs.pact.io": "pact",
     "docs.rs/regex/": "rust", "docs.rs/tokio/": "tokio", "docs.spring.io": "spring", "docs.sqlalchemy.org": "sqlalchemy",
     "stripe.com": "stripe", "stripe.dev": "stripe", "dropbox.tech": "dropbox", "engineering.atspotify.com": "spotify",
@@ -104,12 +107,13 @@ PREFIXES = {
     "github.com/ankane/": "kane", "github.com/ben-manes/caffeine": "ben-manes", "github.com/cursor/plugins/": "cursor",
     "github.com/dequelabs/": "deque", "github.com/ghostty-org/": "ghostty", "github.com/johnousterhout/": "ousterhout",
     "github.com/jsx-eslint/": "jsx-eslint", "github.com/matthiasn/talk-transcripts/blob/master/Hickey_Rich/": "hickey",
-    "github.com/microsoft/": "microsoft", "github.com/mozilla/": "mozilla", "github.com/ossf/": "openssf",
+    "github.com/microsoft/": "microsoft", "typescriptlang.org": "microsoft", "vitest.dev": "vitest", "typescript-eslint.io": "typescript-eslint", "testing-library.com": "testing-library", "github.com/uber-go/": "uber", "github.com/google-gemini/": "google", "cursor.com": "cursor", "github.com/mozilla/": "mozilla", "github.com/ossf/": "openssf", "bestpractices.dev": "openssf", "github.com/github/": "github", "github.com/rust-lang/": "rust",
     "cmu-sei.github.io": "cmu-sei", "sei.cmu.edu": "cmu-sei", "mediawiki.org": "wikimedia",
     "stroustrup.com/JSF-AV-rules.pdf": "lockheed", "martinfowler.com": "fowler",
     "x.com/addyosmani/status/2114604912520921136": "anthropic",
     "raw.githubusercontent.com/OWASP/": "owasp", "raw.githubusercontent.com/WordPress/": "wordpress",
     "raw.githubusercontent.com/elastic/": "elastic", "raw.githubusercontent.com/mozilla/": "mozilla",
+    "docs.docker.com": "docker", "github.com/kubernetes/": "kubernetes", "doc.rust-lang.org": "rust",
 }
 
 ICONS = json.loads((Path(__file__).with_name("org_icons.json")).read_text())  # org id -> SVG path from Simple Icons 15.22.0 (CC0), https://simpleicons.org

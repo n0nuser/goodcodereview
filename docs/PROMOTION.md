@@ -62,6 +62,10 @@ The Google SRE book backed it. A research pass in `docs/research/alerting-pass.m
 
 That gave Google, Grafana Labs, and Datadog: three independent organisations behind the whole Rule line. The examples parsed, the counterpoint answered the objection that cause alerts help diagnosis, and no stable card covered the same rule. The card moved to stable.
 
+## Severity on a draft
+
+A draft card is capped at `should-fix`: `tools/validate.py` rejects `severity: block` on a draft, because a draft finding never decides a verdict. When you promote a card, set `severity` to what its sources justify, which may be `block`.
+
 ## Propose a promotion
 
 Open a "Promote a draft" issue with the three organisations and a link to each source. Then send a pull request that sets `status: stable`, removes the `lacks:` line, adds the sources to `borrowed_from` and to a note under `docs/research/`, and runs `python3 tools/validate.py && python3 tools/build.py`. Commit the regenerated `skills/` directory.

@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: Markup or a component renders a title or a section heading.
+context: [ui]
 tool_gate: axe `p-as-heading` (experimental) flags a bold paragraph styled as a heading; axe `heading-order` flags skipped levels.
 note: 3 orgs (W3C, Mozilla, A11y Project) for real heading elements. No skipped levels has 2 (W3C, A11y Project), so it is in Why. The one-`h1`-per-page rule is the A11y Project's alone, so this card does not require it
 borrowed_from:

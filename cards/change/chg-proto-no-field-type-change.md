@@ -2,7 +2,7 @@
 id: chg-proto-no-field-type-change
 level: change
 tags: [compatibility, api, protobuf]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, "no field type change" has Google only; Uber and Cabify back renumbering and the buf breaking gate instead
 lang: core

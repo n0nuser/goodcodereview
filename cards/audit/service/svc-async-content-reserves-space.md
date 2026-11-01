@@ -7,6 +7,7 @@ status: draft
 lacks: orgs, injected content and ads have Google only; the image-dimensions part has Google and Mozilla
 lang: core
 applies_when: A page loads images, embeds, fonts, ads, or fetched content after the first paint.
+context: [ui]
 tool_gate: Lighthouse CI assertion on `cumulative-layout-shift`.
 note: injected content and ads are backed by Google only; cut to image dimensions the Rule has Google and Mozilla firm, while WHATWG advises width and height only on lazy-loaded images (checked 2026-10-24), so it is a partial third; Apple and NN/g on placeholders are indirect
 borrowed_from:

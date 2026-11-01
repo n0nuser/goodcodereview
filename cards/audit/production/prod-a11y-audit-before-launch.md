@@ -7,6 +7,7 @@ status: draft
 lacks: orgs, "before a public launch" has GOV.UK only; the audit content has GOV.UK, W3C and Deque
 lang: core
 applies_when: A new UI service or a major redesign is about to open to the public.
+context: [ui]
 tool_gate: none; a launch checklist item that links the audit report.
 note: 3 orgs for an audit with assistive technology (GOV.UK, W3C, Deque), but only GOV.UK ties it to before a public launch, which is the card's point; Section508.gov weak; the GOV.UK duty is a UK legal duty, so this card names WCAG 2.2 AA as the standard and claims no law elsewhere
 borrowed_from:

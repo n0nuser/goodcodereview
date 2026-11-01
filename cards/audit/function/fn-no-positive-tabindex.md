@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: Markup sets `tabindex`, or a layout reorders content with CSS.
+context: [ui]
 tool_gate: ESLint `jsx-a11y/tabindex-no-positive`; axe `tabindex`.
 note: 4 orgs (W3C, Google, WebAIM, A11y Project); both tool-gate rule names checked against the jsx-a11y README and the axe rule list
 borrowed_from:

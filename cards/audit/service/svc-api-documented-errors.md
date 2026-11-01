@@ -8,6 +8,7 @@ lacks: orgs, OpenAPI requires one response per operation; the stricter rule is Z
 note: OpenAPI requires only one response per operation; the stricter rule comes from Zalando rule 151
 lang: core
 applies_when: A service has an OpenAPI description, or callers depend on its error responses.
+context: [server]
 tool_gate: Spec linter that requires 4xx and 5xx responses with a schema on every operation, and an example on each.
 borrowed_from:
   - https://spec.openapis.org/oas/v3.1.0.html

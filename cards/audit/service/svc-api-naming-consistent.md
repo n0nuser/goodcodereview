@@ -8,6 +8,7 @@ lacks: orgs, Zalando and Microsoft back it, and they disagree on casing; needs a
 note: Zalando and Microsoft disagree on the convention, so the card checks consistency, not the choice
 lang: core
 applies_when: A service defines JSON fields, query parameters, headers or path segments for an HTTP API.
+context: [server]
 tool_gate: Spec linter with a casing rule per location.
 borrowed_from:
   - https://opensource.zalando.com/restful-api-guidelines/

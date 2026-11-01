@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: The service or its load balancer terminates TLS.
+context: [server]
 tool_gate: testssl.sh or a similar scan against the public endpoint in CI; the load balancer's named security policy checked in config review.
 note: ASVS 12.1.1 and 12.1.2; IETF, OWASP and Microsoft back the Rule; NIST SP 800-52r2 still lets public-facing servers keep TLS 1.0 and 1.1 when necessary, so it is not counted; Microsoft advises deferring to the OS default over hardcoding a version; fn-tls-verify-on covers the client side
 borrowed_from:

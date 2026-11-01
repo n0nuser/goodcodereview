@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: A handler deletes user data, spends money, or sends something that cannot be recalled.
+context: [ui]
 tool_gate: none; a test that triggers the action and asserts a confirm step or an undo path exists.
 note: 4 orgs (NN/g, Apple, W3C, Shneiderman) for undo or confirm. Naming the outcome on the buttons and not defaulting to Cancel has 2 (NN/g, Apple), so it is in Why. Norman's undo chapter is a table of contents only, so topic only
 borrowed_from:

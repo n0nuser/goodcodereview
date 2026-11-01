@@ -2,7 +2,7 @@
 id: chg-name-attack-surface
 level: change
 tags: [security, process, review]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, no source says to list the attack surface in the description; OWASP and Mozilla back only a threat-model trigger
 lang: core

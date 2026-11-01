@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: A service retires an endpoint, field, version or parameter that outside callers use.
+context: [server]
 tool_gate: Middleware that adds both headers for routes tagged deprecated; a spec linter on `deprecated: true` without a sunset date; a dashboard counting calls that carry the headers.
 note: Mark deprecated: Zalando, OpenAPI, Google AIP-185 (marks deprecation in the API definition, not literally an OpenAPI document). Send both headers: IETF, Zalando, GitHub (a vendor). Sunset not before Deprecation: IETF RFC 9745 only, so it is in Why
 borrowed_from:

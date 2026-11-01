@@ -2,7 +2,7 @@
 id: fn-resource-lifetime
 level: function
 tags: [correctness, concurrency, resources]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, one blog post on structured concurrency backs it; needs two more orgs
 lang: core

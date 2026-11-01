@@ -14,8 +14,8 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
 BASE = "https://goodcodereview.com"
-LLMS_MAX = 35_000  # llmstxt.org sets no limit ("small enough to fit in context"); the Ora scanner flags files above 30,000 characters
-PAGE_MAX = 100_000
+LLMS_MAX = 12_000  # llmstxt.org sets no limit but asks for a concise summary; build.py enforces the same budget (LLMS_BUDGET)
+PAGE_MAX = 120_000  # human pages only: agents read the .md twins and skill references
 FAILS = []
 
 

@@ -2,7 +2,7 @@
 id: sys-health-liveness-readiness
 level: system
 tags: [reliability, health, availability]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, AWS is the only backer; needs two more orgs
 lang: core

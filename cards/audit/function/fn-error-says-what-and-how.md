@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: Code builds the message shown when user input fails validation.
+context: [ui]
 tool_gate: none; a rendered check that submits each invalid field.
 borrowed_from:
   - https://www.nngroup.com/articles/ten-usability-heuristics/

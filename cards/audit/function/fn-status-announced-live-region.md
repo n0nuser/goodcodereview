@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: Script shows a message after an async action without moving focus, such as "Saved", a result count, or an error.
+context: [ui]
 tool_gate: none; a screen-reader pass, or a test that the region exists with a role before the text changes.
 note: 3 orgs (W3C, Mozilla, WebAIM); W3C technique ARIA22 is the W3C source for the region existing first, and MDN says role="alert" is announced even when injected. USWDS reports that VoiceOver on macOS does not support `role="alert"`, so test the target reader
 borrowed_from:

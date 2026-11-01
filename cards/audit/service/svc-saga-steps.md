@@ -2,11 +2,12 @@
 id: svc-saga-steps
 level: service
 tags: [reliability, correctness, distributed, consistency]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, Azure is the only backer; needs two more orgs that require idempotent steps and compensations
 lang: core
 applies_when: A business operation spans services, each with its own database, coordinated as a saga.
+context: [server]
 tool_gate: none
 borrowed_from:
   - https://learn.microsoft.com/en-us/azure/architecture/patterns/saga

@@ -6,6 +6,7 @@ from pathlib import Path
 
 import orgs
 
+CONTEXTS = ["ui", "server", "data", "cli"]  # closed list. A card without `context` applies to any input; one with it applies when the input has any of these parts
 KEYS = ["id", "level", "tags", "severity", "status", "lang", "applies_when", "tool_gate", "borrowed_from"]
 LEVELS = ["change", "function", "module", "service", "system", "codebase", "production", "incident"]
 LEVEL_PREFIX = dict(zip(LEVELS, ["chg", "fn", "mod", "svc", "sys", "code", "prod", "inc"]))
@@ -94,6 +95,9 @@ def validate(root):
             err(f"bad severity '{fm['severity']}'")
         if fm.get("status") is not None and fm["status"] not in STATUSES:
             err(f"bad status '{fm['status']}'")
+        for c in fm.get("context", []):
+            if c not in CONTEXTS:
+                err(f"bad context '{c}'; use: {', '.join(CONTEXTS)}")
         tags = fm.get("tags", [])
         if not any(t in CONCERNS for t in tags):
             err(f"tags need at least one concern: {', '.join(CONCERNS)}")
@@ -131,6 +135,8 @@ def validate(root):
             m = re.fullmatch(r"([a-z]+), ((?!.*\[\[).{1,160})", lacks) if isinstance(lacks, str) else None
             if not m or m.group(1) not in LACKS:
                 err(f"draft needs 'lacks: <word>, <note of at most 160 characters>' with a word from: {', '.join(LACKS)}")
+        if fm.get("status") == "draft" and fm.get("severity") == "block":
+            err("a draft card is capped at should-fix; set the card's own severity when you promote it")
         if fm.get("status") == "stable" and not urls:
             err("stable card needs >=1 borrowed_from URL")
         for mark in BODY_MARKS:

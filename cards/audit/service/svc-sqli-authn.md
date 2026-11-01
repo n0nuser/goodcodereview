@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: The code builds a SQL query that includes request data or other untrusted input.
+context: [server, data]
 tool_gate: Bandit B608 (`hardcoded_sql_expressions`), CodeQL `py/sql-injection`.
 borrowed_from:
   - https://owasp.org/Top10/2025/

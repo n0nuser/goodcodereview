@@ -8,6 +8,7 @@ lacks: orgs, IETF and Zalando back it; needs a third org
 note: RFC 9110 sections 9.3.4, 10.2.1 and 15.3.2; section 15.5.6 on 405 was not read
 lang: core
 applies_when: A service returns HTTP responses that callers or intermediaries interpret by status code.
+context: [server]
 tool_gate: Integration tests asserting status and headers per operation; a spec linter for 201 and 405 responses.
 borrowed_from:
   - https://www.rfc-editor.org/rfc/rfc9110.html

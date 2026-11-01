@@ -2,7 +2,7 @@
 id: fn-atomic-related-updates
 level: function
 tags: [correctness, consistency, errors]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, only one vendor's review skill backs it; the all-or-nothing principle has no cited org
 lang: core

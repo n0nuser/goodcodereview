@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: A multi-step flow, such as checkout or signup, asks for data in more than one step.
+context: [ui]
 tool_gate: none; a walk through the flow that lists each field asked twice.
 note: 3 orgs (W3C, GOV.UK, Baymard); Baymard sells research, so it is closer to a vendor. NN/g and Shneiderman back the Why (recognition over recall), not the practice
 borrowed_from:

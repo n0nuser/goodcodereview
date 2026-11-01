@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: A design-system module or theme defines foreground and background colour tokens.
+context: [ui]
 tool_gate: axe `color-contrast` on rendered components; a unit test that computes the ratio for each token pair. axe cannot see text on images or gradients.
 note: 3:1 for non-text parts (borders, icons, focus): A11y Project, web.dev, WebAIM. WebAIM's checklist restates WCAG 1.4.11; SC 1.4.11 was not read as its own page
 borrowed_from:

@@ -7,6 +7,7 @@ status: draft
 lacks: held, kept draft by Pablo's call
 lang: core
 applies_when: The service authenticates users.
+context: [server]
 tool_gate: Test that a failed login produces one structured log line with the account and a timestamp.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html

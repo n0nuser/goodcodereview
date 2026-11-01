@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: A handler loads, changes or deletes a record by an ID that comes from the request.
+context: [server]
 tool_gate: Authorization tests that call each endpoint as a second user; no static gate catches a missing check.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html

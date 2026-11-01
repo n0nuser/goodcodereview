@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: The service accepts file uploads.
+context: [server]
 tool_gate: Upload tests with a renamed `.php`, an oversized file and a zip bomb.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html

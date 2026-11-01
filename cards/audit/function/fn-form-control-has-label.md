@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: Markup or a component renders an input, a select, or a textarea.
+context: [ui]
 tool_gate: ESLint `jsx-a11y/label-has-associated-control` and axe `label`.
 note: Label tie: W3C, MDN, A11y Project, jsx-a11y. A placeholder is not a label: Deque, GOV.UK, WebAIM. USWDS covers only fieldset and legend
 borrowed_from:

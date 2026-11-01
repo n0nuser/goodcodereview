@@ -7,6 +7,7 @@ status: draft
 lacks: orgs, IETF and Zalando back it; needs a third org
 lang: core
 applies_when: A service returns responses that a browser, CDN, gateway or client library may cache.
+context: [server]
 tool_gate: Integration test or header lint that rejects a 200 GET without `Cache-Control`.
 borrowed_from:
   - https://www.rfc-editor.org/rfc/rfc9111.html

@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: Work is buffered in a queue, a channel, or a thread pool between components.
+context: [server]
 tool_gate: Lint for unbounded queue constructors.
 borrowed_from:
   - https://aws.amazon.com/builders-library/avoiding-insurmountable-queue-backlogs/

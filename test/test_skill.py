@@ -44,5 +44,53 @@ class Frontmatter(unittest.TestCase):
         self.assertLess(len(SKILL.read_text().splitlines()), 500)
 
 
+class Audit(unittest.TestCase):
+    """The audit section, the draft cap, and the context tags that real audits asked for."""
+
+    def test_skill_has_the_audit_section_and_report_shape(self):
+        skill = SKILL.read_text()
+        self.assertIn("## Audit a repo, service, or release", skill)
+        self.assertIn("references/audit.md", skill)
+        text = (SKILL.parent / "references" / "audit.md").read_text()
+        for needle in ("absent in <paths>", "Proposed changes", "Not examined", "accepted by <owner> until <date>",
+                       "not a SOC 2, ISO 27001, or other compliance attestation"):
+            self.assertIn(needle, text)
+
+    def test_drafts_ship_inside_the_skill(self):
+        refs = SKILL.parent / "references"
+        self.assertTrue((refs / "drafts.md").is_file())
+        self.assertIn("references/drafts.md", SKILL.read_text())
+
+    def test_no_draft_is_block_and_context_uses_the_closed_list(self):
+        import sys
+        sys.path.insert(0, str(SKILL.parents[2] / "tools"))
+        from validate import CONTEXTS, load_cards
+        for p, fm, _ in load_cards(SKILL.parents[2]):
+            self.assertFalse(fm["status"] == "draft" and fm["severity"] == "block", p.name)
+            self.assertTrue(set(fm.get("context", [])) <= set(CONTEXTS), p.name)
+
+
+class Budgets(unittest.TestCase):
+    """The first read stays small as cards and audit advice grow: each layer has a budget, and build.py fails past it."""
+
+    ROOT = SKILL.parents[2]
+
+    def test_skill_body_llms_and_indexes_stay_in_budget(self):
+        body = SKILL.read_text().split("\n---\n", 1)[1]
+        self.assertLessEqual(len(body), 16_000)  # about 4,000 tokens; the Agent Skills spec recommends under 5,000
+        self.assertLessEqual(len((self.ROOT / "site" / "llms.txt").read_text()), 12_000)
+        for p in (self.ROOT / "site").glob("*-index*.md"):
+            self.assertLessEqual(len(p.read_text()), 12_000, p.name)
+        for p in (SKILL.parent / "references").glob("*.md"):
+            self.assertLessEqual(len(p.read_text()), 70_000, p.name)
+
+    def test_llms_txt_lists_files_and_no_card_lines(self):
+        text = (self.ROOT / "site" / "llms.txt").read_text()
+        self.assertTrue(text.startswith("# "))
+        self.assertRegex(text, r"(?m)^> ")
+        self.assertNotRegex(text, r"(?m)^- \[[a-z0-9-]+\]\(\S+#")  # a card line belongs in a level index, not in llms.txt
+        self.assertTrue(text.rstrip().split("\n## ")[-1].startswith("Optional"))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -58,6 +58,7 @@ redis.conf: maxmemory 2gb, maxmemory-policy allkeys-lru
 severity: discuss  
 concerns: usability, accessibility  
 applies_when: Several screens or apps show the same action, status, or concept to the same users.  
+context: ui  
 Backed by: Nielsen Norman Group, W3C, GOV.UK, USWDS, Atlassian. People cited: Ben Shneiderman.
 
 **Rule.** Use one label and one icon for the same action and the same concept across all screens.
@@ -115,6 +116,7 @@ return merge(hits, partial=len(hits) < len(shards))
 severity: block  
 concerns: reliability  
 applies_when: Work is buffered in a queue, a channel, or a thread pool between components.  
+context: server  
 Backed by: AWS, Google, Netflix.
 
 **Rule.** Bound every queue and reject excess work cheaply.
@@ -172,6 +174,7 @@ db.update(row, where fence < token, set fence = token)
 severity: block  
 concerns: reliability, compatibility  
 applies_when: A change drops, renames, or retypes a column, or mixes schema change with a data backfill.  
+context: data  
 Backed by: GitLab, Stripe, Ecto, CockroachDB. People cited: Andrew Kane.
 
 **Rule.** Run data backfills in batches, in a migration separate from the schema change.
@@ -197,6 +200,7 @@ N: add b, dual-write, ignore a in code ; N+1: batched backfill ; N+2: drop a
 severity: should-fix  
 concerns: performance  
 applies_when: Code loads related rows in a loop, or opens database connections per request.  
+context: data  
 Backed by: Django Software Foundation, Ruby on Rails, SQLAlchemy, Microsoft, OpenJS Foundation, PgBouncer project, PostgreSQL.
 
 **Rule.** Fetch related rows in one query or batch, never one query per row.

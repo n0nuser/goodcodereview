@@ -17,7 +17,7 @@ borrowed_from:
   - https://tech.cabify.com/blog/engineering/cabify-container-certification
 ---
 
-**Rule.** Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule.
+**Rule.** Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule. Each ask is judged separately: name which one failed on the FAIL line.
 
 **Why.** Without an inventory, a team cannot answer a disclosed vulnerability quickly. CI is the usual place for both steps: the SBOM then matches what was built, and the scan runs without anyone remembering it. Team policy: also fail the build on a dependency whose licence is not on the approved list.
 

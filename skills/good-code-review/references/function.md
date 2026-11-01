@@ -5,6 +5,7 @@
 severity: should-fix  
 concerns: accessibility  
 applies_when: A custom widget sets `role` or an `aria-*` attribute because no native element fits.  
+context: ui  
 Backed by: W3C, Mozilla, Deque, Google. People cited: Heydon Pickering.
 
 **Rule.** When a native element cannot do the job, give the custom widget the state attribute and the keys its role promises.
@@ -34,6 +35,7 @@ Backed by: W3C, Mozilla, Deque, Google. People cited: Heydon Pickering.
 severity: should-fix  
 concerns: accessibility, usability  
 applies_when: Styles or markup show an error, a required field, a status, or a link using colour.  
+context: ui  
 Backed by: W3C, Nielsen Norman Group, Apple. People cited: Heydon Pickering.
 
 **Rule.** Pair every colour that carries meaning with a second cue: text, an icon, a shape, or an underline.
@@ -113,6 +115,37 @@ return send_file(p)
 
 **Counterpoint.** "We already strip `..`." String stripping is a blocklist and gets bypassed. Resolve first, compare second. Resolving catches a symlink that already points outside, but a symlink swapped in between the check and the open still escapes. For trees that untrusted users can write to, use a rooted open such as Go's `os.OpenInRoot`, which refuses any escape at open time.
 
+## fn-constant-time-secret-compare
+
+severity: should-fix  
+concerns: security  
+applies_when: Code compares a caller-supplied API key, token, signature, MAC or CSRF value with a stored or computed secret.  
+Backed by: Python Software Foundation, Google, OpenJS Foundation, GitHub, OWASP, MITRE.
+
+**Rule.** Compare a secret, token or MAC with the platform's constant-time function, never with `==` or `!=`.
+
+**Why.** Ordinary equality stops at the first differing byte, so the response time tells an attacker how many leading bytes were right. Repeated requests recover the value one byte at a time. The constant-time call costs one line and no performance anyone will notice.
+
+**FAIL**
+
+```python
+def verify(body: bytes, header_sig: str, key: bytes) -> bool:
+    expected = hmac.new(key, body, "sha256").hexdigest()
+    return expected == header_sig
+```
+
+**PASS**
+
+```python
+def verify(body: bytes, header_sig: str, key: bytes) -> bool:
+    expected = hmac.new(key, body, "sha256").hexdigest()
+    return hmac.compare_digest(expected.encode(), header_sig.encode())   # bytes: a non-ASCII header raises no TypeError
+# Go: subtle.ConstantTimeCompare(a, b) == 1
+# Node: crypto.timingSafeEqual(bufA, bufB) after checking the lengths match
+```
+
+**Counterpoint.** "Network jitter hides the difference." Attackers average thousands of samples, and the jitter shrinks when they sit in the same cloud region. Also, some constant-time functions need equal lengths (Node throws otherwise); compare fixed-length digests, or check the length first, since the length of a MAC is not secret.
+
 ## fn-csprng-for-secrets
 
 severity: block  
@@ -145,6 +178,7 @@ token = secrets.token_urlsafe(32)           # os.urandom under the hood
 severity: should-fix  
 concerns: usability  
 applies_when: A handler deletes user data, spends money, or sends something that cannot be recalled.  
+context: ui  
 Backed by: Nielsen Norman Group, Apple, W3C. People cited: Ben Shneiderman.
 
 **Rule.** Make a destructive action reversible with undo, or ask the user to confirm it before it runs.
@@ -174,6 +208,7 @@ async function remove() {
 severity: block  
 concerns: accessibility, usability  
 applies_when: A component opens a modal dialog, drawer, or menu that covers the page.  
+context: ui  
 Backed by: W3C, Mozilla, WebAIM, GitHub.
 
 **Rule.** When a modal opens, move focus into it and keep Tab inside it. Make Escape close it.
@@ -206,6 +241,7 @@ Backed by: W3C, Mozilla, WebAIM, GitHub.
 severity: should-fix  
 concerns: usability  
 applies_when: Markup or a component hides content behind a `<details>`, an accordion, a "Show more" link, or an "Advanced" toggle.  
+context: ui  
 Backed by: Nielsen Norman Group, GOV.UK, Appian.
 
 **Rule.** Do not hide a required field or information most users need behind a disclosure that starts closed.
@@ -241,6 +277,7 @@ Backed by: Nielsen Norman Group, GOV.UK, Appian.
 severity: should-fix  
 concerns: usability, accessibility  
 applies_when: Code builds the message shown when user input fails validation.  
+context: ui  
 Backed by: Nielsen Norman Group, GOV.UK, W3C, USWDS. People cited: Ben Shneiderman.
 
 **Rule.** Show each validation error next to its field, in plain words that name what is wrong and how to fix it.
@@ -270,6 +307,7 @@ Backed by: Nielsen Norman Group, GOV.UK, W3C, USWDS. People cited: Ben Shneiderm
 severity: should-fix  
 concerns: performance  
 applies_when: A function queries a database or an API and then filters, counts, or sums the result in application code.  
+context: data  
 Backed by: Microsoft, Django Software Foundation, SQLAlchemy. People cited: Markus Winand.
 
 **Rule.** Filter, count, and aggregate in the query, and select only the columns the code uses.
@@ -299,6 +337,7 @@ emails = User.objects.values_list("email", flat=True)
 severity: block  
 concerns: accessibility, usability  
 applies_when: Styles or script change `outline`, `:focus`, or `:focus-visible`.  
+context: ui  
 Backed by: W3C, Google, WebAIM, The A11y Project.
 
 **Rule.** Keep a visible focus indicator on every focusable element. Never set `outline: none` without a replacement.
@@ -325,6 +364,7 @@ a:focus { outline: 0; }
 severity: block  
 concerns: accessibility, usability  
 applies_when: Markup or a component renders an input, a select, or a textarea.  
+context: ui  
 Backed by: W3C, Mozilla, Deque, The A11y Project, jsx-eslint project, GOV.UK, WebAIM.
 
 **Rule.** Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.
@@ -350,11 +390,47 @@ Backed by: W3C, Mozilla, Deque, The A11y Project, jsx-eslint project, GOV.UK, We
 
 **Counterpoint.** "The design shows a floating placeholder label." A floating label is a real label if it stays visible and is wired to the input. Use `aria-label` only where the purpose is already visible, such as a search field next to a Search button.
 
+## fn-handle-rejected-promises
+
+severity: should-fix  
+concerns: reliability, correctness  
+applies_when: Code starts a promise that can reject, such as `fetch`, `navigator.clipboard.writeText` or an async function, and does not return it.  
+Backed by: Mozilla, Google, typescript-eslint project, OpenJS Foundation.
+
+**Rule.** Handle the rejection of every promise you start: `await` it inside `try`/`catch`, end the chain with `.catch()`, or return it to a caller that does.
+
+**Why.** A browser API such as `writeText` rejects when the page lacks permission. With no handler the failure surfaces only as an `unhandledrejection` event, the user sees nothing, and the next step runs as if the call worked. In Node.js 15 and later the same rejection ends the process by default.
+
+**FAIL**
+
+```javascript
+button.addEventListener("click", () => {
+  navigator.clipboard.writeText(url);
+  showToast("Copied");
+});
+```
+
+**PASS**
+
+```javascript
+button.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast("Copied");
+  } catch (err) {
+    showToast("Could not copy. Select the text and copy it by hand.");
+  }
+});
+```
+
+**Counterpoint.** "A global `unhandledrejection` handler already logs everything." It logs after the fact and cannot tell the user what to do. Only the call site knows which message and which fallback fit. Keep the global handler as a net, not as the handling.
+
 ## fn-heading-structure
 
 severity: should-fix  
 concerns: accessibility, usability  
 applies_when: Markup or a component renders a title or a section heading.  
+context: ui  
 Backed by: W3C, Mozilla, The A11y Project.
 
 **Rule.** Mark every heading with a real `<h1>` to `<h6>` element, not a styled `div`, `span`, or `p`.
@@ -385,6 +461,7 @@ Backed by: W3C, Mozilla, The A11y Project.
 severity: should-fix  
 concerns: accessibility  
 applies_when: Markup or a component renders an image, an icon, or a chart.  
+context: ui  
 Backed by: W3C, Mozilla, Deque, The A11y Project, jsx-eslint project.
 
 **Rule.** Give every `<img>` an `alt` attribute: text that serves the image's purpose, or `alt=""` when the image is decorative.
@@ -470,6 +547,7 @@ out = "".join(f"{row.id},{row.name}\n" for row in rows)
 severity: block  
 concerns: security  
 applies_when: Code accepts a JWT as proof of identity or permission.  
+context: server  
 Backed by: IETF, OWASP, Microsoft, Google, GitHub, PyJWT project.
 
 **Rule.** Verify the signature against a fixed list of accepted algorithms, and check `iss` and `aud`, before reading any claim.
@@ -498,6 +576,7 @@ claims = jwt.decode(token, key, algorithms=["RS256"],
 severity: should-fix  
 concerns: usability  
 applies_when: A form handler or component re-renders after a failed validation or a failed submit.  
+context: ui  
 Backed by: Nielsen Norman Group, GOV.UK, Baymard Institute. People cited: Ben Shneiderman.
 
 **Rule.** After a failed validation or submit, show the form again with every value the user entered, correct or not.
@@ -531,6 +610,7 @@ async function submit(e) {
 severity: discuss  
 concerns: usability, accessibility  
 applies_when: Markup or styles lay out a form field and its visible label.  
+context: ui  
 Backed by: GOV.UK, Atlassian, Nielsen Norman Group, W3C.
 
 **Rule.** Put the visible label of a text input, select, or textarea directly above it.
@@ -562,6 +642,7 @@ Backed by: GOV.UK, Atlassian, Nielsen Norman Group, W3C.
 severity: block  
 concerns: accessibility, usability  
 applies_when: A component handles a click or tap, or navigates.  
+context: ui  
 Backed by: W3C, Mozilla, WebAIM, jsx-eslint project. People cited: Don Norman.
 
 **Rule.** Use `<button>` for an action and `<a href>` for navigation. Do not attach a click handler to a `div`, `span`, or `a` with no `href`.
@@ -647,6 +728,7 @@ html = render_template("hello.html", name=request.args["name"])
 severity: block  
 concerns: security  
 applies_when: A handler copies request fields into a model, ORM entity or settings object.  
+context: server  
 Backed by: OWASP, Microsoft, Ruby on Rails, Django Software Foundation.
 
 **Rule.** Bind request data to a DTO or an explicit field allowlist, never straight onto the model.
@@ -702,6 +784,7 @@ cfg = yaml.safe_load(body)
 severity: should-fix  
 concerns: accessibility, usability  
 applies_when: Markup sets `tabindex`, or a layout reorders content with CSS.  
+context: ui  
 Backed by: W3C, Google, WebAIM, The A11y Project.
 
 **Rule.** Write the DOM in reading order and never set `tabindex` above 0.
@@ -767,6 +850,7 @@ for (const [k, v] of Object.entries(JSON.parse(body))) {
 severity: block  
 concerns: security  
 applies_when: Code writes a string into a page, a template or a rendered model-output view.  
+context: ui, server  
 Backed by: OWASP, Mozilla, Meta, Google, CISA.
 
 **Rule.** Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.
@@ -822,6 +906,7 @@ subprocess.run(["git", "log", branch], check=True)   # branch checked against an
 severity: block  
 concerns: security  
 applies_when: A handler loads, changes or deletes a record by an ID that comes from the request.  
+context: server  
 Backed by: OWASP, Microsoft, Cloudflare, NIST.
 
 **Rule.** Check that the caller may act on the specific record before returning or changing it.
@@ -850,6 +935,7 @@ return order.to_json()
 severity: block  
 concerns: security  
 applies_when: Code stores or verifies a user password.  
+context: server  
 Backed by: OWASP, IETF, NIST.
 
 **Rule.** Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.
@@ -877,6 +963,7 @@ ph.verify(stored, attempt)             # rehash when check_needs_rehash()
 severity: should-fix  
 concerns: security  
 applies_when: A handler redirects to a URL taken from a query parameter, form field, header, or stored value, such as `?next=` after login.  
+context: server  
 Backed by: OWASP, MITRE, Microsoft, PortSwigger, GitHub.
 
 **Rule.** Redirect only to a local path or to a host on a server-side allowlist, never to a URL taken from the request as is.
@@ -905,6 +992,7 @@ return redirect(target.path)
 severity: should-fix  
 concerns: accessibility, usability  
 applies_when: Styles or script add a transition, an animation, a parallax effect, or autoplay motion.  
+context: ui  
 Backed by: Mozilla, W3C, Apple, The A11y Project, Google.
 
 **Rule.** Switch off or replace large, repeating, or interaction-triggered motion when `prefers-reduced-motion: reduce` is set.
@@ -966,6 +1054,7 @@ func valid(s string) bool { return lower.MatchString(s) }
 severity: should-fix  
 concerns: accessibility, usability  
 applies_when: Markup or a component renders a radio group, a checkbox group, or a value split across several inputs, such as a date or an address.  
+context: ui  
 Backed by: GOV.UK, W3C, USWDS, The A11y Project.
 
 **Rule.** Wrap each radio group, checkbox group, and multi-part value, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.
@@ -1032,6 +1121,7 @@ os.replace(tmp, path)  # the reader sees the old file or the new one, never half
 severity: should-fix  
 concerns: security, compatibility  
 applies_when: A handler returns a stored object or entity to the client.  
+context: server  
 Backed by: OWASP, Microsoft, Django REST framework, NIST.
 
 **Rule.** Return a response type that lists each field, never the stored model or a generic dump of it.
@@ -1059,6 +1149,7 @@ return UserOut.model_validate(user)
 severity: should-fix  
 concerns: accessibility, usability  
 applies_when: Script shows a message after an async action without moving focus, such as "Saved", a result count, or an error.  
+context: ui  
 Backed by: W3C, Mozilla, WebAIM. People cited: Heydon Pickering.
 
 **Rule.** Announce an async status message through a live region (`role="status"` or `role="alert"`), and put a `role="status"` or `aria-live` region in the markup before its text changes.
@@ -1089,6 +1180,7 @@ document.body.append(note);
 severity: should-fix  
 concerns: accessibility, usability  
 applies_when: Styles size a button, icon button, checkbox, or link that a pointer or finger operates.  
+context: ui  
 Backed by: W3C, Apple, The A11y Project, Deque, Mozilla.
 
 **Rule.** Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.

@@ -1,0 +1,11 @@
+{
+  "prompt": "Audit this repo: the files in the current directory. The team accepted the missing secret scan until 2027-01-01; the owner is Ana. Report it as an audit.",
+  "first_line": "^Verdict: request changes",
+  "must_fail": [
+    {"id": "code-secret-scan", "alt": "(?i)secret.scan|no scanner"}
+  ],
+  "must_contain": [
+    "(?i)accepted by Ana until 2027-01-01"
+  ],
+  "must_not_contain": []
+}

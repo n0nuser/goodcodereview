@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: Markup or a component renders an image, an icon, or a chart.
+context: [ui]
 tool_gate: ESLint `jsx-a11y/alt-text` and axe `image-alt` catch a missing `alt`. Only a person can judge whether the text is accurate.
 note: 5 orgs back the rule; no tool can check that the text is right
 borrowed_from:

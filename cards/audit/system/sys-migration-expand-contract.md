@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: A change drops, renames, or retypes a column, or mixes schema change with a data backfill.
+context: [data]
 tool_gate: Migration linter for DROP/RENAME COLUMN.
 note: 3 orgs per clause. Batching rests on GitLab, Ecto, and CockroachDB (a database vendor). The separate migration rests on GitLab, Ecto, and Stripe, which shows it by structure and never says batches
 borrowed_from:

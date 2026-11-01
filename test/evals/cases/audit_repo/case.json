@@ -1,0 +1,17 @@
+{
+  "prompt": "Audit this repo: the files in the current directory. Report it as an audit.",
+  "first_line": "^Verdict:",
+  "must_fail": [
+    {"id": "fn-constant-time-secret-compare", "alt": "(?i)constant.time|timing|compare_digest"},
+    {"id": "code-secret-scan", "alt": "(?i)secret.scan|no scanner|gitleaks"}
+  ],
+  "must_contain": [
+    "(?i)absent in",
+    "(?i)Proposed changes",
+    "(?i)Not examined|N/A - not read",
+    "(?i)Draft findings|Draft cards"
+  ],
+  "must_not_contain": [
+    "FAIL \\[block\\] svc-fail-closed-defaults"
+  ]
+}

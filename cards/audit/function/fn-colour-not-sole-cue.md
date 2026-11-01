@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: Styles or markup show an error, a required field, a status, or a link using colour.
+context: [ui]
 tool_gate: none; view the page in greyscale, or run a browser colour-vision emulation.
 borrowed_from:
   - https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html

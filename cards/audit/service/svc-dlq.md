@@ -7,6 +7,7 @@ status: draft
 lacks: evidence, Dropbox's dead-letter queue is a proposal, not a practice; needs a third org that runs it
 lang: core
 applies_when: The code consumes from a queue or stream.
+context: [server]
 tool_gate: A config check that every consumed queue has a dead-letter target (for SQS in Terraform, a `redrive_policy` with `maxReceiveCount`), and an alarm on dead-letter queue depth.
 note: dead-letter queue and replay backed by AWS (alarm on any message, re-process after the fix), Netflix (failed events land in dead-letter queues, an offline job replays them) and Dropbox (a stated proposal - a retry cap, then a dead-letter queue and tools to reschedule); the retry cap (AWS, Dropbox) and the depth alarm (AWS) sit in Why
 borrowed_from:

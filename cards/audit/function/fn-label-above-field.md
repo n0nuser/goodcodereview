@@ -6,6 +6,7 @@ severity: discuss
 status: stable
 lang: core
 applies_when: Markup or styles lay out a form field and its visible label.
+context: [ui]
 tool_gate: none
 note: 4 orgs put the label above a text field (GOV.UK, Atlassian, NN/g for mobile and short forms, W3C as one of two conventions). The checkbox and radio order is W3C's alone, so it sits in Why. W3C also says the choice depends on nearby fields, so the severity is discuss. Nothing between label and field has only Atlassian and NN/g, so it sits in Why
 borrowed_from:

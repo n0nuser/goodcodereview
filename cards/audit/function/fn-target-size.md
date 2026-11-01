@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: Styles size a button, icon button, checkbox, or link that a pointer or finger operates.
+context: [ui]
 tool_gate: axe `target-size` (WCAG 2.2); a rendered check for the spacing exception.
 note: 3 orgs for the 24 CSS px floor and the spacing exception (W3C, Deque, Mozilla); Apple (44 pt) and web.dev (48 px) ask for more; the Material 48 dp page was not readable
 borrowed_from:

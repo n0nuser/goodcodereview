@@ -2,7 +2,7 @@
 id: fn-no-check-then-act-across-await
 level: function
 tags: [correctness, concurrency]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: core

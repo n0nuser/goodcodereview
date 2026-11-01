@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: Two callers can update the same resource through PUT, PATCH or DELETE.
+context: [server]
 tool_gate: Integration test that sends a write with a stale `If-Match` and expects 412.
 borrowed_from:
   - https://www.rfc-editor.org/rfc/rfc9110.html

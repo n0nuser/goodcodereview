@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: A handler copies request fields into a model, ORM entity or settings object.
+context: [server]
 tool_gate: A custom Semgrep rule for `Model(**request.json)`; tests that post extra fields such as `is_admin` and assert they are ignored or rejected.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html

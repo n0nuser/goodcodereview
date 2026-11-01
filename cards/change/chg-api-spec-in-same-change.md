@@ -7,6 +7,7 @@ status: draft
 lacks: orgs, OpenAPI and Zalando back it; needs a third org
 lang: core
 applies_when: The diff adds, removes or changes an HTTP route, a request or response field, a status code or a header.
+context: [server]
 tool_gate: Breaking-change diff of the spec in CI, plus a check that fails when route files change and the spec file does not.
 borrowed_from:
   - https://spec.openapis.org/oas/v3.1.0.html

@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: Code stores or verifies a user password.
+context: [server]
 tool_gate: Grep or SAST rule for `md5`, `sha1`, `sha256` near a `password` identifier.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html

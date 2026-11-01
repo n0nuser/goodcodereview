@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: The change renames, removes or reshapes a column, API field, message, config key or exported symbol that other code reads.
+context: [data]
 tool_gate: Schema or API diff tools (breaking-change detectors) in CI.
 note: GitLab and Stripe state migrating every consumer before the old path goes; Microsoft's six-phase post states expand, move writes, data and reads, validate, then contract. Kubernetes states add-both-versions-then-remove for API versions, not expand-contract by name. Config keys and exported symbols have no source
 borrowed_from:

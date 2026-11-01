@@ -20,7 +20,7 @@ A case.json holds:
 copied to `.opencode/skills/`. In forced mode, which has no slash command there, the prompt starts with an instruction to load the
 skill. That adapter has not been run against a real opencode install; start with one case and `--runs 1`.
 
-`triggers` runs the queries in test/evals/triggers.json with the skill installed and reports how often the agent loaded it
+`triggers --isolate` adds `--setting-sources project`, so only the skill under test is loaded: it measures the description without the user's other skills competing. `triggers` runs the queries in test/evals/triggers.json with the skill installed and reports how often the agent loaded it
 (`claude -p --output-format stream-json`; the skill counts as loaded on a `Skill` call for it or a read of its SKILL.md). A query passes when
 its trigger rate is above 0.5 for a should-trigger query and at or below 0.5 for the rest. Tune the description on `train`, confirm on `validation`.
 
@@ -111,11 +111,13 @@ def triggered(stream):
     return False
 
 
-def trigger_run(query, model):
+def trigger_run(query, model, isolate=False):
     with tempfile.TemporaryDirectory() as tmp:
         work = Path(tmp)
         shutil.copytree(SKILL, work / ".claude/skills/good-code-review")
         cmd = ["claude", "-p", query, "--allowedTools", "Read,Grep,Glob,Skill", "--output-format", "stream-json", "--verbose"]
+        if isolate:  # no user-level skills or plugins compete with the skill under test
+            cmd += ["--setting-sources", "project"]
         try:
             out = subprocess.run(cmd + (["--model", model] if model else []), cwd=work, capture_output=True, text=True, timeout=600)
         except FileNotFoundError:
@@ -182,6 +184,7 @@ def main():
     t.add_argument("--split", choices=["train", "validation", "all"], default="all")
     t.add_argument("--runs", type=int, default=3)
     t.add_argument("--model")
+    t.add_argument("--isolate", action="store_true", help="load only the project's skills, so the description is measured without the user's other skills competing")
     a = ap.parse_args()
     if a.cmd == "triggers":
         queries = json.loads((CASES.parent / "triggers.json").read_text())["queries"]
@@ -190,7 +193,7 @@ def main():
             if a.split not in ("all", q["split"]):
                 continue
             try:
-                hits = sum(trigger_run(q["query"], a.model) for _ in range(a.runs))
+                hits = sum(trigger_run(q["query"], a.model, a.isolate) for _ in range(a.runs))
             except HarnessError as e:
                 sys.exit(f"harness error: {e}")
             rate = hits / a.runs

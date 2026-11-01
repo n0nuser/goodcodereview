@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: The service has a login, password-reset or one-time-code endpoint.
+context: [server]
 tool_gate: Rate-limit middleware on auth routes; test that known and unknown users get identical responses.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html

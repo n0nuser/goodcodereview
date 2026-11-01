@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: A page or app is served to browsers on screens of any size.
+context: [ui]
 tool_gate: axe `meta-viewport`; a rendered check at a 320 px viewport and at 200% text zoom.
 note: The 320 px width and no sideways scrolling are backed by W3C, WebAIM and Microsoft; WebAIM partly restates the WCAG wording but adds its own zoom test, and Microsoft states only a 320 px design floor. 200% text zoom is backed by W3C, A11y Project, Mozilla and Google. No blocked pinch-zoom is backed by Deque, A11y Project and Mozilla, and Google adds a fourth voice. The A11y Project checklist asks for zoom left on, text at 200%, and no horizontal scrolling
 borrowed_from:

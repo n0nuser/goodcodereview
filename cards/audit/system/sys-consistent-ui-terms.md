@@ -6,6 +6,7 @@ severity: discuss
 status: stable
 lang: core
 applies_when: Several screens or apps show the same action, status, or concept to the same users.
+context: [ui]
 tool_gate: none; list the labels and icons for one action across all screens.
 note: One icon is backed by W3C, GSA (USWDS) and Atlassian; Atlassian asks for existing icons to keep meanings consistent, which is softer than one icon per action. One label is backed by W3C, NN/g and GOV.UK. This card is about words and controls a user sees. It does not cover names in code or API field names.
 borrowed_from:

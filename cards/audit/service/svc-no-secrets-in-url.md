@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: A client or server puts an API key, session token, bearer token, password, or personal data into a URL.
+context: [server]
 tool_gate: none
 note: ASVS 14.2.1; a log check that rejects query keys such as `token`, `key` or `password` in access logs is the nearest gate; sys-pii-minimise-retention and code-secret-scan cover other leak paths
 borrowed_from:

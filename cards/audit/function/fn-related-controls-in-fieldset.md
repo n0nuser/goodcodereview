@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: Markup or a component renders a radio group, a checkbox group, or a value split across several inputs, such as a date or an address.
+context: [ui]
 tool_gate: none
 note: 4 orgs (GOV.UK, W3C, USWDS, A11y Project). NN/g asks to tag groups for screen readers but does not name fieldset, so it does not count. No source gives a spacing threshold, so spacing stays out of the Rule. Only GOV.UK says the legend comes first, so that sits in Why
 borrowed_from:

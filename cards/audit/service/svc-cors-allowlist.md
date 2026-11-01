@@ -5,7 +5,8 @@ tags: [security, cors, http]
 severity: should-fix
 status: stable
 lang: core
-applies_when: The service sends `Access-Control-Allow-Origin` or similar CORS headers.
+applies_when: The service sends CORS headers and browsers send credentials or cookies to it, or the API is not meant to be public. A public bearer-key API with `*` and no credentials is outside it.
+context: [server]
 tool_gate: Integration test that sends a hostile `Origin` and asserts it is not echoed.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html

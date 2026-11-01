@@ -16,6 +16,10 @@ New cards start as `status: draft`, with a `lacks:` line that says why the card 
 
 A stable card or glossary entry must not name a draft card id. `tools/validate.py` fails if one does. When you promote a draft to stable, add back the links to it that stable cards and glossary entries dropped.
 
+A card may carry `context: [ui]`, `[server]`, `[data]`, or `[cli]` (a list from that closed set) when it applies only to inputs that have that part. A reviewer marks the whole group `N/A` when the input has none. Leave it out when the rule fits any code.
+
+A draft card has `severity: should-fix` or `discuss`, never `block`. Set the card's own severity when you promote it.
+
 Run `python3 tools/validate.py` to lint the cards. Run `python3 tools/build.py` to build the site and the skill.
 
 After a build, run `python3 tools/agent_ready_check.py` to check `site/` against the agent-readiness items in `docs/research/agent-readiness-gaps.md`. It reads files only and exits 1 on any failure. CI does not run it.

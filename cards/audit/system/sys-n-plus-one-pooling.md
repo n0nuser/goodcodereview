@@ -7,6 +7,7 @@ status: stable
 note: N+1 half has 4 orgs (Django, Rails, SQLAlchemy, Microsoft); the bounded pool rests on 3 partial sources; the index clause has no source beyond topic level
 lang: core
 applies_when: Code loads related rows in a loop, or opens database connections per request.
+context: [data]
 tool_gate: Query-count assertion in tests; ORM N+1 detector.
 borrowed_from:
   - https://docs.djangoproject.com/en/stable/ref/models/querysets/

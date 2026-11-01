@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: The service sets a session cookie or session ID after login.
+context: [server]
 tool_gate: Header test on the login response; session fixation test in the end-to-end suite.
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html

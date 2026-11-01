@@ -7,6 +7,7 @@ status: stable
 note: RFC 9457 and Google AIP-193 describe the mechanism; the rule never to reword a published code is inference from both
 lang: core
 applies_when: Callers of an HTTP or RPC API branch on the kind of error.
+context: [server]
 tool_gate: Spec linter that requires an enumerated error `type` or `reason` per operation; a test that pins the codes.
 borrowed_from:
   - https://www.rfc-editor.org/rfc/rfc9457.html

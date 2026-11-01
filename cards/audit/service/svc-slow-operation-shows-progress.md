@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: A page action, such as a save, an upload, a search, or a page load, can take more than about a second.
+context: [ui]
 tool_gate: none; throttle the network and run the action.
 note: Showing that a slow action is under way is backed by NN/g, Apple, Microsoft and Atlassian. Showing progress when it runs long is backed by NN/g, Apple and Microsoft, and Microsoft gives the determinate and indeterminate split the PASS example uses. The 1 s and 10 s limits and the Cancel button come from NN/g, and Cancel also from Apple, so they are in Why. Norman's feedback principle is topic only, and Shneiderman's golden rules are a person's list, not an organisation
 borrowed_from:

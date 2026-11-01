@@ -8,6 +8,7 @@ lacks: orgs, IETF and Zalando back it; needs a third org
 note: the draft rate-limit header fields are not required here; RFC 6585 on 429 was not fetched
 lang: core
 applies_when: A service answers 429 or 503 to HTTP callers.
+context: [server]
 tool_gate: Integration test that forces a 429 and a 503 and asserts a `Retry-After` header.
 borrowed_from:
   - https://www.rfc-editor.org/rfc/rfc9110.html

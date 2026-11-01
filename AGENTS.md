@@ -8,17 +8,34 @@
 4. Check each rule for that level. The full text is in `skills/good-code-review/references/<level>.md`.
 5. Report each check as `PASS`, `FAIL`, or `N/A` with `file:line` evidence. A `FAIL` carries the card's severity: `block`, `should-fix`, or `discuss`.
 
+To audit a whole repo, service, or release, follow `skills/good-code-review/references/audit.md` (the "Audit a repo, service, or release" section of `SKILL.md` points to it): it sets the scope, the read order, the rating of a missing control, and the report shape.
+
 Without a checkout, read https://goodcodereview.com/llms.txt.
 
-## llms.txt follows llmstxt.org
+## Mandatory specs and size budgets
 
-`site/llms.txt` follows https://llmstxt.org/ completely, and `python3 tools/build.py` writes it. Keep it that way:
+Three specs bind every change. Check them before you finish:
 
-- An H1 with the site name, then a `>` blockquote summary, then sections with no headings, then H2 sections.
-- Every H2 section is a file list: `- [name](url): notes`. Each stable card is a link to its level file, `[id](https://goodcodereview.com/<level>.md#<id>): [severity] {concerns}: rule`.
-- Secondary links go under the last section, `## Optional`.
-- The file stays small enough to fit in context; the detail lives in the level files behind the links. The spec sets no size limit, and `tools/agent_ready_check.py` item 16 checks the shape.
-- Every page that agents may need also has a clean `.md` twin at the same URL.
+- `site/llms.txt`: https://llmstxt.org/ (an H1, a `>` summary, headingless sections, then H2 file lists of `- [name](url): notes`, secondary links under `## Optional`) and the Chrome Lighthouse audit https://developer.chrome.com/docs/lighthouse/agentic-browsing/llms-txt (the file must be served without a server error, follow the spec, and be a concise summary). `python3 tools/agent_ready_check.py` item 16 checks the shape.
+- `skills/good-code-review/SKILL.md`: https://agentskills.io/specification (`name` matches the directory, `description` 1 to 1024 characters, `compatibility` up to 500, body under 500 lines and about 5,000 tokens, references one level deep). `test/test_skill.py` checks the limits. The official check is `uvx --from "git+https://github.com/agentskills/agentskills#subdirectory=skills-ref" skills-ref validate skills/good-code-review`; it fetches code, so ask the maintainer before you run it.
+- Every page an agent may need has a clean `.md` twin at the same URL.
+
+Progressive disclosure keeps the first read small however many cards exist. Each layer has a budget that `python3 tools/build.py` enforces and `test/test_skill.py` checks:
+
+| Layer | Holds | Budget |
+|---|---|---|
+| `llms.txt` | routing, a compact verdict format, and links to everything else | 12,000 characters |
+| `SKILL.md` body | routing, verdict format, an audit pointer, gotchas | 16,000 characters (about 4,000 tokens) |
+| `<level>-index.md` | one line per stable card: id, severity, concerns, context, rule | 12,000 characters; past it the build splits by `context` |
+| `references/<level>.md`, `references/audit.md` | full card text and the audit procedure | 70,000 characters per file |
+
+Rules:
+
+- Never put card text, audit prose, or draft lists into `llms.txt` or `SKILL.md`. A new card adds one line to its level index and its text to the level file, nothing else.
+- Put new audit advice in `references/audit.md` (built from `AUDIT_STEPS` in `tools/build.py`), not in `SKILL.md`.
+- When a budget fails, split or move detail behind a link. Do not raise the number without the maintainer's approval.
+- After you change the skill text, the description, or a card the evals plant, run `python3 tools/eval.py run --mode forced --runs 1` and `python3 tools/eval.py triggers --split train --runs 1`, and say what failed. `test/evals/README.md` explains the cases. They spend tokens, so CI does not run them.
+- Eval runs: ask the maintainer first, naming the case, mode, number of runs, and model. Always pass `--save <dir>` (for example `--save /tmp/evals`) so a failure can be read without a second run, and `--model sonnet` unless told otherwise. Example: `python3 tools/eval.py run --mode forced --runs 1 --model sonnet --save /tmp/evals audit_repo`. One sample is not a verdict: a single substance failure needs the saved reply read before you call it a regression.
 
 ## Contribute a card
 

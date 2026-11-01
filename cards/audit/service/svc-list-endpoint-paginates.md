@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: The service exposes an endpoint or RPC that returns a collection.
+context: [server]
 tool_gate: Contract test that calls the list with a huge page size and asserts the clamp or a 400.
 note: 5 orgs back pagination and 4 state a server-side maximum (Zalando's maximum was not seen); a clamp or a 400 are both accepted
 borrowed_from:

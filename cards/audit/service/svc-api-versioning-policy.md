@@ -7,6 +7,7 @@ status: stable
 note: the three sources pick three different mechanisms; the card requires only that one is chosen and documented
 lang: core
 applies_when: A service offers an HTTP API to callers you do not deploy together with it.
+context: [server]
 tool_gate: Spec diff in CI that fails on a breaking change inside a published version.
 borrowed_from:
   - https://opensource.zalando.com/restful-api-guidelines/

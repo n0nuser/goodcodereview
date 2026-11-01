@@ -59,6 +59,7 @@ flag orders_newest_first defaults off for one release".
 severity: block  
 concerns: compatibility  
 applies_when: The change renames, removes or reshapes a column, API field, message, config key or exported symbol that other code reads.  
+context: data  
 Backed by: Python Software Foundation, GitLab, Stripe, Kubernetes, Microsoft. People cited: Hyrum Wright.
 
 **Rule.** Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.
@@ -214,6 +215,33 @@ commit 2: fix off-by-one + test
 ```
 
 **Counterpoint.** Separate PRs cost review round trips, and untangling a mixed branch after the fact is work. Separate commits in one PR are an acceptable compromise, but separate PRs are ideal. A tidy that exists only to enable the behaviour change in hand may ship with it if the commits stay apart.
+
+## chg-reuse-before-write
+
+severity: should-fix  
+concerns: maintainability  
+applies_when: The change adds a helper, util, type or constant.  
+Backed by: GitHub, Cursor, Google, Linux kernel, Refactoring.Guru. People cited: Sébastien Portebois.
+
+**Rule.** Do not add a helper that duplicates one already in the repo; search for it first.
+
+**Why.** Reviewers see only the diff, so a reimplementation of a helper a few files away looks fine in isolation. Two copies then drift and get fixed once.
+
+**FAIL**
+
+```python
+# utils/dates.py already has parse_iso(s)
+def _parse_date(s):  # new, in billing/invoice.py
+    return datetime.strptime(s, "%Y-%m-%d")   # drops timezone handling
+```
+
+**PASS**
+
+```python
+from utils.dates import parse_iso
+```
+
+**Counterpoint.** "Searching costs more than writing ten lines." For tiny code that is true. Then the duplicate is tolerable and `mod-yagni` governs extraction. The cost flips once the logic holds a rule (parsing, money, auth) that must stay in one place.
 
 ## chg-review-signal
 

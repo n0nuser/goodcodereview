@@ -7,6 +7,7 @@ status: draft
 lacks: held, kept draft by Pablo's call; no org backs failing the build on a violation
 lang: core
 applies_when: The repo builds a web UI and has an automated test suite.
+context: [ui]
 tool_gate: This card is the gate: axe (through `@axe-core/playwright` or similar) against rendered pages in the test step; `eslint-plugin-jsx-a11y` in the lint step for JSX code.
 note: Rule backed by USWDS (axe and pa11y on every change, failing merges blocked), Microsoft Playwright (the test verifies there are no violations), and Deque axe-core (axe calls in existing functional tests, example throws on violations); the JSX lint (jsx-eslint only) and merge blocking in CI (USWDS only) sit in Why; GDS found the best of 13 automated tools caught 40% of planted barriers
 borrowed_from:

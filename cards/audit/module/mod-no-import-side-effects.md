@@ -2,7 +2,7 @@
 id: mod-no-import-side-effects
 level: module
 tags: [testing, maintainability, architecture]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: core

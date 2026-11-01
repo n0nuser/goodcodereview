@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: A handler redirects to a URL taken from a query parameter, form field, header, or stored value, such as `?next=` after login.
+context: [server]
 tool_gate: CodeQL `py/url-redirection`; ASP.NET Core `LocalRedirect` or `Url.IsLocalUrl`.
 note: ASVS 3.7.2 (allowlisted redirect hosts) and 1.2.2 (safe URL schemes); sys-ssrf covers the server following redirects, not sending users to them
 borrowed_from:

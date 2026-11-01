@@ -7,6 +7,7 @@ status: draft
 lacks: orgs, IETF and Zalando back it; needs a third org
 lang: core
 applies_when: A service returns errors from an HTTP API to other services or to clients.
+context: [server]
 tool_gate: Middleware that builds every error body from one problem-details type; a test that fails on an error response without the media type.
 borrowed_from:
   - https://www.rfc-editor.org/rfc/rfc9457.html

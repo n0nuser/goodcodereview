@@ -1,6 +1,6 @@
 # Skill evals
 
-Eight small review tasks that check whether the skill changes what an agent finds and how it reports it.
+Eleven small review tasks that check whether the skill changes what an agent finds and how it reports it.
 
 | Case | Input | Checks |
 |---|---|---|
@@ -12,6 +12,9 @@ Eight small review tasks that check whether the skill changes what an agent find
 | `charge_no_idempotency` | a charge endpoint behind a client retry | idempotency |
 | `invoice_idor` | a login-only invoice lookup by id | object-level authorisation |
 | `postmortem` | an incident with a one-step rename and an unprofiled fix | the incident rule, evidence quoted |
+| `audit_repo` | a small Flask repo: `!=` on an API key, a fail-open default, a silently truncated read, no secret scan | the audit report shape: a missing control is a `FAIL` with `absent in`, Proposed changes, Not examined, draft findings kept out of the ledger |
+| `audit_cli` | a small CLI that prints errors to stdout and exits 0 | the `cli` context applies, UI and server cards are one `N/A` count |
+| `accepted_risk` | the same repo, with a stated accepted risk | the `FAIL` stays and the line carries `accepted by <owner> until <date>` |
 
 Each result has two tiers. `substance` asks whether the review found what it must. `format` asks whether the reply opens with the `Verdict:` line. Three modes: `skill` installs the skill and leaves the agent to invoke it (triggering plus adherence), `forced` starts the prompt with `/good-code-review` (adherence alone), and `bare` installs nothing and is graded on substance only, with an `alt` regex in place of the card id.
 

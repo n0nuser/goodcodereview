@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: Markup or a component hides content behind a `<details>`, an accordion, a "Show more" link, or an "Advanced" toggle.
+context: [ui]
 tool_gate: none
 note: Not hiding what most users need: NN/g, GOV.UK, Appian. No organisation states that a closed disclosure must not hide the primary action, so that part is out of the Rule. The two-level cap is NN/g's alone, so it sits in Why
 borrowed_from:

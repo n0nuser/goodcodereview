@@ -7,6 +7,7 @@ status: draft
 lacks: orgs, W3C is the only backer; needs two more orgs that forward trace headers on every call
 lang: core
 applies_when: A service calls another service over HTTP while handling a request.
+context: [server]
 tool_gate: Instrumentation library or HTTP-client middleware that injects `traceparent`; an integration test that checks the outgoing header.
 borrowed_from:
   - https://www.w3.org/TR/trace-context/

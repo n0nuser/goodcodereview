@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: Code accepts a JWT as proof of identity or permission.
+context: [server]
 tool_gate: CodeQL `js/jwt-missing-verification`; a grep for `verify_signature": False` and for `jwt.decode(` calls with no `algorithms=`.
 borrowed_from:
   - https://www.rfc-editor.org/rfc/rfc8725

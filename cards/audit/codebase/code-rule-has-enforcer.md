@@ -5,7 +5,7 @@ tags: [maintainability, tooling, conventions]
 severity: should-fix
 status: stable
 lang: core
-applies_when: Auditing a repo's instruction files, review history or comments that state a rule.
+applies_when: Auditing any written repo rule (AGENTS.md, CONTRIBUTING, a docs page, a code comment, repeated review comments) that a type check, lint rule, test or CI check could enforce.
 tool_gate: The enforcer itself: a type, a lint rule or a CI check.
 note: Spotify, Stripe and Cabify back the Rule without cursor/plugins
 borrowed_from:
@@ -20,7 +20,7 @@ borrowed_from:
   - https://tech.cabify.com/blog/engineering/cabify-container-certification
 ---
 
-**Rule.** Back each rule that a type, lint or CI check could enforce with that check, not with a line in an instruction file or a repeated review comment.
+**Rule.** Back each written repo rule that a type, lint or CI check could enforce with that check, not with a line in an instruction file or a repeated review comment.
 
 **Why.** A rule that relies on memory gets broken, and reviewers then repeat the same correction. An instruction file is advisory: a person or an agent can skip it. A lint message that names the fix teaches it at the moment of the mistake. A "do not remove" code comment has the same weakness as an instruction file line.
 
@@ -37,6 +37,11 @@ Review history: the same comment on 6 PRs
 # pyproject.toml, checked by ruff in CI
 [tool.ruff.lint]
 extend-select = ["S113"]   # request-without-timeout
+```
+
+```go
+// rules_test.go, run by `go test ./...` in CI
+func TestNoBareHTTPGet(t *testing.T) { /* walk the AST, fail on http.Get */ }
 ```
 
 **Counterpoint.** "Not every rule is checkable." Right, and judgement rules stay as prose. The FAIL is a checkable rule with no check. See [[code-ci-gates]] for where checks run, and [[chg-review-signal]] for what reviewers stop commenting on once a tool owns it.

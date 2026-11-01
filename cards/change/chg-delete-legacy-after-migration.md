@@ -7,6 +7,7 @@ status: draft
 lacks: orgs, "in the same change" has cursor/plugins and Stripe; Dropbox, GitHub, Shopify and Slack delete in a later step
 lang: core
 applies_when: The change adds a new API, path or config and every caller lives in this repo.
+context: [data]
 tool_gate: Dead-code and unused-export checks.
 note: cursor/plugins and Stripe (one-PR Flow to TypeScript move) back the Rule; Uber's JUnit move ran old and new side by side, so it does not; applies only without outside consumers
 borrowed_from:

@@ -3,22 +3,23 @@ id: chg-reuse-before-write
 level: change
 tags: [maintainability, reuse, duplication]
 severity: should-fix
-status: draft
-lacks: evidence, the backers are the kernel style guide and secondary summaries; no source describes searching for an existing helper first
+status: stable
 lang: core
 applies_when: The change adds a helper, util, type or constant.
 tool_gate: Clone-detection in CI (jscpd, PMD CPD, or similar) can flag near-duplicate blocks.
-note: only the kernel coding style backs "use the existing helper"; the Orosz post has no reuse check, and the Ousterhout summary and refactoring.guru are secondary and back the Why (duplication drifts), not the search; no source describes searching first
+note: GitHub (reviewer repo search for each new helper), Cursor (explore before changing, since the agent may create a utility that exists) and Google's Gemini CLI team (review-duplication skill) back the search; the kernel style guide backs only "use the existing helper"; Ousterhout and refactoring.guru back the Why; "author names where they searched" had no source, so it left the Rule
 borrowed_from:
-  - https://blog.pragmaticengineer.com/good-code-reviews-better-code-reviews/
-  - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
+  - https://github.blog/ai-and-ml/generative-ai/agent-pull-requests-are-everywhere-heres-how-to-review-them/
+  - https://cursor.com/learn/understanding-your-codebase
+  - https://github.com/google-gemini/gemini-cli/blob/main/.gemini/skills/review-duplication/SKILL.md
   - https://www.kernel.org/doc/html/latest/process/coding-style.html
+  - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
   - https://refactoring.guru/smells/duplicate-code
 ---
 
-**Rule.** Search the repo for an existing helper before adding a new one.
+**Rule.** Do not add a helper that duplicates one already in the repo; search for it first.
 
-**Why.** Reviewers see only the diff, so a reimplementation of a helper a few files away looks fine in isolation. Two copies then drift and get fixed once. The author names where they searched.
+**Why.** Reviewers see only the diff, so a reimplementation of a helper a few files away looks fine in isolation. Two copies then drift and get fixed once.
 
 **FAIL**
 

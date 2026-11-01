@@ -14,7 +14,7 @@ borrowed_from:
   - https://docs.gitlab.com/user/application_security/secret_detection/
 ---
 
-**Rule.** Scan for committed credentials, and treat any hit as leaked: revoke and replace it first.
+**Rule.** Scan for committed credentials, and treat any hit as leaked: revoke and replace it first. With no scanner present and no secret found, the FAIL is the missing control; evidence is "absent in <paths>". A platform scanner (GitHub secret scanning with push protection, GitLab secret detection) counts when it is enabled on the repo and covers history.
 
 **Why.** A secret in history is readable by everyone with clone access, and forks and caches keep it after a rewrite. Rewriting history is slow and often unnecessary once the secret is dead.
 

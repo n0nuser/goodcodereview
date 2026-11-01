@@ -2,7 +2,7 @@
 id: fn-propagate-dont-swallow
 level: function
 tags: [correctness, errors]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, only the author's own Python review guide backs it; no independent org
 lang: core

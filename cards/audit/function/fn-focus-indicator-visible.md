@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: Styles or script change `outline`, `:focus`, or `:focus-visible`.
+context: [ui]
 tool_gate: Stylelint `declaration-property-value-disallowed-list` with `outline: ["none", "0"]`.
 note: SC 2.4.13 (AAA, size and contrast of the indicator) is not required here; the 3:1 figure comes from web.dev and SC 1.4.11. Focus hidden under a sticky bar (SC 2.4.11) has 2 orgs (W3C, Google), so it is in Why, not the Rule
 borrowed_from:

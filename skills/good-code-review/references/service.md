@@ -5,6 +5,7 @@
 severity: should-fix  
 concerns: correctness  
 applies_when: Two callers can update the same resource through PUT, PATCH or DELETE.  
+context: server  
 Backed by: IETF, Microsoft, Zalando.
 
 **Rule.** Return an `ETag` on reads and honour `If-Match` on writes, answering 412 when the entity tag is stale.
@@ -33,6 +34,7 @@ PUT /docs/4  If-Match: "v7"  -> 412 Precondition Failed
 severity: should-fix  
 concerns: compatibility  
 applies_when: A service retires an endpoint, field, version or parameter that outside callers use.  
+context: server  
 Backed by: IETF, Zalando, OpenAPI Initiative, GitHub, Google.
 
 **Rule.** Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers.
@@ -63,6 +65,7 @@ spec: deprecated: true
 severity: should-fix  
 concerns: compatibility  
 applies_when: Callers of an HTTP or RPC API branch on the kind of error.  
+context: server  
 Backed by: IETF, Google, Microsoft.
 
 **Rule.** Give each error a stable machine-readable code that callers branch on, and never make them parse the message text.
@@ -91,6 +94,7 @@ if response.json()["type"] == "https://api.example.com/problems/order-exists":  
 severity: should-fix  
 concerns: compatibility  
 applies_when: A service offers an HTTP API to callers you do not deploy together with it.  
+context: server  
 Backed by: Zalando, Microsoft, Stripe.
 
 **Rule.** Write down one versioning scheme for the API, and ship no breaking change inside a version it has published.
@@ -119,6 +123,7 @@ the rename ships under api-version=2026-09-01
 severity: block  
 concerns: security  
 applies_when: The service has a login, password-reset or one-time-code endpoint.  
+context: server  
 Backed by: OWASP, NIST, PortSwigger, Microsoft, Okta (Auth0), Google.
 
 **Rule.** Limit failed attempts per account, and return the same message and status code whether or not the account exists.
@@ -147,6 +152,7 @@ if not (user and ok): record_failure(account_key); return "Invalid credentials",
 severity: block  
 concerns: security  
 applies_when: The service exposes routes or functions that different roles may call.  
+context: server  
 Backed by: OWASP, PortSwigger, AWS, NIST.
 
 **Rule.** Route every request through one authorization layer that denies when no rule allows it.
@@ -175,6 +181,7 @@ def gate(): require_role(policy.get(request.endpoint))   # missing entry -> 403
 severity: should-fix  
 concerns: security  
 applies_when: A request parameter or body sets how many records, bytes, items or operations the server handles.  
+context: server  
 Backed by: OWASP, NIST, Google, Django Software Foundation.
 
 **Rule.** Cap every client-controlled size and count on the server: body bytes, string length, array items, page size and batch size.
@@ -235,11 +242,134 @@ async with asyncio.TaskGroup() as tg:
 
 **Counterpoint.** "Tasks are cheap." Creating them is, but what each one holds (a socket, a buffer, a database connection) is not. A semaphore around each handler also caps concurrency, though it still creates one task object per input. This card covers work that a service starts for itself. [sys-load-shedding-bounded-queues](system.md#sys-load-shedding-bounded-queues) covers refusing incoming requests under load.
 
+## svc-cli-destructive-dry-run
+
+severity: should-fix  
+concerns: reliability, maintainability  
+applies_when: A command-line tool has a command that deletes, overwrites or sends something.  
+context: cli  
+Backed by: Kubernetes, Git, GNU Project, GitHub, Microsoft, Google, HashiCorp, Cursor. People cited: Command Line Interface Guidelines.
+
+**Rule.** Give a destructive command a preview flag that changes nothing and a flag that skips the confirmation prompt.
+
+**Why.** Without a preview, the first run is the real one. Without a bypass, a script cannot run the command at all, so people write wrappers that pipe "yes" into it.
+
+**FAIL**
+
+```go
+func main() {
+	fmt.Printf("Delete %d backups? [y/N] ", len(old))
+	var ans string
+	fmt.Scanln(&ans) // no preview flag, no way to skip the prompt
+	if ans == "y" {
+		for _, b := range old {
+			os.Remove(b)
+		}
+	}
+}
+```
+
+**PASS**
+
+```go
+dry := flag.Bool("dry-run", false, "list what would be deleted, delete nothing")
+yes := flag.Bool("yes", false, "do not ask for confirmation")
+flag.Parse()
+for _, b := range old {
+	fmt.Println(b)
+}
+if *dry {
+	return
+}
+if !*yes && !confirm(fmt.Sprintf("Delete %d backups?", len(old))) {
+	os.Exit(1)
+}
+for _, b := range old {
+	os.Remove(b)
+}
+```
+
+**Counterpoint.** "A bypass flag invites accidents." The prompt stays the default for people, and the flag has to be typed on purpose. Pair it with [svc-cli-non-interactive](service.md#svc-cli-non-interactive).
+
+## svc-cli-exit-codes-and-streams
+
+severity: should-fix  
+concerns: correctness, maintainability  
+applies_when: The code ships a command-line tool that scripts or other programs may run.  
+context: cli  
+Backed by: Google, GitHub, AWS, HashiCorp, The Open Group, Heroku, Rust project. People cited: Command Line Interface Guidelines.
+
+**Rule.** Exit non-zero when a command fails, and write results to stdout and errors and progress to stderr.
+
+**Why.** Scripts branch on the exit code and pipe stdout into the next program. A failure that exits 0 reads as success, and an error line on stdout lands in the next program's input. Add a `--json` flag for structured results, and keep prompts out of non-terminal runs (see [svc-cli-non-interactive](service.md#svc-cli-non-interactive)).
+
+**FAIL**
+
+```go
+if err := run(); err != nil {
+	fmt.Println("error:", err) // error goes into the pipe
+}
+// main returns: exit status 0
+```
+
+**PASS**
+
+```go
+if err := run(); err != nil {
+	fmt.Fprintln(os.Stderr, "error:", err)
+	os.Exit(1)
+}
+```
+
+**Counterpoint.** "Some tools use exit codes for non-error results." Documented codes for states such as "differences found" are fine. The rule is that a failure never exits 0.
+
+## svc-cli-non-interactive
+
+severity: should-fix  
+concerns: maintainability, process  
+applies_when: The code ships a command-line tool that scripts or agents may run.  
+context: cli  
+Backed by: GitHub, Google, HashiCorp, Microsoft, Cursor. People cited: Command Line Interface Guidelines.
+
+**Rule.** Let the caller turn every prompt off with a flag or an environment variable, so the command never waits on a terminal.
+
+**Why.** A script or an agent has no one to answer a prompt, so the command hangs until a timeout kills it. When stdin is not a terminal, the best behaviour is to fail at once with an error that names the missing flag and shows an example call, so the caller fixes it in one step.
+
+**FAIL**
+
+```go
+env := flag.String("env", "", "target environment")
+flag.Parse()
+if *env == "" {
+	fmt.Print("Choose environment: ")
+	fmt.Scanln(env) // always prompts: no way to turn it off, hangs in CI
+}
+```
+
+**PASS**
+
+```go
+env := flag.String("env", "", "target environment")
+noInput := flag.Bool("no-input", false, "never prompt")
+flag.Parse()
+if *env == "" {
+	if *noInput || !term.IsTerminal(int(os.Stdin.Fd())) { // golang.org/x/term
+		fmt.Fprintln(os.Stderr, "error: --env is required. Example: deploy --env staging")
+		os.Exit(2)
+	}
+	fmt.Fprint(os.Stderr, "Choose environment: ")
+	fmt.Scanln(env)
+}
+```
+
+**Counterpoint.** "Prompts are friendlier for people." Keep them. The rule only asks that the caller can switch prompts off.
+
 ## svc-cors-allowlist
 
 severity: should-fix  
 concerns: security  
-applies_when: The service sends `Access-Control-Allow-Origin` or similar CORS headers.  
+applies_when: The service sends CORS headers and browsers send credentials or cookies to it, or the API is not meant to be public. A public bearer-key API with `*` and no credentials is outside it.  
+context: server  
 Backed by: OWASP, Mozilla, PortSwigger, GitHub.
 
 **Rule.** Allow cross-origin access only to a fixed list of named origins, and never echo the request `Origin` header back unchecked.
@@ -269,6 +399,7 @@ resp.headers["Vary"] = "Origin"                # caches keep one copy per origin
 severity: should-fix  
 concerns: security  
 applies_when: The service serves HTML pages to browsers.  
+context: server  
 Backed by: OWASP, Mozilla, Google.
 
 **Rule.** Send a `Content-Security-Policy` whose `script-src` uses a per-response nonce or script hashes, with `object-src 'none'` and `base-uri 'none'`.
@@ -295,6 +426,7 @@ Content-Security-Policy: script-src 'nonce-r4nd0m' 'strict-dynamic'; object-src 
 severity: block  
 concerns: security  
 applies_when: The service authenticates browsers with cookies and changes state on requests.  
+context: server  
 Backed by: OWASP, Mozilla, Django Software Foundation, IETF.
 
 **Rule.** Require a CSRF token (or an equivalent header check) on every cookie-authenticated request that changes state, and never change state on GET.
@@ -323,6 +455,7 @@ Set-Cookie: sid=...; SameSite=Lax; Secure; HttpOnly
 severity: block  
 concerns: reliability, correctness  
 applies_when: A non-idempotent operation (charge, create, send) can be retried by a client, a queue, or a saga.  
+context: server  
 Backed by: Microsoft, IETF, Stripe.
 
 **Rule.** Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.
@@ -347,11 +480,60 @@ INSERT ... ON CONFLICT (idem_key) DO UPDATE SET idem_key = EXCLUDED.idem_key RET
 
 **Counterpoint.** "Our retries are rare." Queues redeliver and sagas retry by design, so rare is not never. The cost is a unique key and a stored result. No standard fixes how long the server keeps a key. Pick a window and publish it.
 
+## svc-invalid-input-is-4xx
+
+severity: should-fix  
+concerns: correctness, reliability  
+applies_when: A handler takes a number, an id, a header or a body field from the caller and uses it in a query, a calculation or an encoder.  
+context: server  
+Backed by: OWASP, Google, Kubernetes, IETF, Microsoft, Stripe.
+
+**Rule.** Check each caller-supplied value against its allowed domain (range, allowed set, an id that must exist, an encoding the code can handle) at the boundary, and answer a failed check with a 4xx, never a 5xx.
+
+**Why.** A negative quota, a limit of zero, an id with no row, or a header with a non-ASCII character is the caller's error. If it reaches the database or an `.encode("ascii")`, the user gets a 500: the caller retries, the error-rate alert fires, and a negative quota may be stored and later allow unlimited use. A schema constraint or an explicit lookup costs one line per field. [svc-bound-client-controlled-sizes](service.md#svc-bound-client-controlled-sizes) caps size and count; this card covers every other value.
+
+**FAIL**
+
+```python
+@app.post("/quotas")
+def set_quota(body: dict):
+    db.execute("UPDATE plans SET quota=%s WHERE id=%s", (body["quota"], body["plan_id"]))
+    # quota=-5 is stored; a plan_id with no row updates nothing and answers 200
+    return {"ok": True}
+
+def sign(request):
+    return hmac_header(request.headers["X-Name"].encode("ascii"))   # "Zoë" -> UnicodeEncodeError -> 500
+```
+
+**PASS**
+
+```python
+class SetQuota(BaseModel):
+    quota: int = Field(ge=0, le=10_000)
+    plan_id: int
+
+@app.post("/quotas")
+def set_quota(body: SetQuota):
+    if not db.exists("SELECT 1 FROM plans WHERE id=%s", (body.plan_id,)):
+        raise HTTPException(404, "unknown plan_id")
+    db.execute("UPDATE plans SET quota=%s WHERE id=%s", (body.quota, body.plan_id))
+
+def sign(request):
+    try:
+        name = request.headers["X-Name"].encode("ascii")
+    except UnicodeEncodeError:
+        raise HTTPException(400, "X-Name must be ASCII")
+    return hmac_header(name)
+```
+
+**Counterpoint.** "The database has a CHECK and a foreign key, so the data is safe." It is, but the constraint violation surfaces as a 500 unless the code maps it. Keep the constraint as the last line and validate first, so the caller gets a message that names the field. Catching the database error and mapping it to a 4xx also meets this card when a pre-check would race.
+
 ## svc-list-endpoint-paginates
 
 severity: should-fix  
 concerns: performance  
 applies_when: The service exposes an endpoint or RPC that returns a collection.  
+context: server  
 Backed by: Google, Microsoft, Zalando, GitHub, Stripe.
 
 **Rule.** Paginate every list endpoint, with a default page size and a server-side maximum.
@@ -379,6 +561,7 @@ response: { "items": [...], "next_page_token": "def" }
 severity: should-fix  
 concerns: usability, accessibility  
 applies_when: A multi-step flow, such as checkout or signup, asks for data in more than one step.  
+context: ui  
 Backed by: W3C, Nielsen Norman Group, GOV.UK, Baymard Institute. People cited: Ben Shneiderman.
 
 **Rule.** Do not ask for information the user already gave in the same flow. Fill it in, or let the user pick it.
@@ -407,6 +590,7 @@ Backed by: W3C, Nielsen Norman Group, GOV.UK, Baymard Institute. People cited: B
 severity: should-fix  
 concerns: security  
 applies_when: A client or server puts an API key, session token, bearer token, password, or personal data into a URL.  
+context: server  
 Backed by: OWASP, IETF, MITRE, Mozilla.
 
 **Rule.** Send tokens, keys, passwords, and personal data in a header or the request body, never in the path or query string.
@@ -439,6 +623,7 @@ Content-Type: application/json
 severity: should-fix  
 concerns: security, reliability  
 applies_when: A shared API or queue serves several tenants or callers.  
+context: server  
 Backed by: AWS, Google, Microsoft, NIST.
 
 **Rule.** Enforce a per-tenant quota on shared APIs and queues.
@@ -466,6 +651,7 @@ per-tenant semaphore on workers
 severity: should-fix  
 concerns: accessibility, usability  
 applies_when: A page or app is served to browsers on screens of any size.  
+context: ui  
 Backed by: W3C, Deque, The A11y Project, WebAIM, Mozilla, Google, Microsoft.
 
 **Rule.** Make the page usable at 320 CSS pixels wide and at 200% text zoom, with no sideways scrolling, no clipped content, and no blocked pinch-zoom.
@@ -537,6 +723,7 @@ for i in range(3):
 severity: block  
 concerns: security  
 applies_when: The service sets a session cookie or session ID after login.  
+context: server  
 Backed by: OWASP, Mozilla, NIST, Spring, Ruby on Rails.
 
 **Rule.** Issue a new session ID at login, and set `Secure`, `HttpOnly` and `SameSite` on the session cookie.
@@ -564,6 +751,7 @@ login():  session.regenerate()
 severity: should-fix  
 concerns: usability, accessibility  
 applies_when: A page action, such as a save, an upload, a search, or a page load, can take more than about a second.  
+context: ui  
 Backed by: Nielsen Norman Group, Apple, W3C, Microsoft, Atlassian. People cited: Ben Shneiderman.
 
 **Rule.** Show that a slow action is under way, and show its progress when it runs long.
@@ -593,6 +781,7 @@ Backed by: Nielsen Norman Group, Apple, W3C, Microsoft, Atlassian. People cited:
 severity: block  
 concerns: security  
 applies_when: The code builds a SQL query that includes request data or other untrusted input.  
+context: server, data  
 Backed by: OWASP, Python Software Foundation, GitHub, PortSwigger, Google.
 
 **Rule.** Pass untrusted data to queries as bound parameters, never by string concatenation or formatting.
@@ -651,6 +840,7 @@ def GetProfile(self, request, context):
 severity: should-fix  
 concerns: security  
 applies_when: The service or its load balancer terminates TLS.  
+context: server  
 Backed by: IETF, NIST, OWASP, Microsoft.
 
 **Rule.** Accept only TLS 1.2 and TLS 1.3 on servers.
@@ -673,11 +863,89 @@ ctx.minimum_version = ssl.TLSVersion.TLSv1_2
 
 **Counterpoint.** "Some of our users have old clients." Measure first: log the negotiated version, and if old clients are a real share, serve them from a separate endpoint with an end date instead of weakening every endpoint.
 
+## svc-update-rollback-on-failure
+
+severity: should-fix  
+concerns: reliability  
+applies_when: The code replaces its own binary or an installed program with a new version.  
+Backed by: Microsoft, Google, Mender. People cited: go-update (Alan Shreve).
+
+**Rule.** When an update fails, restore the previous version instead of leaving a missing or half-written one.
+
+**Why.** Deleting the old binary before the new one is in place leaves nothing to run if the copy fails, and the tool cannot update itself back. On Windows a running executable cannot be deleted but can be renamed, so move it aside first and restore it on failure.
+
+**FAIL**
+
+```go
+exe, _ := os.Executable()
+os.Remove(exe) // fails on Windows for a running exe; if the next line fails, no binary is left
+return os.Rename(newBin, exe)
+```
+
+**PASS**
+
+```go
+exe, _ := os.Executable()
+old := exe + ".old"
+if err := os.Rename(exe, old); err != nil {
+	return err
+}
+if err := os.Rename(newBin, exe); err != nil {
+	if rerr := os.Rename(old, exe); rerr != nil {
+		return fmt.Errorf("update failed (%v) and rollback failed: %w", err, rerr)
+	}
+	return err
+}
+os.Remove(old) // best effort; retry at next start if the OS still holds it
+return nil
+```
+
+**Counterpoint.** "Keeping a second copy costs disk space and clutter." One binary-sized file, removed after success, is cheap next to a tool that cannot start.
+
+## svc-update-verify-provenance
+
+severity: should-fix  
+concerns: security  
+applies_when: The code downloads and installs or runs a new version of itself or of another program, such as a self-updater or an install script.  
+Backed by: Sparkle, Sigstore, The Update Framework, Debian, GitHub, Google. People cited: go-update (Alan Shreve).
+
+**Rule.** Verify a downloaded update against a signature, an attestation or a pinned key, or against a checksum that reached you by another route than the file; a checksum fetched from the same host as the file does not count.
+
+**Why.** An attacker who controls the download host replaces the archive and its checksum file together, so the check passes and the new binary runs with the user's rights. A signature made with a key that is not on that host, or a hash from a different channel, still fails for the attacker.
+
+**FAIL**
+
+```go
+archive, _ := get(base + "/tool.tar.gz")
+want, _ := get(base + "/tool.tar.gz.sha256") // same host as the archive
+got := sha256.Sum256(archive)
+if hex.EncodeToString(got[:]) != strings.TrimSpace(string(want)) {
+	return errors.New("checksum mismatch")
+}
+install(archive)
+```
+
+**PASS**
+
+```go
+var releaseKey = mustDecodeKey("<base64 public key>") // compiled into the binary, never downloaded
+
+archive, _ := get(base + "/tool.tar.gz")
+sig, _ := get(base + "/tool.tar.gz.sig")
+if !ed25519.Verify(releaseKey, archive, sig) {
+	return errors.New("bad signature")
+}
+install(archive)
+```
+
+**Counterpoint.** "HTTPS already protects the download, and signing needs key management." TLS protects the connection to the host, not the files on it once the host or its account is breached. Keyless signing and build attestations remove most of the key handling.
+
 ## svc-upload-validate-store
 
 severity: block  
 concerns: security  
 applies_when: The service accepts file uploads.  
+context: server  
 Backed by: OWASP, Microsoft, PortSwigger, Django Software Foundation.
 
 **Rule.** Allowlist the file type, cap the size, and store each upload under a generated name where the server will not execute it.

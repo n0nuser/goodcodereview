@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: A custom widget sets `role` or an `aria-*` attribute because no native element fits.
+context: [ui]
 tool_gate: ESLint `jsx-a11y/role-has-required-aria-props`; axe `aria-required-attr`. Neither checks that the keys work.
 note: state clause: W3C, Mozilla, Deque, Heydon Pickering; keys clause: W3C, Mozilla, Google web.dev; the accessible name has 2 orgs (W3C, Deque, both WCAG 4.1.2) and sits in Why; tool-gate rule names checked against the jsx-a11y README and the axe rule list
 borrowed_from:

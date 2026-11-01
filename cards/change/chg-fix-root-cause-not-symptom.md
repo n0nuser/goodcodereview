@@ -2,7 +2,7 @@
 id: chg-fix-root-cause-not-symptom
 level: change
 tags: [correctness, testing, bugfix, verification]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
 lang: core

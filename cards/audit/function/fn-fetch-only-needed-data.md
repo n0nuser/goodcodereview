@@ -6,6 +6,7 @@ severity: should-fix
 status: stable
 lang: core
 applies_when: A function queries a database or an API and then filters, counts, or sums the result in application code.
+context: [data]
 tool_gate: none
 borrowed_from:
   - https://learn.microsoft.com/en-us/azure/architecture/antipatterns/extraneous-fetching/

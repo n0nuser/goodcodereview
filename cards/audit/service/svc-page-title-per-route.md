@@ -7,6 +7,7 @@ status: draft
 lacks: held, kept draft by Pablo's call; W3C, Mozilla and A11y Project back the Rule
 lang: core
 applies_when: An app serves several pages or client-side routes under one HTML shell.
+context: [ui]
 tool_gate: axe `document-title` catches a missing or empty title only; a test that navigates each route and asserts its `document.title`.
 note: 3 orgs for the Rule (W3C 2.4.2, including the single-page-app view; Mozilla, unique and descriptive; A11y Project, a unique title for each page or view); Deque backs only that a non-empty title exists; the "Error:" prefix is GOV.UK and USWDS guidance and is shown in the PASS example
 borrowed_from:

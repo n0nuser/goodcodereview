@@ -7,6 +7,7 @@ status: draft
 lacks: duplicate, its FAIL shapes, an unused option and a one-implementation Protocol, are the stable mod-yagni Rule
 lang: core
 applies_when: The change adds a public function, endpoint, option, interface or extension point.
+context: [server]
 tool_gate: Unused-export or dead-code detection in CI.
 borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html

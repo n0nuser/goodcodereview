@@ -142,7 +142,7 @@ concerns: security
 applies_when: Auditing what third-party code the repo ships and under which terms.  
 Backed by: OWASP, OpenSSF, CISA, NIST, GitHub, Cabify.
 
-**Rule.** Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule.
+**Rule.** Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule. Each ask is judged separately: name which one failed on the FAIL line.
 
 **Why.** Without an inventory, a team cannot answer a disclosed vulnerability quickly. CI is the usual place for both steps: the SBOM then matches what was built, and the scan runs without anyone remembering it. Team policy: also fail the build on a dependency whose licence is not on the approved list.
 
@@ -178,6 +178,15 @@ Backed by: OWASP, OpenSSF, Google, Python Software Foundation, npm.
 requirements.txt:  requests>=2   (no lockfile; CI runs pip install -U)
 ```
 
+**FAIL** (other ecosystems)
+
+```text
+CI: npm install            (rewrites package-lock.json, ignores drift)
+CI: go build -mod=mod ./...   (go.sum changes silently)
+CI: uv sync               (re-resolves and rewrites uv.lock when it is stale)
+CI: poetry install        (no poetry.lock committed, so it resolves and creates one)
+```
+
 **PASS**
 
 ```text
@@ -185,7 +194,45 @@ requirements.lock with hashes; CI: pip install --require-hashes -r requirements.
 Update bot opens PRs; changes are rolled out in stages.
 ```
 
+```text
+CI: npm ci                       (integrity hashes in package-lock.json; fails on drift)
+CI: go mod verify && go build -mod=readonly ./...   (go.sum committed)
+CI: uv sync --locked      (fails if uv.lock is stale)
+CI: poetry install        (poetry.lock committed; fails if it is stale)
+```
+
 **Counterpoint.** Pinning delays security patches. A pin plus an update bot with a defined cadence beats floating versions, because the lock makes the update visible and revertable.
+
+## code-docs-refs-resolve
+
+severity: should-fix  
+concerns: maintainability  
+applies_when: Auditing a repo whose README, guides or AGENTS.md cite file paths, anchors or other pages.  
+Backed by: GitHub, GitLab, Rust project.
+
+**Rule.** Run a link check in CI over the docs, so that every relative link and anchor they cite resolves.
+
+**Why.** A rename or a deleted file leaves docs that point at nothing. Readers and agents then follow a dead path, and nobody notices until someone trips on it. A machine finds a dangling reference on the pull request that causes it.
+
+**FAIL**
+
+```text
+README.md:  See [the deploy guide](docs/deploy.md).      <- docs/deploy.md was renamed to docs/ops/deploy.md
+AGENTS.md:  See [Setup](docs/dev.md#setup).             <- the heading was renamed
+CI:         no link check, no job reads the docs
+```
+
+**PASS**
+
+```yaml
+docs-links:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@<40-char-sha>
+    - run: lychee --offline --include-fragments README.md AGENTS.md docs
+```
+
+**Counterpoint.** "External links flake, so the job will be red half the time." Check local paths and anchors on every change, where the result is stable. Run the external links on a schedule, so a dead site never blocks a merge.
 
 ## code-perf-budget-in-ci
 
@@ -218,10 +265,10 @@ k6: thresholds: { http_req_duration: ["p(95)<300"] }        # non-zero exit fail
 
 severity: should-fix  
 concerns: maintainability  
-applies_when: Auditing a repo's instruction files, review history or comments that state a rule.  
+applies_when: Auditing any written repo rule (AGENTS.md, CONTRIBUTING, a docs page, a code comment, repeated review comments) that a type check, lint rule, test or CI check could enforce.  
 Backed by: Cursor, Spotify, Stripe, Cabify.
 
-**Rule.** Back each rule that a type, lint or CI check could enforce with that check, not with a line in an instruction file or a repeated review comment.
+**Rule.** Back each written repo rule that a type, lint or CI check could enforce with that check, not with a line in an instruction file or a repeated review comment.
 
 **Why.** A rule that relies on memory gets broken, and reviewers then repeat the same correction. An instruction file is advisory: a person or an agent can skip it. A lint message that names the fix teaches it at the moment of the mistake. A "do not remove" code comment has the same weakness as an instruction file line.
 
@@ -240,6 +287,11 @@ Review history: the same comment on 6 PRs
 extend-select = ["S113"]   # request-without-timeout
 ```
 
+```go
+// rules_test.go, run by `go test ./...` in CI
+func TestNoBareHTTPGet(t *testing.T) { /* walk the AST, fail on http.Get */ }
+```
+
 **Counterpoint.** "Not every rule is checkable." Right, and judgement rules stay as prose. The FAIL is a checkable rule with no check. See [code-ci-gates](codebase.md#code-ci-gates) for where checks run, and [chg-review-signal](change.md#chg-review-signal) for what reviewers stop commenting on once a tool owns it.
 
 ## code-secret-scan
@@ -249,7 +301,7 @@ concerns: security, process
 applies_when: Any repository, including its history, issues and pull requests.  
 Backed by: GitHub, OWASP, CISA, GitLab.
 
-**Rule.** Scan for committed credentials, and treat any hit as leaked: revoke and replace it first.
+**Rule.** Scan for committed credentials, and treat any hit as leaked: revoke and replace it first. With no scanner present and no secret found, the FAIL is the missing control; evidence is "absent in <paths>". A platform scanner (GitHub secret scanning with push protection, GitLab secret detection) counts when it is enabled on the repo and covers history.
 
 **Why.** A secret in history is readable by everyone with clone access, and forks and caches keep it after a rewrite. Rewriting history is slow and often unnecessary once the secret is dead.
 
@@ -267,6 +319,33 @@ key revoked and reissued the same day; new value comes from the secret store
 ```
 
 **Counterpoint.** "Scanners give false positives." Tune with an allowlist of reviewed, non-secret strings. A missed live key costs far more than a triaged alert. [sys-secrets-and-errors](system.md#sys-secrets-and-errors) covers where secrets live at runtime.
+
+## code-vuln-remediation-window
+
+severity: should-fix  
+concerns: security, process  
+applies_when: The repo has open dependency alerts, update pull requests, or scan reports; with none open, mark it N/A.  
+Backed by: OpenSSF, CISA, GitHub, OWASP.
+
+**Rule.** Write down how long a known-vulnerable dependency may stay unfixed and fix or upgrade it inside that window.
+
+**Why.** A scan that finds a vulnerability and then sits unread protects nobody. An alert left open past its window is the failure, whatever the tool says. If a fix is not possible, record the accepted risk with an owner and a review date, so the open alert is a decision and not an oversight. [code-dependency-licence-sbom](codebase.md#code-dependency-licence-sbom) covers running the scan, and this card covers acting on the result.
+
+**FAIL**
+
+```text
+Dependabot: 14 open alerts, 3 critical, oldest opened 210 days ago.
+Open update PRs for those alerts: unreviewed. No stated window, no dismissal reason.
+```
+
+**PASS**
+
+```text
+SECURITY.md: critical and exploited: 7 days; high: 30 days; medium: 60 days.
+Open alerts: all younger than their window.
+```
+
+**Counterpoint.** "Most alerts are not reachable in our code, so the window is busywork." Then triage the alert inside the window and dismiss it with the reason. Reachability is a finding to record, not a reason to skip the clock.
 
 ## code-workflow-supply-chain
 

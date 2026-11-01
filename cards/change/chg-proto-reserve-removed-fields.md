@@ -2,7 +2,7 @@
 id: chg-proto-reserve-removed-fields
 level: change
 tags: [compatibility, api, protobuf]
-severity: block
+severity: should-fix
 status: draft
 lacks: orgs, protobuf.dev is the only backer; needs two more orgs that require reserved on removal
 lang: core

@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: A component opens a modal dialog, drawer, or menu that covers the page.
+context: [ui]
 tool_gate: none; a component test that opens the dialog, presses Tab and Escape, and asserts `document.activeElement`.
 note: Focus into the modal, Tab kept inside: W3C APG, Mozilla, GitHub (Primer). Escape and return focus to the opener are in W3C APG and WebAIM; MDN does not state return focus, so that part is in Why
 borrowed_from:

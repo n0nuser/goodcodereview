@@ -8,6 +8,7 @@ lacks: orgs, Pact is the only backer; OpenAPI does not back contract tests and p
 note: the Pact page read does not describe provider verification or the broker; those steps are not asserted here
 lang: core
 applies_when: A service calls, or is called by, another service owned by a different team or deployed on its own schedule.
+context: [server]
 tool_gate: Contract test run in CI for both sides, and a gate that blocks deploy when a consumer's contract fails against the provider.
 borrowed_from:
   - https://docs.pact.io/

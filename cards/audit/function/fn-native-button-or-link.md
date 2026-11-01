@@ -6,6 +6,7 @@ severity: block
 status: stable
 lang: core
 applies_when: A component handles a click or tap, or navigates.
+context: [ui]
 tool_gate: ESLint `jsx-a11y/click-events-have-key-events` and `jsx-a11y/no-static-element-interactions`; `jsx-a11y/anchor-is-valid` for `href="#"`.
 note: 4 orgs; Norman's perceived-affordance essay is context only
 borrowed_from:

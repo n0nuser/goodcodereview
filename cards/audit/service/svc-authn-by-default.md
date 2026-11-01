@@ -2,11 +2,12 @@
 id: svc-authn-by-default
 level: service
 tags: [security, authn]
-severity: block
+severity: should-fix
 status: draft
 lacks: evidence, only Microsoft and Spring say why auth by default; Django, Rails and NestJS describe the default without a reason
 lang: core
 applies_when: The service has routes that need a signed-in user next to routes that are public.
+context: [server]
 tool_gate: A framework fallback that requires authentication (ASP.NET Core `FallbackPolicy`, Django `LoginRequiredMiddleware`, Spring Security `anyRequest().authenticated()`); a test that calls every route without credentials and expects 401 or a login redirect unless the route is on the public list.
 note: svc-authz-central-deny-default decides what a known user may do; this card decides whether an anonymous caller gets in at all (CWE-306)
 borrowed_from:
