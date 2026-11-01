@@ -24,7 +24,7 @@ ORGS = {
     "kernel": "Linux kernel", "kleppmann": "Martin Kleppmann", "kubernetes": "Kubernetes", "liskov-wing": "Barbara Liskov and Jeannette Wing",
     "llvm": "LLVM", "lucumr": "Armin Ronacher", "mcintosh": "McIntosh et al.", "meta": "Meta", "feathers": "Michael Feathers",
     "microsoft": "Microsoft", "mit": "MIT", "mitre": "MITRE", "mozilla": "Mozilla", "mypy": "mypy project",
-    "ncsc": "NCSC", "netflix": "Netflix", "nist": "NIST", "nngroup": "Nielsen Norman Group", "nodejs": "OpenJS Foundation",
+    "ncsc": "NCSC", "netflix": "Netflix", "nist": "NIST", "pytest": "pytest", "vodafone": "Vodafone", "nngroup": "Nielsen Norman Group", "nodejs": "OpenJS Foundation",
     "npm": "npm", "openapi": "OpenAPI Initiative", "openssf": "OpenSSF", "opentelemetry": "OpenTelemetry",
     "docker": "Docker", "oracle": "Oracle", "sonarsource": "SonarSource", "openjdk": "OpenJDK", "godot": "Godot Engine", "usgs": "USGS", "va": "US Department of Veterans Affairs", "ethereum": "Ethereum Foundation", "ousterhout": "John Ousterhout", "pact": "Pact", "palantir": "Palantir", "pgbouncer": "PgBouncer project",
     "phacility": "Phacility", "portswigger": "PortSwigger", "portebois": "Sébastien Portebois", "postgresql": "PostgreSQL",
@@ -62,7 +62,7 @@ STANDING = {
 # URL prefix (no scheme) -> org id. The longest matching prefix wins. A prefix without "/" also matches subdomains,
 # so "owasp.org" covers cheatsheetseries.owasp.org. On code hosts the org is the repository owner, never the host.
 PREFIXES = {
-    "wiki.debian.org": "debian", "source.android.com": "google", "docs.mender.io": "mender", "pubs.opengroup.org": "opengroup", "rust-cli.github.io": "rust", "developer.hashicorp.com": "hashicorp", "git-scm.com": "git", "gnu.org": "gnu", "theupdateframework.io": "tuf", "sparkle-project.org": "sparkle", "docs.sigstore.dev": "sigstore", "clig.dev": "clig", "pkg.go.dev/github.com/inconshreveable/go-update": "go-update", "devcenter.heroku.com": "heroku", "raw.githubusercontent.com/Azure/": "microsoft", "github.com/Azure/": "microsoft",
+    "wiki.debian.org": "debian", "source.android.com": "google", "docs.mender.io": "mender", "pubs.opengroup.org": "opengroup", "rust-cli.github.io": "rust", "developer.hashicorp.com": "hashicorp", "git-scm.com": "git", "gnu.org": "gnu", "theupdateframework.io": "tuf", "sparkle-project.org": "sparkle", "docs.sigstore.dev": "sigstore", "clig.dev": "clig", "pkg.go.dev/github.com/inconshreveable/go-update": "go-update", "devcenter.heroku.com": "heroku", "raw.githubusercontent.com/Azure/": "microsoft", "github.com/Azure/": "microsoft", "github.com/usnistgov/": "nist", "tech.gr.vodafone.com": "vodafone", "docs.pytest.org": "pytest",
     "12factor.net": "heroku", "airbnb.tech": "airbnb", "alphagov.github.io": "govuk", "angular.dev": "google",
     "antirez.com": "salvatore", "flex.apache.org": "apache", "cwiki.apache.org/confluence/display/QUICKSTEP": "apache", "github.com/google/": "google", "wiki.openjdk.org": "openjdk", "sonarsource.com": "sonarsource", "contributing.godotengine.org": "godot", "astrogeology.usgs.gov": "usgs", "depo-platform-documentation.scrollhelp.site": "va", "geth.ethereum.org": "ethereum", "rustc-dev-guide.rust-lang.org": "rust", "edgeguides.rubyonrails.org": "rails", "usenix.org/legacy/event/osdi06/tech/full_papers/burrows/burrows.pdf": "google", "arxiv.org/abs/2406.10279": "utsa", "atlassian.design": "atlassian", "auth0.com": "auth0",
     "aws.amazon.com": "aws", "aws.com": "aws", "baymard.com": "baymard", "bazel.build": "google", "blog.google": "google",

@@ -54,3 +54,11 @@ Counts are out of 8 runs (the 26-repo run plus seven), unless stated.
 - **`detect:` scanning: still no.** Dropped candidates (139 of 389) show the cost is verification, not finding.
 - **New and bigger than expected:** applicability tagging, publishing raw cards (so reviews do not depend on a fetch tool), and the draft policy.
 - **Sampling:** workers read 10 of 61 files, or skipped half the repo, with no stated rule. The granularity map must include one.
+
+## After the audit-mode work (2026-11-01)
+
+- Re-audits of deadchannel, obramat-cli and radiotui: N/A triage fell to about 3 to 20 percent of tool calls, and the report shape was followed.
+- Moving the audit procedure to `references/audit.md` did not break the `audit_repo` eval: format passed both runs, substance passed one of two (the miss was a missing `code-secret-scan` FAIL, not the report shape).
+- Forced evals: 10 of 11 cases pass. Open failures: `invoice_idor` (substance) and `retry_no_timeout` (format).
+- Trigger evals: train 12/12, validation 7/8 after the description change.
+- Size: `llms.txt` is 10,084 characters (budget 12,000). The optional `llms-drafts.txt` is 47,881 characters and has no budget.

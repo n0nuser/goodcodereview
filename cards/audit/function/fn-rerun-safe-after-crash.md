@@ -2,7 +2,7 @@
 id: fn-rerun-safe-after-crash
 level: function
 tags: [reliability, idempotency]
-severity: block
+severity: should-fix
 status: stable
 lang: core
 applies_when: A function or job changes state and can be run twice, or can be killed partway.

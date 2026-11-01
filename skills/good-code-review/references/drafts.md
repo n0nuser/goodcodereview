@@ -892,17 +892,6 @@ lacks: evidence, Dropbox's dead-letter queue is a proposal, not a practice; need
 
 Give every consumer queue a dead-letter queue and a way to replay its messages after the fix.
 
-## svc-fail-closed-defaults
-
-level: service  
-severity: should-fix  
-concerns: security  
-applies_when: The service reads configuration for authentication, an allow-list, a safety check, or a signing secret.  
-context: server  
-lacks: orgs, "off until configured" has Microsoft (authn only) and OWASP; "empty allow-list denies" has Google (ACLs) only; needs two more orgs each
-
-Ship every security control switched on, with an empty allow-list denying everything, and refuse to start when a secret is missing or still a placeholder.
-
 ## svc-page-title-per-route
 
 level: service  

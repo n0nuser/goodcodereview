@@ -285,7 +285,10 @@ if !*yes && !confirm(fmt.Sprintf("Delete %d backups?", len(old))) {
 	os.Exit(1)
 }
 for _, b := range old {
-	os.Remove(b)
+	if err := os.Remove(b); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 }
 ```
 
@@ -449,6 +452,48 @@ Set-Cookie: sid=...; SameSite=Lax; Secure; HttpOnly
 ```
 
 **Counterpoint.** "Our API uses JSON, so browsers cannot forge it." A simple content type such as `text/plain` can carry a JSON body without a preflight. Reject it, or require a custom header such as `X-CSRF-Token`. Pure bearer-token APIs with no cookies are exempt.
+
+## svc-fail-closed-defaults
+
+severity: should-fix  
+concerns: security  
+applies_when: The service reads configuration for authentication, an allow-list, a safety check, or a signing secret.  
+context: server  
+Backed by: OWASP, Microsoft, Google, Django Software Foundation, MITRE, AWS, CISA, NIST.
+
+**Rule.** Ship every security control switched on, with an empty allow-list denying everything.
+
+**Why.** A control that is off until configured is off in the deployment where nobody read the setup page. An empty allow-list that means "allow all" and a built-in `changeme` key both boot cleanly, so nothing alerts anyone while the service runs open or signs tokens anyone can forge. Refuse to start when a secret is missing or still a placeholder: failing at startup moves the discovery from an incident to the first deploy.
+
+**FAIL**
+
+```python
+import os
+
+AUTH_ENABLED = os.environ.get("AUTH_ENABLED", "false") == "true"
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")  # "" means no filtering below
+SECRET_KEY = os.environ.get("SECRET_KEY", "changeme")
+
+def host_ok(host):
+    return not ALLOWED_HOSTS[0] or host in ALLOWED_HOSTS
+```
+
+**PASS**
+
+```python
+import os
+
+AUTH_ENABLED = os.environ.get("AUTH_ENABLED", "true") == "true"
+ALLOWED_HOSTS = [h for h in os.environ.get("ALLOWED_HOSTS", "").split(",") if h]
+SECRET_KEY = os.environ["SECRET_KEY"]          # KeyError stops the boot
+if SECRET_KEY in {"", "changeme"}:
+    raise RuntimeError("SECRET_KEY is a placeholder")
+
+def host_ok(host):
+    return host in ALLOWED_HOSTS               # empty list denies all
+```
+
+**Counterpoint.** "Developers need to run it locally without setup." Give them a separate dev entry point or a dev-only flag that is named for what it does (`INSECURE_DEV_MODE=1`) and that production images never set. The default stays closed, and the open mode is a visible, greppable choice.
 
 ## svc-idempotency-key
 
@@ -885,7 +930,10 @@ return os.Rename(newBin, exe)
 **PASS**
 
 ```go
-exe, _ := os.Executable()
+exe, err := os.Executable()
+if err != nil {
+	return err
+}
 old := exe + ".old"
 if err := os.Rename(exe, old); err != nil {
 	return err

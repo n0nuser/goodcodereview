@@ -30,7 +30,10 @@ return os.Rename(newBin, exe)
 **PASS**
 
 ```go
-exe, _ := os.Executable()
+exe, err := os.Executable()
+if err != nil {
+	return err
+}
 old := exe + ".old"
 if err := os.Rename(exe, old); err != nil {
 	return err

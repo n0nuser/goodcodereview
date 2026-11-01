@@ -27,3 +27,4 @@ Clause B: refuse to start on missing or placeholder secret.
 - GitLab. https://docs.gitlab.com/ci/variables/. "Default visibility changed from Visible to Masked in GitLab 18.3." (CI variable logs)
 - OWASP. https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html. Lists "Access tokens", "Authentication passwords", "Database connection strings", "Encryption keys and other primary secrets" as data to exclude from logs.
 Gap: only GitHub and Django show list/show/debug output; the others cover logs. Hence draft.
+- AWS. https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic_policy-eval-denyallow.html (fetched 2026-11-01). "By default, all requests are implicitly denied with the exception of the AWS account root user, which has full access." Backs the empty allow-list clause of `svc-fail-closed-defaults`. Kubernetes NetworkPolicy was checked and allows by default, so it is no backer.

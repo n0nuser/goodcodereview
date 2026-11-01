@@ -1087,7 +1087,7 @@ Backed by: GOV.UK, W3C, USWDS, The A11y Project.
 
 ## fn-rerun-safe-after-crash
 
-severity: block  
+severity: should-fix  
 concerns: reliability  
 applies_when: A function or job changes state and can be run twice, or can be killed partway.  
 Backed by: Cursor, Uber, Stripe, Dropbox, Netflix, GitHub.
@@ -1291,3 +1291,31 @@ doc = ET.fromstring(request.get_data())   # rejects DTD entities by default
 ```
 
 **Counterpoint.** "Recent Python XML modules already refuse external entities." Some do. The FAIL above opts back in, Java and .NET parsers have their own defaults, and a later change to the parser config reopens the hole. An explicit hardened parser makes the setting visible in review.
+
+## py-pytest-parametrize
+
+severity: should-fix  
+concerns: testing  
+applies_when: Tests differ only in inputs and expected values.  
+Backed by: Google, Microsoft, Vodafone, pytest.
+
+**Rule.** Write tests that differ only in inputs and expected values as one `@pytest.mark.parametrize` test.
+
+**Why.** Copy-pasted tests drift, and an empty parametrization silently runs nothing. Assert that a computed parameter list is not empty first.
+
+**FAIL**
+
+```python
+def test_retry_502(): assert is_retryable(Response(502))
+def test_retry_503(): assert is_retryable(Response(503))
+```
+
+**PASS**
+
+```python
+@pytest.mark.parametrize(("status", "retry"), [(502, True), (503, True), (400, False)])
+def test_retries_gateway_errors(status, retry):
+    assert is_retryable(httpx.Response(status)) is retry
+```
+
+**Counterpoint.** "Separate tests give clearer failures." Parametrize ids give one failure per case, with its inputs. For a computed list, `assert cases` before parametrising.

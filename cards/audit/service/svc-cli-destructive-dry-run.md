@@ -56,7 +56,10 @@ if !*yes && !confirm(fmt.Sprintf("Delete %d backups?", len(old))) {
 	os.Exit(1)
 }
 for _, b := range old {
-	os.Remove(b)
+	if err := os.Remove(b); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 }
 ```
 

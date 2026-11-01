@@ -178,9 +178,9 @@ level: function
 severity: should-fix  
 concerns: testing  
 applies_when: Tests differ only in inputs and expected values.  
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+lacks: 
 
-Use `@pytest.mark.parametrize` for test variations.
+Write tests that differ only in inputs and expected values as one `@pytest.mark.parametrize` test.
 
 ## py-ruff-gate
 

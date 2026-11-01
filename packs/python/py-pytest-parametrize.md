@@ -3,16 +3,19 @@ id: py-pytest-parametrize
 level: function
 tags: [testing, python]
 severity: should-fix
-status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+status: stable
 lang: python
 applies_when: Tests differ only in inputs and expected values.
 tool_gate: ruff PT006/PT007 (style only)
-borrowed_from: []
-note: from the author's own Python review guide
+borrowed_from:
+  - https://go.dev/wiki/TableDrivenTests
+  - https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices
+  - https://tech.gr.vodafone.com/post/junit-parameterized-tests
+  - https://docs.pytest.org/en/stable/how-to/parametrize.html
+note: Go (copy-paste a test, use a table), Microsoft (parameterized tests) and Vodafone (three tests that are one test with different inputs) state the practice; pytest documents the tool
 ---
 
-**Rule.** Use `@pytest.mark.parametrize` for test variations.
+**Rule.** Write tests that differ only in inputs and expected values as one `@pytest.mark.parametrize` test.
 
 **Why.** Copy-pasted tests drift, and an empty parametrization silently runs nothing. Assert that a computed parameter list is not empty first.
 

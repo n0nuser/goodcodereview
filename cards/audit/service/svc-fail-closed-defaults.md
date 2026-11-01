@@ -3,8 +3,7 @@ id: svc-fail-closed-defaults
 level: service
 tags: [security, configuration]
 severity: should-fix
-status: draft
-lacks: orgs, "off until configured" has Microsoft (authn only) and OWASP; "empty allow-list denies" has Google (ACLs) only; needs two more orgs each
+status: stable
 lang: core
 applies_when: The service reads configuration for authentication, an allow-list, a safety check, or a signing secret.
 context: [server]
@@ -16,11 +15,15 @@ borrowed_from:
   - https://google.github.io/building-secure-and-reliable-systems/raw/ch08.html
   - https://docs.djangoproject.com/en/5.2/ref/settings/
   - https://cwe.mitre.org/data/definitions/1393.html
+  - https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic_policy-eval-denyallow.html
+  - https://www.cisa.gov/sites/default/files/2023-10/SecureByDesign_1025_508c.pdf
+  - https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html
+  - https://github.com/usnistgov/oscal-content/blob/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json
 ---
 
-**Rule.** Ship every security control switched on, with an empty allow-list denying everything, and refuse to start when a secret is missing or still a placeholder.
+**Rule.** Ship every security control switched on, with an empty allow-list denying everything.
 
-**Why.** A control that is off until configured is off in the deployment where nobody read the setup page. An empty allow-list that means "allow all" and a built-in `changeme` key both boot cleanly, so nothing alerts anyone while the service runs open or signs tokens anyone can forge. Failing at startup moves the discovery from an incident to the first deploy.
+**Why.** A control that is off until configured is off in the deployment where nobody read the setup page. An empty allow-list that means "allow all" and a built-in `changeme` key both boot cleanly, so nothing alerts anyone while the service runs open or signs tokens anyone can forge. Refuse to start when a secret is missing or still a placeholder: failing at startup moves the discovery from an incident to the first deploy.
 
 **FAIL**
 
