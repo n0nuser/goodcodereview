@@ -10,6 +10,8 @@ jobs:
           python-version: "3.12"
       - run: python3 tools/validate.py
       - run: python3 tools/build.py
-      - run: git diff --exit-code skills/
+      - name: skills/ matches the cards
+        if: github.ref != 'refs/heads/main'
+        run: git diff --exit-code skills/ || { echo "::error::skills/ is stale. Run 'python3 tools/build.py' and commit skills/."; exit 1; }
       - run: node --test test/worker.test.mjs
       - run: python3 -m unittest discover -s test

@@ -1,0 +1,25 @@
+name: sync-skills
+# Safety net for direct pushes to main: regenerate skills/ and commit it if it drifted.
+# PRs are gated by check.yml instead. Commits made with GITHUB_TOKEN do not trigger new runs, so this cannot loop.
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: "3.12"
+      - run: python3 tools/build.py
+      - name: Commit regenerated skills/
+        run: |
+          git diff --quiet skills/ && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add skills/
+          git commit -m "Regenerate skills/ from cards"
+          git push

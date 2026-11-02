@@ -42,5 +42,5 @@ Rules:
 1. Copy `cards/_template.md` to `cards/change/` or `cards/audit/<level>/`. Set `status: draft` and a `lacks:` line that says why it is not stable yet. `docs/PROMOTION.md` lists the reasons and the bar for stable.
 2. Meet the acceptance rules in `CONTRIBUTING.md`: a rule that can fail, a FAIL and a PASS example, a why and a counterpoint, a source, one level, and your own words.
 3. Run `python3 tools/validate.py && python3 tools/build.py`.
-4. Commit the regenerated `skills/` directory. CI fails if `git diff --exit-code skills/` is dirty. Never edit `skills/` by hand.
+4. Commit the regenerated `skills/` directory. CI fails a pull request if `git diff --exit-code skills/` is dirty, and a push to `main` regenerates and commits `skills/` as a bot (`.github/workflows/sync-skills.yml`). Never edit `skills/` by hand.
 5. Send one card per pull request.
