@@ -24,4 +24,19 @@ Run `python3 tools/validate.py` to lint the cards. Run `python3 tools/build.py` 
 
 After a build, run `python3 tools/agent_ready_check.py` to check `site/` against the agent-readiness items in `docs/research/agent-readiness-gaps.md`. It reads files only and exits 1 on any failure. CI runs it after the build.
 
+## Check your change
+
+Set up once: `uv sync --locked` (Python dev tools from `uv.lock`) and `npm ci` (axe-core and jsdom). The build itself needs neither; it uses only the standard library. Then run what CI runs:
+
+```
+python3 tools/validate.py && python3 tools/build.py      # --dry-run prints what would change and writes nothing
+uv run ruff check tools test && uv run mypy && uv run pytest -q
+node --test test/worker.test.mjs
+python3 tools/check_links.py                              # relative links and anchors in tracked Markdown
+uv run python tools/sbom.py --check                       # sbom.cdx.json is current; every component has a licence
+node test/a11y.mjs                                        # axe-core on index, function, and concerns pages of the built site
+```
+
+`node test/a11y.mjs [page.html ...]` checks other built pages. It runs in jsdom, which does no layout, so it skips the colour-contrast rule. When you change a dependency, run `uv run python tools/sbom.py` and commit the new `sbom.cdx.json`. [docs/python-pack-conformance.md](docs/python-pack-conformance.md) shows how the Python here meets the Python pack.
+
 To propose or correct a card, use the [issue templates](.github/ISSUE_TEMPLATE). Before you open a pull request, read the [pull request template](.github/pull_request_template.md).

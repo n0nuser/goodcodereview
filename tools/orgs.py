@@ -1,10 +1,11 @@
-"""Which organisation publishes each source URL. build.py and validate.py read this one map.
+"""Which organisation publishes each source URL. The build and validate.py read this one map.
 
 docs/PROMOTION.md says how to count organisations, and the groups below follow it: every OWASP project is OWASP,
 every w3.org page is W3C, Google covers web.dev, Chrome, the SRE books, and Go, and Microsoft covers Learn and the
 engineering playbook. A URL that matches no prefix fails validation, so add a prefix when you cite a new site.
 """
 import json
+from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -122,7 +123,7 @@ PREFIXES = {
 ICONS = json.loads((Path(__file__).with_name("org_icons.json")).read_text())  # org id -> SVG path from Simple Icons 15.22.0 (CC0), https://simpleicons.org
 
 
-def org_of(url):
+def org_of(url: str) -> str | None:
     """The org id for a URL, or None when no prefix matches."""
     u = urlparse(url)
     host = u.netloc.lower().removeprefix("www.")
@@ -135,24 +136,40 @@ def org_of(url):
     return PREFIXES[best] if best else None
 
 
-def group(urls):
-    """[(org id, [urls])] in first-cited order. Raises KeyError on a URL no prefix matches."""
-    out = {}
+@dataclass(frozen=True, slots=True)
+class OrgUrls:
+    """An organisation id and the source URLs it publishes."""
+
+    id: str
+    urls: list[str]
+
+
+@dataclass(frozen=True, slots=True)
+class Sources:
+    """The sources of a card, split into organisations and people."""
+
+    organisations: list[OrgUrls]
+    people: list[OrgUrls]
+
+
+def group(urls: list[str]) -> list[OrgUrls]:
+    """Group URLs by organisation, in first-cited order. Raises KeyError on a URL no prefix matches."""
+    out: dict[str, list[str]] = {}
     for u in urls:
         o = org_of(u)
         if o is None:
             raise KeyError(f"no organisation for {u}; add a prefix to tools/orgs.py")
         out.setdefault(o, []).append(u)
-    return list(out.items())
+    return [OrgUrls(o, us) for o, us in out.items()]
 
 
-def split(urls):
-    """(organisations, people), each [(id, [urls])] in first-cited order."""
+def split(urls: list[str]) -> Sources:
+    """Split the URLs into organisations and people, each in first-cited order."""
     g = group(urls)
-    return [x for x in g if x[0] not in PERSONS], [x for x in g if x[0] in PERSONS]
+    return Sources([x for x in g if x.id not in PERSONS], [x for x in g if x.id in PERSONS])
 
 
-def monogram(oid):
+def monogram(oid: str) -> str:
     """Up to four characters for an org without a logo: the acronym ("W3C", "AWS") or the initials ("NN" for Nielsen Norman Group)."""
     name = ORGS[oid].split(" (")[0]
     if name.replace(".", "").isupper():

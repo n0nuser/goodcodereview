@@ -5,34 +5,35 @@ and `check()` validates a built corpus against that schema with the standard lib
 """
 import re
 from dataclasses import dataclass, field, fields, is_dataclass
+from enum import StrEnum
 from types import UnionType
-from typing import Literal, get_args, get_origin, get_type_hints
+from typing import Any, Literal, get_args, get_origin, get_type_hints
 
-from validate import LACKS
+from models import LacksReason, Level, Severity, Status
 
 SCHEMA_VERSION = 4  # 2 added Card.orgs; 3 made orgs organisations only and added Card.people; 4 added Card.context
-Status = Literal["stable", "draft"]
-Severity = Literal["block", "should-fix", "discuss"]
-Kind = Literal["stable", "drafts"]
-Reason = Literal[*LACKS]
-Level = Literal["change", "function", "module", "service", "system", "codebase", "production", "incident"]
 
 
-@dataclass
+class Kind(StrEnum):
+    STABLE = "stable"  # cards.json
+    DRAFTS = "drafts"  # cards-drafts.json
+
+
+@dataclass(frozen=True, slots=True)
 class Example:
     """A code or text block from a card's FAIL or PASS section."""
     language: str | None  # the fence label, such as "python" or "text"; null when the fence has none
     code: str
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class Lacks:
     """Why a draft card is not stable yet. docs/PROMOTION.md defines each reason."""
-    reason: Reason             # the main blocker, such as "orgs"
+    reason: LacksReason           # the main blocker, such as "orgs"
     note: str                  # one sentence on what is missing
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class Org:
     """An organisation behind a card. tools/orgs.py maps each source URL to one."""
     id: str                    # short id, such as "w3c"
@@ -40,7 +41,7 @@ class Org:
     sources: list[str]         # the card's URLs that this organisation publishes
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class Card:
     id: str                    # stable identifier, such as "chg-one-concern"
     level: Level               # the review level the card belongs to
@@ -66,7 +67,7 @@ class Card:
     markdown_url: str          # the level page in Markdown
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class LevelInfo:
     id: Level
     name: str
@@ -79,7 +80,7 @@ class LevelInfo:
     markdown_url: str
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class Corpus:
     schema_version: int
     kind: Kind                 # "stable" in cards.json, "drafts" in cards-drafts.json
@@ -92,11 +93,11 @@ class Corpus:
     cards: list[Card]
 
 
-def _key(f):
-    return f.metadata.get("alias", f.name)
+def _key(f: Any) -> str:
+    return str(f.metadata.get("alias", f.name))
 
 
-def to_dict(obj):
+def to_dict(obj: Any) -> Any:
     """A model instance as plain dicts and lists, using each field's alias."""
     if is_dataclass(obj):
         return {_key(f): to_dict(getattr(obj, f.name)) for f in fields(obj)}
@@ -105,10 +106,12 @@ def to_dict(obj):
     return obj
 
 
-def _schema_of(tp):
+def _schema_of(tp: Any) -> dict[str, Any]:
     origin = get_origin(tp)
     if is_dataclass(tp):
         return _object(tp)
+    if isinstance(tp, type) and issubclass(tp, StrEnum):
+        return {"enum": [m.value for m in tp]}
     if tp is str:
         return {"type": "string"}
     if tp is int:
@@ -124,21 +127,21 @@ def _schema_of(tp):
     raise TypeError(f"no schema for {tp}")
 
 
-def _object(cls):
+def _object(cls: Any) -> dict[str, Any]:
     hints = get_type_hints(cls)
     props = {_key(f): _schema_of(hints[f.name]) for f in fields(cls)}
     return {"type": "object", "properties": props, "required": list(props), "additionalProperties": False}
 
 
-def json_schema(base):
+def json_schema(base: str) -> dict[str, Any]:
     """The JSON Schema (draft 2020-12) for Corpus."""
     return {"$schema": "https://json-schema.org/draft/2020-12/schema", "$id": f"{base}/cards.schema.json",
             "title": "Good Code Review cards", **_object(Corpus)}
 
 
-def check(schema, data, path="$"):
+def check(schema: dict[str, Any], data: Any, path: str = "$") -> list[str]:
     """Return a list of problems. It understands only the keywords that json_schema() emits."""
-    errs = []
+    errs: list[str] = []
     if "anyOf" in schema:
         if all(check(s, data, path) for s in schema["anyOf"]):
             errs.append(f"{path}: matches none of the allowed types")
@@ -148,10 +151,10 @@ def check(schema, data, path="$"):
     kind = {"string": str, "integer": int, "boolean": bool, "array": list, "object": dict, "null": type(None)}[schema["type"]]
     if not isinstance(data, kind) or (kind is int and isinstance(data, bool)):
         return [f"{path}: expected {schema['type']}, got {type(data).__name__}"]
-    if schema["type"] == "array":
+    if isinstance(data, list):
         for i, x in enumerate(data):
             errs += check(schema["items"], x, f"{path}[{i}]")
-    if schema["type"] == "object":
+    if isinstance(data, dict):
         errs += [f"{path}: missing '{k}'" for k in schema["required"] if k not in data]
         errs += [f"{path}: unexpected '{k}'" for k in data if k not in schema["properties"]]
         for k, v in data.items():
@@ -160,7 +163,7 @@ def check(schema, data, path="$"):
     return errs
 
 
-def example(body, label):
+def example(body: str, label: str) -> Example:
     """The first fenced block after **FAIL** or **PASS** in a card body, as an Example."""
     m = re.search(rf"\*\*{label}\*\*\s*```([^\n]*)\n(.*?)\n```", body, re.S)
     return Example(m.group(1).strip() or None, m.group(2)) if m else Example(None, "")

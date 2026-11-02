@@ -1,0 +1,52 @@
+[project]
+name = "goodcodereview"
+version = "0.0.0"
+description = "Build tools for goodcodereview.com. The build itself uses only the standard library."
+requires-python = ">=3.14"
+dependencies = []
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 200
+target-version = "py314"
+src = ["tools", "test"]
+# test/evals/cases hold the code the evals plant defects in; they are inputs, not repository code.
+extend-exclude = ["test/evals/cases"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "BLE", "TID", "D"]
+ignore = ["D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107"]
+
+# prose.py and assets.py hold reader-facing text and inlined CSS/JS, which are long lines by nature.
+[tool.ruff.lint.per-file-ignores]
+"tools/prose.py" = ["E501"]
+"tools/assets.py" = ["E501"]
+"tools/orgs.py" = ["E501"]  # long lines are the organisation and URL-prefix tables
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.mypy]
+strict = true
+mypy_path = "tools"
+files = ["tools"]
+
+[tool.pytest.ini_options]
+pythonpath = ["tools"]
+testpaths = ["test"]
+addopts = "--disable-socket"
+
+[dependency-groups]
+dev = [
+    "freezegun>=1.5.5",
+    "mypy>=2.4.1",
+    "pytest>=9.2.0",
+    "pytest-socket>=0.8.1",
+    "pyyaml>=6.0.3",
+    "ruff>=0.17.3",
+]

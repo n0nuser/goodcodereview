@@ -1,68 +1,66 @@
 import json
-import subprocess
-import sys
-import unittest
-from pathlib import Path
+from typing import Any
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
-import orgs  # noqa: E402
-import schema  # noqa: E402
+import pytest
 
-BASE = "https://goodcodereview.com"
-SITE = Path(__file__).resolve().parent.parent / "site"
-if not (SITE / "cards.json").is_file():  # site/ is generated and untracked; a fresh clone needs one build
-    subprocess.run([sys.executable, str(SITE.parent / "tools" / "build.py")], check=True)
+import orgs
+import schema
+from config import BASE
 
 
-class SchemaTest(unittest.TestCase):
-	def setUp(self):
-		self.schema = schema.json_schema(BASE)
-		self.data = json.loads((SITE / "cards.json").read_text())
-
-	def test_built_files_match_the_schema(self):
-		for name in ("cards.json", "cards-drafts.json"):
-			data = json.loads((SITE / name).read_text())
-			self.assertEqual(schema.check(self.schema, data), [], name)
-
-	def test_a_missing_key_fails(self):
-		del self.data["cards"][0]["rule"]
-		self.assertIn("missing 'rule'", " ".join(schema.check(self.schema, self.data)))
-
-	def test_a_value_outside_the_enum_fails(self):
-		self.data["cards"][0]["severity"] = "urgent"
-		self.assertTrue(schema.check(self.schema, self.data))
-
-	def test_an_unknown_key_fails(self):
-		self.data["cards"][0]["extra"] = 1
-		self.assertIn("unexpected 'extra'", " ".join(schema.check(self.schema, self.data)))
-
-	def test_only_drafts_say_what_they_lack(self):
-		self.assertEqual({c["lacks"] for c in self.data["cards"]}, {None})
-		drafts = json.loads((SITE / "cards-drafts.json").read_text())["cards"]
-		self.assertTrue(all(c["lacks"]["reason"] and c["lacks"]["note"] for c in drafts))
-
-	def test_a_reason_outside_the_list_fails(self):
-		drafts = json.loads((SITE / "cards-drafts.json").read_text())
-		drafts["cards"][0]["lacks"] = {"reason": "vibes", "note": "x"}
-		self.assertTrue(schema.check(self.schema, drafts))
-
-	def test_orgs_and_people_together_cover_every_source(self):
-		# No three-organisation assertion here: validate.py errors on a stable card below the floor.
-		for c in self.data["cards"]:
-			self.assertEqual(sorted(u for o in c["orgs"] + c["people"] for u in o["sources"]), sorted(c["sources"]), c["id"])
-
-	def test_people_never_count_as_orgs(self):
-		for c in self.data["cards"]:
-			self.assertEqual([o["id"] for o in c["orgs"] if o["id"] in orgs.PERSONS], [], c["id"])
-
-	def test_a_card_without_orgs_fails(self):
-		del self.data["cards"][0]["orgs"]
-		self.assertIn("missing 'orgs'", " ".join(schema.check(self.schema, self.data)))
-
-	def test_pass_is_a_json_key_not_pass_underscore(self):
-		self.assertIn("pass", self.data["cards"][0])
-		self.assertNotIn("pass_", self.data["cards"][0])
+@pytest.fixture
+def json_schema() -> dict[str, Any]:
+    return schema.json_schema(BASE)
 
 
-if __name__ == "__main__":
-	unittest.main()
+@pytest.mark.parametrize("name", ["cards.json", "cards-drafts.json"])
+def test_built_files_match_the_schema(site_text: dict[str, str], json_schema: dict[str, Any], name: str) -> None:
+    assert schema.check(json_schema, json.loads(site_text[name])) == []
+
+
+def test_a_missing_key_fails(cards_json: dict[str, Any], json_schema: dict[str, Any]) -> None:
+    del cards_json["cards"][0]["rule"]
+    assert "missing 'rule'" in " ".join(schema.check(json_schema, cards_json))
+
+
+def test_a_value_outside_the_enum_fails(cards_json: dict[str, Any], json_schema: dict[str, Any]) -> None:
+    cards_json["cards"][0]["severity"] = "urgent"
+    assert schema.check(json_schema, cards_json)
+
+
+def test_an_unknown_key_fails(cards_json: dict[str, Any], json_schema: dict[str, Any]) -> None:
+    cards_json["cards"][0]["extra"] = 1
+    assert "unexpected 'extra'" in " ".join(schema.check(json_schema, cards_json))
+
+
+def test_only_drafts_say_what_they_lack(cards_json: dict[str, Any], site_text: dict[str, str]) -> None:
+    assert {c["lacks"] for c in cards_json["cards"]} == {None}
+    drafts = json.loads(site_text["cards-drafts.json"])["cards"]
+    assert all(c["lacks"]["reason"] and c["lacks"]["note"] for c in drafts)
+
+
+def test_a_reason_outside_the_list_fails(site_text: dict[str, str], json_schema: dict[str, Any]) -> None:
+    drafts = json.loads(site_text["cards-drafts.json"])
+    drafts["cards"][0]["lacks"] = {"reason": "vibes", "note": "x"}
+    assert schema.check(json_schema, drafts)
+
+
+def test_orgs_and_people_together_cover_every_source(cards_json: dict[str, Any]) -> None:
+    # No three-organisation assertion here: validate.py errors on a stable card below the floor.
+    for c in cards_json["cards"]:
+        assert sorted(u for o in c["orgs"] + c["people"] for u in o["sources"]) == sorted(c["sources"]), c["id"]
+
+
+def test_people_never_count_as_orgs(cards_json: dict[str, Any]) -> None:
+    for c in cards_json["cards"]:
+        assert [o["id"] for o in c["orgs"] if o["id"] in orgs.PERSONS] == [], c["id"]
+
+
+def test_a_card_without_orgs_fails(cards_json: dict[str, Any], json_schema: dict[str, Any]) -> None:
+    del cards_json["cards"][0]["orgs"]
+    assert "missing 'orgs'" in " ".join(schema.check(json_schema, cards_json))
+
+
+def test_pass_is_a_json_key_not_pass_underscore(cards_json: dict[str, Any]) -> None:
+    assert "pass" in cards_json["cards"][0]
+    assert "pass_" not in cards_json["cards"][0]

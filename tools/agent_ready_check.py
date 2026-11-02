@@ -1,40 +1,73 @@
 #!/usr/bin/env python3
 """Check site/ against the agent-readiness items in docs/research/agent-readiness-gaps.md. Run tools/build.py first.
-No network: it reads files only. Prints one PASS or FAIL line per check, names the checklist item, and exits 1 on any FAIL."""
+
+No network: it reads files only. Prints one PASS or FAIL line per check, names the checklist item, and exits 1 on any FAIL.
+"""
 import hashlib
 import json
 import re
 import sys
 import xml.etree.ElementTree as ET
+from dataclasses import dataclass, field
 from datetime import date
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
 
-ROOT = Path(__file__).resolve().parent.parent
-SITE = ROOT / "site"
-BASE = "https://goodcodereview.com"
-LLMS_MAX = 12_000  # llmstxt.org sets no limit but asks for a concise summary; build.py enforces the same budget (LLMS_BUDGET)
+from config import BASE, LLMS_BUDGET, ROOT, SITE
+
 PAGE_MAX = 120_000  # human pages only: agents read the .md twins and skill references
-FAILS = []
+MIN_INDEX_CHARS = 500
+MIN_TRUST_PAGE_CHARS = 500
+MIN_404_CHARS = 20
+MIN_404_LINKS = 5
+HEADERS_MAX_RULES = 100
+HEADERS_MAX_LINE = 2_000
+LLMS_MIN = 100  # characters; a shorter llms.txt is empty in practice
+PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
+FEATURE_TAGS = ("img", "iframe", "form", "input", "video", "audio")
+FOOTER_LINKS = ["llms.txt", "sitemap.xml", "about.html", "privacy.html", "/AGENTS.md", "/skills/good-code-review", "/issues"]
+Attrs = dict[str, str | None]
 
 
-def check(item, ok, msg):
-    print(f"{'PASS' if ok else 'FAIL'}  item {item}: {msg}")
-    if not ok:
-        FAILS.append(item)
+@dataclass(slots=True)
+class Report:
+    """Prints one line per check and remembers the items that failed."""
+
+    failures: list[int] = field(default_factory=list)
+
+    def check(self, item: int, ok: object, msg: str) -> None:
+        print(f"{'PASS' if ok else 'FAIL'}  item {item}: {msg}")
+        if not ok:
+            self.failures.append(item)
 
 
 class Page(HTMLParser):
-    """Collects what the checks read: text, headings, head tags, links, and landmark tags."""
+    """Collects what the checks read: text, headings, head tags, links, and landmark tags. Build one with `Page.parse`."""
 
-    def __init__(self, src):
+    def __init__(self) -> None:
         super().__init__()
-        self.text, self.heads, self.metas, self.links, self.hrefs, self.tags = [], [], [], [], [], set()
-        self.ld, self.js, self.css, self.scripts, self.title, self._skip, self._in = [], [], [], [], "", 0, ""
-        self.feed(src)
+        self.text: list[str] = []
+        self.heads: list[int] = []
+        self.metas: list[Attrs] = []
+        self.links: list[Attrs] = []
+        self.hrefs: list[str] = []
+        self.tags: set[str] = set()
+        self.ld: list[str] = []
+        self.js: list[str] = []
+        self.css: list[str] = []
+        self.scripts: list[Attrs] = []
+        self.title = ""
+        self._skip = 0
+        self._in = ""
 
-    def handle_starttag(self, tag, attrs):
+    @classmethod
+    def parse(cls, src: str) -> Page:
+        page = cls()
+        page.feed(src)
+        return page
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         a = dict(attrs)
         self.tags.add(tag)
         if tag in ("script", "style"):
@@ -47,19 +80,19 @@ class Page(HTMLParser):
         elif tag == "link":
             self.links.append(a)
         elif tag == "a" and "href" in a:
-            self.hrefs.append(a["href"])
+            self.hrefs.append(a["href"] or "")
         elif tag == "title":
             self._in = "title"
         elif re.fullmatch(r"h[1-6]", tag):
             self.heads.append(int(tag[1]))
 
-    def handle_endtag(self, tag):
+    def handle_endtag(self, tag: str) -> None:
         if tag in ("script", "style"):
             self._skip -= 1
         if tag in ("script", "style", "title"):
             self._in = ""
 
-    def handle_data(self, data):
+    def handle_data(self, data: str) -> None:
         if self._in == "script:ld":
             self.ld.append(data)
         elif self._in == "script:js":
@@ -71,17 +104,17 @@ class Page(HTMLParser):
         elif not self._skip:
             self.text.append(data)
 
-    def chars(self):
+    def chars(self) -> int:
         return len(re.sub(r"\s+", " ", " ".join(self.text)).strip())
 
-    def meta(self, key, val):
-        return [m.get("content", "") for m in self.metas if m.get(key) == val]
+    def meta(self, key: str, val: str) -> list[str]:
+        return [m.get("content") or "" for m in self.metas if m.get(key) == val]
 
-    def link(self, rel):
-        return [l for l in self.links if l.get("rel") == rel]
+    def link(self, rel: str) -> list[Attrs]:
+        return [lk for lk in self.links if lk.get("rel") == rel]
 
 
-def resolve(url):
+def resolve(url: str) -> Path | None:
     """Map a goodcodereview.com URL to the file the host serves, or None. Cloudflare Pages drops .html from page URLs."""
     p = urlparse(url).path
     if p in ("", "/"):
@@ -90,14 +123,24 @@ def resolve(url):
     return f if f.is_file() else (SITE / (p.lstrip("/") + ".html") if (SITE / (p.lstrip("/") + ".html")).is_file() else None)
 
 
-def parse_headers(text):
+@dataclass(frozen=True, slots=True)
+class ParsedHeaders:
+    """The rules of a `_headers` file by URL pattern, and the format errors found."""
+
+    rules: dict[str, list[str]]
+    errors: list[str]
+
+
+def parse_headers(text: str) -> ParsedHeaders:
     """Parse a Cloudflare Pages _headers file: unindented URL lines, then indented `Name: value` lines. Return (rules, errors)."""
-    rules, errs, cur = {}, [], None
+    rules: dict[str, list[str]] = {}
+    errs: list[str] = []
+    cur: list[str] | None = None
     for n, line in enumerate(text.split("\n"), 1):
         if not line.strip() or line.lstrip().startswith("#"):
             continue
-        if len(line) > 2000:
-            errs.append(f"line {n} is over 2,000 characters")
+        if len(line) > HEADERS_MAX_LINE:
+            errs.append(f"line {n} is over {HEADERS_MAX_LINE:,} characters")
         if line[0] not in " \t":
             cur = rules.setdefault(line.strip(), [])
         elif cur is None:
@@ -106,30 +149,29 @@ def parse_headers(text):
             errs.append(f"line {n}: not `Name: value`")
         else:
             cur.append(line.strip())
-    return rules, errs
+    return ParsedHeaders(rules, errs)
 
 
-def main():
-    if not (SITE / "index.html").is_file():
-        sys.exit("site/ is empty. Run python3 tools/build.py first.")
-    pages = {f.name: Page(f.read_text()) for f in sorted(SITE.glob("*.html"))}
-    content = {n: p for n, p in pages.items() if n != "404.html"}
-
-    # 1, 12, 30: content in the raw HTML, landmarks, heading order
+def _items_1_12_30(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """1, 12, 30: content in the raw HTML, landmarks, heading order."""
     idx = pages["index.html"]
-    check(1, idx.heads.count(1) == 1 and idx.chars() >= 500, f"index.html has one h1 and {idx.chars()} characters of text without JavaScript")
-    bad = [n for n, p in pages.items() if p.heads.count(1) != 1 or any(b > a + 1 for a, b in zip(p.heads, p.heads[1:]))
+    r.check(1, idx.heads.count(1) == 1 and idx.chars() >= MIN_INDEX_CHARS, f"index.html has one h1 and {idx.chars()} characters of text without JavaScript")
+    bad = [n for n, p in pages.items() if p.heads.count(1) != 1 or any(b > a + 1 for a, b in zip(p.heads, p.heads[1:], strict=False))
            or not {"header", "nav", "main", "footer"} <= p.tags]
-    check(30, not bad, f"every page has header, nav, main, footer, one h1, and no skipped heading level{': ' + ', '.join(bad) if bad else ''}")
+    r.check(30, not bad, f"every page has header, nav, main, footer, one h1, and no skipped heading level{': ' + ', '.join(bad) if bad else ''}")
 
-    # 2, 3, 4: robots.txt
+
+def _items_2_3_4(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """2, 3, 4: robots.txt."""
     robots = (SITE / "robots.txt").read_text()
     groups = re.findall(r"(?im)^user-agent:\s*(.+)$", robots)
-    check(2, groups == ["*"] and not re.search(r"(?im)^disallow:\s*\S", robots), "robots.txt has one `User-agent: *` group and no Disallow rule")
-    check(3, groups == ["*"] and re.search(r"(?im)^allow:\s*/\s*$", robots) is not None, "robots.txt allows everything and names no crawler")
-    check(4, f"Sitemap: {BASE}/sitemap.xml" in robots, "robots.txt has a Sitemap line")
+    r.check(2, groups == ["*"] and not re.search(r"(?im)^disallow:\s*\S", robots), "robots.txt has one `User-agent: *` group and no Disallow rule")
+    r.check(3, groups == ["*"] and re.search(r"(?im)^allow:\s*/\s*$", robots) is not None, "robots.txt allows everything and names no crawler")
+    r.check(4, f"Sitemap: {BASE}/sitemap.xml" in robots, "robots.txt has a Sitemap line")
 
-    # 5, 6: sitemap
+
+def _items_5_6(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """5, 6: sitemap."""
     try:
         root = ET.fromstring((SITE / "sitemap.xml").read_text())
         ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
@@ -138,51 +180,59 @@ def main():
     except (OSError, ET.ParseError) as e:
         locs, mods = [], []
         print(f"      sitemap.xml unreadable: {e}")
-    served = {resolve(l) for l in locs}
+    served = {resolve(ln) for ln in locs}
     missing = [n for n in content if SITE / n not in served]
-    check(5, locs and not missing and None not in served, f"sitemap.xml lists {len(locs)} URLs, one per HTML page except 404.html{': missing ' + ', '.join(missing) if missing else ''}")
+    r.check(5, locs and not missing and None not in served, f"sitemap.xml lists {len(locs)} URLs, one per HTML page except 404.html{': missing ' + ', '.join(missing) if missing else ''}")
     try:
         ok = mods and all(date.fromisoformat(m) <= date.today() for m in mods)
     except ValueError:
         ok = False
-    check(6, bool(ok), f"every sitemap URL has a lastmod date ({mods[0] if mods else 'none'})")
+    r.check(6, bool(ok), f"every sitemap URL has a lastmod date ({mods[0] if mods else 'none'})")
 
-    # 7, 8, 9: error page, redirects
+
+def _items_7_8_9(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """7, 8, 9: error page, redirects."""
     nf = pages["404.html"]
-    check(9, nf.chars() >= 20 and len(nf.hrefs) >= 5, f"404.html has {nf.chars()} characters of text and {len(nf.hrefs)} links")
-    check(8, not (SITE / "_redirects").exists() and not any(m.get("http-equiv") == "refresh" for p in pages.values() for m in p.metas),
+    r.check(9, nf.chars() >= MIN_404_CHARS and len(nf.hrefs) >= MIN_404_LINKS, f"404.html has {nf.chars()} characters of text and {len(nf.hrefs)} links")
+    r.check(8, not (SITE / "_redirects").exists() and not any(m.get("http-equiv") == "refresh" for p in pages.values() for m in p.metas),
           "no _redirects file and no meta-refresh stubs")
 
-    # 15, 16, 17, 19: llms.txt
+
+def _items_15_16_17_19(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """15, 16, 17, 19: llms.txt."""
     llms = (SITE / "llms.txt").read_text()
     # llmstxt.org: H1, then a blockquote, then headingless sections, then H2 file lists of `- [name](url): notes`; "Optional" last.
     lines = llms.split("\n")
-    first_h2 = next((i for i, l in enumerate(lines) if l.startswith("## ")), len(lines))
-    fence, bad_items = False, []
-    for l in lines[first_h2:]:
-        if l.startswith("```"):
+    first_h2 = next((i for i, ln in enumerate(lines) if ln.startswith("## ")), len(lines))
+    fence = False
+    bad_items: list[str] = []
+    for ln in lines[first_h2:]:
+        if ln.startswith("```"):
             fence = not fence
-        elif not fence and l.strip() and not l.startswith("## ") and not re.match(r"- \[[^\]]+\]\(\S+\)(: .*)?$", l):
-            bad_items.append(l[:50])
-    h2s = [l for l in lines if l.startswith("## ")]
-    shape = (re.match(r"# \S", llms) and re.match(r"(?s)# [^\n]+\n\n> \S", llms) and not any(l.startswith("#") for l in lines[1:first_h2])
+        elif not fence and ln.strip() and not ln.startswith("## ") and not re.match(r"- \[[^\]]+\]\(\S+\)(: .*)?$", ln):
+            bad_items.append(ln[:50])
+    h2s = [ln for ln in lines if ln.startswith("## ")]
+    shape = (re.match(r"# \S", llms) and re.match(r"(?s)# [^\n]+\n\n> \S", llms) and not any(ln.startswith("#") for ln in lines[1:first_h2])
              and not bad_items and h2s and h2s[-1] == "## Optional")
-    check(16, 100 <= len(llms) < LLMS_MAX and shape,
-          f"llms.txt follows llmstxt.org ({len(llms)} characters, limit {LLMS_MAX}): H1, blockquote, headingless intro, H2 file lists, Optional last{'; not a file-list line: ' + bad_items[0] if bad_items else ''}")
+    detail = f"; not a file-list line: {bad_items[0]}" if bad_items else ""
+    r.check(16, LLMS_MIN <= len(llms) < LLMS_BUDGET and shape,
+            f"llms.txt follows llmstxt.org ({len(llms)} characters, limit {LLMS_BUDGET}): H1, blockquote, headingless intro, H2 file lists, Optional last{detail}")
     own = [u.rstrip(".,)") for u in re.findall(r"\]\((https?://[^)\s]+)\)", llms) if urlparse(u).netloc == "goodcodereview.com"]
     dead = [u for u in own if resolve(u) is None]
-    check(17, own and not dead, f"{len(own)} own-site links in llms.txt resolve to files in site/{': dead ' + ', '.join(dead) if dead else ''}")
-    check(19, "Use this site when you are asked to review" in llms, "llms.txt opens with a `When to use` paragraph")
+    r.check(17, own and not dead, f"{len(own)} own-site links in llms.txt resolve to files in site/{': dead ' + ', '.join(dead) if dead else ''}")
+    r.check(19, "Use this site when you are asked to review" in llms, "llms.txt opens with a `When to use` paragraph")
     unbalanced = [f.name for f in [*SITE.glob("*.md"), SITE / "llms.txt", SITE / "llms-drafts.txt"] if len(re.findall(r"(?m)^```", f.read_text())) % 2]
-    check(15, not unbalanced and all('<code class="language-' in (SITE / f"{lv}.html").read_text() for lv in ("change", "function")),
+    r.check(15, not unbalanced and all('<code class="language-' in (SITE / f"{lv}.html").read_text() for lv in ("change", "function")),
           f"code fences are balanced in served Markdown and tagged with a language class in HTML{': ' + ', '.join(unbalanced) if unbalanced else ''}")
 
-    # 14, 29, 37, 42: head tags
+
+def _items_14_29_37_42(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """14, 29, 37, 42: head tags."""
     problems = []
     for n, p in content.items():
         slug = n[:-5]
         want = BASE + "/" if slug == "index" else f"{BASE}/{slug}"
-        canon = [l["href"] for l in p.link("canonical")]
+        canon = [ln["href"] for ln in p.link("canonical")]
         og = {m.get("property"): m.get("content", "") for m in p.metas if str(m.get("property", "")).startswith("og:")}
         if canon != [want]:
             problems.append(f"{n}: canonical {canon}")
@@ -194,84 +244,124 @@ def main():
             problems.append(f"{n}: is-agentic-site-type")
         if "Good Code Review" not in p.title or p.title.strip() == "":
             problems.append(f"{n}: title")
-    check(14, not any("canonical" in x for x in problems), "every page has one canonical URL, the extensionless URL in the sitemap")
-    check(29, not any(k in x for x in problems for k in ("description", "og tags")) and all(re.search(r'<html lang="en"', f.read_text()) for f in SITE.glob("*.html")),
+    r.check(14, not any("canonical" in x for x in problems), "every page has one canonical URL, the extensionless URL in the sitemap")
+    r.check(29, not any(k in x for x in problems for k in ("description", "og tags")) and all(re.search(r'<html lang="en"', f.read_text()) for f in SITE.glob("*.html")),
           "every page has lang, description, and the Open Graph tags, including og:image")
-    check(29, (SITE / "og.png").read_bytes()[:8] == b"\x89PNG\r\n\x1a\n", "og.png is a PNG file")
-    check(37, not any("title" in x for x in problems), "every page title names Good Code Review")
-    check(42, not any("is-agentic-site-type" in x for x in problems), 'every page has <meta name="is-agentic-site-type" content="content">')
+    r.check(29, (SITE / "og.png").read_bytes()[:8] == PNG_MAGIC, "og.png is a PNG file")
+    r.check(37, not any("title" in x for x in problems), "every page title names Good Code Review")
+    r.check(42, not any("is-agentic-site-type" in x for x in problems), 'every page has <meta name="is-agentic-site-type" content="content">')
 
-    # 20, 38: discovery links in footer and head
+
+def _items_20_38(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """20, 38: discovery links in footer and head."""
     foot = ["llms.txt", "sitemap.xml", "about.html", "privacy.html", "/AGENTS.md", "/skills/good-code-review", "/issues"]
     gaps = [n for n, p in pages.items() if not all(any(h.endswith(f) for h in p.hrefs) for f in foot)]
-    check(20, not gaps, f"footer links About, Privacy, Contact, llms.txt, sitemap, AGENTS.md, and the skill folder on every page{': ' + ', '.join(gaps) if gaps else ''}")
-    head_gaps = [n for n, p in content.items() if not (p.link("sitemap") and any(l.get("href") == "/llms.txt" for l in p.link("alternate")))]
-    check(20, not head_gaps, f"head links the sitemap and llms.txt on every content page{': ' + ', '.join(head_gaps) if head_gaps else ''}")
+    r.check(20, not gaps, f"footer links About, Privacy, Contact, llms.txt, sitemap, AGENTS.md, and the skill folder on every page{': ' + ', '.join(gaps) if gaps else ''}")
+    head_gaps = [n for n, p in content.items() if not (p.link("sitemap") and any(ln.get("href") == "/llms.txt" for ln in p.link("alternate")))]
+    r.check(20, not head_gaps, f"head links the sitemap and llms.txt on every content page{': ' + ', '.join(head_gaps) if head_gaps else ''}")
 
-    # 22, 23: Markdown twins and frontmatter
+
+def _items_22_23(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """22, 23: Markdown twins and frontmatter."""
     twin_gaps, fm_gaps = [], []
     for n, p in content.items():
         slug = n[:-5]
-        alt = [l["href"] for l in p.link("alternate") if l.get("type") == "text/markdown"]
+        alt = [ln["href"] for ln in p.link("alternate") if ln.get("type") == "text/markdown"]
         if alt != [f"/{slug}.md"] or not (SITE / f"{slug}.md").is_file():
             twin_gaps.append(n)
     for f in sorted(SITE.glob("*.md")):
         m = re.match(r"---\n(.*?)\n---\n", f.read_text(), re.S)
-        keys = {l.split(":", 1)[0] for l in m.group(1).split("\n")} if m else set()
+        keys = {ln.split(":", 1)[0] for ln in m.group(1).split("\n")} if m else set()
         if not {"title", "description", "canonical", "updated"} <= keys:
             fm_gaps.append(f.name)
-    check(22, not twin_gaps, f"every content page has a Markdown twin and a rel=alternate link to it{': ' + ', '.join(twin_gaps) if twin_gaps else ''}")
-    check(23, not fm_gaps, f"every served .md starts with frontmatter (title, description, canonical, updated){': ' + ', '.join(fm_gaps) if fm_gaps else ''}")
+    r.check(22, not twin_gaps, f"every content page has a Markdown twin and a rel=alternate link to it{': ' + ', '.join(twin_gaps) if twin_gaps else ''}")
+    r.check(23, not fm_gaps, f"every served .md starts with frontmatter (title, description, canonical, updated){': ' + ', '.join(fm_gaps) if fm_gaps else ''}")
 
-    # 21, 33: _headers
-    rules, errs = parse_headers((SITE / "_headers").read_text())
+
+def _items_21_33(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """21, 33: _headers."""
+    parsed = parse_headers((SITE / "_headers").read_text())
+    rules, errs = parsed.rules, parsed.errors
     flat = " ".join(" ".join(v) for v in rules.values())
-    check(21, not errs and len(rules) <= 100 and "rel=\"sitemap\"" in flat and "rel=\"alternate\"; type=\"text/markdown\"" in flat
+    r.check(21, not errs and len(rules) <= HEADERS_MAX_RULES and "rel=\"sitemap\"" in flat and "rel=\"alternate\"; type=\"text/markdown\"" in flat
           and "/*.md" in rules and "charset=utf-8" in " ".join(rules.get("/*.md", [])) and "charset=utf-8" in " ".join(rules.get("/*.txt", [])),
           f"_headers parses ({len(rules)} rules): Link for sitemap and Markdown twins, charset for .md and .txt{'; ' + '; '.join(errs) if errs else ''}")
-    check(33, "x-robots-tag" not in flat.lower() and not any(m.get("name") == "robots" and "noindex" in m.get("content", "") for p in pages.values() for m in p.metas),
+    r.check(33, "x-robots-tag" not in flat.lower() and not any(m.get("name") == "robots" and "noindex" in (m.get("content") or "") for p in pages.values() for m in p.metas),
           "no noindex meta tag and no X-Robots-Tag header")
 
-    # 25, 28: JSON-LD
+
+def _items_25_28(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """25, 28: JSON-LD."""
+    idx = pages["index.html"]
     try:
         ld = json.loads("".join(idx.ld))
         types = {n.get("@type") for n in ld.get("@graph", [])}
         ok = {"WebSite", "CreativeWork"} <= types and all(n.get(k) for n in ld["@graph"] for k in ("name", "description", "url"))
     except (ValueError, AttributeError):
         ok, types = False, set()
-    check(25, ok, f"index.html JSON-LD parses; types {sorted(types)}; each has name, description, url")
-    check(28, ok and types <= {"WebSite", "CreativeWork"}, "JSON-LD types match visible content (WebSite, CreativeWork only)")
+    r.check(25, ok, f"index.html JSON-LD parses; types {sorted(types)}; each has name, description, url")
+    r.check(28, ok and types <= {"WebSite", "CreativeWork"}, "JSON-LD types match visible content (WebSite, CreativeWork only)")
 
-    # 34: trust pages, and the privacy claim
+
+def _items_34(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """34: trust pages, and the privacy claim."""
     for n in ("about.html", "privacy.html"):
-        check(34, pages[n].chars() >= 500, f"{n} has {pages[n].chars()} characters of text (at least 500)")
+        r.check(34, pages[n].chars() >= MIN_TRUST_PAGE_CHARS, f"{n} has {pages[n].chars()} characters of text (at least {MIN_TRUST_PAGE_CHARS})")
     code = "".join(x for p in pages.values() for x in p.js)
     css = "".join(x for p in pages.values() for x in p.css)
     leaks = [t for t in ("document.cookie", "localStorage", "sessionStorage", "fetch(", "XMLHttpRequest", "sendBeacon", "WebSocket") if t in code]
     leaks += [t for t in ("@import", "http") if t in css] + [f"<{t}>" for p in pages.values() for t in ("img", "iframe", "form", "input", "video", "audio") if t in p.tags]
-    ext = [x for p in pages.values() for x in p.scripts] + [l for p in pages.values() for l in p.links if l.get("rel") in ("stylesheet", "preload", "preconnect")]
-    check(34, not leaks and not ext, f"page scripts and styles use no cookie, storage, or network call, and no page loads external or form content, as privacy.html says{': found ' + ', '.join(leaks) if leaks else ''}")
+    ext = [x for p in pages.values() for x in p.scripts] + [ln for p in pages.values() for ln in p.links if ln.get("rel") in ("stylesheet", "preload", "preconnect")]
+    r.check(34, not leaks and not ext, "page scripts and styles use no cookie, storage, or network call, and no page loads external or form content, as privacy.html says"
+            + (f": found {', '.join(leaks)}" if leaks else ""))
 
-    # 36: page size
+
+def _items_36(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """36: page size."""
     big = {n: p.chars() for n, p in pages.items() if p.chars() >= PAGE_MAX}
     top = max(pages.items(), key=lambda kv: kv[1].chars())
-    check(36, not big, f"every page is under {PAGE_MAX:,} characters of text; largest is {top[0]} at {top[1].chars():,}")
+    r.check(36, not big, f"every page is under {PAGE_MAX:,} characters of text; largest is {top[0]} at {top[1].chars():,}")
 
-    # 39: Agent Skills index
+
+def _items_39(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """39: Agent Skills index."""
     try:
         idx_json = json.loads((SITE / ".well-known/agent-skills/index.json").read_text())
         sk = idx_json["skills"]
+        served = resolve(sk[0]["url"])
         want = "sha256:" + hashlib.sha256((ROOT / "skills/good-code-review/SKILL.md").read_bytes()).hexdigest()
         ok = (idx_json["$schema"].endswith("/0.2.0/schema.json") and len(sk) == 1 and sk[0]["name"] == "good-code-review" and sk[0]["type"] == "skill-md"
               and sk[0]["description"] and sk[0]["digest"] == want and resolve(sk[0]["url"]) is not None
-              and "sha256:" + hashlib.sha256(resolve(sk[0]["url"]).read_bytes()).hexdigest() == want)
+              and served is not None and "sha256:" + hashlib.sha256(served.read_bytes()).hexdigest() == want)
     except (OSError, ValueError, KeyError, IndexError):
         ok = False
-    check(39, ok, "agent-skills/index.json lists the skill, and its sha256 digest matches skills/good-code-review/SKILL.md and the served copy")
+    r.check(39, ok, "agent-skills/index.json lists the skill, and its sha256 digest matches skills/good-code-review/SKILL.md and the served copy")
 
-    print(f"\n{len(FAILS)} failing check(s)" if FAILS else "\nall checks pass")
-    sys.exit(1 if FAILS else 0)
+
+def main() -> int:
+    """Run every check against site/ and return the exit code."""
+    if not (SITE / "index.html").is_file():
+        print("site/ is empty. Run python3 tools/build.py first.")
+        return 1
+    pages = {f.name: Page.parse(f.read_text()) for f in sorted(SITE.glob("*.html"))}
+    content = {n: p for n, p in pages.items() if n != "404.html"}
+    r = Report()
+    _items_1_12_30(r, pages, content)
+    _items_2_3_4(r, pages, content)
+    _items_5_6(r, pages, content)
+    _items_7_8_9(r, pages, content)
+    _items_15_16_17_19(r, pages, content)
+    _items_14_29_37_42(r, pages, content)
+    _items_20_38(r, pages, content)
+    _items_22_23(r, pages, content)
+    _items_21_33(r, pages, content)
+    _items_25_28(r, pages, content)
+    _items_34(r, pages, content)
+    _items_36(r, pages, content)
+    _items_39(r, pages, content)
+    print(f"\n{len(r.failures)} failing check(s)" if r.failures else "\nall checks pass")
+    return 1 if r.failures else 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

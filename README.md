@@ -44,6 +44,8 @@ https://goodcodereview.com/cards.json?topic=forms
 
 `concern`, `topic`, and `level` take comma-separated values or repeat. A card matches when it has any value given for each filter. `group=concern|level|topic` groups the list.
 
+`cards.json` is one bounded file with no pagination; [docs/cards-json.md](docs/cards-json.md) gives its size budget and how to fetch part of it. The shape carries a `schema_version`, and [docs/api-versioning.md](docs/api-versioning.md) is the versioning policy.
+
 ## Verdict format
 
 Each check gets `PASS`, `FAIL`, or `N/A`, with `file:line` evidence. A `FAIL` carries the card's severity: `block`, `should-fix`, or `discuss`.

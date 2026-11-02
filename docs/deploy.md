@@ -16,6 +16,18 @@ In the dashboard, choose Workers & Pages, Create, and connect `n0nuser/goodcoder
 
 The Pages build image has Python 3, and the build uses only the standard library. To use the legacy Pages workflow instead, choose Pages, Connect to Git, framework preset None, build command `python3 tools/build.py`, output directory `site`, and no deploy command.
 
+## Staged rollout
+
+A push to `main` builds and deploys the whole site at once, so a bad build reaches every visitor. To roll out in stages, use Workers gradual deployments:
+
+1. Upload without deploying: `npx wrangler versions upload`. This creates a version that receives no traffic.
+2. Send a small share of traffic to it: `npx wrangler versions deploy <new-version-id>@10% <current-version-id>@90%`. Wait 30 minutes.
+3. Compare the new version to the current one on error rate (Workers metrics, 5xx) and on `/llms.txt`, `/cards.json`, and `/index.html` returning 200 with the expected `Content-Type`. Run `curl -sS -o /dev/null -w '%{http_code}' https://goodcodereview.com/llms.txt` against the split.
+4. Abort rule: if the error rate of the new version is above the current version's, or any of those three URLs fails, deploy the previous version at 100% with `npx wrangler versions deploy <current-version-id>@100%`. Do not decide by judgment.
+5. Otherwise raise to 50%, then 100%.
+
+Owner action: today the Cloudflare dashboard (or its Git integration) deploys `main` at 100% in one step. Switching it to `wrangler versions upload` plus a staged `versions deploy` step is a change to the Cloudflare project or its CI, and it is the owner's to make. Nothing in this repository changes those settings. Check Cloudflare's gradual-deployment notes on version affinity before the first split: a visitor may get the HTML from one version and a later request from the other.
+
 ## Cloudflare rules
 
 Two rules serve `index.md` for `Accept: text/markdown` on the homepage without a Worker. They live in the dashboard (Rules, then Transform Rules) and not in the repo, so recreate them if the zone changes.
