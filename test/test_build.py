@@ -101,3 +101,12 @@ def test_rule_reads_the_first_paragraph() -> None:
 @pytest.mark.parametrize("name", ["index.html", "function.html", "pack-python.html", "concerns.html"])
 def test_page_shows_last_updated(site_text: dict[str, str], name: str) -> None:
     assert 'Last updated <time datetime="' in site_text[name]
+
+
+def test_guides_have_page_twin_sitemap_entry_and_one_llms_link(site_text: dict[str, str]) -> None:
+    from guides import GUIDES
+    for g in GUIDES:
+        assert f"guides/{g.slug}.html" in site_text and f"guides/{g.slug}.md" in site_text
+        assert f"<loc>https://goodcodereview.com/guides/{g.slug}</loc>" in site_text["sitemap.xml"]
+        assert "chg-" in site_text[f"guides/{g.slug}.md"] or "sys-" in site_text[f"guides/{g.slug}.md"]
+    assert site_text["llms.txt"].count("/guides") == 1

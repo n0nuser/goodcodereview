@@ -118,6 +118,7 @@ HERO = ("Review code against rules that Google, OWASP, Microsoft, and others alr
 BACKING = ("Every rule is curated: a card is stable only when at least three independent organisations, such as Google, Microsoft, OWASP, GitHub, Mozilla, AWS, W3C, and NIST, "
            "have published the same practice, or when its source is the maintainer's own guide (a recorded exception), and each card links its sources. Those organisations did not write or endorse this site.")
 DRAFT_NOTE = "A draft card is not vetted. Report a `FAIL` of one under Draft findings, at `should-fix` at most, never in the ledger or the verdict."
+GUIDES_DESC = "Short explainers for common review questions, each listing the stable cards that answer it."
 PACK_DESC = "Cards specific to {pk}: stable ones are vetted, drafts are not. Use them with the level page that matches your input."
 CONCERNS_DESC = "Every card's rule on one page. Pick a concern, such as performance or security, to scope a review."
 GLOSSARY_DESC = "Terms that the cards link to, with a note on why a reviewer cares."
@@ -216,6 +217,10 @@ Pick the level that matches your input and work through its checklist. Only stab
 ## Where the rules come from
 
 {backing} Open a stable card, such as [svc-sqli-authn](https://goodcodereview.com/service.md#svc-sqli-authn), to see the organisations and the sources behind it.
+
+## Guides
+
+{guides}
 
 ## Scope a review
 
