@@ -19,12 +19,15 @@ def pack_name(pk: str) -> str:
 
 
 def build_date() -> str:
-    """One date for every lastmod and `updated`: the HEAD commit date, or today's date outside a git checkout."""
+    """One date for every lastmod and `updated`: the HEAD commit date in UTC, or today's date outside a git checkout.
+
+    UTC keeps a commit made just after local midnight from dating the site a day ahead of a CI runner, which checks lastmod against its own UTC today.
+    """
     try:
-        out = subprocess.run(["git", "log", "-1", "--format=%cs"], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
-    except (OSError, subprocess.CalledProcessError):
-        out = ""
-    return out or datetime.date.today().isoformat()
+        stamp = subprocess.run(["git", "log", "-1", "--format=%ct"], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
+        return datetime.datetime.fromtimestamp(int(stamp), datetime.UTC).date().isoformat()
+    except (OSError, subprocess.CalledProcessError, ValueError):
+        return datetime.date.today().isoformat()
 
 
 @dataclass(frozen=True, slots=True)
