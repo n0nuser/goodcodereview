@@ -99,3 +99,4 @@ def test_llms_txt_lists_files_and_no_card_lines(site_text: dict[str, str]) -> No
     assert re.search(r"(?m)^> ", text)
     assert not re.search(r"(?m)^- \[[a-z0-9-]+\]\(\S+#", text)  # a card line belongs in a level index, not in llms.txt
     assert text.rstrip().split("\n## ")[-1].startswith("Optional")
+

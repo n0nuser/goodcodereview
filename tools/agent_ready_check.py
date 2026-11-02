@@ -300,7 +300,22 @@ def _items_25_28(r: Report, pages: dict[str, Page], content: dict[str, Page]) ->
     except (ValueError, AttributeError):
         ok, types = False, set()
     r.check(25, ok, f"index.html JSON-LD parses; types {sorted(types)}; each has name, description, url")
-    r.check(28, ok and types <= {"WebSite", "CreativeWork"}, "JSON-LD types match visible content (WebSite, CreativeWork only)")
+    allowed = {"WebSite", "CreativeWork", "Person", "SoftwareSourceCode"}
+    r.check(28, ok and types <= allowed, f"home JSON-LD types match visible content ({', '.join(sorted(allowed))} only)")
+    same = [n for n in ld.get("@graph", []) if n.get("@type") == "WebSite"] if ok else []
+    r.check(28, same and len(same[0].get("sameAs", [])) >= 2 and same[0].get("keywords"), "home WebSite declares keywords and sameAs profiles")
+    inner = {"WebPage", "CollectionPage", "AboutPage", "BreadcrumbList"}
+    bad = []
+    for n, p in content.items():
+        if n == "index.html":
+            continue
+        try:
+            kinds = {x.get("@type") for x in json.loads("".join(p.ld))["@graph"]}
+        except (ValueError, KeyError, AttributeError):
+            kinds = set()
+        if "BreadcrumbList" not in kinds or not kinds <= inner:
+            bad.append(n)
+    r.check(28, not bad, f"every inner page has a page node and a BreadcrumbList in JSON-LD{': ' + ', '.join(bad) if bad else ''}")
 
 
 def _items_34(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
@@ -338,6 +353,45 @@ def _items_39(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> No
     r.check(39, ok, "agent-skills/index.json lists the skill, and its sha256 digest matches skills/good-code-review/SKILL.md and the served copy")
 
 
+def _items_43_46(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """43 ARD, 44 agent.json, 45 WebMCP, 46 search snippets."""
+    try:
+        ard = json.loads((SITE / ".well-known/ard.json").read_text())["entries"]
+        keys = [("url" in e) != ("data" in e) for e in ard]
+        ok = (bool(ard) and all(keys) and all(re.fullmatch(r"urn:air:goodcodereview\.com:(?:[a-z-]+:)?[a-z0-9-]+", e["identifier"]) and e["displayName"] and e["type"] for e in ard)
+              and all(2 <= len(e.get("representativeQueries", [])) <= 5 for e in ard) and len({e["identifier"] for e in ard}) == len(ard)
+              and all(resolve(e["url"]) is not None for e in ard))
+    except (OSError, ValueError, KeyError):
+        ok = False
+    robots = (SITE / "robots.txt").read_text()
+    rel = all(any(ln.get("href") == "/.well-known/ard.json" for ln in p.link("ard")) for p in content.values())
+    agentmap = f"Agentmap: {BASE}/.well-known/ard.json" in robots
+    r.check(43, ok and rel and agentmap, "ARD spec v0.91 (agenticresourcediscovery.org/spec): entries valid, urls resolve, rel=ard on each page, Agentmap in robots.txt")
+    try:
+        am = json.loads((SITE / "agent.json").read_text())
+        ok = (am["authentication"]["type"] == "none" and am["capabilities"] and am["endpoints"]["llms_txt"].startswith(BASE)
+              and all(resolve(am["endpoints"][k]) is not None for k in ("llms_txt", "sitemap", "cards", "cards_index", "agent_skills", "ard")))
+    except (OSError, ValueError, KeyError):
+        ok = False
+    r.check(44, ok, "agent.json states the authentication (none), the capabilities, and endpoints that resolve")
+    code = "".join(pages["index.html"].js)
+    r.check(45, "modelContext" in code and "registerTool" in code and all(t in code for t in ("start_review", "list_levels", "list_cards")),
+            "WebMCP: the page script registers start_review, list_levels, and list_cards on document.modelContext when it exists")
+    ico, svg = SITE / "favicon.ico", SITE / "favicon.svg"
+    icons = [(ln.get("href"), ln.get("sizes") or ln.get("type")) for p in pages.values() for ln in p.links if ln.get("rel") == "icon"]
+    r.check(47, ico.is_file() and ico.read_bytes()[:4] == b"\x00\x00\x01\x00" and svg.is_file() and svg.read_text().lstrip().startswith("<svg")
+            and all(("/favicon.svg", "image/svg+xml") in icons[i:i + 2] and ("/favicon.ico", "32x32") in icons[i:i + 2] for i in range(0, len(icons), 2)) and len(icons) == 2 * len(pages),
+            "/favicon.svg and /favicon.ico are served files and every page's <link rel=icon> points at them, with no data: URI")
+    snippet = []
+    for n, p in content.items():
+        t, d = p.title, (p.meta("name", "description") or [""])[0]
+        if not (40 <= len(t) <= 62 and 110 <= len(d) <= 160):
+            snippet.append(f"{n} ({len(t)}/{len(d)})")
+        if p.meta("name", "twitter:card") != ["summary_large_image"]:
+            snippet.append(f"{n}: twitter:card")
+    r.check(46, not snippet, f"titles are 40 to 62 characters and descriptions 110 to 160, and every page has twitter:card{': ' + ', '.join(snippet) if snippet else ''}")
+
+
 def main() -> int:
     """Run every check against site/ and return the exit code."""
     if not (SITE / "index.html").is_file():
@@ -359,6 +413,7 @@ def main() -> int:
     _items_34(r, pages, content)
     _items_36(r, pages, content)
     _items_39(r, pages, content)
+    _items_43_46(r, pages, content)
     print(f"\n{len(r.failures)} failing check(s)" if r.failures else "\nall checks pass")
     return 1 if r.failures else 0
 

@@ -16,7 +16,7 @@ def plan() -> Plan:
 @pytest.fixture(scope="session")
 def site_text(plan: Plan) -> dict[str, str]:
     """Every text file the build would write to site/, by relative path."""
-    return {name: data.decode() for name, data in plan.site.items() if not name.endswith(".png")}
+    return {name: data.decode() for name, data in plan.site.items() if not name.endswith((".png", ".ico"))}
 
 
 @pytest.fixture
