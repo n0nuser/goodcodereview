@@ -3,7 +3,7 @@ import html
 import re
 
 from card_fields import lacks
-from config import BASE, LICENCE_URL, REPO, SITE_DESC, SITE_NAME
+from config import REPO, SITE_DESC
 from context import BuildInput, pack_name
 from errors import BuildError
 from guides import GUIDES, guide_text, guides_index_text
@@ -38,6 +38,7 @@ from prose import (
     PRIVACY_DESC,
     VERDICT,
 )
+from seo import home_ld
 from shell import page
 
 INSTALL_SKILL = "npx skills add n0nuser/goodcodereview"
@@ -118,15 +119,7 @@ def home_page(b: BuildInput) -> str:
     rows = '<ul class="idx">' + "".join(
         f'<li><a href="{lv}.html">{NAME[lv]}</a><span>{LEVEL_DESC[lv]} Input: {INPUT[lv]}.</span>'
         f'<span class="n">{b.counts[lv].stable} stable, {b.counts[lv].draft} draft{f" · {EMPTY_MARK}" if lv in b.no_stable else ""}</span></li>' for lv in LEVELS) + "</ul>"
-    person = {"@type": "Person", "name": "Pablo Jesús González Rubio", "url": "https://pablogonzalez.me",
-              "description": "Maintainer of Good Code Review.", "sameAs": ["https://github.com/n0nuser"]}
-    ld = {"@context": "https://schema.org", "@graph": [
-        {"@type": "WebSite", "@id": f"{BASE}/#website", "url": f"{BASE}/", "name": SITE_NAME, "description": SITE_DESC, "inLanguage": "en",
-         "license": LICENCE_URL, "author": person, "dateModified": b.date,
-         "sameAs": ["https://github.com/n0nuser/goodcodereview"]},
-        {"@type": "CreativeWork", "@id": f"{BASE}/#checklist", "url": f"{BASE}/", "name": "Good Code Review checklist",
-         "description": "Rules for reviewing code, one card per rule, each with a FAIL example and a PASS example.", "inLanguage": "en",
-         "isPartOf": {"@id": f"{BASE}/#website"}, "license": LICENCE_URL, "author": person, "dateModified": b.date}]}
+    ld = home_ld(b.date)
     agent = ("<h2>Start a review</h2>"
              "<p>Paste this to your agent:</p>"
              + copy_pre("Read https://goodcodereview.com/llms.txt and use it to review my code.", "Copy prompt") +

@@ -47,7 +47,12 @@ Two rules serve `index.md` for `Accept: text/markdown` on the homepage without a
    - When: `(http.host in {"goodcodereview.com" "www.goodcodereview.com"} and http.request.uri.path in {"/" "/index.md"})`
    - Then: set the static header `Vary` to `Accept`.
 
-Verify both:
+3. Rewrite URL rule, named "Agent view" (not live; see the cost note).
+   - When: `(http.host in {"goodcodereview.com" "www.goodcodereview.com"} and http.request.uri.path eq "/" and http.request.uri.query eq "mode=agent")`
+   - Then: rewrite the path to the static value `/agent.json`, and keep the query string out of the cache key.
+   - Why a rule and not the Worker: matching `/` in `run_worker_first` would bill a Worker call on every homepage view. The rule runs at the edge and serves the static file. `agent.json` is also reachable directly and linked from every page head.
+
+Verify the first two:
 
 ```
 curl -sS -i -H 'Accept: text/markdown' https://goodcodereview.com/
@@ -55,6 +60,16 @@ curl -sS -i -H 'Accept: text/html' https://goodcodereview.com/
 ```
 
 The first must return Markdown with `Content-Type: text/markdown` and `Vary: Accept`. The second must return HTML with `Vary: Accept`.
+
+Verify the third once it exists: `curl -sS 'https://goodcodereview.com/?mode=agent' | jq .authentication`.
+
+## Redirects to set in the dashboard
+
+The repository cannot set these (static assets have no `_redirects` by design, see agent-readiness item 8):
+
+- Always Use HTTPS (SSL/TLS, Edge Certificates). `http://goodcodereview.com` answers 200 today.
+- A 301 from `www.goodcodereview.com/*` to `https://goodcodereview.com/$1` (Redirect Rules). `www` answers 200 today, so it duplicates the site.
+- `/index.html` redirects with a 307; a 301 rule for `/index.html` to `/` makes it permanent.
 
 ## Custom domain
 

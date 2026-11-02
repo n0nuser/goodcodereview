@@ -14,10 +14,11 @@ Without a checkout, read https://goodcodereview.com/llms.txt.
 
 ## Mandatory specs and size budgets
 
-Three specs bind every change. Check them before you finish:
+Four specs bind every change. Check them before you finish:
 
 - `site/llms.txt`: https://llmstxt.org/ (an H1, a `>` summary, headingless sections, then H2 file lists of `- [name](url): notes`, secondary links under `## Optional`) and the Chrome Lighthouse audit https://developer.chrome.com/docs/lighthouse/agentic-browsing/llms-txt (the file must be served without a server error, follow the spec, and be a concise summary). `python3 tools/agent_ready_check.py` item 16 checks the shape.
 - `skills/good-code-review/SKILL.md`: https://agentskills.io/specification (`name` matches the directory, `description` 1 to 1024 characters, `compatibility` up to 500, body under 500 lines and about 5,000 tokens, references one level deep). `test/test_skill.py` checks the limits. The official check is `uvx --from "git+https://github.com/agentskills/agentskills#subdirectory=skills-ref" skills-ref validate skills/good-code-review`; it fetches code, so ask the maintainer before you run it.
+- `site/.well-known/ard.json`: the ARD publisher spec https://agenticresourcediscovery.org/spec/ (v0.91, re-read on 2026-11-02): an `entries` array, each entry with `identifier` (`urn:air:<publisher>:[<namespace>:]<name>`), `displayName`, `type`, and exactly one of `url` or `data`, 2 to 5 `representativeQueries`, `rel="ard"` in every page head, and an `Agentmap:` line in `robots.txt`. `python3 tools/agent_ready_check.py` item 43 checks it and names the version. When the spec changes version, re-read it and update the check.
 - Every page an agent may need has a clean `.md` twin at the same URL.
 
 Progressive disclosure keeps the first read small however many cards exist. Each layer has a budget that `python3 tools/build.py` enforces and `test/test_skill.py` checks:
