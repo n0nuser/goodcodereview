@@ -100,3 +100,12 @@ def test_llms_txt_lists_files_and_no_card_lines(site_text: dict[str, str]) -> No
     assert not re.search(r"(?m)^- \[[a-z0-9-]+\]\(\S+#", text)  # a card line belongs in a level index, not in llms.txt
     assert text.rstrip().split("\n## ")[-1].startswith("Optional")
 
+
+
+@pytest.mark.parametrize("path", sorted(p for p in SKILL.parent.glob("*/SKILL.md") if p.parent != SKILL), ids=lambda p: p.parent.name)
+def test_focused_skills_meet_the_spec(path: Path) -> None:
+    text = path.read_text()
+    front = text.split("---\n")[1]
+    assert re.search(rf"(?m)^name: {re.escape(path.parent.name)}$", front)
+    assert 0 < len(json.loads(re.search(r'(?m)^description: (".*")$', front)[1])) <= DESCRIPTION_MAX
+    assert len(text.splitlines()) < SKILL_LINES_MAX

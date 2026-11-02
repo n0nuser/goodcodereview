@@ -13,6 +13,7 @@ from models import LEVELS
 from prose import SKILL_DESC
 from seo import agent_manifest, ard_manifest
 from shell import page_url
+from skills_extra import EXTRAS, extra_files
 
 JSON_CT = "application/json; charset=utf-8"
 
@@ -65,13 +66,17 @@ def security_txt(date: str) -> str:
 
 
 def skill_discovery(skill_files: dict[str, str]) -> dict[str, str]:
-    """Serve the skill and its references under .well-known, and list it with the sha256 digest of the served SKILL.md."""
+    """Serve each skill under .well-known, and list it with the sha256 digest of the served SKILL.md."""
     root = f".well-known/agent-skills/{SKILL_NAME}"
     files = {f"{root}/{rel}": text for rel, text in skill_files.items()}
-    digest = hashlib.sha256(skill_files["SKILL.md"].encode()).hexdigest()
+    skills = [(SKILL_NAME, SKILL_DESC, skill_files["SKILL.md"])]
+    extra = extra_files()
+    for e in EXTRAS:
+        files[f".well-known/agent-skills/{e.name}/SKILL.md"] = extra[f"{e.name}/SKILL.md"]
+        skills.append((e.name, e.description, extra[f"{e.name}/SKILL.md"]))
     index = {"$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
-             "skills": [{"name": SKILL_NAME, "type": "skill-md", "description": SKILL_DESC,
-                         "url": f"{BASE}/{root}/SKILL.md", "digest": f"sha256:{digest}"}]}
+             "skills": [{"name": n, "type": "skill-md", "description": d, "url": f"{BASE}/.well-known/agent-skills/{n}/SKILL.md",
+                         "digest": "sha256:" + hashlib.sha256(t.encode()).hexdigest()} for n, d, t in skills]}
     files[".well-known/agent-skills/index.json"] = json.dumps(index, indent=2) + "\n"
     return files
 
@@ -79,6 +84,7 @@ def skill_discovery(skill_files: dict[str, str]) -> dict[str, str]:
 def agent_files(b: BuildInput) -> dict[str, str]:
     """agent.json (the machine-readable view of the home page) and /.well-known/ard.json."""
     counts = {str(lv): n for lv, c in b.counts.items() if (n := c.stable)}
-    queries = [(SKILL_NAME, SKILL_DESC, ["review this pull request", "audit this repo for what we would regret in prod", "is this safe to merge"])]
-    return {"agent.json": json.dumps(agent_manifest(b.date, counts, [SKILL_NAME]), indent=2, ensure_ascii=False) + "\n",
+    queries = [(SKILL_NAME, SKILL_DESC, ["review this pull request", "audit this repo for what we would regret in prod", "is this safe to merge"]),
+               *((e.name, e.description, list(e.queries)) for e in EXTRAS)]
+    return {"agent.json": json.dumps(agent_manifest(b.date, counts, [SKILL_NAME, *(e.name for e in EXTRAS)]), indent=2, ensure_ascii=False) + "\n",
             ".well-known/ard.json": json.dumps(ard_manifest(queries), indent=2, ensure_ascii=False) + "\n"}
