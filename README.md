@@ -6,7 +6,9 @@
 [![Code: MIT](https://img.shields.io/badge/code-MIT-blue)](LICENSE)
 [![Content: CC BY 4.0](https://img.shields.io/badge/content-CC%20BY%204.0-blue)](LICENSE-CONTENT)
 
-This is what a review with it looks like (card ids are real, paths and lines are made up):
+![A terminal recording: an agent reviews a real pull request and prints FAIL and PASS lines with file and line evidence](docs/demo/demo.gif)
+
+That is a real run on a pull request of mine (how it was made: [docs/demo](docs/demo/README.md)). A shorter sample, with made-up paths and lines:
 
 ```text
 Verdict: request changes - change, function - 2 block, 1 should-fix FAIL, 1 PASS, 14 N/A
