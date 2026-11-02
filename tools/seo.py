@@ -11,8 +11,9 @@ from models import CONCERNS, LEVELS
 
 AUTHOR_URL = "https://pablogonzalez.me"
 AUTHOR_GITHUB = "https://github.com/n0nuser"
+AUTHOR_LINKEDIN = "https://www.linkedin.com/in/nonuser"  # linked from pablogonzalez.me
 # Only profiles that exist and that we can check. [NEED: owner URL] for X, Bluesky, LinkedIn. Wikipedia and Wikidata entries do not exist yet; add them here the day they do.
-SAME_AS = [REPO, AUTHOR_GITHUB, AUTHOR_URL]
+SAME_AS = [REPO, AUTHOR_GITHUB, AUTHOR_LINKEDIN, AUTHOR_URL]
 KEYWORDS = ("code review checklist, pull request review checklist, code review rules, AI code review, agent skill for code review, "
             "security code review, code audit checklist, PASS FAIL review verdict")
 MAX_TITLE, MIN_TITLE, MIN_DESC, MAX_DESC = 62, 30, 110, 160
@@ -69,7 +70,7 @@ def meta(slug: str, title: str, desc: str) -> tuple[str, str]:
 
 def person() -> dict[str, Any]:
     return {"@type": "Person", "@id": f"{AUTHOR_URL}/#person", "name": "Pablo Jesús González Rubio", "url": AUTHOR_URL,
-            "description": "Maintainer of Good Code Review.", "sameAs": [AUTHOR_GITHUB, AUTHOR_URL]}
+            "description": "Maintainer of Good Code Review.", "sameAs": [AUTHOR_GITHUB, AUTHOR_LINKEDIN, AUTHOR_URL]}
 
 
 def page_ld(slug: str, title: str, desc: str, date: str, crumbs: Sequence[tuple[str, str]] = ()) -> dict[str, Any]:
@@ -87,7 +88,7 @@ def home_ld(date: str) -> dict[str, Any]:
     """The home graph: the site, the checklist, the open-source project, and the maintainer, with the profiles that disambiguate the brand."""
     author = person()
     return {"@context": "https://schema.org", "@graph": [
-        {"@type": "WebSite", "@id": f"{BASE}/#website", "url": f"{BASE}/", "name": SITE_NAME, "alternateName": ["goodcodereview.com", "GCR"],
+        {"@type": "WebSite", "@id": f"{BASE}/#website", "url": f"{BASE}/", "name": SITE_NAME, "alternateName": "goodcodereview.com",
          "description": SITE_DESC, "inLanguage": "en", "keywords": KEYWORDS, "license": LICENCE_URL, "author": {"@id": author["@id"]},
          "dateModified": date, "sameAs": SAME_AS},
         {"@type": "CreativeWork", "@id": f"{BASE}/#checklist", "url": f"{BASE}/", "name": "Good Code Review checklist",
@@ -134,7 +135,7 @@ def agent_manifest(date: str, counts: dict[str, int], skills: list[str]) -> dict
 
 
 def ard_manifest(skills: list[tuple[str, str, list[str]]]) -> dict[str, Any]:
-    """/.well-known/ard.json, ARD publisher spec v0.91: https://agenticresourcediscovery.org/spec/. `skills` holds (name, description, example queries)."""
+    """/.well-known/ard.json, ARD publisher spec v0.91 (re-read 2026-11-02): https://agenticresourcediscovery.org/spec/. `skills` holds (name, description, example queries)."""
     pub = "goodcodereview.com"
     entries: list[dict[str, Any]] = [
         {"identifier": f"urn:air:{pub}:data:review-cards", "displayName": "Good Code Review cards", "type": "application/json", "url": f"{BASE}/cards.json",

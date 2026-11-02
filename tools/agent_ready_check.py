@@ -371,7 +371,7 @@ def _items_43_46(r: Report, pages: dict[str, Page], content: dict[str, Page]) ->
         ok = False
     robots = (SITE / "robots.txt").read_text()
     rel = all(any(ln.get("href") == "/.well-known/ard.json" for ln in p.link("ard")) for p in content.values())
-    r.check(43, ok and rel and f"Agentmap: {BASE}/.well-known/ard.json" in robots, "ARD: ard.json parses (v0.91), every url resolves, rel=ard on every page, Agentmap in robots.txt")
+    r.check(43, ok and rel and f"Agentmap: {BASE}/.well-known/ard.json" in robots, "ARD spec v0.91 (agenticresourcediscovery.org/spec): ard.json entries valid, urls resolve, rel=ard on each page, Agentmap in robots.txt")
     try:
         am = json.loads((SITE / "agent.json").read_text())
         ok = (am["authentication"]["type"] == "none" and am["capabilities"] and am["endpoints"]["llms_txt"].startswith(BASE)
