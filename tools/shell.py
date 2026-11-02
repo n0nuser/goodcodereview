@@ -88,8 +88,11 @@ def _crumbs(crumbs: Sequence[tuple[str, str]]) -> str:
 def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "", desc: str = "", slug: str = "",
          ld: dict[str, Any] | None = None, script: bool = False, updated: str = "",
          crumbs: Sequence[tuple[str, str]] = ()) -> str:
-    """One complete HTML page. `script` adds the inline filter script; `slug` turns on the head tags; `ld` is JSON-LD; `updated` shows a date under the heading;
-    `crumbs` are (label, slug) pairs from Home to this page."""
+    """One complete HTML page.
+
+    `script` adds the inline filter script; `slug` turns on the head tags; `ld` is JSON-LD; `updated` shows a date under the heading;
+    `crumbs` are (label, slug) pairs from Home to this page.
+    """
     trail = _crumbs(crumbs)
     stamp = f'<p class="note">Last updated <time datetime="{updated}">{updated}</time></p>' if updated else ""
     full = title if slug == "index" else f"{title} | {SITE_NAME}"
