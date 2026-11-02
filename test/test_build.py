@@ -116,3 +116,47 @@ def test_listing_and_guide_pages_have_breadcrumbs(site_text: dict[str, str]) -> 
     assert '<li><span aria-current="page">Service audit</span></li>' in site_text["service.html"]
     guide = site_text["guides/how-to-review-a-pull-request.html"]
     assert '<a href="/guides.html">Guides</a>' in guide and '"@type":"BreadcrumbList"' in guide.replace(" ", "")
+
+
+def _visible_text(page: str) -> str:
+    import html as h
+    import re
+    page = re.sub(r"<script.*?</script>|<style.*?</style>|<pre.*?</pre>|<code.*?</code>|<svg.*?</svg>", "", page, flags=re.S)
+    return h.unescape(re.sub(r"<[^>]+>", " ", page))
+
+
+def test_no_markdown_left_in_rendered_pages(site_text: dict[str, str]) -> None:
+    """A link, bold, or code span that shows as raw Markdown means a prose constant skipped the renderer."""
+    import re
+    bad = {}
+    for name, page in site_text.items():
+        if name.endswith(".html"):
+            found = re.findall(r"\[[^\]]{2,80}\]\([^)]+\)|\*\*[^*]+\*\*|\[\[[^\]]+\]\]|`[^`]+`", _visible_text(page))
+            if found:
+                bad[name] = found[:3]
+    assert not bad, bad
+
+
+def test_internal_links_and_anchors_resolve_in_rendered_pages(site_text: dict[str, str], plan: Plan) -> None:
+    """Every site-internal href in the built HTML points at a built file, and every #fragment at an id in it."""
+    import posixpath
+    import re
+    from urllib.parse import urldefrag, urlsplit
+    bad = []
+    for name, page in site_text.items():
+        if not name.endswith(".html"):
+            continue
+        for href in re.findall(r'href="([^"]+)"', page):
+            if re.match(r"[a-z][a-z0-9+.-]*:", href) or href.startswith("//"):
+                continue
+            path, frag = urldefrag(href)
+            path = urlsplit(path).path
+            target = name if not path else posixpath.normpath(posixpath.join(posixpath.dirname(name), path)) if not path.startswith("/") else path.lstrip("/")
+            target = target or "index.html"
+            candidates = [target, target + ".html", target + "/index.html"] if not target.endswith((".html", ".md", ".txt", ".json", ".xml", ".ico", ".svg", ".png")) else [target]
+            hit = next((c for c in candidates if c in plan.site), None)
+            if hit is None:
+                bad.append(f"{name}: {href}")
+            elif frag and hit.endswith(".html") and f'id="{frag}"' not in site_text[hit] and f"id={frag}" not in site_text[hit]:
+                bad.append(f"{name}: {href} (no #{frag})")
+    assert not bad, bad[:10]
