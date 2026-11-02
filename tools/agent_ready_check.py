@@ -339,18 +339,24 @@ def _items_36(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> No
 
 
 def _items_39(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
-    """39: Agent Skills index."""
+    """39: Agent Skills index; every listed skill's digest matches its source and its served copy."""
+    bad = []
     try:
         idx_json = json.loads((SITE / ".well-known/agent-skills/index.json").read_text())
         sk = idx_json["skills"]
-        served = resolve(sk[0]["url"])
-        want = "sha256:" + hashlib.sha256((ROOT / "skills/good-code-review/SKILL.md").read_bytes()).hexdigest()
-        ok = (idx_json["$schema"].endswith("/0.2.0/schema.json") and len(sk) == 1 and sk[0]["name"] == "good-code-review" and sk[0]["type"] == "skill-md"
-              and sk[0]["description"] and sk[0]["digest"] == want and resolve(sk[0]["url"]) is not None
-              and served is not None and "sha256:" + hashlib.sha256(served.read_bytes()).hexdigest() == want)
+        if not idx_json["$schema"].endswith("/0.2.0/schema.json") or sk[0]["name"] != "good-code-review" or len(sk) != 3:
+            bad.append("index shape")
+        for e in sk:
+            src = ROOT / "skills" / e["name"] / "SKILL.md"
+            served = resolve(e["url"])
+            want = "sha256:" + hashlib.sha256(src.read_bytes()).hexdigest()
+            if not (e["type"] == "skill-md" and 0 < len(e["description"]) <= 1024 and e["digest"] == want and served is not None
+                    and "sha256:" + hashlib.sha256(served.read_bytes()).hexdigest() == want
+                    and re.search(rf"(?m)^name: {re.escape(e['name'])}$", src.read_text())):
+                bad.append(e["name"])
     except (OSError, ValueError, KeyError, IndexError):
-        ok = False
-    r.check(39, ok, "agent-skills/index.json lists the skill, and its sha256 digest matches skills/good-code-review/SKILL.md and the served copy")
+        bad.append("index unreadable")
+    r.check(39, not bad, f"agent-skills/index.json lists every skill, and each digest matches skills/<name>/SKILL.md and the served copy{': ' + ', '.join(bad) if bad else ''}")
 
 
 def _items_43_46(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:

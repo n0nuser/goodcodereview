@@ -238,7 +238,7 @@ def _llms(head: list[str], llms_scope: list[str], level_index: dict[Level, list[
             f"- [concerns/security.md]({BASE}/concerns/security.md): one concern's cards as a Markdown list; `concerns/level-function.md` does the same for a level.",
             f"- [cards-index.json]({BASE}/cards-index.json): every stable card in slim form (id, level, severity, concerns, topics, rule, url); "
             f"schema in [cards-index.schema.json]({BASE}/cards-index.schema.json).",
-            f"- [Agent Skills index]({BASE}/.well-known/agent-skills/index.json): the skill, with a sha256 digest.",
+            f"- [Agent Skills index]({BASE}/.well-known/agent-skills/index.json): the skill and two focused ones (security, accessibility), with sha256 digests.",
             f"- [agent.json]({BASE}/agent.json): endpoints, capabilities, and authentication (none) as JSON; the same file answers `/?mode=agent`.",
             f"- [ARD manifest]({BASE}/.well-known/ard.json): Agentic Resource Discovery entries for the cards, the manifest, and the skills.",
             f"- [AGENTS.md]({REPO}/blob/main/AGENTS.md): how to review code with this repo and how to contribute a card.",
