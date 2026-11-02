@@ -20,9 +20,10 @@ from prose import (
     CONCERNS_DESC,
     DRAFTS_DESC,
     EMPTY_MARK,
-    EXAMPLE_HTML,
+    EXAMPLE,
     FEEDBACK,
     GLOSSARY_DESC,
+    HERO,
     INCIDENT_EXAMPLE,
     INCIDENT_RULE,
     INPUT,
@@ -100,6 +101,17 @@ def text_pages(b: BuildInput, drafts_md: str) -> dict[str, str]:
     return pages
 
 
+def sample_verdict() -> str:
+    """The sample verdict with each FAIL and PASS tag coloured. The words stay, so colour is never the only signal."""
+    def tint(line: str) -> str:
+        for tag, cls in (("FAIL [block]", "block"), ("FAIL [should-fix]", "should-fix"), ("PASS", "ok")):
+            if line.startswith(tag):
+                return f'<span class="{cls}">{tag}</span>' + html.escape(line[len(tag):])
+        return html.escape(line)
+
+    return '<pre class="wrap"><code>' + "\n".join(tint(x) for x in EXAMPLE.splitlines()) + "</code></pre>"
+
+
 def home_page(b: BuildInput) -> str:
     rows = '<ul class="idx">' + "".join(
         f'<li><a href="{lv}.html">{NAME[lv]}</a><span>{LEVEL_DESC[lv]} Input: {INPUT[lv]}.</span>'
@@ -113,25 +125,27 @@ def home_page(b: BuildInput) -> str:
         {"@type": "CreativeWork", "@id": f"{BASE}/#checklist", "url": f"{BASE}/", "name": "Good Code Review checklist",
          "description": "Rules for reviewing code, one card per rule, each with a FAIL example and a PASS example.", "inLanguage": "en",
          "isPartOf": {"@id": f"{BASE}/#website"}, "license": LICENCE_URL, "author": person, "dateModified": b.date}]}
-    agent = ("<h2>Start a review with an agent</h2>"
+    agent = ("<h2>Start a review</h2>"
              "<p>Paste this to your agent:</p>"
              + copy_pre("Read https://goodcodereview.com/llms.txt and use it to review my code.", "Copy prompt") +
+             f'<p>Free and open source. <a href="{REPO}">Star it on GitHub</a> to follow new cards.</p>'
+             "<details><summary>Install it as a skill or a Claude Code plugin</summary>"
              "<p>To install it as a skill (Claude Code, Codex, Cursor, and other tools that read <code>skills/&lt;name&gt;/SKILL.md</code>), run:</p>"
              + copy_pre(INSTALL_SKILL, "Copy install command") +
              f"<p>{inline(INVOKE, {})}</p>"
              "<p>To install it as a Claude Code plugin, run:</p>"
-             + copy_pre(INSTALL_PLUGIN, "Copy plugin commands"))
+             + copy_pre(INSTALL_PLUGIN, "Copy plugin commands") + "</details>")
     body = (
-        "<p>A checklist for reviewing code, for people and for agents. A card is one rule that a reviewer marks "
-        "<code>PASS</code>, <code>FAIL</code>, or <code>N/A</code>. Each card has a FAIL example and a PASS example.</p>"
-        f"<p>{BACKING}</p>"
-        + agent +
+        f"<p>{HERO}</p>"
+        "<h2>What a review looks like</h2>" + sample_verdict() + '<p class="note">An example. The card ids are real; the paths and line numbers are made up.</p>' + agent +
         "<h2>Choose a review</h2>"
         "<p>To review by hand, pick the level that matches your input and work through its checklist. Only stable cards are vetted.</p>"
-        f"{rows}"
+        f"<p>{b.tally}</p>{rows}"
+        "<h2>Where the rules come from</h2><p>" + BACKING + ' Open a stable card, such as <a href="service.html#svc-sqli-authn">svc-sqli-authn</a>, '
+        "to see the organisations and the sources behind it.</p>"
         "<h2>Scope a review</h2><p>To review only some concerns, such as performance, use the <a href=\"concerns.html\">Concerns</a> page. "
         "Its filters live in the address, so <a href=\"concerns.html?concern=security,performance\">concerns.html?concern=security,performance</a> opens the security and performance cards.</p>"
-        "<h2>Report format</h2><p>" + VERDICT + "</p>" + EXAMPLE_HTML +
+        "<h2>Report format</h2><p>" + VERDICT + "</p>"
         "<h2>Audit a repo, service, or release</h2><p>" + inline(AUDIT_NOTE, {}) + "</p>"
         "<h2>Feedback</h2><p>" + inline(FEEDBACK, {}) + "</p>"
         "<h2>Packs</h2><p>A pack adds language-specific cards on top of the levels. Use one with the level that matches your input.</p>"

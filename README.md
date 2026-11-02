@@ -1,10 +1,37 @@
 # Good Code Review
 
-A checklist for reviewing code, for people and for agents. Pick what you are reviewing (a diff, a function, a service, a whole codebase, a production setup, or an incident) and you get the checks for that level. Every check ends in `PASS`, `FAIL`, or `N/A` with `file:line` evidence, so anyone can check the review afterwards.
+> A code review checklist for people and agents. Each stable rule cites at least three independent organisations, and every check ends in `PASS`, `FAIL`, or `N/A` with `file:line` evidence.
 
-The rules are curated, not invented. Each stable check is backed by at least three independent organisations that have published the same practice (or, as a recorded exception, by the maintainer's own guide: [ADR 0001](docs/adr/0001-creator-sources-satisfy-the-stable-floor.md)), and the card links every source. Across the stable cards, the sources come from big companies and standards bodies such as Google, Microsoft, GitHub, AWS, Stripe, Cloudflare, Mozilla, OWASP, W3C, IETF, NIST, and GOV.UK. They did not write or endorse this project. Checks with less backing stay as drafts and never decide a verdict.
+[![check](https://github.com/n0nuser/goodcodereview/actions/workflows/check.yml/badge.svg)](https://github.com/n0nuser/goodcodereview/actions/workflows/check.yml)
+[![Code: MIT](https://img.shields.io/badge/code-MIT-blue)](LICENSE)
+[![Content: CC BY 4.0](https://img.shields.io/badge/content-CC%20BY%204.0-blue)](LICENSE-CONTENT)
 
-## Start a review
+This is what a review with it looks like (card ids are real, paths and lines are made up):
+
+```text
+Verdict: request changes - change, function - 2 block, 1 should-fix FAIL, 1 PASS, 14 N/A
+FAIL [block] chg-expand-contract - src/a.py:42 - renames the column and drops the old one in one migration
+FAIL [block] svc-sqli-authn - src/db.py:88 - proven: builds the WHERE clause with an f-string from request.args
+FAIL [should-fix] chg-one-concern - src/b.py:7 - a logging rewrite rides along with the bug fix
+PASS chg-breaking-change-taxonomy - src/c.py:15 - no signature or return shape changes
+N/A: 14 cards, applies_when does not hold
+```
+
+Pick what you are reviewing (a diff, a function, a service, a whole codebase, a production setup, or an incident) and you get the checks for that level. Each check has a `FAIL` example and a `PASS` example, so a reviewer, human or agent, knows what each verdict means. Anyone can check the review afterwards, because every verdict names a card and a line.
+
+There are 141 stable checks: 127 across the eight levels and 14 in the Python pack. The site prints the live count on its home page.
+
+## How it differs
+
+- A linter enforces rules about syntax. These cards cover what a reviewer decides: scope, compatibility, failure handling, rollout.
+- An AI reviewer brings its own judgment. Here the agent reviews against a fixed rule set, and each stable card links the published sources behind it.
+- A style guide says what to do. A card says what to check and when it fails.
+
+## Where the rules come from
+
+The rules are curated. Each stable check is backed by at least three independent organisations that have published the same practice (or, as a recorded exception, by the maintainer's own guide: [ADR 0001](docs/adr/0001-creator-sources-satisfy-the-stable-floor.md)), and the card links every source. They include Google, Microsoft, GitHub, AWS, Stripe, Cloudflare, Mozilla, OWASP, W3C, IETF, NIST, and GOV.UK. Those organisations did not write or endorse this project. Checks with less backing stay as drafts and never decide a verdict. [docs/COVERAGE.md](docs/COVERAGE.md) maps every source to its cards.
+
+## Quick start
 
 Paste this to your agent:
 

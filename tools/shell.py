@@ -8,7 +8,7 @@ from typing import Any
 import orgs
 from assets import CSS, FAVICON, JS
 from config import BASE, MONOGRAM_FONT_SIZES, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH, REPO, SITE_DESC, SITE_NAME
-from models import AUDIT_LEVELS, NavLink
+from models import LEVELS, NavLink
 
 FOOTER = (f'<footer><p>Created and edited by <a href="https://pablogonzalez.me">Pablo Jesús González Rubio</a> · Content CC BY 4.0 · Code MIT · <a href="{REPO}">Source</a></p>'
           '<ul class="fl"><li><a href="drafts.html">Drafts by what they lack</a></li><li><a href="about.html">About</a></li><li><a href="privacy.html">Privacy</a></li>'
@@ -51,16 +51,25 @@ def sprite(body: str) -> str:
 
 
 def _nav(links: Sequence[NavLink], cur: str) -> str:
-    audit_files = {f"{lv}.html" for lv in AUDIT_LEVELS}
+    level_files = {f"{lv}.html" for lv in LEVELS}
 
     def anchor(link: NavLink) -> str:
         return f'<a href="{link.href}"{" aria-current=page" if link.href == cur else ""}>{html.escape(link.label)}</a>'
 
-    items = [anchor(link) for link in links if link.href not in audit_files]
-    menu = "".join(anchor(link) for link in links if link.href in audit_files)
-    if menu:
-        first = next(i for i, link in enumerate(links) if link.href in audit_files)
-        items.insert(first, f'<details><summary>Audits</summary><div>{menu}</div></details>')
+    groups = (("Reviews", lambda h: h in level_files), ("Packs", lambda h: h.startswith("pack-")))
+    items: list[str] = []
+    seen: set[str] = set()
+    for link in links:
+        for title, test in groups:
+            if test(link.href):
+                if title not in seen:
+                    seen.add(title)
+                    menu = "".join(anchor(x) for x in links if test(x.href))
+                    items.append(f"<details><summary>{title}</summary><div>{menu}</div></details>")
+                break
+        else:
+            items.append(anchor(link))
+    items.append(f'<a href="{REPO}">GitHub</a>')
     return '<header><nav aria-label="Site">' + "".join(items) + "</nav></header>"
 
 

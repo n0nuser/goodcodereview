@@ -113,6 +113,8 @@ DRAFTS_DESC = "Every draft card grouped by what it lacks to become stable, with 
 DESIGN_NOTE = "For an unscoped system or codebase review, end with one short line outside the ledger: name the decision you would most want written down and what its alternative costs. Cite file:line for the decision. Give no verdict and no severity for it."
 INVOKE = "After you install the skill, name it in your request, such as `/good-code-review review this PR`. An agent that is not told may review without it."
 FEEDBACK = f"Reviewed something with it? Tell us what was noisy, wrong, or missing: [open an issue]({REPO}/issues/new/choose)."
+HERO = ("Review code against rules that Google, OWASP, Microsoft, and others already publish. "
+        "Every check ends in PASS, FAIL, or N/A with file:line evidence, so anyone can verify the review afterwards.")
 BACKING = ("Every rule is curated: a card is stable only when at least three independent organisations, such as Google, Microsoft, OWASP, GitHub, Mozilla, AWS, W3C, and NIST, "
            "have published the same practice, or when its source is the maintainer's own guide (a recorded exception), and each card links its sources. Those organisations did not write or endorse this site.")
 DRAFT_NOTE = "A draft card is not vetted. Report a `FAIL` of one under Draft findings, at `should-fix` at most, never in the ledger or the verdict."
@@ -173,21 +175,17 @@ Cloudflare hosts the site. Like any web host, it handles each request and may ke
 Questions about this page go through [GitHub Issues](https://github.com/n0nuser/goodcodereview/issues)."""
 INDEX_MD = """# Good Code Review
 
-A checklist for reviewing code, for people and for agents. A card is one rule that a reviewer marks `PASS`, `FAIL`, or `N/A`. Each card has a FAIL example and a PASS example.
+{hero}
 
-{backing}
+## What a review looks like
 
-## Choose a review
+```text
+{example}
+```
 
-Pick the level that matches your input and work through its checklist. Only stable cards are vetted.
+An example. The card ids are real; the paths and line numbers are made up.
 
-{levels}
-
-## Scope a review
-
-To review only some concerns, such as performance, use the [Concerns page](https://goodcodereview.com/concerns.md). Filter with query parameters: `concerns.md?concern=security,performance&level=function`, or `cards.json?topic=forms`. `concern`, `topic`, and `level` take comma-separated values, and `group=concern|level|topic` groups the list.
-
-## Start a review with an agent
+## Start a review
 
 Paste this to your agent:
 
@@ -209,13 +207,23 @@ To install it as a Claude Code plugin, run:
 {plugin}
 ```
 
+## Choose a review
+
+Pick the level that matches your input and work through its checklist. Only stable cards are vetted. {tally}
+
+{levels}
+
+## Where the rules come from
+
+{backing} Open a stable card, such as [svc-sqli-authn](https://goodcodereview.com/service.md#svc-sqli-authn), to see the organisations and the sources behind it.
+
+## Scope a review
+
+To review only some concerns, such as performance, use the [Concerns page](https://goodcodereview.com/concerns.md). Filter with query parameters: `concerns.md?concern=security,performance&level=function`, or `cards.json?topic=forms`. `concern`, `topic`, and `level` take comma-separated values, and `group=concern|level|topic` groups the list.
+
 ## Report format
 
 {verdict}
-
-```text
-{example}
-```
 
 ## Audit a repo, service, or release
 

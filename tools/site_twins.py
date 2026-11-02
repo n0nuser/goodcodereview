@@ -19,6 +19,7 @@ from prose import (
     EXAMPLE,
     FEEDBACK,
     GLOSSARY_DESC,
+    HERO,
     INDEX_MD,
     INPUT,
     INVOKE,
@@ -55,8 +56,8 @@ def _index_page(b: BuildInput, plain: str) -> Twin:
                        for lv in LEVELS if lv not in b.no_stable)
     levels += "".join(f"\n- {NAME[lv]}: {LEVEL_DESC[lv]} Input: {INPUT[lv]}. {EMPTY_MARK.capitalize()}." for lv in LEVELS if lv in b.no_stable)
     packs = "\n".join(f"- [{pack_name(pk)} pack]({BASE}/pack-{pk}.md)" for pk in b.packs) or "No packs yet."
-    text = INDEX_MD.format(verdict=plain, example=EXAMPLE, audit=AUDIT_NOTE, backing=BACKING, invoke=INVOKE, feedback=FEEDBACK,
-                           npx=INSTALL_SKILL, plugin=INSTALL_PLUGIN, levels=levels, packs=packs)
+    text = INDEX_MD.format(hero=HERO, verdict=plain, example=EXAMPLE, audit=AUDIT_NOTE, backing=BACKING, invoke=INVOKE, feedback=FEEDBACK,
+                           npx=INSTALL_SKILL, plugin=INSTALL_PLUGIN, levels=levels, packs=packs, tally=b.tally)
     return Twin("Good Code Review", SITE_DESC, text)
 
 
