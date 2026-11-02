@@ -1,4 +1,7 @@
 """Static assets inlined into every page: CSS, JavaScript, and the favicon."""
+import json
+
+from models import LEVELS
 
 CSS = """*,*::before,*::after{box-sizing:border-box;min-width:0}
 :root{color-scheme:light dark;
@@ -157,4 +160,15 @@ const t=b.dataset.copy=='ck'?q('#flat li[data-tags]:not([hidden])').map(r=>'- `'
 (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>say(b,'Copied'),()=>say(b,'Copy failed'));setTimeout(()=>{b.textContent=l;V.textContent=''},1500)}});
 const op=()=>{const e=document.getElementById(location.hash.slice(1)),d=e&&e.closest('details');if(d){d.open=true;e.scrollIntoView()}};
 addEventListener('hashchange',op);op()"""
+# WebMCP (https://webmachinelearning.github.io/webmcp/): read-only tools over the page's own content. No network call, storage, or form (tools/agent_ready_check.py item 34).
+JS += """
+{const m=document.modelContext||navigator.modelContext;
+if(m&&m.registerTool){const o=location.origin,t=(name,description,properties,run)=>m.registerTool({name,description,inputSchema:{type:'object',properties},annotations:{readOnlyHint:true},
+execute:async a=>JSON.stringify(run(a||{}))}).catch?.(()=>0);
+t('start_review','The prompt and the entry file for reviewing code with Good Code Review.',{},()=>({prompt:'Read '+o+'/llms.txt and use it to review my code.',llms_txt:o+'/llms.txt',agent_manifest:o+'/agent.json'}));
+t('list_levels','The review levels. Pick the one that matches the input: a diff, file, package, service, design, repo, release, or incident.',{},()=>__LEVELS__.map(l=>({level:l,page:o+'/'+l,markdown:o+'/'+l+'.md',cards:o+'/cards/'+l+'.json'})));
+if(q('[data-tags]').length)t('list_cards','The stable cards on this page, optionally filtered by concern, topic, or level.',
+{concern:{type:'string'},topic:{type:'string'},level:{type:'string'}},a=>q('#flat li[data-tags]').filter(r=>[a.concern,a.topic].every(v=>!v||r.dataset.tags.split(' ').includes(v))&&(!a.level||r.dataset.level==a.level))
+.map(r=>({id:r.querySelector('a').textContent,severity:r.querySelector('.b').textContent,rule:r.querySelector('.r').textContent,url:r.querySelector('a').href})))}}
+""".replace("__LEVELS__", json.dumps([str(lv) for lv in LEVELS]))
 FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23006469'/%3E%3Cpath d='M3.5 8.5l3 3 6-6' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E"

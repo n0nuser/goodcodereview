@@ -1,0 +1,25 @@
+[project]
+name = "goodcodereview"
+version = "0.1.0"
+description = "Command line for goodcodereview.com: list levels and vetted code review cards, print the review prompt, and read the agent manifest."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+license = "MIT"
+authors = [{ name = "Pablo Jesús González Rubio", email = "contact@pablogonzalez.me" }]
+keywords = ["code-review", "checklist", "agent-skills", "llm", "cli"]
+classifiers = ["Environment :: Console", "Topic :: Software Development :: Quality Assurance"]
+
+[project.urls]
+Homepage = "https://goodcodereview.com"
+Source = "https://github.com/n0nuser/goodcodereview/tree/main/cli"
+
+[project.scripts]
+goodcodereview = "goodcodereview.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/goodcodereview"]

@@ -300,7 +300,22 @@ def _items_25_28(r: Report, pages: dict[str, Page], content: dict[str, Page]) ->
     except (ValueError, AttributeError):
         ok, types = False, set()
     r.check(25, ok, f"index.html JSON-LD parses; types {sorted(types)}; each has name, description, url")
-    r.check(28, ok and types <= {"WebSite", "CreativeWork"}, "JSON-LD types match visible content (WebSite, CreativeWork only)")
+    allowed = {"WebSite", "CreativeWork", "Person", "SoftwareSourceCode"}
+    r.check(28, ok and types <= allowed, f"home JSON-LD types match visible content ({', '.join(sorted(allowed))} only)")
+    same = [n for n in ld.get("@graph", []) if n.get("@type") == "WebSite"] if ok else []
+    r.check(28, same and len(same[0].get("sameAs", [])) >= 2 and same[0].get("keywords"), "home WebSite declares keywords and sameAs profiles")
+    inner = {"WebPage", "CollectionPage", "AboutPage", "BreadcrumbList"}
+    bad = []
+    for n, p in content.items():
+        if n == "index.html":
+            continue
+        try:
+            kinds = {x.get("@type") for x in json.loads("".join(p.ld))["@graph"]}
+        except (ValueError, KeyError, AttributeError):
+            kinds = set()
+        if "BreadcrumbList" not in kinds or not kinds <= inner:
+            bad.append(n)
+    r.check(28, not bad, f"every inner page has a page node and a BreadcrumbList in JSON-LD{': ' + ', '.join(bad) if bad else ''}")
 
 
 def _items_34(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
@@ -324,18 +339,57 @@ def _items_36(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> No
 
 
 def _items_39(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
-    """39: Agent Skills index."""
+    """39: Agent Skills index; every listed skill's digest matches its source and its served copy."""
+    bad = []
     try:
         idx_json = json.loads((SITE / ".well-known/agent-skills/index.json").read_text())
         sk = idx_json["skills"]
-        served = resolve(sk[0]["url"])
-        want = "sha256:" + hashlib.sha256((ROOT / "skills/good-code-review/SKILL.md").read_bytes()).hexdigest()
-        ok = (idx_json["$schema"].endswith("/0.2.0/schema.json") and len(sk) == 1 and sk[0]["name"] == "good-code-review" and sk[0]["type"] == "skill-md"
-              and sk[0]["description"] and sk[0]["digest"] == want and resolve(sk[0]["url"]) is not None
-              and served is not None and "sha256:" + hashlib.sha256(served.read_bytes()).hexdigest() == want)
+        if not idx_json["$schema"].endswith("/0.2.0/schema.json") or sk[0]["name"] != "good-code-review" or len(sk) < 2:
+            bad.append("index shape")
+        for e in sk:
+            src = ROOT / "skills" / e["name"] / "SKILL.md"
+            served = resolve(e["url"])
+            want = "sha256:" + hashlib.sha256(src.read_bytes()).hexdigest()
+            if not (e["type"] == "skill-md" and 0 < len(e["description"]) <= 1024 and e["digest"] == want and served is not None
+                    and "sha256:" + hashlib.sha256(served.read_bytes()).hexdigest() == want
+                    and re.search(rf"(?m)^name: {re.escape(e['name'])}$", src.read_text())):
+                bad.append(e["name"])
     except (OSError, ValueError, KeyError, IndexError):
+        bad.append("index unreadable")
+    r.check(39, not bad, f"agent-skills/index.json lists every skill, and each digest matches skills/<name>/SKILL.md and the served copy{': ' + ', '.join(bad) if bad else ''}")
+
+
+def _items_43_46(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """43 ARD, 44 agent.json, 45 WebMCP, 46 search snippets."""
+    try:
+        ard = json.loads((SITE / ".well-known/ard.json").read_text())["entries"]
+        keys = [("url" in e) != ("data" in e) for e in ard]
+        ok = (bool(ard) and all(keys) and all(re.fullmatch(r"urn:air:goodcodereview\.com:(?:[a-z-]+:)?[a-z0-9-]+", e["identifier"]) and e["displayName"] and e["type"] for e in ard)
+              and all(2 <= len(e.get("representativeQueries", [])) <= 5 for e in ard) and len({e["identifier"] for e in ard}) == len(ard)
+              and all(resolve(e["url"]) is not None for e in ard))
+    except (OSError, ValueError, KeyError):
         ok = False
-    r.check(39, ok, "agent-skills/index.json lists the skill, and its sha256 digest matches skills/good-code-review/SKILL.md and the served copy")
+    robots = (SITE / "robots.txt").read_text()
+    rel = all(any(ln.get("href") == "/.well-known/ard.json" for ln in p.link("ard")) for p in content.values())
+    r.check(43, ok and rel and f"Agentmap: {BASE}/.well-known/ard.json" in robots, "ARD: ard.json parses (v0.91), every url resolves, rel=ard on every page, Agentmap in robots.txt")
+    try:
+        am = json.loads((SITE / "agent.json").read_text())
+        ok = (am["authentication"]["type"] == "none" and am["capabilities"] and am["endpoints"]["llms_txt"].startswith(BASE)
+              and all(resolve(am["endpoints"][k]) is not None for k in ("llms_txt", "sitemap", "cards", "cards_index", "agent_skills", "ard")))
+    except (OSError, ValueError, KeyError):
+        ok = False
+    r.check(44, ok, "agent.json states the authentication (none), the capabilities, and endpoints that resolve")
+    code = "".join(pages["index.html"].js)
+    r.check(45, "modelContext" in code and "registerTool" in code and all(t in code for t in ("start_review", "list_levels", "list_cards")),
+            "WebMCP: the page script registers start_review, list_levels, and list_cards on document.modelContext when it exists")
+    snippet = []
+    for n, p in content.items():
+        t, d = p.title, (p.meta("name", "description") or [""])[0]
+        if not (40 <= len(t) <= 62 and 110 <= len(d) <= 160):
+            snippet.append(f"{n} ({len(t)}/{len(d)})")
+        if p.meta("name", "twitter:card") != ["summary_large_image"]:
+            snippet.append(f"{n}: twitter:card")
+    r.check(46, not snippet, f"titles are 40 to 62 characters and descriptions 110 to 160, and every page has twitter:card{': ' + ', '.join(snippet) if snippet else ''}")
 
 
 def main() -> int:
@@ -359,6 +413,7 @@ def main() -> int:
     _items_34(r, pages, content)
     _items_36(r, pages, content)
     _items_39(r, pages, content)
+    _items_43_46(r, pages, content)
     print(f"\n{len(r.failures)} failing check(s)" if r.failures else "\nall checks pass")
     return 1 if r.failures else 0
 

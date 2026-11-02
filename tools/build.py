@@ -17,10 +17,11 @@ from config import ROOT, SITE, SKILL, TOOLS
 from context import BuildInput, build_date, read_input
 from errors import ToolError
 from site_cards import cards_files
-from site_meta import headers_file, page_slugs, robots, security_txt, sitemap, skill_discovery
+from site_meta import agent_files, headers_file, page_slugs, robots, security_txt, sitemap, skill_discovery
 from site_pages import html_pages
 from site_twins import markdown_twins
 from skill_files import SkillOutput, skill_output
+from skills_extra import extra_files
 
 Files = dict[str, bytes]  # path relative to the output folder -> content
 
@@ -32,6 +33,7 @@ class Plan:
     site: Files
     skill: Files
     summary: str
+    extra: Files  # skills/<name>/SKILL.md for the focused skills
 
 
 def _encode(texts: dict[str, str]) -> Files:
@@ -52,6 +54,7 @@ def site_files(b: BuildInput, skill: SkillOutput) -> Files:
     texts[".well-known/security.txt"] = security_txt(b.date)
     texts.update(cards_files(b))
     texts.update(skill_discovery(skill.files))
+    texts.update(agent_files(b))
     files = _encode(texts)
     files["og.png"] = (TOOLS / "og.png").read_bytes()
     return files
@@ -66,7 +69,7 @@ def plan_build(root: Path) -> Plan:
     skill_lines = skill.files["SKILL.md"].count("\n") + 1
     summary = (f"site: {pages} pages; SKILL.md: {skill_lines} lines; stable cards: {len(b.stable)}; "
                f"llms.txt: {len(skill.llms)} chars; lastmod: {b.date}")
-    return Plan(site, _encode(skill.files), summary)
+    return Plan(site, _encode(skill.files), summary, _encode(extra_files()))
 
 
 def _write_tree(base: Path, files: Files) -> None:
@@ -100,12 +103,17 @@ def write_skill(files: Files, skill: Path = SKILL) -> None:
     _write_tree(skill, files)
 
 
+def write_extra(files: Files, skills: Path = SKILL.parent) -> None:
+    """Write skills/<name>/SKILL.md for each focused skill."""
+    _write_tree(skills, files)
+
+
 def describe(plan: Plan, site: Path = SITE, skill: Path = SKILL) -> str:
     """The dry-run report: what would be removed and what would be written."""
     old_site = sum(1 for p in site.rglob("*") if p.is_file()) if site.exists() else 0
     lines = [f"would remove: {site} ({old_site} files)"]
     lines += [f"would remove: {skill / name}" for name in _stale(skill, plan.skill)]
-    lines += [f"would write: {len(plan.site)} files under {site}", f"would write: {len(plan.skill)} files under {skill}"]
+    lines += [f"would write: {len(plan.extra)} focused skills under {skill.parent}", f"would write: {len(plan.site)} files under {site}", f"would write: {len(plan.skill)} files under {skill}"]
     lines += [f"  {skill / name}" for name in sorted(plan.skill)]
     return "\n".join(lines)
 
@@ -124,6 +132,7 @@ def main(argv: list[str]) -> int:
         print(plan.summary)
         return 0
     write_skill(plan.skill)
+    write_extra(plan.extra)
     swap_site(plan.site)
     print(plan.summary)
     return 0

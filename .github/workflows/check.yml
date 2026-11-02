@@ -23,7 +23,7 @@ jobs:
       - run: uv run ruff check tools test
       - run: uv run mypy
       - run: uv run pytest -q
-      - run: node --test test/worker.test.mjs
+      - run: node --test test/worker.test.mjs test/webmcp.test.mjs
       - name: Relative links and anchors resolve
         run: python3 tools/check_links.py
       - name: SBOM is current and every component has a licence

@@ -1,4 +1,5 @@
 """The page shell shared by every HTML page: head tags, navigation, footer, and the org icon sprite."""
+import functools
 import html
 import json
 import re
@@ -8,7 +9,9 @@ from typing import Any
 import orgs
 from assets import CSS, FAVICON, JS
 from config import BASE, MONOGRAM_FONT_SIZES, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH, REPO, SITE_DESC, SITE_NAME
+from context import build_date
 from models import LEVELS, NavLink
+from seo import KEYWORDS, meta, page_ld
 
 FOOTER = (f'<footer><p>Created and edited by <a href="https://pablogonzalez.me">Pablo Jesús González Rubio</a> · Content CC BY 4.0 · Code MIT · <a href="{REPO}">Source</a></p>'
           '<ul class="fl"><li><a href="guides.html">Guides</a></li><li><a href="drafts.html">Drafts by what they lack</a></li><li><a href="about.html">About</a></li>'
@@ -31,11 +34,19 @@ def head_tags(title: str, desc: str, slug: str) -> str:
         return html.escape(t, quote=True)
 
     og = {"title": title, "description": desc, "type": "website", "url": page_url(slug), "site_name": SITE_NAME,
-          "image": f"{BASE}/og.png", "image:alt": f"{SITE_NAME}: {SITE_DESC}", "image:width": str(OG_IMAGE_WIDTH), "image:height": str(OG_IMAGE_HEIGHT)}
-    return (f'<meta name="description" content="{quote(desc)}"><link rel="canonical" href="{page_url(slug)}">'
+          "image": f"{BASE}/og.png", "image:alt": f"{SITE_NAME}: {SITE_DESC}", "locale": "en_US", "image:width": str(OG_IMAGE_WIDTH), "image:height": str(OG_IMAGE_HEIGHT)}
+    tw = {"card": "summary_large_image", "title": title, "description": desc, "image": f"{BASE}/og.png", "image:alt": og["image:alt"]}
+    url = page_url(slug)
+    return (f'<meta name="description" content="{quote(desc)}"><link rel="canonical" href="{url}">'
+            '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">'
+            '<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f7"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#2b2b2b">'
+            + (f'<meta name="keywords" content="{quote(KEYWORDS)}">' if slug == "index" else "")
+            + f'<link rel="alternate" hreflang="en" href="{url}"><link rel="alternate" hreflang="x-default" href="{url}">'
             + "".join(f'<meta property="og:{k}" content="{quote(v)}">' for k, v in og.items())
+            + "".join(f'<meta name="twitter:{k}" content="{quote(v)}">' for k, v in tw.items())
             + f'<link rel="alternate" type="text/markdown" href="/{slug}.md"><link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">'
-            '<link rel="sitemap" type="application/xml" href="/sitemap.xml"><meta name="is-agentic-site-type" content="content">')
+            '<link rel="sitemap" type="application/xml" href="/sitemap.xml">'
+            '<link rel="ard" href="/.well-known/ard.json"><link rel="alternate" type="application/json" href="/agent.json" title="Agent manifest"><meta name="is-agentic-site-type" content="content">')
 
 
 def sprite(body: str) -> str:
@@ -75,14 +86,11 @@ def _nav(links: Sequence[NavLink], cur: str) -> str:
 
 
 def _crumbs(crumbs: Sequence[tuple[str, str]]) -> str:
-    """A breadcrumb trail plus its BreadcrumbList JSON-LD. The last crumb is the current page and is not a link."""
+    """A visible breadcrumb trail; its BreadcrumbList JSON-LD is built by seo.page_ld. The last crumb is the current page and is not a link."""
     if not crumbs:
         return ""
     items = [f'<li><a href="{s}.html">{html.escape(t)}</a></li>' for t, s in crumbs[:-1]] + [f'<li><span aria-current="page">{html.escape(crumbs[-1][0])}</span></li>']
-    ld = {"@context": "https://schema.org", "@type": "BreadcrumbList",
-          "itemListElement": [{"@type": "ListItem", "position": i, "name": t, "item": page_url(s)} for i, (t, s) in enumerate(crumbs, 1)]}
-    return (f'<nav class="crumbs" aria-label="Breadcrumb"><ol>{"".join(items)}</ol></nav>'
-            '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + "</script>")
+    return (f'<nav class="crumbs" aria-label="Breadcrumb"><ol>{"".join(items)}</ol></nav>')
 
 
 def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "", desc: str = "", slug: str = "",
@@ -95,7 +103,8 @@ def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "",
     """
     trail = _crumbs(crumbs)
     stamp = f'<p class="note">Last updated <time datetime="{updated}">{updated}</time></p>' if updated else ""
-    full = title if slug == "index" else f"{title} | {SITE_NAME}"
+    full, desc = meta(slug, title, desc)
+    ld = ld or (page_ld(slug, full, desc, functools.cache(build_date)(), crumbs) if slug else None)
     jsonld = '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + "</script>" if ld else ""
     tail = '<p id=said class=vh role=status></p><script>' + JS + '</script>' if script else ""
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">'
