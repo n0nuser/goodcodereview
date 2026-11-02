@@ -168,12 +168,13 @@ def not_found_page(b: BuildInput) -> str:
 
 def guide_pages(b: BuildInput) -> dict[str, str]:
     """The guides index and each guide. They sit one folder down, so relative links become site-absolute, as on the 404 page."""
-    def build(slug: str, title: str, text: str, desc: str) -> str:
-        return re.sub(r'href="(?![a-z]+:|#|/)', 'href="/', page(title, md(text, b.ids), links=b.links, desc=desc, slug=slug, updated=b.date))
+    def build(slug: str, title: str, text: str, desc: str, crumbs: tuple[tuple[str, str], ...]) -> str:
+        return re.sub(r'href="(?![a-z]+:|#|/)', 'href="/', page(title, md(text, b.ids), links=b.links, desc=desc, slug=slug, updated=b.date, crumbs=crumbs))
 
-    pages = {"guides.html": build("guides", "Guides", guides_index_text(html=True), GUIDES_DESC)}
+    pages = {"guides.html": build("guides", "Guides", guides_index_text(html=True), GUIDES_DESC, (("Home", "index"), ("Guides", "guides")))}
     for g in GUIDES:
-        pages[f"guides/{g.slug}.html"] = build(f"guides/{g.slug}", g.title, guide_text(b, g, html=True), g.desc)
+        pages[f"guides/{g.slug}.html"] = build(f"guides/{g.slug}", g.title, guide_text(b, g, html=True), g.desc,
+                                                 (("Home", "index"), ("Guides", "guides"), (g.title, f"guides/{g.slug}")))
     return pages
 
 

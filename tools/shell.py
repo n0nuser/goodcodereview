@@ -74,9 +74,23 @@ def _nav(links: Sequence[NavLink], cur: str) -> str:
     return '<header><nav aria-label="Site">' + "".join(items) + "</nav></header>"
 
 
+def _crumbs(crumbs: Sequence[tuple[str, str]]) -> str:
+    """A breadcrumb trail plus its BreadcrumbList JSON-LD. The last crumb is the current page and is not a link."""
+    if not crumbs:
+        return ""
+    items = [f'<li><a href="{s}.html">{html.escape(t)}</a></li>' for t, s in crumbs[:-1]] + [f'<li><span aria-current="page">{html.escape(crumbs[-1][0])}</span></li>']
+    ld = {"@context": "https://schema.org", "@type": "BreadcrumbList",
+          "itemListElement": [{"@type": "ListItem", "position": i, "name": t, "item": page_url(s)} for i, (t, s) in enumerate(crumbs, 1)]}
+    return (f'<nav class="crumbs" aria-label="Breadcrumb"><ol>{"".join(items)}</ol></nav>'
+            '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + "</script>")
+
+
 def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "", desc: str = "", slug: str = "",
-         ld: dict[str, Any] | None = None, script: bool = False, updated: str = "") -> str:
-    """One complete HTML page. `script` adds the inline filter script; `slug` turns on the head tags; `ld` is JSON-LD; `updated` shows a visible date under the heading."""
+         ld: dict[str, Any] | None = None, script: bool = False, updated: str = "",
+         crumbs: Sequence[tuple[str, str]] = ()) -> str:
+    """One complete HTML page. `script` adds the inline filter script; `slug` turns on the head tags; `ld` is JSON-LD; `updated` shows a date under the heading;
+    `crumbs` are (label, slug) pairs from Home to this page."""
+    trail = _crumbs(crumbs)
     stamp = f'<p class="note">Last updated <time datetime="{updated}">{updated}</time></p>' if updated else ""
     full = title if slug == "index" else f"{title} | {SITE_NAME}"
     jsonld = '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + "</script>" if ld else ""
@@ -84,6 +98,6 @@ def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "",
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">'
             f'<link rel="icon" href="{FAVICON}">'
             f"<title>{html.escape(full)}</title>{head_tags(full, desc, slug)}<style>{CSS}</style>{jsonld}</head>"
-            f"<body><a class=skip href=#main>Skip to content</a>{_nav(links, cur)}<main id=main tabindex=-1>"
+            f"<body><a class=skip href=#main>Skip to content</a>{_nav(links, cur)}<main id=main tabindex=-1>{trail}"
             f"<h1>{html.escape(title)}</h1>{stamp}{body}</main>{sprite(body)}"
             f"{FOOTER}{tail}</body></html>")
