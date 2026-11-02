@@ -2,7 +2,7 @@
 name: review-code-accessibility
 description: "Review user interface code for accessibility only, using the vetted cards that list the accessibility concern: semantics, names, focus, contrast, and keyboard use. Each check is marked PASS, FAIL, or N/A with file:line evidence. Use it for \"accessibility review of this component\". Not an automated axe or Lighthouse run."
 license: "CC-BY-4.0 for the content, MIT for the code"
-compatibility: "Reads Markdown only. Needs a file-read tool and, to triage, grep. An audit may also run read-only commands, such as gh api, to quote platform settings as evidence."
+compatibility: "Reads its card list from goodcodereview.com, so it needs network access and a fetch or curl tool. Without network access, use good-code-review, which carries the cards with it."
 metadata:
   author: "Pablo Jesús González Rubio"
   version: "1.0"

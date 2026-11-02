@@ -2,7 +2,7 @@
 name: review-code-security
 description: "Review code for security only, using the vetted cards that list the security concern: injection, authentication, secrets, input handling, and unsafe defaults. Each check is marked PASS, FAIL, or N/A with file:line evidence. Use it for \"security review of this diff\". Not a penetration test or a vulnerability scan."
 license: "CC-BY-4.0 for the content, MIT for the code"
-compatibility: "Reads Markdown only. Needs a file-read tool and, to triage, grep. An audit may also run read-only commands, such as gh api, to quote platform settings as evidence."
+compatibility: "Reads its card list from goodcodereview.com, so it needs network access and a fetch or curl tool. Without network access, use good-code-review, which carries the cards with it."
 metadata:
   author: "Pablo Jesús González Rubio"
   version: "1.0"
