@@ -45,6 +45,8 @@ npx skills add n0nuser/goodcodereview
 
 After you install the skill, name it in your request, such as `/good-code-review review this PR`. An agent that is not told may review without it.
 
+The skill folder also holds two focused skills, `review-code-security` and `review-code-accessibility`. Each reads its card list from goodcodereview.com, so it needs network access. In a sandbox without network access, use `good-code-review`, which carries the cards with it.
+
 To install it as a Claude Code plugin, run:
 
 ```

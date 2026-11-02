@@ -8,8 +8,10 @@ from dataclasses import dataclass
 from config import BASE, SKILL_NAME
 from errors import BuildError
 from models import CONCERNS, LEVELS
-from skill_files import CANONICAL_LICENCE, COMPATIBILITY, SKILL_VERSION, _json, plain_verdict
+from skill_files import CANONICAL_LICENCE, SKILL_VERSION, _json, plain_verdict
 
+COMPATIBILITY = ("Reads its card list from goodcodereview.com, so it needs network access and a fetch or curl tool. Without network access, use "
+                 "good-code-review, which carries the cards with it.")
 DESC_MAX = 1024
 BODY_MAX = 3_000  # characters; these are entry points, not references
 
