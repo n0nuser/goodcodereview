@@ -16,7 +16,8 @@ from pathlib import Path
 from config import ROOT, SITE, SKILL, TOOLS
 from context import BuildInput, build_date, read_input
 from errors import ToolError
-from site_meta import cards_files, headers_file, page_slugs, robots, security_txt, sitemap, skill_discovery
+from site_cards import cards_files
+from site_meta import headers_file, page_slugs, robots, security_txt, sitemap, skill_discovery
 from site_pages import html_pages
 from site_twins import markdown_twins
 from skill_files import SkillOutput, skill_output

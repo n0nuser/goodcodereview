@@ -93,6 +93,27 @@ class Corpus:
     cards: list[Card]
 
 
+@dataclass(frozen=True, slots=True)
+class IndexCard:
+    """The slim form of a card in cards-index.json: what a Markdown list needs, and a link to the full card."""
+    id: str
+    level: Level
+    severity: Severity
+    concerns: list[str]
+    topics: list[str]
+    rule: str
+    url: str
+
+
+@dataclass(frozen=True, slots=True)
+class CardsIndex:
+    """cards-index.json: every stable card in slim form. Its schema is cards-index.schema.json."""
+    schema_version: int        # the same number as cards.json
+    concerns: list[str]
+    levels: list[Level]        # level ids only; cards.json has the full level records
+    cards: list[IndexCard]
+
+
 def _key(f: Any) -> str:
     return str(f.metadata.get("alias", f.name))
 
@@ -137,6 +158,12 @@ def json_schema(base: str) -> dict[str, Any]:
     """The JSON Schema (draft 2020-12) for Corpus."""
     return {"$schema": "https://json-schema.org/draft/2020-12/schema", "$id": f"{base}/cards.schema.json",
             "title": "Good Code Review cards", **_object(Corpus)}
+
+
+def index_json_schema(base: str) -> dict[str, Any]:
+    """The JSON Schema (draft 2020-12) for CardsIndex."""
+    return {"$schema": "https://json-schema.org/draft/2020-12/schema", "$id": f"{base}/cards-index.schema.json",
+            "title": "Good Code Review cards index", **_object(CardsIndex)}
 
 
 def check(schema: dict[str, Any], data: Any, path: str = "$") -> list[str]:

@@ -8,6 +8,14 @@ Cloudflare points new static sites at Workers with static assets. `wrangler.json
 
 Static files cost nothing and have no request limit, so the homepage, `cards.json`, and every `.md` file stay off the Worker. The free Workers plan allows 100,000 Worker requests a day. Past that, a Worker request gets a 429 instead of the static file, so only unknown paths and the two filter paths may reach the Worker; the HTML pages, including `/concerns`, never do (the page filters in the browser). If the quota becomes a problem, drop `run_worker_first` and the filters on `.md` and JSON stop working; the page filters still work. Research: `docs/research/distribution-and-quota.md`.
 
+### Which requests reach the Worker
+
+`run_worker_first` lists `/concerns.md` and `/cards.json`, so every request to those two paths starts the Worker, with or without a query string, and counts against the 100,000 a day. A route cannot see the query string, so the Worker has to look at it. Besides those two paths, the Worker runs only for paths that match no file (the 404 page).
+
+Everything else is a static asset and never starts the Worker: the HTML pages, every other `.md` file, `llms.txt`, `cards-drafts.json`, `cards-index.json`, `cards/<level>.json`, `cards/drafts-<level>.json`, `cards/concern-<concern>.json`, `concerns/<concern>.md`, and `concerns/level-<level>.md`. Point agents at those paths (`llms.txt` lists them) instead of at a query on `/cards.json` or `/concerns.md`.
+
+Inside the Worker, a single `concern` or `level` is answered by fetching the static file, with no parse. Any other filter parses `cards-index.json` (Markdown, about 54 KB) or `cards.json` (JSON, about 437 KB), and the Worker keeps the answer in the Cache API under the request URL for 300 seconds. A cache hit still counts as a Worker request but skips the parse.
+
 In the dashboard, choose Workers & Pages, Create, and connect `n0nuser/goodcodereview` on `main`. Set:
 
 - Build command: `python3 tools/build.py`

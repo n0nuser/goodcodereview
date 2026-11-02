@@ -1,6 +1,6 @@
 # cards.json versioning
 
-`cards.json`, `cards-drafts.json`, and the per-level files in `cards/` ([cards-json.md](cards-json.md)) are the only machine-readable API of this site. Each file carries `schema_version`, an integer, and `cards.schema.json` is the JSON Schema for the current version. The number lives in `SCHEMA_VERSION` in `tools/schema.py`.
+`cards.json`, `cards-drafts.json`, the files in `cards/`, and `cards-index.json` ([cards-json.md](cards-json.md)) are the only machine-readable API of this site. Each file carries `schema_version`, an integer, and `cards.schema.json` is the JSON Schema for the current version. `cards-index.json` carries the same number and has its own schema, `cards-index.schema.json`, derived from the same code in `tools/schema.py`; a change to either shape bumps the one number. The number lives in `SCHEMA_VERSION` in `tools/schema.py`.
 
 ## One scheme: an integer in the file
 
@@ -23,7 +23,7 @@ Each bump has a line in [CHANGELOG.md](../CHANGELOG.md) that names the change an
 
 ## What does not bump it
 
-- Adding or removing a file that has the same shape, such as `cards/<level>.json` when a level gains its first card or loses its last. Every file validates against the same `cards.schema.json`, so no consumer of the shape breaks. A consumer should list the level files it needs from `llms.txt` or `cards.json` (`levels`), not assume all eight exist.
+- Adding or removing a file that has the same shape, or a new file with its own schema that leaves the existing ones alone: `cards-index.json` (schema `cards-index.schema.json`), `cards/concern-<concern>.json`, and `concerns/*.md`. Not every file has to carry the shape of `cards.json`; each one names its schema.  such as `cards/<level>.json` when a level gains its first card or loses its last. Every file validates against the same `cards.schema.json`, so no consumer of the shape breaks. A consumer should list the level files it needs from `llms.txt` or `cards.json` (`levels`), not assume all eight exist.
 
 - Card text, severities, and tags change, and cards are added.
 - A card id is a stable key for consumers. Removing or renaming one is a breaking change for anyone who stores ids, so it gets a CHANGELOG line, but it does not change the shape.
