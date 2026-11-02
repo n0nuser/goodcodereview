@@ -115,7 +115,7 @@ def listing(spec: PageSpec, ids: dict[str, str], links: Sequence[NavLink], *, em
     dbody = ('<div class="ckw"><ul class="ck">' + _TABLE_HEAD + "".join(row(c, ids, f"{page_name(c)}.html") for c in draft) + "</ul></div>"
              if compact else "".join(card_html(c, ids) for c in draft))
     drafts = (f'<h2>Draft cards</h2>{"" if stable or empty else "<p>No stable cards yet.</p>"}<details><summary id="dsum" data-n="{len(draft)}">{len(draft)} draft cards</summary>'
-              f"<p>{DRAFT_NOTE}{' Each row links to the full card.' if compact else ''} "
+              f"<p>{inline(DRAFT_NOTE, {})}{' Each row links to the full card.' if compact else ''} "
               f'<a href="{REPO}/blob/main/docs/PROMOTION.md">How a draft becomes stable</a></p>' + dbody + "</details>") if draft else ""
     slug = spec.file[:-5]
 
