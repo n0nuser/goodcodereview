@@ -226,6 +226,7 @@ def _llms(head: list[str], llms_scope: list[str], level_index: dict[Level, list[
     out += ["## Audit", "", f"- [Audit a repo, service, or release]({BASE}/audit.md): scope, read order, missing controls, accepted risk, and the report shape.", ""]
     out += ["## Glossary", "", f"- [Glossary]({BASE}/glossary.md): terms the cards link to.", "",
             "## Optional", "",
+            f"- [Guides]({BASE}/guides.md): how to review a pull request, a security checklist, and what to check in a database migration.",
             f"- [Draft cards]({BASE}/llms-drafts.txt): not vetted. {DRAFT_RULE}",
             f"- [About]({BASE}/about.html): who makes this and under which licence.",
             f"- [Privacy]({BASE}/privacy.html): the site collects nothing.",

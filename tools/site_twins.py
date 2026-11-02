@@ -4,6 +4,7 @@ import re
 
 from config import BASE, SITE_DESC
 from context import BuildInput, pack_name
+from guides import GUIDES, guide_text, guides_index_text
 from markdown import rule
 from models import CONCERNS, LEVELS, Twin
 from prose import (
@@ -19,6 +20,7 @@ from prose import (
     EXAMPLE,
     FEEDBACK,
     GLOSSARY_DESC,
+    GUIDES_DESC,
     HERO,
     INDEX_MD,
     INPUT,
@@ -57,7 +59,8 @@ def _index_page(b: BuildInput, plain: str) -> Twin:
     levels += "".join(f"\n- {NAME[lv]}: {LEVEL_DESC[lv]} Input: {INPUT[lv]}. {EMPTY_MARK.capitalize()}." for lv in LEVELS if lv in b.no_stable)
     packs = "\n".join(f"- [{pack_name(pk)} pack]({BASE}/pack-{pk}.md)" for pk in b.packs) or "No packs yet."
     text = INDEX_MD.format(hero=HERO, verdict=plain, example=EXAMPLE, audit=AUDIT_NOTE, backing=BACKING, invoke=INVOKE, feedback=FEEDBACK,
-                           npx=INSTALL_SKILL, plugin=INSTALL_PLUGIN, levels=levels, packs=packs, tally=b.tally)
+                           npx=INSTALL_SKILL, plugin=INSTALL_PLUGIN, levels=levels, packs=packs, tally=b.tally,
+                           guides="Short explainers: " + ", ".join(f"[{g.title.lower()}]({BASE}/guides/{g.slug}.md)" for g in GUIDES) + ".")
     return Twin("Good Code Review", SITE_DESC, text)
 
 
@@ -77,6 +80,9 @@ def markdown_twins(b: BuildInput, skill: SkillOutput) -> dict[str, str]:
             level = part.slug.split("-index")[0]
             twins[part.slug] = Twin(part.title, f"One line per stable {level} card.", part.text)
     twins["audit"] = audit_twin()
+    twins["guides"] = Twin("Guides", GUIDES_DESC, "# Guides\n\n" + guides_index_text(html=False))
+    for g in GUIDES:
+        twins[f"guides/{g.slug}"] = Twin(g.title, g.desc, f"# {g.title}\n\n" + guide_text(b, g, html=False))
     twins["index"] = _index_page(b, skill.plain_verdict)
     twins["concerns"] = _concerns_page(b, skill.plain_verdict)
     for pk in b.packs:

@@ -8,6 +8,7 @@ from collections.abc import Sequence
 from assets import JS
 from config import BASE, HSTS_MAX_AGE, REPO, SECURITY_TXT_DAYS, SKILL_NAME
 from context import BuildInput
+from guides import GUIDES
 from models import LEVELS
 from prose import SKILL_DESC
 from shell import page_url
@@ -17,7 +18,8 @@ JSON_CT = "application/json; charset=utf-8"
 
 def page_slugs(b: BuildInput) -> list[str]:
     """Every page in the sitemap, as a slug."""
-    return ["index", "concerns", *LEVELS, *[f"pack-{pk}" for pk in b.packs], "glossary", "drafts", "about", "privacy", "audit"]
+    return ["index", "concerns", *LEVELS, *[f"pack-{pk}" for pk in b.packs], "glossary", "drafts", "about", "privacy", "audit",
+            "guides", *[f"guides/{g.slug}" for g in GUIDES]]
 
 
 def sitemap(slugs: Sequence[str], date: str) -> str:

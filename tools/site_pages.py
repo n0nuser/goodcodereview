@@ -6,6 +6,7 @@ from card_fields import lacks
 from config import BASE, LICENCE_URL, REPO, SITE_DESC, SITE_NAME
 from context import BuildInput, pack_name
 from errors import BuildError
+from guides import GUIDES, guide_text, guides_index_text
 from listing import copy_pre, listing
 from markdown import inline, md
 from models import LEVELS, LacksReason, Level, PageSpec
@@ -23,6 +24,7 @@ from prose import (
     EXAMPLE,
     FEEDBACK,
     GLOSSARY_DESC,
+    GUIDES_DESC,
     HERO,
     INCIDENT_EXAMPLE,
     INCIDENT_RULE,
@@ -148,6 +150,7 @@ def home_page(b: BuildInput) -> str:
         "<h2>Report format</h2><p>" + VERDICT + "</p>"
         "<h2>Audit a repo, service, or release</h2><p>" + inline(AUDIT_NOTE, {}) + "</p>"
         "<h2>Feedback</h2><p>" + inline(FEEDBACK, {}) + "</p>"
+        "<h2>Guides</h2><p>Short explainers: " + ", ".join(f'<a href="guides/{g.slug}.html">{g.title.lower()}</a>' for g in GUIDES) + ".</p>"
         "<h2>Packs</h2><p>A pack adds language-specific cards on top of the levels. Use one with the level that matches your input.</p>"
         "<p>" + (", ".join(f'<a href="pack-{p}.html">{pack_name(p)} pack</a>' for p in b.packs) or "No packs yet.") + "</p>"
         '<p class="note">Writing CSS? <a href="https://good-css.com">good-css.com</a> has rules for reviewing CSS.</p>')
@@ -163,11 +166,23 @@ def not_found_page(b: BuildInput) -> str:
     return re.sub(r'href="(?![a-z]+:|#|/)', 'href="/', page("Not found", body, links=b.links))
 
 
+def guide_pages(b: BuildInput) -> dict[str, str]:
+    """The guides index and each guide. They sit one folder down, so relative links become site-absolute, as on the 404 page."""
+    def build(slug: str, title: str, text: str, desc: str) -> str:
+        return re.sub(r'href="(?![a-z]+:|#|/)', 'href="/', page(title, md(text, b.ids), links=b.links, desc=desc, slug=slug, updated=b.date))
+
+    pages = {"guides.html": build("guides", "Guides", guides_index_text(html=True), GUIDES_DESC)}
+    for g in GUIDES:
+        pages[f"guides/{g.slug}.html"] = build(f"guides/{g.slug}", g.title, guide_text(b, g, html=True), g.desc)
+    return pages
+
+
 def html_pages(b: BuildInput) -> dict[str, str]:
     """Every HTML file by name, in the order the original build wrote them."""
     pages = listing_pages(b)
     pages.update(text_pages(b, drafts_markdown(b)))
     pages["index.html"] = home_page(b)
     pages["404.html"] = not_found_page(b)
+    pages.update(guide_pages(b))
     return pages
 
