@@ -51,6 +51,13 @@ class BuildInput:
     def core_at(self, level: Level) -> list[Card]:
         return [c for c in self.cards if level_of(c) == level and is_core(c)]
 
+    @property
+    def tally(self) -> str:
+        """The headline count, printed from the build so it cannot drift from the cards."""
+        core = sum(n.stable for n in self.counts.values())
+        pack = len(self.stable) - core
+        return f"{len(self.stable)} stable checks: {core} across the eight levels and {pack} in the language packs."
+
 
 def source_errors(cards: list[Card], glossary: list[Path], root: Path) -> list[str]:
     """Markdown the renderer cannot draw, in the cards, the glossary, and the page texts."""
