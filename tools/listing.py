@@ -120,7 +120,7 @@ def listing(spec: PageSpec, ids: dict[str, str], links: Sequence[NavLink], *, em
     slug = spec.file[:-5]
 
     def render(body: str) -> str:
-        return page(spec.title, body, links=links, cur=spec.file, desc=spec.desc, slug=slug, script=True, updated=date)
+        return page(spec.title, body, links=links, cur=spec.file, desc=spec.desc, slug=slug, script=True, updated=date, crumbs=(("Home", "index"), (spec.title, slug)))
 
     if empty:
         return render(NONE_NOTE + spec.intro + LEGEND + drafts)

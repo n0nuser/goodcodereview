@@ -110,3 +110,9 @@ def test_guides_have_page_twin_sitemap_entry_and_one_llms_link(site_text: dict[s
         assert f"<loc>https://goodcodereview.com/guides/{g.slug}</loc>" in site_text["sitemap.xml"]
         assert "chg-" in site_text[f"guides/{g.slug}.md"] or "sys-" in site_text[f"guides/{g.slug}.md"]
     assert site_text["llms.txt"].count("/guides") == 1
+
+
+def test_listing_and_guide_pages_have_breadcrumbs(site_text: dict[str, str]) -> None:
+    assert '<li><span aria-current="page">Service audit</span></li>' in site_text["service.html"]
+    guide = site_text["guides/how-to-review-a-pull-request.html"]
+    assert '<a href="/guides.html">Guides</a>' in guide and '"@type":"BreadcrumbList"' in guide.replace(" ", "")
