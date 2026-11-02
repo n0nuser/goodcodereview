@@ -1015,3 +1015,64 @@ file.save(STORE / f"{uuid4()}.bin")   # outside web root; served by /files/<id>
 ```
 
 **Counterpoint.** "The extension check is enough." The extension is attacker text, and double extensions or parser quirks get past a check on it. The generated name and a storage place that never executes files are what make a file that slips through harmless.
+
+## py-cancellation
+
+severity: should-fix  
+concerns: reliability, correctness  
+applies_when: Async code catches exceptions around awaits or uses asyncio.timeout.  
+Backed by: Python Software Foundation. People cited: Pablo González.
+
+**Rule.** Re-raise `CancelledError` (do not catch it via bare `except` or `BaseException`), and catch `TimeoutError` outside the `asyncio.timeout()` block.
+
+**Why.** TaskGroup and timeouts are built on cancellation, so swallowing it makes shutdown hang and timeouts silently not fire. The conversion to `TimeoutError` happens at context exit, so a handler inside the block never sees it.
+
+**FAIL**
+
+```python
+async with asyncio.timeout(5):
+    try: await fetch()
+    except TimeoutError: ...        # never reached
+    except BaseException: pass      # eats cancellation
+```
+
+**PASS**
+
+```python
+try:
+    async with asyncio.timeout(5):
+        await fetch()
+except TimeoutError:
+    handle_timeout()
+```
+
+**Counterpoint.** "Cleanup code must run even on cancel." Clean up in `finally`, then re-raise, and never suppress. `uncancel()` is task bookkeeping, not permission to swallow.
+
+## py-task-reference
+
+severity: should-fix  
+concerns: correctness  
+applies_when: Python code calls asyncio.create_task or ensure_future.  
+Backed by: Python Software Foundation. People cited: Pablo González.
+
+**Rule.** Never discard the result of `create_task`; keep a reference and surface its exceptions, preferably through a `TaskGroup`.
+
+**Why.** The event loop holds only weak references, so an unreferenced task can be garbage-collected mid-run. A task that nobody awaits also loses its exception ("never retrieved").
+
+**FAIL**
+
+```python
+asyncio.create_task(send_email(user))   # fire and forget
+```
+
+**PASS**
+
+```python
+async with asyncio.TaskGroup() as tg:
+    tg.create_task(send_email(user))
+# or: t = create_task(...); bg.add(t); t.add_done_callback(bg.discard)
+```
+
+**See also.** [py-cancellation](service.md#py-cancellation); for retried background work, [svc-idempotency-key](service.md#svc-idempotency-key).
+
+**Counterpoint.** "The set-and-discard recipe from the docs is enough." It keeps the task alive but still never retrieves the exception, and the docs point to TaskGroup for that. The same reference rule applies to tasks passed to `asyncio.shield`.

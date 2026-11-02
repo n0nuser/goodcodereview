@@ -4,11 +4,12 @@ level: module
 tags: [maintainability, python, config]
 severity: should-fix
 status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+lacks: held, cites the draft card(s) mod-central-config; stable once those are stable
 lang: python
 applies_when: Python code reads configuration from the environment.
 tool_gate: ruff TID251 (banned-api) on `os.environ`
-borrowed_from: []
+borrowed_from:
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 note: from the author's own Python review guide
 ---
 

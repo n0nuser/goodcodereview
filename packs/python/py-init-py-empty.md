@@ -4,11 +4,12 @@ level: module
 tags: [maintainability, python, structure]
 severity: should-fix
 status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+lacks: held, cites the draft card(s) mod-no-import-side-effects; stable once those are stable
 lang: python
 applies_when: The change adds or edits an `__init__.py`.
 tool_gate: none
-borrowed_from: []
+borrowed_from:
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 note: from the author's own Python review guide
 ---
 

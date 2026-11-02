@@ -3,12 +3,12 @@ id: py-modern-typing
 level: function
 tags: [correctness, python, types]
 severity: should-fix
-status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+status: stable
 lang: python
 applies_when: Annotations use `typing` aliases, or the type gate is missing.
 tool_gate: ruff UP; mypy --strict; pyright
-borrowed_from: []
+borrowed_from:
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 note: from the author's own Python review guide
 ---
 

@@ -3,13 +3,13 @@ id: py-task-reference
 level: service
 tags: [correctness, asyncio, concurrency]
 severity: should-fix
-status: draft
-lacks: orgs, the asyncio docs are the only backer; needs a second independent source on task lifetime
+status: stable
 lang: python
 applies_when: Python code calls asyncio.create_task or ensure_future.
 tool_gate: Ruff RUF006 (asyncio-dangling-task).
 borrowed_from:
   - https://docs.python.org/3/library/asyncio-task.html
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 ---
 
 **Rule.** Never discard the result of `create_task`; keep a reference and surface its exceptions, preferably through a `TaskGroup`.

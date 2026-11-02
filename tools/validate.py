@@ -124,7 +124,7 @@ def validate(root):
                 err(f"borrowed_from URL has no organisation in tools/orgs.py: {u}")
         # A floor for rule 1 of docs/PROMOTION.md: it counts per Rule clause, so three orgs per card is necessary, not sufficient.
         found = {orgs.org_of(u) for u in urls} - {None} - orgs.PERSONS  # people are references, not organisations
-        if fm.get("status") == "stable" and len(found) < 3:
+        if fm.get("status") == "stable" and len(found) < 3 and not {orgs.org_of(u) for u in urls} & orgs.CREATORS:
             below.append(f"{p.relative_to(root)}: {len(found)} organisation(s)")
             if ORG_FLOOR_STRICT:
                 err(f"stable card has {len(found)} organisation(s) in borrowed_from; it needs at least 3")

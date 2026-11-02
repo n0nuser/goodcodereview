@@ -12,6 +12,7 @@ borrowed_from:
   - https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices
   - https://tech.gr.vodafone.com/post/junit-parameterized-tests
   - https://docs.pytest.org/en/stable/how-to/parametrize.html
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 note: Go (copy-paste a test, use a table), Microsoft (parameterized tests) and Vodafone (three tests that are one test with different inputs) state the practice; pytest documents the tool
 ---
 

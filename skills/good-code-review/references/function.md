@@ -1292,12 +1292,117 @@ doc = ET.fromstring(request.get_data())   # rejects DTD entities by default
 
 **Counterpoint.** "Recent Python XML modules already refuse external entities." Some do. The FAIL above opts back in, Java and .NET parsers have their own defaults, and a later change to the parser config reopens the hole. An explicit hardened parser makes the setting visible in review.
 
+## py-docstrings-google
+
+severity: discuss  
+concerns: maintainability  
+applies_when: A Python function or class has, or lacks, a docstring.  
+Backed by: Google. People cited: Pablo González.
+
+**Rule.** Write a Google-style docstring only when it adds what the signature cannot say.
+
+**Why.** Forced docstrings restate the signature and rot. The ones that matter state units, side effects, and what callers may rely on. The gate never forces presence; it checks format only.
+
+**FAIL**
+
+```python
+def add(a, b):
+    """Add a and b. :param a: first number"""
+```
+
+**PASS**
+
+```python
+def charge(order):
+    """Charge the card once; safe to retry with the same order id (idempotent)."""
+```
+
+**Counterpoint.** "Every public function needs a docstring." Ousterhout would sympathise (missing docs cost more than wrong ones), and Martin would not. The compromise here is to require content that adds information, not presence.
+
+## py-modern-typing
+
+severity: should-fix  
+concerns: correctness  
+applies_when: Annotations use `typing` aliases, or the type gate is missing.  
+Backed by: no organisation yet. People cited: Pablo González.
+
+**Rule.** Write `X | None` and builtin generics, not `typing` aliases.
+
+**Why.** A tool decides these, so a human comment is waste. Check that the gate exists, and gate new code with `mypy --strict` and pyright.
+
+**FAIL**
+
+```python
+from typing import Optional, List
+def f(x: Optional[List[int]]): ...
+```
+
+**PASS**
+
+```python
+def f(x: list[int] | None) -> None: ...
+```
+
+**Counterpoint.** "Two type checkers is overkill." They disagree on edge cases, so running both on new code catches different mistakes. Pick at least one as a hard gate.
+
+## py-no-cast
+
+severity: should-fix  
+concerns: correctness  
+applies_when: Code calls `typing.cast(...)`.  
+Backed by: no organisation yet. People cited: Pablo González.
+
+**Rule.** Do not use `cast()`; parse the boundary into a typed model, or narrow with `isinstance`.
+
+**Why.** `cast` is a promise to the type checker that nothing verifies at runtime. When the promise is wrong, the type checker's output is a lie that spreads.
+
+**FAIL**
+
+```python
+data = cast(dict[str, int], json.loads(raw))
+```
+
+**PASS**
+
+```python
+class Payload(BaseModel):
+    counts: dict[str, int]
+data = Payload.model_validate_json(raw)
+```
+
+**Counterpoint.** "Sometimes the checker is wrong." Then fix the stub or narrow with `isinstance` or `assert`, which check at runtime. A justified `type: ignore[code]` with a reason is more honest than a cast, because it stays visible.
+
+## py-paths-from-file
+
+severity: should-fix  
+concerns: correctness  
+applies_when: Python code builds a path to a data file or fixture.  
+Backed by: no organisation yet. People cited: Pablo González.
+
+**Rule.** Resolve paths from `__file__`, not the current working directory.
+
+**Why.** A cwd-relative path works from the repo root and fails from CI, an IDE, or an installed package.
+
+**FAIL**
+
+```python
+Path("tests/fixtures/data.json")
+```
+
+**PASS**
+
+```python
+Path(__file__).parent / "fixtures" / "data.json"
+```
+
+**Counterpoint.** "Tests always run from the root." That holds until someone runs one test from its directory, or an installer moves it.
+
 ## py-pytest-parametrize
 
 severity: should-fix  
 concerns: testing  
 applies_when: Tests differ only in inputs and expected values.  
-Backed by: Google, Microsoft, Vodafone, pytest.
+Backed by: Google, Microsoft, Vodafone, pytest. People cited: Pablo González.
 
 **Rule.** Write tests that differ only in inputs and expected values as one `@pytest.mark.parametrize` test.
 

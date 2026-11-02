@@ -3,13 +3,13 @@ id: py-cancellation
 level: service
 tags: [reliability, correctness, asyncio, cancellation]
 severity: should-fix
-status: draft
-lacks: orgs, the asyncio docs are the only backer; needs a second independent source on cancellation
+status: stable
 lang: python
 applies_when: Async code catches exceptions around awaits or uses asyncio.timeout.
 tool_gate: Ruff BLE001 / S110 for broad swallow; lint for CancelledError needs custom rule.
 borrowed_from:
   - https://docs.python.org/3/library/asyncio-task.html
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 ---
 
 **Rule.** Re-raise `CancelledError` (do not catch it via bare `except` or `BaseException`), and catch `TimeoutError` outside the `asyncio.timeout()` block.

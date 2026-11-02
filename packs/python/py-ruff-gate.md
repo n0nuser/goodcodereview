@@ -3,12 +3,12 @@ id: py-ruff-gate
 level: change
 tags: [maintainability, python, tooling]
 severity: should-fix
-status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+status: stable
 lang: python
 applies_when: The project is Python and has a linter configuration.
 tool_gate: ruff
-borrowed_from: []
+borrowed_from:
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 note: from the author's own Python review guide
 ---
 

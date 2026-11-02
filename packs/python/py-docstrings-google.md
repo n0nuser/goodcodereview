@@ -3,13 +3,13 @@ id: py-docstrings-google
 level: function
 tags: [maintainability, python, docs]
 severity: discuss
-status: draft
-lacks: orgs, Google's review guide is the only backer; needs two more orgs
+status: stable
 lang: python
 applies_when: A Python function or class has, or lacks, a docstring.
 tool_gate: ruff D (convention=google, D1xx ignored)
 borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 ---
 
 **Rule.** Write a Google-style docstring only when it adds what the signature cannot say.

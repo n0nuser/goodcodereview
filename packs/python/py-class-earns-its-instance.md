@@ -3,13 +3,13 @@ id: py-class-earns-its-instance
 level: module
 tags: [maintainability, python, classes]
 severity: discuss
-status: draft
-lacks: orgs, the Go wiki and the author's own guide back it; needs a third independent org
+status: stable
 lang: python
 applies_when: A Python class has no state, only static methods, or a `Protocol` with one implementation.
 tool_gate: ruff PLR6301 (partial)
 borrowed_from:
   - https://go.dev/wiki/CodeReviewComments
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 ---
 
 **Rule.** Give a class real state or a collaborator; otherwise write a module function.

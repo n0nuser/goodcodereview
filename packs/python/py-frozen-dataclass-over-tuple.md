@@ -4,11 +4,12 @@ level: function
 tags: [correctness, python, types]
 severity: should-fix
 status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+lacks: held, cites the draft card(s) fn-no-anonymous-tuples; stable once those are stable
 lang: python
 applies_when: A Python function returns a tuple whose positions differ in meaning.
 tool_gate: none
-borrowed_from: []
+borrowed_from:
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 note: from the author's own Python review guide
 ---
 

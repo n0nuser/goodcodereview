@@ -39,7 +39,7 @@ ORGS = {
     "wordpress": "WordPress", "w3c": "W3C", "envoy": "Envoy", "hyrum": "Hyrum Wright", "owasp": "OWASP", "zalando": "Zalando",
     "jetbrains": "JetBrains", "nvidia": "NVIDIA", "statsig": "Statsig", "etcd": "etcd", "hazelcast": "Hazelcast",
     "ecto": "Ecto", "cockroach": "CockroachDB", "anthropic": "Anthropic",
-    "vitest": "Vitest", "typescript-eslint": "typescript-eslint project", "testing-library": "Testing Library", "cmu-sei": "Carnegie Mellon SEI", "wikimedia": "Wikimedia (MediaWiki)", "lockheed": "Lockheed Martin", "fowler": "Martin Fowler",
+    "vitest": "Vitest", "typescript-eslint": "typescript-eslint project", "testing-library": "Testing Library", "cmu-sei": "Carnegie Mellon SEI", "wikimedia": "Wikimedia (MediaWiki)", "lockheed": "Lockheed Martin", "fowler": "Martin Fowler", "pablo-gonzalez": "Pablo González",
 }
 
 # Orgs that are one author. They show in "Backed by" but never count toward the three organisations a stable card needs.
@@ -47,8 +47,11 @@ PERSONS = {
     "clig", "go-update",
     "brendan-gregg", "dan-luu", "feathers", "heydon", "hickey", "hyrum", "jnd", "joel", "kane", "kent-beck", "kent-c-dodds",
     "kleppmann", "liskov-wing", "lucumr", "mcintosh", "ousterhout", "portebois", "salvatore", "sandi-metz", "shneiderman",
-    "tef", "fowler", "vorpus", "warne", "wayne", "winand",
+    "tef", "fowler", "pablo-gonzalez", "vorpus", "warne", "wayne", "winand",
 }
+
+# Creators: the repository's author. A stable card that cites one of these passes the organisation floor.
+CREATORS = {"pablo-gonzalez"}
 
 # Standing of a person under the test in docs/PROMOTION.md (checked 2026-10-28): id -> (yes|no, deciding evidence). Standing never makes a person count toward the three organisations.
 STANDING = {
@@ -109,7 +112,7 @@ PREFIXES = {
     "github.com/jsx-eslint/": "jsx-eslint", "github.com/matthiasn/talk-transcripts/blob/master/Hickey_Rich/": "hickey",
     "github.com/microsoft/": "microsoft", "typescriptlang.org": "microsoft", "vitest.dev": "vitest", "typescript-eslint.io": "typescript-eslint", "testing-library.com": "testing-library", "github.com/uber-go/": "uber", "github.com/google-gemini/": "google", "cursor.com": "cursor", "github.com/mozilla/": "mozilla", "github.com/ossf/": "openssf", "bestpractices.dev": "openssf", "github.com/github/": "github", "github.com/rust-lang/": "rust",
     "cmu-sei.github.io": "cmu-sei", "sei.cmu.edu": "cmu-sei", "mediawiki.org": "wikimedia",
-    "stroustrup.com/JSF-AV-rules.pdf": "lockheed", "martinfowler.com": "fowler",
+    "stroustrup.com/JSF-AV-rules.pdf": "lockheed", "martinfowler.com": "fowler", "pablogonzalez.me": "pablo-gonzalez",
     "x.com/addyosmani/status/2114604912520921136": "anthropic",
     "raw.githubusercontent.com/OWASP/": "owasp", "raw.githubusercontent.com/WordPress/": "wordpress",
     "raw.githubusercontent.com/elastic/": "elastic", "raw.githubusercontent.com/mozilla/": "mozilla",

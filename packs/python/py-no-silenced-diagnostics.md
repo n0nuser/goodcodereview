@@ -4,11 +4,12 @@ level: change
 tags: [maintainability, python, tooling]
 severity: should-fix
 status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+lacks: held, cites the draft card(s) chg-no-silenced-diagnostics; stable once those are stable
 lang: python
 applies_when: A diff adds `# noqa` or `# type: ignore`.
 tool_gate: ruff PGH003, PGH004
-borrowed_from: []
+borrowed_from:
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 note: from the author's own Python review guide
 ---
 

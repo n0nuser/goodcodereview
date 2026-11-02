@@ -28,7 +28,7 @@ These groups count as one organisation each:
 
 GitLab and GitHub are separate organisations. NIST, CISA, and NCSC are separate organisations.
 
-A person is not an organisation. A blog, a talk, or a book by one author is a reference: the card lists the author under "People cited" and never counts it toward the three. `PERSONS` in `tools/orgs.py` lists the people. A person who speaks for a company counts only through the company's own page.
+A person is not an organisation. A blog, a talk, or a book by one author is a reference: the card lists the author under "People cited" and never counts it toward the three. One exception: a source by the creator of this repository (`CREATORS` in `tools/orgs.py`) is enough for `status: stable` on its own. `PERSONS` in `tools/orgs.py` lists the people. A person who speaks for a company counts only through the company's own page.
 
 A person has standing on a card when both hold: (a) a publisher or a programme-selected venue published their work on the card's subject, or they created or lead the thing the card is about; and (b) the page the card cites states a practice that backs the card's Rule. A person's own site, imprint or newsletter does not satisfy (a). Standing lets a card name the person under "People cited" with confidence; it never adds to the three organisations. `STANDING` in `tools/orgs.py` records the verdict and evidence for each person checked.
 

@@ -4,11 +4,12 @@ level: module
 tags: [maintainability, python, classes]
 severity: should-fix
 status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+lacks: held, cites the draft card(s) mod-no-logic-in-constructors; stable once those are stable
 lang: python
 applies_when: A Python class defines `__init__` or `__post_init__`.
 tool_gate: none
-borrowed_from: []
+borrowed_from:
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 note: from the author's own Python review guide
 ---
 

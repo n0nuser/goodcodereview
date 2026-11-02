@@ -209,3 +209,173 @@ def send_welcome_email(user): ...
 ```
 
 **Counterpoint.** "But we will surely need it." Then add it when you do, in a change that has the real second caller to shape it. Optimising for easy change means simple code, not built-in flexibility. The cost of waiting is low, and the cost of the wrong guess is not. When the need is certain and a retrofit would be costly, as for a public API that cannot change later, weigh that cost before waiting.
+
+## py-class-earns-its-instance
+
+severity: discuss  
+concerns: maintainability  
+applies_when: A Python class has no state, only static methods, or a `Protocol` with one implementation.  
+Backed by: Google. People cited: Pablo González.
+
+**Rule.** Give a class real state or a collaborator; otherwise write a module function.
+
+**Why.** A static-only class is a module with extra typing. A `Protocol` with one implementation is a speculative interface. A `Protocol` needs two or more real implementations swapped at runtime; see [mod-yagni](module.md#mod-yagni).
+
+**FAIL**
+
+```python
+class DateUtils:
+    @staticmethod
+    def parse(s): ...
+class Notifier(Protocol): ...   # one impl, ever
+```
+
+**PASS**
+
+```python
+dates.py:  def parse(s): ...
+# use the concrete class until a second real impl exists
+```
+
+**Counterpoint.** "Protocols make testing easy." A fake of a concrete class in tests works with duck typing too. The Go review guide takes the same stance: declare interfaces where consumed, and avoid speculative ones.
+
+## py-field-only-when-adds
+
+severity: discuss  
+concerns: correctness  
+applies_when: A pydantic model or settings class uses `Field()`.  
+Backed by: no organisation yet. People cited: Pablo González.
+
+**Rule.** Use `Field()` only when it adds something (a constraint, an alias, or API docs), and set plain defaults directly.
+
+**Why.** `Field(default=5.0)` is noise that hides which fields are constrained.
+
+**FAIL**
+
+```python
+request_timeout_s: float = Field(default=5.0)
+```
+
+**PASS**
+
+```python
+request_timeout_s: float = 5.0
+max_batch_size: int = Field(default=500, gt=0, le=2_000)
+```
+
+**Counterpoint.** "Uniform `Field` everywhere is consistent." Consistency that hides the constraints is not worth the scan cost. Every `Field` should tell the reader something.
+
+## py-httpx-client-lifespan
+
+severity: should-fix  
+concerns: performance  
+applies_when: A Python service creates an `httpx` client.  
+Backed by: no organisation yet. People cited: Pablo González.
+
+**Rule.** Pass an explicit `httpx.Timeout` to every `httpx` client.
+
+**Why.** Core rules: [svc-timeouts](service.md#svc-timeouts), [mod-pooled-clients-built-once](module.md#mod-pooled-clients-built-once). `read=None` disables the read timeout. Build the client once in the app lifespan and reuse it.
+
+**FAIL**
+
+```python
+async def fetch(url):
+    async with httpx.AsyncClient(timeout=None) as c:
+        return await c.get(url)
+```
+
+**PASS**
+
+```python
+@asynccontextmanager
+async def lifespan(app):
+    async with httpx.AsyncClient(timeout=httpx.Timeout(10.0, connect=2.0)) as c:
+        app.state.http = c
+        yield
+```
+
+**Counterpoint.** "httpx defaults are fine." They are (5s), but set the value explicitly so that a library change cannot silently change behaviour.
+
+## py-imports
+
+severity: should-fix  
+concerns: maintainability  
+applies_when: A Python module has imports.  
+Backed by: no organisation yet. People cited: Pablo González.
+
+**Rule.** Put imports at module top, absolute only.
+
+**Why.** Local imports hide dependencies and cycles. Relative imports break when files move. Importing a private name couples you to something its owner may change without notice. Never import a `_`-prefixed name from another module, and use `__all__` only in a re-export `__init__.py`.
+
+**FAIL**
+
+```python
+def handler():
+    from .helpers import _parse
+```
+
+**PASS**
+
+```python
+from app.billing.parsing import parse
+```
+
+**Counterpoint.** "Import inside the function avoids a cycle." It hides the cycle instead of fixing it, and the design needs a third module or a dependency inversion. A lazy import for a heavy optional dependency is the one defensible exception; document it with a reason.
+
+## py-no-init-or-model-tests
+
+severity: should-fix  
+concerns: testing  
+applies_when: The diff adds `test_init_*` or a test file for a plain model or dataclass.  
+Backed by: no organisation yet. People cited: Pablo González.
+
+**Rule.** Cover `__init__` and plain models through the behaviour that uses them.
+
+**Why.** Such tests restate the class and break on every field change without proving behaviour.
+
+**FAIL**
+
+```python
+def test_init_sets_name(): assert User(name="a").name == "a"
+```
+
+**PASS**
+
+```python
+def test_welcome_email_uses_user_name(): ...
+```
+
+**Counterpoint.** "Validators on the model need tests." Yes: test the validator's behaviour (valid and invalid input), not that assignment works.
+
+## py-test-hygiene
+
+severity: discuss  
+concerns: testing  
+applies_when: A Python test uses the current date or time, or reaches the network.  
+Backed by: no organisation yet. People cited: Pablo González.
+
+**Rule.** Freeze time and block network in tests.
+
+**Why.** Tests that depend on the clock or the network flake, and fail in CI at midnight or offline.
+
+**FAIL**
+
+```python
+def test_token_expires():
+    token = issue_token(ttl=60)
+    assert token.expires_at > datetime.now()
+```
+
+**PASS**
+
+```python
+from freezegun import freeze_time
+
+@freeze_time("2026-01-01 12:00:00")
+def test_token_expires():
+    token = issue_token(ttl=60)
+    assert token.expires_at == datetime(2026, 1, 1, 12, 1)
+# run with: pytest --disable-socket
+```
+
+**Counterpoint.** "Real time catches real bugs." It catches flakes. Test time-dependent logic with a frozen clock, and cover real-network behaviour in a separate, opt-in suite.

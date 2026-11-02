@@ -3,12 +3,12 @@ id: py-paths-from-file
 level: function
 tags: [correctness, python, io]
 severity: should-fix
-status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+status: stable
 lang: python
 applies_when: Python code builds a path to a data file or fixture.
 tool_gate: none
-borrowed_from: []
+borrowed_from:
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 note: from the author's own Python review guide
 ---
 

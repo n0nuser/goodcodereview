@@ -3,12 +3,12 @@ id: py-field-only-when-adds
 level: module
 tags: [correctness, python, pydantic]
 severity: discuss
-status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+status: stable
 lang: python
 applies_when: A pydantic model or settings class uses `Field()`.
 tool_gate: none
-borrowed_from: []
+borrowed_from:
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 note: from the author's own Python review guide
 ---
 

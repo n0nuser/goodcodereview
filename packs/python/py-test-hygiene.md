@@ -3,12 +3,12 @@ id: py-test-hygiene
 level: module
 tags: [testing, python]
 severity: discuss
-status: draft
-lacks: orgs, Shopify backs the Why only; Stripe test clocks are a product feature, so the Rule has no org
+status: stable
 lang: python
 applies_when: A Python test uses the current date or time, or reaches the network.
 tool_gate: pytest-socket (`--disable-socket`)
-borrowed_from: []
+borrowed_from:
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 note: from the author's own Python review guide
 ---
 

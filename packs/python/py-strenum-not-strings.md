@@ -4,11 +4,12 @@ level: function
 tags: [correctness, python, types]
 severity: should-fix
 status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+lacks: held, cites the draft card(s) fn-no-magic-values, fn-no-stringly-typed-returns; stable once those are stable
 lang: python
 applies_when: Python code compares against string or number literals for a fixed set of values.
 tool_gate: ruff PLR2004 (partial)
-borrowed_from: []
+borrowed_from:
+  - https://pablogonzalez.me/posts/python-code-review-guide/
 note: from the author's own Python review guide
 ---
 
