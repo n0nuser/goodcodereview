@@ -1,6 +1,6 @@
 # cards.json versioning
 
-`cards.json` and `cards-drafts.json` are the only machine-readable API of this site. Each file carries `schema_version`, an integer, and `cards.schema.json` is the JSON Schema for the current version. The number lives in `SCHEMA_VERSION` in `tools/schema.py`.
+`cards.json`, `cards-drafts.json`, and the per-level files in `cards/` ([cards-json.md](cards-json.md)) are the only machine-readable API of this site. Each file carries `schema_version`, an integer, and `cards.schema.json` is the JSON Schema for the current version. The number lives in `SCHEMA_VERSION` in `tools/schema.py`.
 
 ## One scheme: an integer in the file
 
@@ -22,6 +22,8 @@ Any change to the shape in `tools/schema.py`, because the published schema sets 
 Each bump has a line in [CHANGELOG.md](../CHANGELOG.md) that names the change and says whether it is breaking. The comment on `SCHEMA_VERSION` keeps the same history in short form.
 
 ## What does not bump it
+
+- Adding or removing a file that has the same shape, such as `cards/<level>.json` when a level gains its first card or loses its last. Every file validates against the same `cards.schema.json`, so no consumer of the shape breaks. A consumer should list the level files it needs from `llms.txt` or `cards.json` (`levels`), not assume all eight exist.
 
 - Card text, severities, and tags change, and cards are added.
 - A card id is a stable key for consumers. Removing or renaming one is a breaking change for anyone who stores ids, so it gets a CHANGELOG line, but it does not change the shape.

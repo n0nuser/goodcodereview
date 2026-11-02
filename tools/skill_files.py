@@ -232,6 +232,7 @@ def _llms(head: list[str], llms_scope: list[str], level_index: dict[Level, list[
             f"- [Drafts by what they lack]({BASE}/drafts.md): every draft grouped by what keeps it from stable.",
             f"- [Sitemap]({BASE}/sitemap.xml): every page.",
             f"- [cards.json]({BASE}/cards.json): every stable card as JSON; the shape is in [cards.schema.json]({BASE}/cards.schema.json).",
+            f"- [cards/function.json]({BASE}/cards/function.json): one level's stable cards as JSON, same shape; replace `function` with any level that has cards.",
             f"- [Agent Skills index]({BASE}/.well-known/agent-skills/index.json): the skill, with a sha256 digest.",
             f"- [AGENTS.md]({REPO}/blob/main/AGENTS.md): how to review code with this repo and how to contribute a card.",
             f"- [Skill folder]({REPO}/tree/main/skills/good-code-review): `SKILL.md` and `references/` in the repository.",

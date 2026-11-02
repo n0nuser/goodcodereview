@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import worker from "../src/worker.js";
+import worker, { levelOnly } from "../src/worker.js";
 
 // A stand-in for the ASSETS binding: it serves the 404 page and applies one shared header like _headers does.
 const corpus = {
@@ -12,10 +12,13 @@ const corpus = {
 		{ id: "c", level: "change", severity: "discuss", concerns: ["security", "usability"], topics: [], rule: "Small.", url: "https://x/change#c" },
 	],
 };
-const files = { "/404.html": ["<h1>missing</h1>", "text/html"], "/cards.json": [JSON.stringify(corpus), "application/json"], "/concerns.md": ["static", "text/markdown"] };
+const files = { "/404.html": ["<h1>missing</h1>", "text/html"], "/cards.json": [JSON.stringify(corpus), "application/json"], "/concerns.md": ["static", "text/markdown"],
+	"/cards/function.json": ['{"level-file":"function"}', "application/json"] };
+const seen = [];
 const env = {
 	ASSETS: {
 		async fetch(req) {
+			seen.push(new URL(req.url).pathname);
 			const hit = files[new URL(req.url).pathname];
 			if (!hit) return new Response("no", { status: 404 });
 			return new Response(hit[0], { headers: { "Content-Type": hit[1], "X-Content-Type-Options": "nosniff" } });
@@ -87,4 +90,53 @@ test("HEAD gets the filtered headers and no body", async () => {
 	const res = await worker.fetch(new Request("https://example.com/cards.json?level=change", { method: "HEAD" }), env);
 	assert.equal(res.headers.get("cache-control"), "public, max-age=300");
 	assert.equal(await res.text(), "");
+});
+
+test("a single level is served from its own file without reading the corpus", async () => {
+	seen.length = 0;
+	const res = await get("/cards.json?level=function");
+	assert.equal(res.headers.get("content-type"), "application/json; charset=utf-8");
+	assert.equal(res.headers.get("cache-control"), "public, max-age=300");
+	assert.equal(res.headers.get("x-content-type-options"), "nosniff");
+	assert.equal(await res.text(), '{"level-file":"function"}');
+	assert.deepEqual(seen, ["/cards/function.json"]);
+});
+
+test("HEAD on the level file has headers and no body", async () => {
+	const res = await worker.fetch(new Request("https://example.com/cards.json?level=function", { method: "HEAD" }), env);
+	assert.equal(res.headers.get("content-type"), "application/json; charset=utf-8");
+	assert.equal(await res.text(), "");
+});
+
+test("a level with no file falls back to filtering the corpus", async () => {
+	const data = await (await get("/cards.json?level=change")).json();
+	assert.deepEqual(data.cards.map((c) => c.id), ["c"]);
+	const none = await (await get("/cards.json?level=nope")).json();
+	assert.deepEqual(none.cards, []);
+});
+
+test("level plus another filter, several levels, or a path-like value use the corpus", async () => {
+	for (const q of ["level=function&concern=security", "level=function&group=level", "level=function&topic=io", "level=function,change", "level=function&level=change", "level=..%2Fx", "level=Function%2F"]) {
+		seen.length = 0;
+		const data = await (await get(`/cards.json?${q}`)).json();
+		assert.ok(Array.isArray(data.cards), q);
+		assert.ok(seen.includes("/cards.json"), q);
+		assert.ok(!seen.some((p) => p.startsWith("/cards/")), q);
+	}
+	assert.deepEqual((await (await get("/cards.json?level=function&concern=security")).json()).cards.map((c) => c.id), ["a"]);
+});
+
+test("levelOnly accepts one letters-only level and nothing else", () => {
+	const p = (q) => new URLSearchParams(q);
+	assert.equal(levelOnly(p("level=Function")), "function");
+	assert.equal(levelOnly(p("level=function&concern=security")), "");
+	assert.equal(levelOnly(p("level=function,change")), "");
+	assert.equal(levelOnly(p("level=a/b")), "");
+	assert.equal(levelOnly(p("")), "");
+});
+
+test("an unfiltered cards.json is passed through to the static file", async () => {
+	seen.length = 0;
+	assert.equal((await (await get("/cards.json")).json()).cards.length, 3);
+	assert.deepEqual(seen, ["/cards.json"]);
 });

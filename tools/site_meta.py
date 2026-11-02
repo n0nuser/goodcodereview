@@ -1,4 +1,4 @@
-"""The non-page files of the site: sitemap, robots, _headers, security.txt, cards.json, and the Agent Skills discovery files."""
+"""The non-page files of the site: sitemap, robots, _headers, security.txt, the cards JSON files, and the Agent Skills discovery files."""
 import base64
 import datetime
 import hashlib
@@ -8,7 +8,7 @@ from collections.abc import Sequence
 import orgs
 import schema
 from assets import JS
-from card_fields import concerns, lacks, markdown_url, page_name, topics
+from card_fields import concerns, lacks, level_of, markdown_url, page_name, topics
 from config import BASE, CARDS_JSON_BUDGET, HSTS_MAX_AGE, LICENCE_URL, REPO, SECURITY_TXT_DAYS, SITE_NAME, SKILL_NAME
 from context import BuildInput
 from errors import BuildError
@@ -88,19 +88,40 @@ def corpus(kind: schema.Kind, cards: Sequence[Card], b: BuildInput) -> schema.Co
                          [_card_model(c) for c in cards])
 
 
+def check_union(merged: list[str], by_file: dict[str, list[str]]) -> None:
+    """Raise BuildError unless the per-level files together hold exactly the cards of the merged file (which has no repeated id), so each card is in one file."""
+    union = [i for ids in by_file.values() for i in ids]
+    if sorted(union) != sorted(merged):
+        missing = sorted(set(merged) - set(union))
+        extra = sorted(set(union) - set(merged))
+        raise BuildError(f"level files hold {len(union)} cards, the merged file {len(merged)}; missing {missing[:5]}, extra {extra[:5]}")
+
+
 def cards_files(b: BuildInput) -> dict[str, str]:
-    """cards.schema.json, cards.json, and cards-drafts.json. Raises BuildError when a file breaks its schema or passes CARDS_JSON_BUDGET."""
+    """cards.schema.json, the merged cards files, and one file per level.
+
+    Layout: `cards.json` and `cards-drafts.json` hold every card; `cards/<level>.json` and `cards/drafts-<level>.json` hold the cards of
+    one level (a pack card goes with its own level) and exist only for levels that have cards. All of them come from the same card
+    lists, share cards.schema.json, and each stays under CARDS_JSON_BUDGET. Raises BuildError when a file breaks the schema or the
+    budget, or when the level files and the merged file disagree.
+    """
     sch = schema.json_schema(BASE)
     files = {"cards.schema.json": json.dumps(sch, indent=2) + "\n"}
-    for name, kind, cards in (("cards.json", schema.Kind.STABLE, b.stable), ("cards-drafts.json", schema.Kind.DRAFTS, b.draft)):
-        data = schema.to_dict(corpus(kind, cards, b))
-        if problems := schema.check(sch, data):
-            raise BuildError(f"{name} does not match cards.schema.json:\n" + "\n".join(problems[:10]))
-        text = json.dumps(data, indent=1, ensure_ascii=False) + "\n"
-        size = len(text.encode())
-        if size > CARDS_JSON_BUDGET:
-            raise BuildError(f"{name} is {size} bytes, budget {CARDS_JSON_BUDGET}: it is one unpaginated file; see docs/cards-json.md before raising it")
-        files[name] = text
+    for kind, merged_name, prefix, cards in ((schema.Kind.STABLE, "cards.json", "", b.stable), (schema.Kind.DRAFTS, "cards-drafts.json", "drafts-", b.draft)):
+        parts = {merged_name: cards}
+        parts.update({f"cards/{prefix}{lv}.json": cs for lv in LEVELS if (cs := [c for c in cards if level_of(c) == lv])})
+        ids: dict[str, list[str]] = {}
+        for name, part in parts.items():
+            data = schema.to_dict(corpus(kind, part, b))
+            if problems := schema.check(sch, data):
+                raise BuildError(f"{name} does not match cards.schema.json:\n" + "\n".join(problems[:10]))
+            text = json.dumps(data, indent=1, ensure_ascii=False) + "\n"
+            size = len(text.encode())
+            if size > CARDS_JSON_BUDGET:
+                raise BuildError(f"{name} is {size} bytes, budget {CARDS_JSON_BUDGET}: see docs/cards-json.md before raising it")
+            files[name] = text
+            ids[name] = [c["id"] for c in data["cards"]]
+        check_union(ids.pop(merged_name), ids)
     return files
 
 

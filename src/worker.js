@@ -23,6 +23,14 @@ export function select(corpus, params) {
 	return { cards, picked, unknown, known };
 }
 
+// The one filter that has its own file: exactly one `level` value and no other filter. Returns the level, or "" when the request needs the corpus.
+// The value is limited to letters, so it cannot name another path.
+export function levelOnly(params) {
+	const others = ["concern", "topic", "group"].some((k) => params.has(k));
+	const levels = list(params, "level");
+	return !others && levels.length === 1 && /^[a-z]+$/.test(levels[0]) ? levels[0] : "";
+}
+
 const line = (c) => `- [\`${c.id}\`](${c.url}) [${c.severity}] {${c.concerns.join(", ")}}: ${c.rule}`;
 
 export function markdown(corpus, params) {
@@ -51,7 +59,17 @@ export default {
 		const filtered = ["concern", "topic", "level", "group"].some((k) => url.searchParams.has(k));
 		const path = url.pathname;
 		const asMarkdown = path === "/concerns.md";
-		if (filtered && (asMarkdown || path === "/cards.json") && (req.method === "GET" || req.method === "HEAD")) {
+		const readOnly = req.method === "GET" || req.method === "HEAD";
+		const level = path === "/cards.json" && readOnly ? levelOnly(url.searchParams) : "";
+		if (level) {
+			// The build writes site/cards/<level>.json with the same shape, so serve it as is: no JSON parse, no filter.
+			const file = await env.ASSETS.fetch(new Request(new URL(`/cards/${level}.json`, req.url), { headers: { accept: "application/json" } }));
+			if (file.ok) {
+				const headers = new Headers({ "Cache-Control": "public, max-age=300", "X-Content-Type-Options": "nosniff", Vary: "Accept", "Content-Type": "application/json; charset=utf-8" });
+				return new Response(req.method === "HEAD" ? null : file.body, { headers });
+			}
+		}
+		if (filtered && (asMarkdown || path === "/cards.json") && readOnly) {
 			const res = await env.ASSETS.fetch(new Request(new URL("/cards.json", req.url), { headers: { accept: "application/json" } }));
 			if (res.ok) {
 				const corpus = await res.json();
