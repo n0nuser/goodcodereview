@@ -74,8 +74,9 @@ def _nav(links: Sequence[NavLink], cur: str) -> str:
 
 
 def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "", desc: str = "", slug: str = "",
-         ld: dict[str, Any] | None = None, script: bool = False) -> str:
-    """One complete HTML page. `script` adds the inline filter script; `slug` turns on the head tags; `ld` is JSON-LD."""
+         ld: dict[str, Any] | None = None, script: bool = False, updated: str = "") -> str:
+    """One complete HTML page. `script` adds the inline filter script; `slug` turns on the head tags; `ld` is JSON-LD; `updated` shows a visible date under the heading."""
+    stamp = f'<p class="note">Last updated <time datetime="{updated}">{updated}</time></p>' if updated else ""
     full = title if slug == "index" else f"{title} | {SITE_NAME}"
     jsonld = '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + "</script>" if ld else ""
     tail = '<p id=said class=vh role=status></p><script>' + JS + '</script>' if script else ""
@@ -83,5 +84,5 @@ def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "",
             f'<link rel="icon" href="{FAVICON}">'
             f"<title>{html.escape(full)}</title>{head_tags(full, desc, slug)}<style>{CSS}</style>{jsonld}</head>"
             f"<body><a class=skip href=#main>Skip to content</a>{_nav(links, cur)}<main id=main tabindex=-1>"
-            f"<h1>{html.escape(title)}</h1>{body}</main>{sprite(body)}"
+            f"<h1>{html.escape(title)}</h1>{stamp}{body}</main>{sprite(body)}"
             f"{FOOTER}{tail}</body></html>")

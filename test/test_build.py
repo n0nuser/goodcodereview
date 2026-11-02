@@ -96,3 +96,8 @@ def test_inline_renders_code_bold_and_card_links() -> None:
 
 def test_rule_reads_the_first_paragraph() -> None:
     assert rule("**Rule.** One\ntwo.\n\n**Why.** x") == "One two."
+
+
+@pytest.mark.parametrize("name", ["index.html", "function.html", "pack-python.html", "concerns.html"])
+def test_page_shows_last_updated(site_text: dict[str, str], name: str) -> None:
+    assert 'Last updated <time datetime="' in site_text[name]
