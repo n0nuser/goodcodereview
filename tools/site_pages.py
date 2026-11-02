@@ -68,7 +68,7 @@ def listing_pages(b: BuildInput) -> dict[str, str]:
     pages = {}
     for spec in page_specs(b):
         compact = spec.file == "concerns.html"
-        out = listing(spec, b.ids, b.links, empty=spec.file[:-5] in b.no_stable, compact=compact)
+        out = listing(spec, b.ids, b.links, empty=spec.file[:-5] in b.no_stable, compact=compact, date=b.date)
         if "<code></code>" in out or out.count("<strong>PASS</strong>") != (0 if compact else len(spec.cards)):
             raise BuildError(f"{spec.file}: a card lost its FAIL or PASS block in rendering")
         pages[spec.file] = out
@@ -151,7 +151,7 @@ def home_page(b: BuildInput) -> str:
         "<h2>Packs</h2><p>A pack adds language-specific cards on top of the levels. Use one with the level that matches your input.</p>"
         "<p>" + (", ".join(f'<a href="pack-{p}.html">{pack_name(p)} pack</a>' for p in b.packs) or "No packs yet.") + "</p>"
         '<p class="note">Writing CSS? <a href="https://good-css.com">good-css.com</a> has rules for reviewing CSS.</p>')
-    return page("Good Code Review", body, links=b.links, cur="index.html", desc=SITE_DESC, slug="index", ld=ld, script=True)
+    return page("Good Code Review", body, links=b.links, cur="index.html", desc=SITE_DESC, slug="index", ld=ld, script=True, updated=b.date)
 
 
 def not_found_page(b: BuildInput) -> str:

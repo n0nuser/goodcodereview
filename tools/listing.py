@@ -104,7 +104,7 @@ def _filters(cards: Sequence[Card], stable: Sequence[Card], *, compact: bool) ->
     return flt
 
 
-def listing(spec: PageSpec, ids: dict[str, str], links: Sequence[NavLink], *, empty: bool, compact: bool) -> str:
+def listing(spec: PageSpec, ids: dict[str, str], links: Sequence[NavLink], *, empty: bool, compact: bool, date: str = "") -> str:
     """A level, pack, or concerns page. `empty` marks a level with no stable cards; `compact` shows rows that link to the full cards."""
     cards = spec.cards
     stable = [c for c in cards if is_stable(c)]
@@ -120,7 +120,7 @@ def listing(spec: PageSpec, ids: dict[str, str], links: Sequence[NavLink], *, em
     slug = spec.file[:-5]
 
     def render(body: str) -> str:
-        return page(spec.title, body, links=links, cur=spec.file, desc=spec.desc, slug=slug, script=True)
+        return page(spec.title, body, links=links, cur=spec.file, desc=spec.desc, slug=slug, script=True, updated=date)
 
     if empty:
         return render(NONE_NOTE + spec.intro + LEGEND + drafts)
