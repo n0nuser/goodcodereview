@@ -51,7 +51,7 @@ python3 tools/eval.py run injected --agent opencode --model opencode-go/deepseek
 
 `--agent opencode` runs the cases through `opencode run`, with the skill in `.opencode/skills/`. Use it to see whether a cheaper model follows the skill and finds the planted defects. The adapter is written from opencode's documented CLI and has not been run against a real install, so try one case with `--runs 1` first. Compare `bare` and `forced` for the same model: a checklist should help a weaker model more.
 
-The `eval` workflow (Actions, Run workflow) runs the same command with the repository secret `ANTHROPIC_API_KEY`; it never runs on its own. It is untested until someone starts it once.
+The evals run only from Claude Code on the maintainer's machine. No workflow holds an API key.
 
 `run` calls `claude -p`, which spends tokens, so CI runs only the grader's tests (`test/test_eval.py`). Rerun the evals after a change to the skill text in `tools/build.py`, and add a case when a reviewer reports a miss.
 

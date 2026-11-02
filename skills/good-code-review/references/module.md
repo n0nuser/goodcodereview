@@ -188,7 +188,7 @@ ct = aead.encrypt(os.urandom(12), msg, aad)      # fresh nonce per message
 
 severity: should-fix  
 concerns: maintainability, process  
-applies_when: The change adds an abstraction, parameter, hook or option.  
+applies_when: The code adds or keeps an abstraction, parameter, hook or option.  
 Backed by: Google, Wikimedia (MediaWiki), Microsoft, Shopify, NVIDIA. People cited: Kent C. Dodds, Martin Fowler, Henrik Warne.
 
 **Rule.** Do not build an abstraction or capability for a need that does not exist yet; add it when the need or a second use appears.
@@ -326,7 +326,7 @@ from app.billing.parsing import parse
 
 severity: should-fix  
 concerns: testing  
-applies_when: The diff adds `test_init_*` or a test file for a plain model or dataclass.  
+applies_when: The code adds `test_init_*` or a test file for a plain model or dataclass.  
 Backed by: no organisation yet. People cited: Pablo González.
 
 **Rule.** Cover `__init__` and plain models through the behaviour that uses them.

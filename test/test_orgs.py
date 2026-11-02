@@ -49,11 +49,7 @@ def errors_for(urls):
 		(root / "glossary").mkdir()
 		(root / "cards" / "audit" / "function" / "fn-x.md").write_text(CARD.format(urls="\n".join(f"  - {u}" for u in urls)))
 		(root / "docs" / "research" / "n.md").write_text("\n".join(urls))
-		old, validate_mod.ORG_FLOOR_STRICT = validate_mod.ORG_FLOOR_STRICT, True  # the floor is a warning in the repo; test it as an error
-		try:
-			return validate(root)
-		finally:
-			validate_mod.ORG_FLOOR_STRICT = old
+		return validate(root)
 
 
 class OrgsTest(unittest.TestCase):
@@ -99,6 +95,9 @@ class OrgsTest(unittest.TestCase):
 	def test_a_person_does_not_count_as_an_org(self):
 		urls = ["https://www.w3.org/a", "https://web.dev/a", "https://martin.kleppmann.com/a"]
 		self.assertIn("has 2 organisation(s)", " ".join(errors_for(urls)))
+
+	def test_a_creator_source_satisfies_the_floor(self):
+		self.assertEqual(errors_for(["https://pablogonzalez.me/posts/python-code-review-guide/"]), [])
 
 
 if __name__ == "__main__":

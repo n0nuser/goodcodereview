@@ -1,6 +1,6 @@
 ---
 id: py-ruff-gate
-level: change
+level: codebase
 tags: [maintainability, python, tooling]
 severity: should-fix
 status: stable

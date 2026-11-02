@@ -6,7 +6,7 @@ severity: block
 status: stable
 note: Rule backed by AWS, Google (gRPC), and Microsoft (ASP.NET Core gRPC); deriving the timeout from the caller's deadline has 2 orgs (Google, Microsoft) and sits in Why; no source prescribes timeout numbers
 lang: core
-applies_when: The code calls anything over a network or process boundary.
+applies_when: The code calls a remote service over a network.
 tool_gate: none
 borrowed_from:
   - https://docs.python.org/3/library/asyncio-task.html

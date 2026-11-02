@@ -1,4 +1,5 @@
 import json
+import subprocess
 import sys
 import unittest
 from pathlib import Path
@@ -9,6 +10,8 @@ import schema  # noqa: E402
 
 BASE = "https://goodcodereview.com"
 SITE = Path(__file__).resolve().parent.parent / "site"
+if not (SITE / "cards.json").is_file():  # site/ is generated and untracked; a fresh clone needs one build
+    subprocess.run([sys.executable, str(SITE.parent / "tools" / "build.py")], check=True)
 
 
 class SchemaTest(unittest.TestCase):
@@ -44,7 +47,7 @@ class SchemaTest(unittest.TestCase):
 		self.assertTrue(schema.check(self.schema, drafts))
 
 	def test_orgs_and_people_together_cover_every_source(self):
-		# No three-organisation assertion here: validate.py warns about the stable cards below the floor (ORG_FLOOR_STRICT).
+		# No three-organisation assertion here: validate.py errors on a stable card below the floor.
 		for c in self.data["cards"]:
 			self.assertEqual(sorted(u for o in c["orgs"] + c["people"] for u in o["sources"]), sorted(c["sources"]), c["id"])
 

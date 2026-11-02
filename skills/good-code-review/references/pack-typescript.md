@@ -1,6 +1,6 @@
 # TypeScript pack
 
-A draft card is not vetted. Report a `FAIL` of one under Draft findings, at `should-fix` at most, never in the ledger or the verdict.
+Draft cards only; the stable TypeScript cards are in the level files. A draft card is not vetted. Report a `FAIL` of one under Draft findings, at `should-fix` at most, never in the ledger or the verdict.
 
 ## typescript-mock-at-the-boundary
 

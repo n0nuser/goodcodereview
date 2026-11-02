@@ -853,7 +853,7 @@ db.execute("SELECT * FROM users WHERE name = ?", (name,))
 
 severity: block  
 concerns: performance, reliability  
-applies_when: The code calls anything over a network or process boundary.  
+applies_when: The code calls a remote service over a network.  
 Backed by: Python Software Foundation, Microsoft, Google, AWS.
 
 **Rule.** Set an explicit timeout on every remote call.

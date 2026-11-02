@@ -5,7 +5,7 @@ tags: [correctness, python, types]
 severity: should-fix
 status: stable
 lang: python
-applies_when: Annotations use `typing` aliases, or the type gate is missing.
+applies_when: Annotations use `typing` aliases such as `Optional` or `Union`.
 tool_gate: ruff UP; mypy --strict; pyright
 borrowed_from:
   - https://pablogonzalez.me/posts/python-code-review-guide/

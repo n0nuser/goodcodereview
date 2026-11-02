@@ -18,9 +18,6 @@ CONCERNS = ["correctness", "security", "performance", "reliability", "compatibil
             "testing", "maintainability", "accessibility", "usability", "observability", "process"]
 # Closed list. Every draft names its main blocker as the first word of `lacks:`. docs/PROMOTION.md defines each one.
 LACKS = ["orgs", "evidence", "failable", "duplicate", "contradiction", "held", "unreviewed"]
-# True: a stable card with fewer than three organisations (people excluded) is an error. False: it only prints the warning list.
-ORG_FLOOR_STRICT = True
-below = []  # stable cards under the floor, filled by validate()
 BODY_MARKS = ["**Rule.**", "**Why.**", "**FAIL**", "**PASS**", "**Counterpoint.**"]
 
 
@@ -67,7 +64,6 @@ def load_cards(root):
 
 def validate(root):
     errors = []
-    below.clear()
     cards = load_cards(root)
     research = "\n".join(p.read_text() for p in (root / "docs" / "research").glob("*.md"))
     glossary = {p.stem for p in (root / "glossary").glob("*.md")}
@@ -76,6 +72,9 @@ def validate(root):
         if fm and "id" in fm:
             ids.setdefault(fm["id"], []).append(p)
     drafts = {fm["id"] for _, fm, _ in cards if fm and fm.get("status") == "draft" and "id" in fm}
+    # One alternation matches every draft id in a text, so each stable card costs one scan.
+    draft_re = re.compile(r"(?<![a-z0-9-])(" + "|".join(map(re.escape, sorted(drafts, key=len, reverse=True))) + r")(?![a-z0-9-])") if drafts else None
+    names_in = lambda text: sorted(set(draft_re.findall(text))) if draft_re else []
     for p, fm, body in cards:
         rel = p.relative_to(root)
 
@@ -125,9 +124,7 @@ def validate(root):
         # A floor for rule 1 of docs/PROMOTION.md: it counts per Rule clause, so three orgs per card is necessary, not sufficient.
         found = {orgs.org_of(u) for u in urls} - {None} - orgs.PERSONS  # people are references, not organisations
         if fm.get("status") == "stable" and len(found) < 3 and not {orgs.org_of(u) for u in urls} & orgs.CREATORS:
-            below.append(f"{p.relative_to(root)}: {len(found)} organisation(s)")
-            if ORG_FLOOR_STRICT:
-                err(f"stable card has {len(found)} organisation(s) in borrowed_from; it needs at least 3")
+            err(f"stable card has {len(found)} organisation(s) in borrowed_from; it needs at least 3, or one source by the creator (docs/adr/0001)")
         lacks = fm.get("lacks")
         if fm.get("status") == "stable" and lacks is not None:
             err("stable card has 'lacks:'; remove it on promotion")
@@ -147,14 +144,12 @@ def validate(root):
                 err(f"unresolved cross-ref [[{ref}]]")
         if fm.get("status") == "stable":
             text = p.read_text()
-            for d in sorted(drafts):
-                if re.search(rf"(?<![a-z0-9-]){re.escape(d)}(?![a-z0-9-])", text):
-                    err(f"stable card names draft id '{d}'")
+            for d in names_in(text):
+                err(f"stable card names draft id '{d}'")
     for g in sorted((root / "glossary").glob("*.md")):
         text = g.read_text()
-        for d in sorted(drafts):
-            if re.search(rf"(?<![a-z0-9-]){re.escape(d)}(?![a-z0-9-])", text):
-                errors.append(f"{g.relative_to(root)}: glossary entry names draft id '{d}'")
+        for d in names_in(text):
+            errors.append(f"{g.relative_to(root)}: glossary entry names draft id '{d}'")
     return errors
 
 
@@ -162,6 +157,4 @@ if __name__ == "__main__":
     root = Path(sys.argv[sys.argv.index("--root") + 1] if "--root" in sys.argv else ".").resolve()
     errs = validate(root)
     print("\n".join(errs))
-    if below:
-        print(f"WARNING: {len(below)} stable card(s) have fewer than 3 organisations (people do not count):\n" + "\n".join(sorted(below)))
     sys.exit(1 if errs else 0)

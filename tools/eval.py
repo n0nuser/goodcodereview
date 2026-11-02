@@ -35,6 +35,8 @@ import sys
 import tempfile
 from pathlib import Path
 
+import validate
+
 ROOT = Path(__file__).resolve().parent.parent
 CASES = ROOT / "test" / "evals" / "cases"
 SKILL = ROOT / "skills" / "good-code-review"
@@ -49,8 +51,6 @@ _tags = {}
 def stable_tags():
     """Concern tags of every stable card, by id."""
     if not _tags:
-        sys.path.insert(0, str(ROOT / "tools"))
-        import validate
         for _, fm, _ in validate.load_cards(ROOT):
             if fm["status"] == "stable":
                 _tags[fm["id"]] = set(fm["tags"])
@@ -212,6 +212,7 @@ def main():
     names = a.cases or sorted(p.name for p in CASES.iterdir() if (p / "case.json").is_file())
     modes = ["skill", "forced", "bare"] if a.mode == "all" else [a.mode]
     print(f"{'case':<16}{'mode':<7}{'substance':>10}{'format':>8}")
+    failed = False  # a harness error, or a missed substance check in a mode that has the skill (bare is the baseline and may miss)
     for n in names:
         for m in modes:
             try:
@@ -226,10 +227,13 @@ def main():
                         for pr in problems:
                             print(f"    run {i + 1} {tier}: {pr}")
             except HarnessError as e:
-                print(f"{n:<16}{m:<7} harness error: {e}")
+                print(f"{n:<16}{m:<7} harness error: {e}", file=sys.stderr)
+                failed = True
                 continue
             ok = lambda t: sum(not x[t] for x in res)
+            failed |= m != "bare" and ok("substance") < a.runs
             print(f"{n:<16}{m:<7}{ok('substance'):>7}/{a.runs}{(str(ok('format')) + '/' + str(a.runs)) if m != 'bare' else '-':>8}")
+    sys.exit(1 if failed else 0)
 
 
 if __name__ == "__main__":

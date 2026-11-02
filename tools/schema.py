@@ -5,7 +5,8 @@ and `check()` validates a built corpus against that schema with the standard lib
 """
 import re
 from dataclasses import dataclass, field, fields, is_dataclass
-from typing import Literal, Optional, Union, get_args, get_origin, get_type_hints
+from types import UnionType
+from typing import Literal, get_args, get_origin, get_type_hints
 
 from validate import LACKS
 
@@ -20,7 +21,7 @@ Level = Literal["change", "function", "module", "service", "system", "codebase",
 @dataclass
 class Example:
     """A code or text block from a card's FAIL or PASS section."""
-    language: Optional[str]  # the fence label, such as "python" or "text"; null when the fence has none
+    language: str | None  # the fence label, such as "python" or "text"; null when the fence has none
     code: str
 
 
@@ -50,9 +51,9 @@ class Card:
     lang: str                  # "core", or the pack name such as "python"
     applies_when: str
     context: list[str]         # parts of an input the card needs: ui, server, data, cli; empty means any input
-    tool_gate: Optional[str]   # a check a tool can run, or null when none exists
-    note: Optional[str]        # a scope note, or null
-    lacks: Optional[Lacks]     # why a draft is not stable yet; null on stable cards
+    tool_gate: str | None   # a check a tool can run, or null when none exists
+    note: str | None        # a scope note, or null
+    lacks: Lacks | None     # why a draft is not stable yet; null on stable cards
     rule: str                  # the one-sentence rule
     why: str
     counterpoint: str
@@ -71,7 +72,7 @@ class LevelInfo:
     name: str
     input: str                 # the input that routes here, such as "diff / PR"
     description: str
-    stable_count: int
+    stable_count: int          # core cards only; stable pack cards are listed on the pack pages and in cards[]
     draft_count: int
     gives_verdict: bool        # false when the level has no stable card
     url: str
@@ -118,7 +119,7 @@ def _schema_of(tp):
         return {"type": "array", "items": _schema_of(get_args(tp)[0])}
     if origin is Literal:
         return {"enum": list(get_args(tp))}
-    if origin is Union:
+    if origin is UnionType:
         return {"anyOf": [_schema_of(a) if a is not type(None) else {"type": "null"} for a in get_args(tp)]}
     raise TypeError(f"no schema for {tp}")
 

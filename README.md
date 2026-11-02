@@ -2,7 +2,7 @@
 
 A checklist for reviewing code, for people and for agents. Pick what you are reviewing (a diff, a function, a service, a whole codebase, a production setup, or an incident) and you get the checks for that level. Every check ends in `PASS`, `FAIL`, or `N/A` with `file:line` evidence, so anyone can check the review afterwards.
 
-The rules are curated, not invented. Each stable check is backed by at least three independent organisations that have published the same practice, and the card links every source. Across the stable cards, the sources come from big companies and standards bodies such as Google, Microsoft, GitHub, AWS, Stripe, Cloudflare, Mozilla, OWASP, W3C, IETF, NIST, and GOV.UK. They did not write or endorse this project. Checks with less backing stay as drafts and never decide a verdict.
+The rules are curated, not invented. Each stable check is backed by at least three independent organisations that have published the same practice (or, as a recorded exception, by the maintainer's own guide: [ADR 0001](docs/adr/0001-creator-sources-satisfy-the-stable-floor.md)), and the card links every source. Across the stable cards, the sources come from big companies and standards bodies such as Google, Microsoft, GitHub, AWS, Stripe, Cloudflare, Mozilla, OWASP, W3C, IETF, NIST, and GOV.UK. They did not write or endorse this project. Checks with less backing stay as drafts and never decide a verdict.
 
 ## Start a review
 

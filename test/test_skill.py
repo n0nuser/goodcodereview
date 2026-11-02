@@ -1,9 +1,17 @@
 import json
 import re
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 
-SKILL = Path(__file__).resolve().parent.parent / "skills" / "good-code-review" / "SKILL.md"
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "tools"))
+from validate import CONTEXTS, load_cards  # noqa: E402
+
+SKILL = ROOT / "skills" / "good-code-review" / "SKILL.md"
+if not (ROOT / "site" / "llms.txt").is_file():  # site/ is generated and untracked; a fresh clone needs one build
+    subprocess.run([sys.executable, str(ROOT / "tools" / "build.py")], check=True)
 
 
 def frontmatter():
@@ -62,9 +70,6 @@ class Audit(unittest.TestCase):
         self.assertIn("references/drafts.md", SKILL.read_text())
 
     def test_no_draft_is_block_and_context_uses_the_closed_list(self):
-        import sys
-        sys.path.insert(0, str(SKILL.parents[2] / "tools"))
-        from validate import CONTEXTS, load_cards
         for p, fm, _ in load_cards(SKILL.parents[2]):
             self.assertFalse(fm["status"] == "draft" and fm["severity"] == "block", p.name)
             self.assertTrue(set(fm.get("context", [])) <= set(CONTEXTS), p.name)

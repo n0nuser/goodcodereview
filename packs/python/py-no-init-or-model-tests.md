@@ -5,7 +5,7 @@ tags: [testing, python]
 severity: should-fix
 status: stable
 lang: python
-applies_when: The diff adds `test_init_*` or a test file for a plain model or dataclass.
+applies_when: The code adds `test_init_*` or a test file for a plain model or dataclass.
 tool_gate: none
 borrowed_from:
   - https://pablogonzalez.me/posts/python-code-review-guide/

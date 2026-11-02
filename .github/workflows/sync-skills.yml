@@ -6,6 +6,9 @@ on:
     branches: [main]
 permissions:
   contents: write
+concurrency:
+  group: sync-skills
+  cancel-in-progress: false
 jobs:
   sync:
     runs-on: ubuntu-latest

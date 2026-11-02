@@ -1323,7 +1323,7 @@ def charge(order):
 
 severity: should-fix  
 concerns: correctness  
-applies_when: Annotations use `typing` aliases, or the type gate is missing.  
+applies_when: Annotations use `typing` aliases such as `Optional` or `Union`.  
 Backed by: no organisation yet. People cited: Pablo González.
 
 **Rule.** Write `X | None` and builtin generics, not `typing` aliases.

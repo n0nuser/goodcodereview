@@ -5,7 +5,7 @@ tags: [maintainability, process, design, scope]
 severity: should-fix
 status: stable
 lang: core
-applies_when: The change adds an abstraction, parameter, hook or option.
+applies_when: The code adds or keeps an abstraction, parameter, hook or option.
 tool_gate: none
 note: The MediaWiki architecture page labels itself a draft. The Microsoft playbook checklist may echo Google's wording and the extensibility guideline is indirect. Shopify backs the second-use clause.
 borrowed_from:

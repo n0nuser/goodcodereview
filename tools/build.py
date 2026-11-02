@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Validate, then emit site/ and skills/good-code-review/. Run from anywhere."""
+import base64
 import datetime
 import hashlib
 import html
@@ -108,17 +109,16 @@ AUDIT_NOTE = ("To audit a whole repo, service, or release, use the same cards an
               "gives the read order, how to rate a missing control, and the report shape. An audit checks code against the cards. It is not a compliance attestation.")
 AUDIT_DESC = "How to audit a repo, service, or release with the same cards: scope, read order, missing controls, accepted risk, and the report shape."
 AUDIT_STEPS = [
-         "An audit is a review of a whole input, with a scope and a report. It uses the same cards and the same verdicts. It adds no criteria and certifies nothing: it is not a SOC 2, ISO 27001, or other compliance attestation.",
-         "- Scope: run the entry level, then the stable `function`, `module`, `service`, and `system` cards whose `applies_when` holds for the code you read. Skip `change` and `incident` cards unless asked, and `production` cards unless the input includes a release or launch. Also check the draft cards in `references/drafts.md`, and the pack for each language present, and report their `FAIL`s under Draft findings. For a test suite, scope by the `testing` concern. Name the levels, the concerns, and the card-set version on the verdict line: the `metadata.version` above, plus the commit from `git -C <skill folder> rev-parse --short HEAD` when you have a checkout.",
+         "- Scope: run the entry level, then the stable `function`, `module`, `service`, and `system` cards whose `applies_when` holds for the code you read. Skip `change` and `incident` cards unless asked, and `production` cards unless the input includes a release or launch. Also check the draft cards in `references/drafts.md`, and the pack for each language present, and report their `FAIL`s under Draft findings. For a test suite, scope by the `testing` concern. Name the levels, the concerns, and the card-set version on the verdict line: the `metadata.version` in `SKILL.md`, plus the commit from `git -C <skill folder> rev-parse --short HEAD` when you have a checkout.",
          "- Read order when the input is too large: entry points, then code that touches the network, a process, the file system, or a secret, then auth, then the build and release path, then the tests. Name the paths you read and list what you did not examine. A sampled audit cannot prove that a problem is absent.",
          "- A missing control is a `FAIL` of the card that requires it, with evidence `absent in <paths>`: name the search or the command you ran over the whole input, not only the files you sampled. A platform setting, such as branch protection or secret scanning, is evidence when you quote the command or API output. If every `block` `FAIL` is a missing process control, say so on the verdict line.",
-         "- Tag each finding by source: `vetted`, `pack`, `draft`, or `no-card`. Only a stable card counts in the ledger; today every pack card is a draft. A real defect that no card covers is `no-card`: list it under Product bugs, outside the ledger.",
+         "- Tag each finding by source: `vetted`, `pack`, `draft`, or `no-card`. Only a stable card counts in the ledger, and a stable pack card counts as `pack`; a draft pack card is `draft`. A real defect that no card covers is `no-card`: list it under Product bugs, outside the ledger.",
          "- Severity is the card's and never changes. When the input makes a `FAIL` smaller than the card assumes, such as a retry rule on a single-user CLI, add `impact: low` and the reason on that line.",
          "- Accepted risk: write `accepted by <owner> until <date>` on the line. The `FAIL` stays in the report and in the counts.",
          "- End with counts by severity and by source, Proposed changes (group findings into changes, each sized S, M, or L), Product bugs, Dropped candidates (a count), Could not check, and Not examined. To re-test, repeat the audit on the same input and name the first run's card-set version."]
 AUDIT_INTRO = "An audit is a review of a whole input, with a scope and a report. It uses the same cards and the same verdicts. It adds no criteria and certifies nothing: it is not a SOC 2, ISO 27001, or other compliance attestation."
 AUDIT_MD = AUDIT_INTRO + "\n\n" + "\n".join(AUDIT_STEPS).replace("`references/drafts.md`", "[the draft cards](https://goodcodereview.com/.well-known/agent-skills/good-code-review/references/drafts.md)") + "\n"
-AUDIT = ["## Audit a repo, service, or release", "", "An audit uses the same cards and verdicts and adds a scope and a report. Before you audit a repo, service, or release, read `references/audit.md`: scope and read order, how to rate a missing control, accepted risk, and the report shape. An audit certifies nothing.", ""]
+AUDIT_SECTION = ["## Audit a repo, service, or release", "", "An audit uses the same cards and verdicts and adds a scope and a report. Before you audit a repo, service, or release, read `references/audit.md`: scope and read order, how to rate a missing control, accepted risk, and the report shape. An audit certifies nothing.", ""]
 # Size budgets. The build fails past them, so the first read stays small as cards and audit advice grow.
 # llms.txt and SKILL.md hold routing and links; per-card text lives in the level indexes and references.
 LLMS_BUDGET = 12_000   # characters in llms.txt (llmstxt.org asks for a concise summary)
@@ -143,9 +143,9 @@ DESIGN_NOTE = "For an unscoped system or codebase review, end with one short lin
 INVOKE = "After you install the skill, name it in your request, such as `/good-code-review review this PR`. An agent that is not told may review without it."
 FEEDBACK = f"Reviewed something with it? Tell us what was noisy, wrong, or missing: [open an issue]({REPO}/issues/new/choose)."
 BACKING = ("Every rule is curated: a card is stable only when at least three independent organisations, such as Google, Microsoft, OWASP, GitHub, Mozilla, AWS, W3C, and NIST, "
-           "have published the same practice, and each card links its sources. Those organisations did not write or endorse this site.")
+           "have published the same practice, or when its source is the maintainer's own guide (a recorded exception), and each card links its sources. Those organisations did not write or endorse this site.")
 DRAFT_NOTE = "A draft card is not vetted. Report a `FAIL` of one under Draft findings, at `should-fix` at most, never in the ledger or the verdict."
-PACK_DESC = "Draft cards specific to {pk}, not vetted. Use them with the level page that matches your input."
+PACK_DESC = "Cards specific to {pk}: stable ones are vetted, drafts are not. Use them with the level page that matches your input."
 CONCERNS_DESC = "Every card's rule on one page. Pick a concern, such as performance or security, to scope a review."
 GLOSSARY_DESC = "Terms that the cards link to, with a note on why a reviewer cares."
 ABOUT_DESC = "Who makes Good Code Review, what stable and draft cards mean, and the licences."
@@ -164,17 +164,17 @@ ABOUT = """Good Code Review is a checklist for reviewing code, for people and fo
 
 # What stable and draft mean
 
-A stable card is vetted: at least three independent organisations back its rule, and its FAIL and PASS lines are real verdicts. A draft card is not vetted. A `FAIL` of a draft is reported apart from the verdict, at `should-fix` at most, and never decides it. Each draft says what it lacks, and [How a draft becomes stable](https://github.com/n0nuser/goodcodereview/blob/main/docs/PROMOTION.md) gives the bar. The home page shows how many cards of each kind every level has.
+A stable card is vetted: at least three independent organisations back its rule (or the maintainer's own guide does, a recorded exception), and its FAIL and PASS lines are real verdicts. A draft card is not vetted. A `FAIL` of a draft is reported apart from the verdict, at `should-fix` at most, and never decides it. Each draft says what it lacks, and [How a draft becomes stable](https://github.com/n0nuser/goodcodereview/blob/main/docs/PROMOTION.md) gives the bar. The home page shows how many cards of each kind every level has.
 
 # How to check the cards
 
-You do not have to take the cards on trust. Each card ends with a "Backed by" list that names every organisation behind it and links its sources. At least three independent organisations, such as OWASP, W3C, Google, or GOV.UK, back the rule of each stable card. People, such as an author or a maintainer, appear under "People cited" as references. A person is not an organisation, so a person never counts toward the three. A draft says "Cites" instead of "Backed by". [How a draft becomes stable](https://github.com/n0nuser/goodcodereview/blob/main/docs/PROMOTION.md) gives the bar, and the [Drafts by what they lack](drafts.html) page shows why each draft is not stable yet. Every change to a card is public in the [commit history](https://github.com/n0nuser/goodcodereview/commits/main).
+You do not have to take the cards on trust. Each card ends with a "Backed by" list that names every organisation behind it and links its sources. At least three independent organisations, such as OWASP, W3C, Google, or GOV.UK, back the rule of each stable card. People, such as an author or a maintainer, appear under "People cited" as references. A person is not an organisation, so a person never counts toward the three. The one exception is a source by the maintainer, recorded in the repository's [decision record](https://github.com/n0nuser/goodcodereview/blob/main/docs/adr/0001-creator-sources-satisfy-the-stable-floor.md). A draft says "Cites" instead of "Backed by". [How a draft becomes stable](https://github.com/n0nuser/goodcodereview/blob/main/docs/PROMOTION.md) gives the bar, and the [Drafts by what they lack](drafts.html) page shows why each draft is not stable yet. Every change to a card is public in the [commit history](https://github.com/n0nuser/goodcodereview/commits/main).
 
 The skill and the plugin are Markdown files only: `SKILL.md` and one reference file per level. They run no code and install no dependencies, so an agent that loads them only reads text.
 
 # How the site is built
 
-`python3 tools/build.py` reads the cards in the repository and writes this site as plain static files, plus the Markdown, `llms.txt`, and skill files that agents read. Cloudflare serves the result as static files. A small Worker answers only addresses that match no file, with a 404 page. There is no database.
+`python3 tools/build.py` reads the cards in the repository and writes this site as plain static files, plus the Markdown, `llms.txt`, and skill files that agents read. Cloudflare serves the result as static files. A small Worker answers the filtered `/concerns.md` and `/cards.json` requests and serves a 404 page for addresses that match no file. There is no database.
 
 # Cost and licence
 
@@ -468,7 +468,7 @@ def md(text, ids):
 
 
 def page_url(slug):
-    """The URL Cloudflare Pages serves: it redirects /x.html to /x and /index.html to /."""
+    """The URL Cloudflare serves: it redirects /x.html to /x and /index.html to /."""
     return BASE + "/" if slug == "index" else f"{BASE}/{slug}"
 
 
@@ -707,15 +707,15 @@ def front(title, desc, slug, date):
 
 
 def headers_file(slugs):
-    """Cloudflare Pages `_headers`: https://developers.cloudflare.com/pages/configuration/headers/"""
+    """Cloudflare static-assets `_headers`: https://developers.cloudflare.com/workers/static-assets/headers/"""
     md = lambda s: f'</{s}.md>; rel="alternate"; type="text/markdown"'
     out = ["# Generated by tools/build.py. Format: https://developers.cloudflare.com/pages/configuration/headers/",
            "/*", '  Link: </sitemap.xml>; rel="sitemap", </llms.txt>; rel="describedby"',
            "  Strict-Transport-Security: max-age=31536000",
            "  X-Content-Type-Options: nosniff",
            "  Referrer-Policy: strict-origin-when-cross-origin",
-           # frame-ancestors only: the pages carry an inline script and inline styles, so a script-src policy would block them.
-           "  Content-Security-Policy: frame-ancestors 'none'"]
+           # The one inline script is a build-time constant, so its hash is allowed and nothing else may run. Inline styles stay unrestricted.
+           f"  Content-Security-Policy: frame-ancestors 'none'; script-src 'sha256-{base64.b64encode(hashlib.sha256(JS.encode()).digest()).decode()}'; object-src 'none'; base-uri 'none'"]
     for s in slugs:
         out += ["/" if s == "index" else f"/{s}", f"  Link: {md(s)}"]
     out += ["/*.md", "  Content-Type: text/markdown; charset=utf-8", "/*.txt", "  Content-Type: text/plain; charset=utf-8",
@@ -839,7 +839,7 @@ def main():
     head = ["# Good Code Review", "", "## Routing", "", "| Input | Entry point |", "|---|---|"]
     head += [f"| {i} | {lv}{f' ({EMPTY_MARK})' if lv in empty else ''} |" for i, lv in ROUTES]
     head += ["", DIFF_RULE, "", INCIDENT_RULE, ""] + ([EMPTY_RULE, ""] if empty else [])
-    head += ["## Verdict format", ""] + plain.replace(". ", ".\n").split("\n") + ["", REPORT_RULE, "", OVERLAP_RULE, "", READ_RULE, "", DATA_RULE, "", "```", EXAMPLE, "```", "", DRAFT_RULE, NOTES_RULE, "", DESIGN_NOTE, ""] + AUDIT
+    head += ["## Verdict format", ""] + plain.replace(". ", ".\n").split("\n") + ["", REPORT_RULE, "", OVERLAP_RULE, "", READ_RULE, "", DATA_RULE, "", "```", EXAMPLE, "```", "", DRAFT_RULE, NOTES_RULE, "", DESIGN_NOTE, ""] + AUDIT_SECTION
     ptr = ["The full text for each level is in `references/<level>.md`.",
            TRIAGE,
            "Draft cards (not vetted; findings go under Draft findings) are in `references/drafts.md`" + "".join(f", and the {pkname(pk)} pack in `references/pack-{pk}.md`" for pk in packs)
@@ -948,7 +948,7 @@ def main():
     core_d = [c for c in draft if c[1]["lang"] == "core"]
     (SKILL / "references" / "drafts.md").write_text("# Draft cards\n\n" + DRAFT_NOTE + " A draft `change`, `incident`, or `production` card applies only to a diff, an incident, or a release.\n\n" + "\n\n".join(f"# {lv} drafts\n\n" + "\n\n".join(dsec(fm, b) for _, fm, b in core_d if fm["level"] == lv) for lv in LEVELS if any(fm["level"] == lv for _, fm, _ in core_d)) + "\n")
     for pk in packs:
-        (SKILL / "references" / f"pack-{pk}.md").write_text(f"# {pkname(pk)} pack\n\n{DRAFT_NOTE}\n\n" + "\n\n".join(dsec(fm, b) for _, fm, b in cards if fm["lang"] == pk) + "\n")
+        (SKILL / "references" / f"pack-{pk}.md").write_text(f"# {pkname(pk)} pack\n\nDraft cards only; the stable {pkname(pk)} cards are in the level files. {DRAFT_NOTE}\n\n" + "\n\n".join(dsec(fm, b) for _, fm, b in cards if fm["lang"] == pk and fm["status"] != "stable") + "\n")
     (SITE / "llms.txt").write_text(text)
     (SITE / "llms-drafts.txt").write_text(dtext)
 
@@ -970,7 +970,7 @@ def main():
                          f"Draft cards are not vetted and are not listed here. See {BASE}/llms-drafts.txt.\n")
     for pk in packs:
         twins[f"pack-{pk}"] = (f"{pkname(pk)} pack", PACK_DESC.format(pk=pk), xlink(
-            f"# {pkname(pk)} pack\n\n{DRAFT_NOTE} {DRAFT_RULE}\n\n" + "\n\n".join(section(fm, b) for _, fm, b in cards if fm["lang"] == pk) + "\n"))
+            f"# {pkname(pk)} pack\n\nEach card says whether it is stable or draft. Stable cards are vetted and also appear in their level file. {DRAFT_NOTE} {DRAFT_RULE}\n\n" + "\n\n".join(section(fm, b) for _, fm, b in cards if fm["lang"] == pk) + "\n"))
     twins["glossary"] = ("Glossary", GLOSSARY_DESC, "# Glossary\n\n" + "\n\n".join(xlink(re.sub(r"^# ", "## ", p.read_text(), count=1).strip()) for p in gloss) + "\n")
     twins["about"] = ("About", ABOUT_DESC, "# About\n\n" + ABOUT)
     twins["privacy"] = ("Privacy", PRIVACY_DESC, "# Privacy\n\n" + PRIVACY)
