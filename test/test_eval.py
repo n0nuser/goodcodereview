@@ -119,3 +119,17 @@ def test_query_file_is_balanced_and_split(split: str) -> None:
     assert qs
     assert any(q["should_trigger"] for q in qs)
     assert any(not q["should_trigger"] for q in qs)
+
+
+def test_codex_adapter() -> None:
+    cmd = ev.command(Agent.CODEX, "Review x.", "m1", Mode.FORCED)
+    assert cmd.argv == ["codex", "exec", "--skip-git-repo-check", "--sandbox", "read-only", "--model", "m1", "$good-code-review Review x."]
+    assert cmd.skills_dir == ".agents/skills"
+    assert ev.command(Agent.CODEX, "Review x.", None, Mode.SKILL).argv[-1] == "Review x."
+
+
+def test_cursor_adapter() -> None:
+    cmd = ev.command(Agent.CURSOR, "Review x.", "m1", Mode.FORCED)
+    assert cmd.argv[:5] == ["agent", "-p", "--trust", "--output-format", "text"] and "--force" not in cmd.argv
+    assert cmd.argv[-1] == "Load and follow the good-code-review skill. Review x."
+    assert cmd.skills_dir == ".agents/skills"
