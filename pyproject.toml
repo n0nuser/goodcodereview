@@ -37,7 +37,7 @@ mypy_path = "tools"
 files = ["tools"]
 
 [tool.pytest.ini_options]
-pythonpath = ["tools"]
+pythonpath = ["tools", "cli/src"]
 testpaths = ["test"]
 addopts = "--disable-socket"
 
