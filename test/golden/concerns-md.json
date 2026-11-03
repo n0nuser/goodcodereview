@@ -1,8 +1,8 @@
 {
- "note": "sha256 and length of the /concerns.md body for each query, captured from src/worker.js at 9626d09 against the built site/cards.json, before the Worker read cards-index.json",
+ "note": "sha256 and length of the /concerns.md body for each query, captured from src/worker.js at 9626d09 against the built site/cards.json, before the Worker read cards-index.json; hashes taken with the `updated:` date masked, recaptured 2026-11-03",
  "queries": {
   "": {
-   "sha256": "e118d10d3c4ddfe06985b67f3bf2d34bf80f8f4633b4623a49141a073c065f15",
+   "sha256": "00b4b893cef0a22a17098f40c2fe9c0a7803a65b30deb352cb8e336d74bbf6f2",
    "length": 42925
   },
   "concern=security": {
