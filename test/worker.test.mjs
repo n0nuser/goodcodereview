@@ -150,6 +150,8 @@ test("an unfiltered cards.json is passed through to the static file", async () =
 // --- static routes, golden output, and the Cache API ---
 
 const sha = (text) => createHash("sha256").update(text).digest("hex");
+// The build stamps the commit's UTC day into `updated:`, so a hash must not depend on it.
+const undated = (text) => text.replace(/^updated: "\d{4}-\d{2}-\d{2}"/m, 'updated: "DATE"');
 const siteDir = new URL("../site/", import.meta.url);
 const built = existsSync(new URL("cards-index.json", siteDir));
 // An ASSETS binding backed by the built site/, for the tests that compare against real output.
@@ -213,7 +215,7 @@ test("Markdown output is unchanged from the captured golden hashes", { skip: !bu
 	assert.ok(queries.length >= 20);
 	for (const [q, want] of queries) {
 		const text = await (await builtGet(`/concerns.md${q ? "?" + q : ""}`)).text();
-		assert.deepEqual({ sha256: sha(text), length: Buffer.byteLength(text) }, want, q || "(no filter)");
+		assert.deepEqual({ sha256: sha(undated(text)), length: Buffer.byteLength(text) }, want, q || "(no filter)");
 	}
 });
 
