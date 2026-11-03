@@ -139,3 +139,17 @@ def test_layout_staging_gives_each_layout_only_its_files(tmp_path: Path) -> None
         assert (work / "repo" / "app.py").is_file() and not (work / "repo" / "case.json").exists()
         assert (work / "service.md").exists() == has_whole and (work / "service-any.md").exists() == has_parts
     assert "https://goodcodereview.com/" not in (tmp_path / "llms" / "llms.txt").read_text()
+
+
+def test_codex_adapter() -> None:
+    cmd = ev.command(Agent.CODEX, "Review x.", "m1", Mode.FORCED)
+    assert cmd.argv == ["codex", "exec", "--skip-git-repo-check", "--sandbox", "read-only", "--model", "m1", "$good-code-review Review x."]
+    assert cmd.skills_dir == ".agents/skills"
+    assert ev.command(Agent.CODEX, "Review x.", None, Mode.SKILL).argv[-1] == "Review x."
+
+
+def test_cursor_adapter() -> None:
+    cmd = ev.command(Agent.CURSOR, "Review x.", "m1", Mode.FORCED)
+    assert cmd.argv[:5] == ["agent", "-p", "--trust", "--output-format", "text"] and "--force" not in cmd.argv
+    assert cmd.argv[-1] == "Load and follow the good-code-review skill. Review x."
+    assert cmd.skills_dir == ".agents/skills"
