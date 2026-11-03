@@ -6,6 +6,8 @@
 [![Code: MIT](https://img.shields.io/badge/code-MIT-blue)](LICENSE)
 [![Content: CC BY 4.0](https://img.shields.io/badge/content-CC%20BY%204.0-blue)](LICENSE-CONTENT)
 
+Good Code Review is a set of Markdown files. An AI coding agent loads them as a "skill" (a folder of instructions it reads when you ask), or you work through them by hand. You ask for a review of your code and get back a list of verdicts, each naming a rule and a line.
+
 ![A terminal recording: an agent reviews a real pull request and prints FAIL and PASS lines with file and line evidence](docs/demo/demo.gif)
 
 That is a real run on a pull request of mine (how it was made: [docs/demo](docs/demo/README.md)). A shorter sample, with made-up paths and lines:
@@ -57,6 +59,18 @@ To install it as a Claude Code plugin, run:
 ```
 
 To review by hand, open https://goodcodereview.com, pick a level, and work through the checklist.
+
+## For tools and agents
+
+Everything is static files, served without a server, an account, or a key:
+
+- [`cards.json`](https://goodcodereview.com/cards.json) with [`cards.schema.json`](https://goodcodereview.com/cards.schema.json): every stable card. [`cards-index.json`](https://goodcodereview.com/cards-index.json) is the slim lookup table. Each level and concern also has its own file (see [docs/cards-json.md](docs/cards-json.md)).
+- [`llms.txt`](https://goodcodereview.com/llms.txt): the routing table and verdict format, for an agent's first read.
+- [`agent.json`](https://goodcodereview.com/agent.json), [`.well-known/ard.json`](https://goodcodereview.com/.well-known/ard.json), and [`.well-known/agent-skills/index.json`](https://goodcodereview.com/.well-known/agent-skills/index.json): discovery files.
+- WebMCP: pages register read-only tools (`start_review`, `list_levels`, `list_cards`) in browsers that support it.
+- A command line in [`cli/`](cli/README.md). It is not on PyPI yet, so `uvx goodcodereview` does not work today; run it from a checkout.
+
+The only stability promise is the one in [docs/api-versioning.md](docs/api-versioning.md).
 
 ## Choose a starting point
 
