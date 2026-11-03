@@ -1,12 +1,9 @@
 import json
-import sys
 
 import pytest
+from goodcodereview import cli
 
-from config import ROOT, SITE
-
-sys.path.insert(0, str(ROOT / "cli" / "src"))
-from goodcodereview import cli  # noqa: E402
+from config import SITE
 
 BASE = SITE.as_uri()
 
