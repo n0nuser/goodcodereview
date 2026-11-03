@@ -114,7 +114,7 @@ DESIGN_NOTE = "For an unscoped system or codebase review, end with one short lin
 INVOKE = "After you install the skill, name it in your request, such as `/good-code-review review this PR`. An agent that is not told may review without it."
 FEEDBACK = f"Reviewed something with it? Tell us what was noisy, wrong, or missing: [open an issue]({REPO}/issues/new/choose)."
 HERO = ("Review code against rules that Google, OWASP, Microsoft, and others already publish. "
-        "Every check ends in PASS, FAIL, or N/A with file:line evidence, so anyone can verify the review afterwards.")
+        "Give the list to an AI coding agent, or work through it by hand, and every check ends in PASS, FAIL, or N/A with file:line evidence, so anyone can verify the review afterwards.")
 BACKING = ("Every rule is curated: a card is stable only when at least three independent organisations, such as Google, Microsoft, OWASP, GitHub, Mozilla, AWS, W3C, and NIST, "
            "have published the same practice, or when its source is the maintainer's own guide (a recorded exception), and each card links its sources. Those organisations did not write or endorse this site.")
 DRAFT_NOTE = "A draft card is not vetted. Report a `FAIL` of one under Draft findings, at `should-fix` at most, never in the ledger or the verdict."
