@@ -2,7 +2,7 @@
 """Run and grade the skill evals in test/evals/cases.
 
     python3 tools/eval.py grade CASE OUTPUT_FILE [--mode skill|bare]
-    python3 tools/eval.py run [--agent claude|opencode] [--mode skill|forced|bare|all] [--runs N] [--model M] [CASE ...]
+    python3 tools/eval.py run [--agent claude|opencode|codex|cursor] [--mode skill|forced|bare|all] [--runs N] [--model M] [CASE ...]
     python3 tools/eval.py triggers [--split train|validation|all] [--runs N] [--model M]
 
 `run` starts `claude -p` in a scratch copy of each case and grades the reply. Modes: `skill` installs the skill and leaves it
@@ -18,7 +18,8 @@ A case.json holds:
   must_contain / must_not_contain  regexes over the whole reply
 `--agent opencode` drives `opencode run` instead (model as `provider/model`, such as `opencode-go/deepseek-v4.1-flash`), with the skill
 copied to `.opencode/skills/`. In forced mode, which has no slash command there, the prompt starts with an instruction to load the
-skill. That adapter has not been run against a real opencode install; start with one case and `--runs 1`.
+skill. `--agent codex` drives `codex exec` (skills in `.agents/skills`, forced mode starts with `$good-code-review`), and `--agent cursor` drives `agent -p`
+(skills in `.agents/skills`). None of the three adapters has been run against a real install, and Cursor's docs do not say that its CLI loads skills; start with one case and `--runs 1`.
 
 `triggers --focused` also installs the other skills under `skills/`, so a drop in the main skill's rate shows the focused skills taking its queries.
 `triggers --isolate` adds `--setting-sources project`, so only the skill under test is loaded: it measures the description without the user's other skills competing.
@@ -71,6 +72,8 @@ class Mode(StrEnum):
 class Agent(StrEnum):
     CLAUDE = "claude"
     OPENCODE = "opencode"
+    CODEX = "codex"
+    CURSOR = "cursor"
 
 
 class Split(StrEnum):
@@ -183,10 +186,15 @@ def load(name: str) -> Case:
 
 def command(agent: Agent, prompt: str, model: str | None, mode: Mode) -> Command:
     """The argv for one run, and where the agent looks for skills under the scratch copy."""
+    forced = "Load and follow the good-code-review skill. " + prompt
     if agent == Agent.OPENCODE:
-        if mode == Mode.FORCED:
-            prompt = "Load and follow the good-code-review skill. " + prompt
-        return Command(["opencode", "run", prompt] + (["--model", model] if model else []), ".opencode/skills")
+        return Command(["opencode", "run", forced if mode == Mode.FORCED else prompt] + (["--model", model] if model else []), ".opencode/skills")
+    if agent == Agent.CODEX:  # read-only sandbox is the default; the scratch dir is not a git repo
+        argv = ["codex", "exec", "--skip-git-repo-check", "--sandbox", "read-only"] + (["--model", model] if model else [])
+        return Command(argv + ["$good-code-review " + prompt if mode == Mode.FORCED else prompt], ".agents/skills")
+    if agent == Agent.CURSOR:  # no --force: the review only reads
+        argv = ["agent", "-p", "--trust", "--output-format", "text"] + (["--model", model] if model else [])
+        return Command(argv + [forced if mode == Mode.FORCED else prompt], ".agents/skills")
     if mode == Mode.FORCED:
         prompt = "/good-code-review " + prompt
     cmd = ["claude", "-p", prompt, "--allowedTools", ALLOWED_TOOLS, "--output-format", "text"]
