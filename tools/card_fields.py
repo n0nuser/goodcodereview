@@ -1,5 +1,6 @@
 """Readers for the front matter of a card, shared by the HTML, Markdown, and JSON writers."""
 import orgs
+import strength
 from config import BASE
 from models import CONCERNS, CORE, Card, DraftLack, Level, Status
 
@@ -54,11 +55,14 @@ def backers(card: Card) -> str:
     found = orgs.split(card.fm["borrowed_from"])
     organisations, people = found.organisations, found.people
 
+    cid = card.fm["id"]
+
     def names(group: list[orgs.OrgUrls]) -> str:
-        return ", ".join(orgs.ORGS[g.id] for g in group)
+        return ", ".join(f"{orgs.ORGS[g.id]} ({strength.of_org(cid, g.urls)})" for g in group)
 
     head = "Backed by" if is_stable(card) else "Cites"
-    return f"{head}: {names(organisations) or 'no organisation yet'}." + (f" People cited: {names(people)}." if people else "")
+    return (f"{head}: {names(organisations) or 'no organisation yet'}." + (f" Backing: {strength.backing(cid, [g.urls for g in organisations])}." if organisations else "")
+            + (f" People cited: {names(people)}." if people else ""))
 
 
 def markdown_url(card: Card) -> str:

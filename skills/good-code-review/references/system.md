@@ -5,7 +5,7 @@
 severity: block  
 concerns: security, process  
 applies_when: An LLM agent can call tools, run code, or act on external systems.  
-Backed by: OWASP, NCSC, Microsoft.
+Backed by: OWASP (unjudged), NCSC (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Give the agent only the narrow tools and the minimal credentials its task needs.
 
@@ -31,7 +31,7 @@ creds = user_scoped_token(user, scopes=["tickets:rw"])       # downstream checks
 severity: should-fix  
 concerns: performance  
 applies_when: The code adds an in-process or shared cache.  
-Backed by: AWS, Redis, Caffeine project, IETF, Microsoft, Google, Cloudflare.
+Backed by: AWS (unjudged), Redis (unjudged), Caffeine project (unjudged), IETF (unjudged), Microsoft (unjudged), Google (unjudged), Cloudflare (unjudged). Backing: unjudged.
 
 **Rule.** Bound every cache by size and give its entries an expiry.
 
@@ -58,7 +58,7 @@ redis.conf: maxmemory 2gb, maxmemory-policy allkeys-lru
 severity: discuss  
 concerns: reliability  
 applies_when: Many tenants, regions, or product surfaces share one cluster, control plane, or data store.  
-Backed by: Netflix, Slack, Airbnb, Cloudflare, AWS, American Express, Microsoft.
+Backed by: Netflix (unjudged), Slack (unjudged), Airbnb (unjudged), Cloudflare (unjudged), AWS (supports), American Express (supports), Microsoft (supports). Backing: strong.
 
 **Rule.** Split shared infrastructure into independent cells, each with its own control plane and storage, and route each tenant or request to one cell, so one failure stops only that cell.
 
@@ -92,7 +92,7 @@ severity: discuss
 concerns: usability, accessibility  
 applies_when: Several screens or apps show the same action, status, or concept to the same users.  
 context: ui  
-Backed by: Nielsen Norman Group, W3C, GOV.UK, USWDS, Atlassian. People cited: Ben Shneiderman.
+Backed by: Nielsen Norman Group (unjudged), W3C (unjudged), GOV.UK (unjudged), USWDS (unjudged), Atlassian (unjudged). Backing: unjudged. People cited: Ben Shneiderman (unjudged).
 
 **Rule.** Use one label and one icon for the same action and the same concept across all screens.
 
@@ -120,7 +120,7 @@ A different outcome, such as archive, gets a different label: [Archive].
 severity: should-fix  
 concerns: performance, reliability  
 applies_when: A request fans out to several backends, shards, or replicas and combines the answers.  
-Backed by: Google, Apache Software Foundation, Elastic, Envoy, AWS.
+Backed by: Google (unjudged), Apache Software Foundation (unjudged), Elastic (unjudged), Envoy (unjudged), AWS (unjudged). Backing: unjudged.
 
 **Rule.** Give every leg of a fan-out its own deadline, and decide in code what happens when a leg misses it: a partial result, a hedged request, or an error.
 
@@ -149,7 +149,7 @@ return merge(hits, partial=len(hits) < len(shards))
 severity: should-fix  
 concerns: reliability  
 applies_when: A service exposes a health endpoint used by a load balancer, an orchestrator, or auto-replacement.  
-Backed by: AWS, Microsoft, GitLab.
+Backed by: AWS (unjudged), Microsoft (supports), GitLab (supports). Backing: mixed.
 
 **Rule.** Wire load balancers and restarters to liveness and local checks only, never to shared-dependency checks.
 
@@ -176,7 +176,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: A migration creates an index on an existing large or busy table.  
 context: data  
-Backed by: PostgreSQL, GitLab, Heroku, thoughtbot.
+Backed by: PostgreSQL (unjudged), GitLab (unjudged), Heroku (supports), thoughtbot (supports). Backing: mixed.
 
 **Rule.** Create indexes with `CONCURRENTLY`, outside a transaction block, and handle a failed build that leaves an INVALID index.
 
@@ -204,7 +204,7 @@ severity: block
 concerns: reliability  
 applies_when: Work is buffered in a queue, a channel, or a thread pool between components.  
 context: server  
-Backed by: AWS, Google, Netflix.
+Backed by: AWS (unjudged), Google (unjudged), Netflix (unjudged). Backing: unjudged.
 
 **Rule.** Bound every queue and reject excess work cheaply.
 
@@ -231,7 +231,7 @@ alarm on age of oldest item; spillover queue for old deltas
 severity: block  
 concerns: reliability, correctness  
 applies_when: A TTL lock or lease guards a write to an external store.  
-Backed by: AWS, Google, Apache Software Foundation, Hazelcast, Microsoft. People cited: Martin Kleppmann, Salvatore Sanfilippo.
+Backed by: AWS (unjudged), Google (unjudged), Apache Software Foundation (unjudged), Hazelcast (unjudged), Microsoft (unjudged). Backing: unjudged. People cited: Martin Kleppmann (unjudged), Salvatore Sanfilippo (unjudged).
 
 **Rule.** Check a correctness lock on the resource side (fencing token or compare-and-set), never by lock possession alone.
 
@@ -262,7 +262,7 @@ severity: block
 concerns: reliability, compatibility  
 applies_when: A change drops, renames, or retypes a column, or mixes schema change with a data backfill.  
 context: data  
-Backed by: GitLab, Stripe, Ecto, CockroachDB. People cited: Andrew Kane.
+Backed by: GitLab (unjudged), Stripe (unjudged), Ecto (unjudged), CockroachDB (unjudged). Backing: unjudged. People cited: Andrew Kane (unjudged).
 
 **Rule.** Run data backfills in batches, in a migration separate from the schema change.
 
@@ -288,7 +288,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: A migration runs ALTER TABLE on a busy PostgreSQL table.  
 context: data  
-Backed by: PostgreSQL, GitLab, GoCardless, Postgres.ai, Doctolib.
+Backed by: PostgreSQL (unjudged), GitLab (unjudged), GoCardless (supports), Postgres.ai (supports), Doctolib (supports). Backing: strong.
 
 **Rule.** Set `lock_timeout` for the migration session and retry on timeout.
 
@@ -315,7 +315,7 @@ severity: should-fix
 concerns: performance  
 applies_when: Code loads related rows in a loop, or opens database connections per request.  
 context: data  
-Backed by: Django Software Foundation, Ruby on Rails, SQLAlchemy, Microsoft, OpenJS Foundation, PgBouncer project, PostgreSQL.
+Backed by: Django Software Foundation (unjudged), Ruby on Rails (unjudged), SQLAlchemy (unjudged), Microsoft (unjudged), OpenJS Foundation (unjudged), PgBouncer project (unjudged), PostgreSQL (unjudged). Backing: unjudged.
 
 **Rule.** Fetch related rows in one query or batch, never one query per row.
 
@@ -342,7 +342,7 @@ for o in Order.objects.select_related("user"):
 severity: should-fix  
 concerns: security  
 applies_when: The system stores, copies or logs personal or otherwise sensitive data.  
-Backed by: OWASP, ICO, intersoft consulting, Microsoft.
+Backed by: OWASP (unjudged), ICO (unjudged), intersoft consulting (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Give every store of personal or sensitive data a retention period, and delete or anonymise the data when it ends.
 
@@ -369,7 +369,7 @@ logs: id field masked; table has a retention policy and an owner
 severity: block  
 concerns: security  
 applies_when: An LLM reads untrusted text (user input, web pages, documents) and can call tools or produce output that code acts on.  
-Backed by: OWASP, NCSC, Microsoft, Google.
+Backed by: OWASP (unjudged), NCSC (unjudged), Microsoft (unjudged), Google (unjudged). Backing: unjudged.
 
 **Rule.** Validate model output deterministically before code acts on it.
 
@@ -395,7 +395,7 @@ destructive actions -> human confirm ; untrusted text labelled in the prompt
 severity: block  
 concerns: security, correctness  
 applies_when: The code handles credentials, logs data, or returns errors to clients.  
-Backed by: OWASP, MITRE, Heroku, MIT, IETF, Microsoft.
+Backed by: OWASP (unjudged), MITRE (unjudged), Heroku (unjudged), MIT (unjudged), IETF (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Fail closed: a validation or auth error must deny, never continue, and an error response must not carry internals such as stack traces, SQL or tokens.
 
@@ -425,7 +425,7 @@ except Exception as err:
 severity: block  
 concerns: security  
 applies_when: The server fetches a URL that a user or external data supplies.  
-Backed by: OWASP, GitHub, AWS, PortSwigger.
+Backed by: OWASP (unjudged), GitHub (unjudged), AWS (unjudged), PortSwigger (unjudged). Backing: unjudged.
 
 **Rule.** Fetch a user-supplied URL only when its host matches a server-side allowlist.
 

@@ -6,7 +6,7 @@ severity: should-fix
 concerns: performance  
 applies_when: A service returns responses that a browser, CDN, gateway or client library may cache.  
 context: server  
-Backed by: IETF, Zalando, OWASP.
+Backed by: IETF (unjudged), Zalando (unjudged), OWASP (supports). Backing: mixed.
 
 **Rule.** Set an explicit `Cache-Control` on every response a cache may store, use `private` or `no-store` for user-specific data, and add `Vary` for any request header that changes the body.
 
@@ -35,7 +35,7 @@ severity: should-fix
 concerns: correctness  
 applies_when: Two callers can update the same resource through PUT, PATCH or DELETE.  
 context: server  
-Backed by: IETF, Microsoft, Zalando.
+Backed by: IETF (unjudged), Microsoft (unjudged), Zalando (unjudged). Backing: unjudged.
 
 **Rule.** Return an `ETag` on reads and honour `If-Match` on writes, answering 412 when the entity tag is stale.
 
@@ -64,7 +64,7 @@ severity: should-fix
 concerns: compatibility, testing  
 applies_when: A service calls, or is called by, another service owned by a different team or deployed on its own schedule.  
 context: server  
-Backed by: Pact, OpenAPI Initiative, Microsoft, Paradigma Digital, Thoughtworks.
+Backed by: Pact (unjudged), OpenAPI Initiative (unjudged), Microsoft (supports), Paradigma Digital (supports), Thoughtworks (supports). Backing: strong.
 
 **Rule.** Run a contract test for each cross-service call, derived from the consumer's real requests, and fail the provider's build when it breaks one.
 
@@ -92,7 +92,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: A service retires an endpoint, field, version or parameter that outside callers use.  
 context: server  
-Backed by: IETF, Zalando, OpenAPI Initiative, GitHub, Google.
+Backed by: IETF (unjudged), Zalando (unjudged), OpenAPI Initiative (unjudged), GitHub (unjudged), Google (unjudged). Backing: unjudged.
 
 **Rule.** Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers.
 
@@ -123,7 +123,7 @@ severity: should-fix
 concerns: correctness, compatibility  
 applies_when: A service has an OpenAPI description, or callers depend on its error responses.  
 context: server  
-Backed by: OpenAPI Initiative, Zalando, Siemens.
+Backed by: OpenAPI Initiative (unjudged), Zalando (unjudged), Siemens (supports). Backing: mixed.
 
 **Rule.** Document every error status each operation can return, with a schema and one example.
 
@@ -157,7 +157,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: Callers of an HTTP or RPC API branch on the kind of error.  
 context: server  
-Backed by: IETF, Google, Microsoft.
+Backed by: IETF (unjudged), Google (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Give each error a stable machine-readable code that callers branch on, and never make them parse the message text.
 
@@ -186,7 +186,7 @@ severity: discuss
 concerns: maintainability  
 applies_when: A service defines JSON fields, query parameters, headers or path segments for an HTTP API.  
 context: server  
-Backed by: Zalando, Microsoft, Google, Kubernetes.
+Backed by: Zalando (unjudged), Microsoft (unjudged), Google (supports), Kubernetes (supports). Backing: mixed.
 
 **Rule.** Use one casing convention per location (fields, query parameters, headers, paths) across the whole API, and state it in the API guide.
 
@@ -213,7 +213,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: A service returns errors from an HTTP API to other services or to clients.  
 context: server  
-Backed by: IETF, Zalando, UKHSA.
+Backed by: IETF (unjudged), Zalando (unjudged), UKHSA (supports). Backing: mixed.
 
 **Rule.** Return errors as `application/problem+json` with a `status` that equals the HTTP status, and leave stack traces and internal detail out.
 
@@ -247,7 +247,7 @@ severity: should-fix
 concerns: reliability  
 applies_when: A service answers 429 or 503 to HTTP callers.  
 context: server  
-Backed by: IETF, Zalando, Microsoft, Shopify, Slack.
+Backed by: IETF (unjudged), Zalando (unjudged), Microsoft (supports), Shopify (supports), Slack (supports). Backing: strong.
 
 **Rule.** Send `Retry-After` on every 429 and 503, and set it no earlier than the time capacity returns.
 
@@ -277,7 +277,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: A service returns HTTP responses that callers or intermediaries interpret by status code.  
 context: server  
-Backed by: IETF, Zalando, Microsoft.
+Backed by: IETF (unjudged), Zalando (unjudged), Microsoft (supports). Backing: mixed.
 
 **Rule.** Return the most specific status code that fits: 201 with `Location` for a create, 405 with `Allow` for a wrong method, and a 4xx or 5xx for any failure.
 
@@ -306,7 +306,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: A service offers an HTTP API to callers you do not deploy together with it.  
 context: server  
-Backed by: Zalando, Microsoft, Stripe.
+Backed by: Zalando (unjudged), Microsoft (unjudged), Stripe (unjudged). Backing: unjudged.
 
 **Rule.** Write down one versioning scheme for the API, and ship no breaking change inside a version it has published.
 
@@ -335,7 +335,7 @@ severity: should-fix
 concerns: usability, performance  
 applies_when: A page loads images, embeds, fonts, ads, or fetched content after the first paint.  
 context: ui  
-Backed by: Google, Apple, Nielsen Norman Group, Mozilla, WHATWG, Shopify, Cloudflare.
+Backed by: Google (unjudged), Apple (unjudged), Nielsen Norman Group (unjudged), Mozilla (unjudged), WHATWG (unjudged), Shopify (supports), Cloudflare (supports). Backing: mixed.
 
 **Rule.** Reserve the space for late-loading content with set dimensions or an aspect ratio, so nothing already on screen moves.
 
@@ -363,7 +363,7 @@ severity: block
 concerns: security  
 applies_when: The service has a login, password-reset or one-time-code endpoint.  
 context: server  
-Backed by: OWASP, NIST, PortSwigger, Microsoft, Okta (Auth0), Google.
+Backed by: OWASP (unjudged), NIST (unjudged), PortSwigger (unjudged), Microsoft (unjudged), Okta (Auth0) (unjudged), Google (unjudged). Backing: unjudged.
 
 **Rule.** Limit failed attempts per account, and return the same message and status code whether or not the account exists.
 
@@ -392,7 +392,7 @@ severity: should-fix
 concerns: security  
 applies_when: The service has routes that need a signed-in user next to routes that are public.  
 context: server  
-Backed by: MITRE, Microsoft, Django Software Foundation, Spring.
+Backed by: MITRE (unjudged), Microsoft (unjudged), Django Software Foundation (unjudged), Spring (unjudged). Backing: unjudged.
 
 **Rule.** Require authentication on every route by default, and mark each public route by name.
 
@@ -424,7 +424,7 @@ severity: block
 concerns: security  
 applies_when: The service exposes routes or functions that different roles may call.  
 context: server  
-Backed by: OWASP, PortSwigger, AWS, NIST.
+Backed by: OWASP (unjudged), PortSwigger (unjudged), AWS (unjudged), NIST (unjudged). Backing: unjudged.
 
 **Rule.** Route every request through one authorization layer that denies when no rule allows it.
 
@@ -452,7 +452,7 @@ def gate(): require_role(policy.get(request.endpoint))   # missing entry -> 403
 severity: should-fix  
 concerns: reliability, observability  
 applies_when: The critical path of a request or a job calls a dependency whose data the product can do without, such as enrichment, recommendations, analytics, or a rate-limit control plane.  
-Backed by: Netflix, Uber, Cabify, Spotify, Zalando.
+Backed by: Netflix (unjudged), Uber (unjudged), Cabify (unjudged), Spotify (supports), Zalando (supports). Backing: mixed.
 
 **Rule.** Give each call to a non-critical dependency a short budget and a default, so its failure degrades the result instead of failing the critical path, and count every fallback.
 
@@ -488,7 +488,7 @@ severity: should-fix
 concerns: security  
 applies_when: A request parameter or body sets how many records, bytes, items or operations the server handles.  
 context: server  
-Backed by: OWASP, NIST, Google, Django Software Foundation.
+Backed by: OWASP (unjudged), NIST (unjudged), Google (unjudged), Django Software Foundation (unjudged). Backing: unjudged.
 
 **Rule.** Cap every client-controlled size and count on the server: body bytes, string length, array items, page size and batch size.
 
@@ -516,7 +516,7 @@ items: list[Item] = Field(max_length=100)            # body capped at 1 MB by th
 severity: block  
 concerns: reliability, correctness  
 applies_when: The code starts a task, goroutine, or thread per item, request, or message.  
-Backed by: Google, Python Software Foundation, Tokio project, Cabify, AWS.
+Backed by: Google (unjudged), Python Software Foundation (unjudged), Tokio project (unjudged), Cabify (unjudged), AWS (unjudged). Backing: unjudged.
 
 **Rule.** Cap how many background tasks run at once, and never spawn one per input with no limit.
 
@@ -553,7 +553,7 @@ async with asyncio.TaskGroup() as tg:
 severity: should-fix  
 concerns: reliability  
 applies_when: A service calls several dependencies from shared pools, or retries a dependency that may be down.  
-Backed by: Microsoft, AWS, Netflix.
+Backed by: Microsoft (unjudged), AWS (supports), Netflix (supports). Backing: mixed.
 
 **Rule.** Give each critical dependency its own concurrency limit.
 
@@ -581,7 +581,7 @@ severity: should-fix
 concerns: reliability, maintainability  
 applies_when: A command-line tool has a command that deletes, overwrites or sends something.  
 context: cli  
-Backed by: Kubernetes, Git, GNU Project, GitHub, Microsoft, Google, HashiCorp, Cursor. People cited: Command Line Interface Guidelines.
+Backed by: Kubernetes (unjudged), Git (unjudged), GNU Project (unjudged), GitHub (unjudged), Microsoft (unjudged), Google (unjudged), HashiCorp (unjudged), Cursor (unjudged). Backing: unjudged. People cited: Command Line Interface Guidelines (unjudged).
 
 **Rule.** Give a destructive command a preview flag that changes nothing and a flag that skips the confirmation prompt.
 
@@ -633,7 +633,7 @@ severity: should-fix
 concerns: correctness, maintainability  
 applies_when: The code ships a command-line tool that scripts or other programs may run.  
 context: cli  
-Backed by: Google, GitHub, AWS, HashiCorp, The Open Group, Heroku, Rust project. People cited: Command Line Interface Guidelines.
+Backed by: Google (unjudged), GitHub (unjudged), AWS (unjudged), HashiCorp (unjudged), The Open Group (unjudged), Heroku (unjudged), Rust project (unjudged). Backing: unjudged. People cited: Command Line Interface Guidelines (unjudged).
 
 **Rule.** Exit non-zero when a command fails, and write results to stdout and errors and progress to stderr.
 
@@ -665,7 +665,7 @@ severity: should-fix
 concerns: maintainability, process  
 applies_when: The code ships a command-line tool that scripts or agents may run.  
 context: cli  
-Backed by: GitHub, Google, HashiCorp, Microsoft, Cursor. People cited: Command Line Interface Guidelines.
+Backed by: GitHub (unjudged), Google (unjudged), HashiCorp (unjudged), Microsoft (unjudged), Cursor (unjudged). Backing: unjudged. People cited: Command Line Interface Guidelines (unjudged).
 
 **Rule.** Let the caller turn every prompt off with a flag or an environment variable, so the command never waits on a terminal.
 
@@ -706,7 +706,7 @@ severity: should-fix
 concerns: security  
 applies_when: The service sends CORS headers and browsers send credentials or cookies to it, or the API is not meant to be public. A public bearer-key API with `*` and no credentials is outside it.  
 context: server  
-Backed by: OWASP, Mozilla, PortSwigger, GitHub.
+Backed by: OWASP (unjudged), Mozilla (unjudged), PortSwigger (unjudged), GitHub (unjudged). Backing: unjudged.
 
 **Rule.** Allow cross-origin access only to a fixed list of named origins, and never echo the request `Origin` header back unchecked.
 
@@ -736,7 +736,7 @@ severity: should-fix
 concerns: security  
 applies_when: The service serves HTML pages to browsers.  
 context: server  
-Backed by: OWASP, Mozilla, Google.
+Backed by: OWASP (unjudged), Mozilla (unjudged), Google (unjudged). Backing: unjudged.
 
 **Rule.** Send a `Content-Security-Policy` whose `script-src` uses a per-response nonce or script hashes, with `object-src 'none'` and `base-uri 'none'`.
 
@@ -763,7 +763,7 @@ severity: block
 concerns: security  
 applies_when: The service authenticates browsers with cookies and changes state on requests.  
 context: server  
-Backed by: OWASP, Mozilla, Django Software Foundation, IETF.
+Backed by: OWASP (unjudged), Mozilla (unjudged), Django Software Foundation (unjudged), IETF (unjudged). Backing: unjudged.
 
 **Rule.** Require a CSRF token (or an equivalent header check) on every cookie-authenticated request that changes state, and never change state on GET.
 
@@ -792,7 +792,7 @@ severity: should-fix
 concerns: reliability  
 applies_when: The code consumes from a queue or stream.  
 context: server  
-Backed by: AWS, Netflix, Dropbox, Notion, Uber.
+Backed by: AWS (unjudged), Netflix (unjudged), Dropbox (unjudged), Notion (supports), Uber (supports). Backing: mixed.
 
 **Rule.** Give every consumer queue a dead-letter queue and a way to replay its messages after the fix.
 
@@ -831,7 +831,7 @@ severity: should-fix
 concerns: security  
 applies_when: The service reads configuration for authentication, an allow-list, a safety check, or a signing secret.  
 context: server  
-Backed by: OWASP, Microsoft, Google, Django Software Foundation, MITRE, AWS, CISA, NIST.
+Backed by: OWASP (unjudged), Microsoft (unjudged), Google (unjudged), Django Software Foundation (unjudged), MITRE (unjudged), AWS (unjudged), CISA (unjudged), NIST (unjudged). Backing: unjudged.
 
 **Rule.** Ship every security control switched on, with an empty allow-list denying everything.
 
@@ -873,7 +873,7 @@ severity: block
 concerns: reliability, correctness  
 applies_when: A non-idempotent operation (charge, create, send) can be retried by a client, a queue, or a saga.  
 context: server  
-Backed by: Microsoft, IETF, Stripe.
+Backed by: Microsoft (unjudged), IETF (unjudged), Stripe (unjudged). Backing: unjudged.
 
 **Rule.** Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.
 
@@ -903,7 +903,7 @@ severity: should-fix
 concerns: correctness, reliability  
 applies_when: A handler takes a number, an id, a header or a body field from the caller and uses it in a query, a calculation or an encoder.  
 context: server  
-Backed by: OWASP, Google, Kubernetes, IETF, Microsoft, Stripe.
+Backed by: OWASP (unjudged), Google (unjudged), Kubernetes (unjudged), IETF (unjudged), Microsoft (unjudged), Stripe (unjudged). Backing: unjudged.
 
 **Rule.** Check each caller-supplied value against its allowed domain (range, allowed set, an id that must exist, an encoding the code can handle) at the boundary, and answer a failed check with a 4xx, never a 5xx.
 
@@ -951,7 +951,7 @@ severity: should-fix
 concerns: performance  
 applies_when: The service exposes an endpoint or RPC that returns a collection.  
 context: server  
-Backed by: Google, Microsoft, Zalando, GitHub, Stripe.
+Backed by: Google (unjudged), Microsoft (unjudged), Zalando (unjudged), GitHub (unjudged), Stripe (unjudged). Backing: unjudged.
 
 **Rule.** Paginate every list endpoint, with a default page size and a server-side maximum.
 
@@ -979,7 +979,7 @@ severity: should-fix
 concerns: usability, accessibility  
 applies_when: A multi-step flow, such as checkout or signup, asks for data in more than one step.  
 context: ui  
-Backed by: W3C, Nielsen Norman Group, GOV.UK, Baymard Institute. People cited: Ben Shneiderman.
+Backed by: W3C (unjudged), Nielsen Norman Group (unjudged), GOV.UK (unjudged), Baymard Institute (unjudged). Backing: unjudged. People cited: Ben Shneiderman (unjudged).
 
 **Rule.** Do not ask for information the user already gave in the same flow. Fill it in, or let the user pick it.
 
@@ -1008,7 +1008,7 @@ severity: should-fix
 concerns: security  
 applies_when: A client or server puts an API key, session token, bearer token, password, or personal data into a URL.  
 context: server  
-Backed by: OWASP, IETF, MITRE, Mozilla.
+Backed by: OWASP (unjudged), IETF (unjudged), MITRE (unjudged), Mozilla (unjudged). Backing: unjudged.
 
 **Rule.** Send tokens, keys, passwords, and personal data in a header or the request body, never in the path or query string.
 
@@ -1041,7 +1041,7 @@ severity: should-fix
 concerns: security, reliability  
 applies_when: A shared API or queue serves several tenants or callers.  
 context: server  
-Backed by: AWS, Google, Microsoft, NIST.
+Backed by: AWS (unjudged), Google (unjudged), Microsoft (unjudged), NIST (unjudged). Backing: unjudged.
 
 **Rule.** Enforce a per-tenant quota on shared APIs and queues.
 
@@ -1069,7 +1069,7 @@ severity: should-fix
 concerns: accessibility, usability  
 applies_when: A page or app is served to browsers on screens of any size.  
 context: ui  
-Backed by: W3C, Deque, The A11y Project, WebAIM, Mozilla, Google, Microsoft.
+Backed by: W3C (unjudged), Deque (unjudged), The A11y Project (unjudged), WebAIM (unjudged), Mozilla (unjudged), Google (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Make the page usable at 320 CSS pixels wide and at 200% text zoom, with no sideways scrolling, no clipped content, and no blocked pinch-zoom.
 
@@ -1105,7 +1105,7 @@ Backed by: W3C, Deque, The A11y Project, WebAIM, Mozilla, Google, Microsoft.
 severity: block  
 concerns: reliability  
 applies_when: The code retries a failed call, or wraps a client that retries.  
-Backed by: Microsoft, AWS, Google, Stripe, GitHub.
+Backed by: Microsoft (unjudged), AWS (unjudged), Google (unjudged), Stripe (unjudged), GitHub (unjudged). Backing: unjudged.
 
 **Rule.** Retry only transient errors, with capped attempts and jittered exponential backoff.
 
@@ -1141,7 +1141,7 @@ severity: should-fix
 concerns: reliability, correctness  
 applies_when: A business operation spans services, each with its own database, coordinated as a saga.  
 context: server  
-Backed by: Microsoft, AWS, Temporal.
+Backed by: Microsoft (unjudged), AWS (supports), Temporal (supports). Backing: mixed.
 
 **Rule.** Make steps after the pivot idempotent and retryable, and make every compensation idempotent with a failure path.
 
@@ -1169,7 +1169,7 @@ severity: block
 concerns: security  
 applies_when: The service sets a session cookie or session ID after login.  
 context: server  
-Backed by: OWASP, Mozilla, NIST, Spring, Ruby on Rails.
+Backed by: OWASP (unjudged), Mozilla (unjudged), NIST (unjudged), Spring (unjudged), Ruby on Rails (unjudged). Backing: unjudged.
 
 **Rule.** Issue a new session ID at login, and set `Secure`, `HttpOnly` and `SameSite` on the session cookie.
 
@@ -1197,7 +1197,7 @@ severity: should-fix
 concerns: usability, accessibility  
 applies_when: A page action, such as a save, an upload, a search, or a page load, can take more than about a second.  
 context: ui  
-Backed by: Nielsen Norman Group, Apple, W3C, Microsoft, Atlassian. People cited: Ben Shneiderman.
+Backed by: Nielsen Norman Group (unjudged), Apple (unjudged), W3C (unjudged), Microsoft (unjudged), Atlassian (unjudged). Backing: unjudged. People cited: Ben Shneiderman (unjudged).
 
 **Rule.** Show that a slow action is under way, and show its progress when it runs long.
 
@@ -1227,7 +1227,7 @@ severity: block
 concerns: security  
 applies_when: The code builds a SQL query that includes request data or other untrusted input.  
 context: server, data  
-Backed by: OWASP, Python Software Foundation, GitHub, PortSwigger, Google.
+Backed by: OWASP (unjudged), Python Software Foundation (unjudged), GitHub (unjudged), PortSwigger (unjudged), Google (unjudged). Backing: unjudged.
 
 **Rule.** Pass untrusted data to queries as bound parameters, never by string concatenation or formatting.
 
@@ -1254,7 +1254,7 @@ db.execute("SELECT * FROM users WHERE name = ?", (name,))
 severity: should-fix  
 concerns: performance  
 applies_when: A handler reads, transforms, or returns a result whose size depends on the data (files, query results, response bodies).  
-Backed by: OpenJS Foundation, PostgreSQL, Reactive Streams.
+Backed by: OpenJS Foundation (unjudged), PostgreSQL (supports), Reactive Streams (supports). Backing: mixed.
 
 **Rule.** Process large results as a stream with backpressure; do not load them whole into memory.
 
@@ -1283,7 +1283,7 @@ return StreamingResponse(generate())
 severity: block  
 concerns: performance, reliability  
 applies_when: The code calls a remote service over a network.  
-Backed by: Python Software Foundation, Microsoft, Google, AWS.
+Backed by: Python Software Foundation (unjudged), Microsoft (unjudged), Google (unjudged), AWS (unjudged). Backing: unjudged.
 
 **Rule.** Set an explicit timeout on every remote call.
 
@@ -1315,7 +1315,7 @@ severity: should-fix
 concerns: security  
 applies_when: The service or its load balancer terminates TLS.  
 context: server  
-Backed by: IETF, NIST, OWASP, Microsoft.
+Backed by: IETF (unjudged), NIST (unjudged), OWASP (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Accept only TLS 1.2 and TLS 1.3 on servers.
 
@@ -1342,7 +1342,7 @@ ctx.minimum_version = ssl.TLSVersion.TLSv1_2
 severity: should-fix  
 concerns: reliability  
 applies_when: The code replaces its own binary or an installed program with a new version.  
-Backed by: Microsoft, Google, Mender. People cited: go-update (Alan Shreve).
+Backed by: Microsoft (unjudged), Google (unjudged), Mender (unjudged). Backing: unjudged. People cited: go-update (Alan Shreve) (unjudged).
 
 **Rule.** When an update fails, restore the previous version instead of leaving a missing or half-written one.
 
@@ -1384,7 +1384,7 @@ return nil
 severity: should-fix  
 concerns: security  
 applies_when: The code downloads and installs or runs a new version of itself or of another program, such as a self-updater or an install script.  
-Backed by: Sparkle, Sigstore, The Update Framework, Debian, GitHub, Google. People cited: go-update (Alan Shreve).
+Backed by: Sparkle (unjudged), Sigstore (unjudged), The Update Framework (unjudged), Debian (unjudged), GitHub (unjudged), Google (unjudged). Backing: unjudged. People cited: go-update (Alan Shreve) (unjudged).
 
 **Rule.** Verify a downloaded update against a signature, an attestation or a pinned key, or against a checksum that reached you by another route than the file; a checksum fetched from the same host as the file does not count.
 
@@ -1423,7 +1423,7 @@ severity: block
 concerns: security  
 applies_when: The service accepts file uploads.  
 context: server  
-Backed by: OWASP, Microsoft, PortSwigger, Django Software Foundation.
+Backed by: OWASP (unjudged), Microsoft (unjudged), PortSwigger (unjudged), Django Software Foundation (unjudged). Backing: unjudged.
 
 **Rule.** Allowlist the file type, cap the size, and store each upload under a generated name where the server will not execute it.
 
@@ -1450,7 +1450,7 @@ file.save(STORE / f"{uuid4()}.bin")   # outside web root; served by /files/<id>
 severity: should-fix  
 concerns: reliability, correctness  
 applies_when: Async code catches exceptions around awaits or uses asyncio.timeout.  
-Backed by: Python Software Foundation. People cited: Pablo González.
+Backed by: Python Software Foundation (unjudged). Backing: unjudged. People cited: Pablo González (unjudged).
 
 **Rule.** Re-raise `CancelledError` (do not catch it via bare `except` or `BaseException`), and catch `TimeoutError` outside the `asyncio.timeout()` block.
 
@@ -1482,7 +1482,7 @@ except TimeoutError:
 severity: should-fix  
 concerns: correctness  
 applies_when: Python code calls asyncio.create_task or ensure_future.  
-Backed by: Python Software Foundation. People cited: Pablo González.
+Backed by: Python Software Foundation (unjudged). Backing: unjudged. People cited: Pablo González (unjudged).
 
 **Rule.** Never discard the result of `create_task`; keep a reference and surface its exceptions, preferably through a `TaskGroup`.
 

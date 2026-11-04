@@ -6,6 +6,7 @@ from typing import Any
 import orgs
 import schema
 import site_concerns
+import strength
 from card_fields import concerns, lacks, level_of, markdown_url, page_name, topics
 from config import BASE, LICENCE_URL, SITE_NAME
 from context import BuildInput
@@ -27,8 +28,9 @@ def _card_model(card: Card) -> schema.Card:
         lacks=schema.Lacks(LacksReason(draft_lack.reason), draft_lack.note) if draft_lack else None,
         rule=rule(card.body), why=section(card.body, "Why"), counterpoint=section(card.body, "Counterpoint"),
         fail=schema.example(card.body, "FAIL"), pass_=schema.example(card.body, "PASS"), sources=fm["borrowed_from"],
-        orgs=[schema.Org(g.id, orgs.ORGS[g.id], g.urls) for g in found.organisations],
-        people=[schema.Org(g.id, orgs.ORGS[g.id], g.urls) for g in found.people],
+        orgs=[schema.Org(g.id, orgs.ORGS[g.id], g.urls, strength.of_org(fm["id"], g.urls)) for g in found.organisations],
+        people=[schema.Org(g.id, orgs.ORGS[g.id], g.urls, strength.of_org(fm["id"], g.urls)) for g in found.people],
+        backing=strength.backing(fm["id"], [g.urls for g in found.organisations]),
         url=f"{page_url(page_name(card))}#{fm['id']}", markdown_url=markdown_url(card))
 
 

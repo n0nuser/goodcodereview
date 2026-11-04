@@ -4,6 +4,7 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ## [Unreleased]
 
+- Source strength (`docs/source-strength.md`). `docs/research/source-strength.tsv` records, per card and URL, whether a source `supports`, only `partial`ly backs, is `weak` for, or is `off` for the Rule; a source with no row is `unjudged`. Each "Backed by" entry shows it, for example `Google (supports)`, and a card is `strong`, `mixed` or `unjudged` overall. `cards.json` schema version 5 adds `Card.backing` and `Org.strength` (additive).
 - Two focused skills, `review-code-security` and `review-code-accessibility` (`tools/skills_extra.py`, written to `skills/<name>/SKILL.md` by the build). Each reads the matching `concerns/<concern>.md` list, has a narrow description with a "do not use" clause, and is listed in the Agent Skills index, `agent.json`, and `ard.json`. `tools/eval.py triggers --focused` installs them beside the main skill to measure whether they take its queries.
 - Pushing a tag such as `v0.1.0` runs `.github/workflows/release.yml`: it checks that the tag is on `main`, rebuilds, checks `skills/` is current, and publishes a GitHub release with generated notes.
 - The home page leads with the promise and a sample verdict, prints the stable-card count from the build (141: 127 across the levels, 14 in the packs), and shows a last-updated date. The nav has six items. Level, pack, concerns, and guide pages have breadcrumbs, and `/guides` holds three explainers with Markdown twins.

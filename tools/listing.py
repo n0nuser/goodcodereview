@@ -4,6 +4,7 @@ from collections.abc import Iterable, Sequence
 from urllib.parse import urlparse
 
 import orgs
+import strength
 from card_fields import concerns, is_stable, lacks, page_name
 from config import REPO
 from markdown import inline, md, rule
@@ -27,9 +28,10 @@ def icon(oid: str) -> str:
     return f'<svg class="oi" aria-hidden="true" focusable="false"><use href="#o-{oid}"/></svg>'
 
 
-def _org_list(group: list[orgs.OrgUrls]) -> str:
+def _org_list(group: list[orgs.OrgUrls], card_id: str) -> str:
     return '<ul class="orgs">' + "".join(
-        f'<li>{icon(g.id)}<span class="on">{html.escape(orgs.ORGS[g.id])}:</span> '
+        f'<li>{icon(g.id)}<span class="on">{html.escape(orgs.ORGS[g.id])}</span> '
+        f'<span class="str" title="How well this organisation\'s sources back the Rule">({strength.of_org(card_id, g.urls)})</span>: '
         + ", ".join(f'<a href="{html.escape(u)}">{html.escape(link_text(u))}</a>' for u in g.urls) + "</li>" for g in group) + "</ul>"
 
 
@@ -40,10 +42,12 @@ def sources(card: Card) -> str:
     head = "Backed by" if is_stable(card) else "Cites"
     if not organisations and not people:
         return f'<div class="by"><p class="note"><strong>{head}</strong> no organisation yet. This draft cites no source.</p></div>'
-    out = (f'<p class="note"><strong>{head}</strong> {len(organisations)} organisation{"s" * (len(organisations) != 1)}:</p>{_org_list(organisations)}' if organisations
-           else f'<p class="note"><strong>{head}</strong> no organisation yet.</p>')
+    cid = card.fm["id"]
+    backing = strength.backing(cid, [g.urls for g in organisations])
+    out = (f'<p class="note"><strong>{head}</strong> {len(organisations)} organisation{"s" * (len(organisations) != 1)}, backing {backing}:</p>{_org_list(organisations, cid)}'
+           if organisations else f'<p class="note"><strong>{head}</strong> no organisation yet.</p>')
     if people:
-        out += f'<p class="note"><strong>People cited:</strong></p>{_org_list(people)}'
+        out += f'<p class="note"><strong>People cited:</strong></p>{_org_list(people, cid)}'
     return f'<div class="by">{out}</div>'
 
 

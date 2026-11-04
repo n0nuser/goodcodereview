@@ -11,12 +11,28 @@ from typing import Any, Literal, get_args, get_origin, get_type_hints
 
 from models import LacksReason, Level, Severity, Status
 
-SCHEMA_VERSION = 4  # 2 added Card.orgs; 3 made orgs organisations only and added Card.people; 4 added Card.context
+SCHEMA_VERSION = 5  # 2 added Card.orgs; 3 made orgs organisations only and added Card.people; 4 added Card.context; 5 added Org.strength and Card.backing
 
 
 class Kind(StrEnum):
     STABLE = "stable"  # cards.json
     DRAFTS = "drafts"  # cards-drafts.json
+
+
+class Strength(StrEnum):
+    """How well one organisation's sources back a card's Rule, judged against the Rule (docs/source-strength.md)."""
+    SUPPORTS = "supports"      # the source shows the organisation practises or documents this Rule
+    PARTIAL = "partial"        # related, but covers part of the Rule or is generic
+    WEAK = "weak"              # tangential, a plan, a definition page, a summary of other guidance, or a tool default
+    OFF = "off"                # does not support the Rule
+    UNJUDGED = "unjudged"      # nobody has compared this source with the Rule yet
+
+
+class Backing(StrEnum):
+    """A card's backing as a whole."""
+    STRONG = "strong"          # at least three organisations support the Rule
+    MIXED = "mixed"            # some sources are judged, fewer than three organisations support the Rule
+    UNJUDGED = "unjudged"      # no source has been judged
 
 
 @dataclass(frozen=True, slots=True)
@@ -39,6 +55,7 @@ class Org:
     id: str                    # short id, such as "w3c"
     name: str                  # display name, such as "W3C"
     sources: list[str]         # the card's URLs that this organisation publishes
+    strength: Strength         # the best verdict among those URLs for this card
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,6 +80,7 @@ class Card:
     sources: list[str]         # URLs the rule is drawn from
     orgs: list[Org]            # every distinct organisation behind the sources, in first-cited order; people are not organisations
     people: list[Org]          # every person cited, same shape as orgs; references, never counted toward the three organisations
+    backing: Backing           # how well the organisations back the Rule as a whole
     url: str                   # the card on the site
     markdown_url: str          # the level page in Markdown
 

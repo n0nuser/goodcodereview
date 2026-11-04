@@ -6,7 +6,7 @@ severity: should-fix
 concerns: accessibility, testing  
 applies_when: The repo builds a web UI and has an automated test suite.  
 context: ui  
-Backed by: jsx-eslint project, Deque, GOV.UK, USWDS, Microsoft, CivicActions, University of Arizona.
+Backed by: jsx-eslint project (unjudged), Deque (unjudged), GOV.UK (supports), USWDS (unjudged), Microsoft (unjudged), CivicActions (supports), University of Arizona (supports). Backing: strong.
 
 **Rule.** Run an automated accessibility check, such as axe on rendered pages, in the automated tests, and fail the test on a violation.
 
@@ -35,7 +35,7 @@ expect(results.violations).toEqual([]);
 severity: discuss  
 concerns: maintainability, process  
 applies_when: Auditing whether the reasons behind significant design choices are recorded.  
-Backed by: AWS, Microsoft, Google, GOV.UK, Spotify, Cognitect. People cited: Rich Hickey.
+Backed by: AWS (unjudged), Microsoft (unjudged), Google (unjudged), GOV.UK (unjudged), Spotify (unjudged), Cognitect (unjudged). Backing: unjudged. People cited: Rich Hickey (unjudged).
 
 **Rule.** Keep a short written record for each significant design choice (datastore, framework, deviation from a pattern) that states the context, the decision, and its consequences.
 
@@ -60,7 +60,7 @@ docs/adr/0007-queue.md: context, decision, consequences, status, and the 2 optio
 severity: should-fix  
 concerns: process  
 applies_when: The repository has a build, a packaging, or a release step.  
-Backed by: Google, Reproducible Builds, Airbnb, Slack, Dropbox.
+Backed by: Google (unjudged), Reproducible Builds (unjudged), Airbnb (unjudged), Slack (unjudged), Dropbox (unjudged). Backing: unjudged.
 
 **Rule.** Build from declared inputs only, so that the same source revision gives the same artifact.
 
@@ -90,7 +90,7 @@ steps:
 severity: should-fix  
 concerns: process  
 applies_when: Auditing which checks must pass before a change merges.  
-Backed by: OpenSSF, Palantir, Kubernetes. People cited: McIntosh et al..
+Backed by: OpenSSF (unjudged), Palantir (unjudged), Kubernetes (unjudged). Backing: unjudged. People cited: McIntosh et al. (unjudged).
 
 **Rule.** Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
 
@@ -115,7 +115,7 @@ Protected main: 1 approval + required checks (build, test, lint, types).
 severity: discuss  
 concerns: correctness, maintainability  
 applies_when: Auditing whether one concern is solved in several incompatible ways across the repo.  
-Backed by: The Pragmatic Engineer, Google, Spotify, Uber, Cabify, Stripe. People cited: Sébastien Portebois.
+Backed by: The Pragmatic Engineer (unjudged), Google (unjudged), Spotify (unjudged), Uber (unjudged), Cabify (unjudged), Stripe (unjudged). Backing: unjudged. People cited: Sébastien Portebois (unjudged).
 
 **Rule.** For each recurring concern (errors, config, HTTP clients, logging), make one pattern the standard instead of leaving several as equal peers.
 
@@ -142,7 +142,7 @@ legacy sites listed in MIGRATION.md.
 severity: should-fix  
 concerns: maintainability  
 applies_when: Auditing for code, flags and files that nothing uses.  
-Backed by: Palantir, Google, Meta, Carnegie Mellon SEI, Linux kernel, NVIDIA, Microsoft, GitLab, Uber, Statsig, JetBrains, Lockheed Martin. People cited: Henrik Warne, tef (programmingisterrible).
+Backed by: Palantir (unjudged), Google (unjudged), Meta (unjudged), Carnegie Mellon SEI (unjudged), Linux kernel (unjudged), NVIDIA (unjudged), Microsoft (unjudged), GitLab (unjudged), Uber (unjudged), Statsig (unjudged), JetBrains (unjudged), Lockheed Martin (unjudged). Backing: unjudged. People cited: Henrik Warne (unjudged), tef (programmingisterrible) (unjudged).
 
 **Rule.** Delete unreferenced functions and variables, and the branches of expired feature flags.
 
@@ -170,7 +170,7 @@ The unused-code linter reports 0 symbols, or each is allowlisted with a reason.
 severity: should-fix  
 concerns: security  
 applies_when: Auditing what third-party code the repo ships and under which terms.  
-Backed by: OWASP, OpenSSF, CISA, NIST, GitHub, Cabify.
+Backed by: OWASP (unjudged), OpenSSF (unjudged), CISA (unjudged), NIST (unjudged), GitHub (unjudged), Cabify (unjudged). Backing: unjudged.
 
 **Rule.** Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule. Each ask is judged separately: name which one failed on the FAIL line.
 
@@ -196,7 +196,7 @@ release artifacts attach the SBOM.
 severity: block  
 concerns: security  
 applies_when: Auditing how the repo resolves third-party packages.  
-Backed by: OWASP, OpenSSF, Google, Python Software Foundation, npm.
+Backed by: OWASP (unjudged), OpenSSF (unjudged), Google (unjudged), Python Software Foundation (unjudged), npm (unjudged). Backing: unjudged.
 
 **Rule.** Commit a lockfile with hashes and install from it in CI.
 
@@ -238,7 +238,7 @@ CI: poetry install        (poetry.lock committed; fails if it is stale)
 severity: should-fix  
 concerns: maintainability  
 applies_when: Auditing a repo whose README, guides or AGENTS.md cite file paths, anchors or other pages.  
-Backed by: GitHub, GitLab, Rust project.
+Backed by: GitHub (unjudged), GitLab (unjudged), Rust project (unjudged). Backing: unjudged.
 
 **Rule.** Run a link check in CI over the docs, so that every relative link and anchor they cite resolves.
 
@@ -269,7 +269,7 @@ docs-links:
 severity: should-fix  
 concerns: testing, process  
 applies_when: Auditing how the codebase handles tests that pass and fail on the same code.  
-Backed by: Dropbox, Shopify, Cabify, Atlassian, GitLab, Airtable.
+Backed by: Dropbox (unjudged), Shopify (unjudged), Cabify (unjudged), Atlassian (supports), GitLab (supports), Airtable (supports). Backing: strong.
 
 **Rule.** Report every test that passes only on retry, move it to a quarantine with a named owner and a ticket, and return it to the merge gate only after it passes many reruns.
 
@@ -299,7 +299,7 @@ Backed by: Dropbox, Shopify, Cabify, Atlassian, GitLab, Airtable.
 severity: should-fix  
 concerns: performance, process  
 applies_when: The repo has a performance target (bundle size, page metrics, latency under load, or a benchmark) that matters to users.  
-Backed by: Google, Size Limit project, Grafana Labs, Gatling, Microsoft, AWS, Mozilla.
+Backed by: Google (unjudged), Size Limit project (unjudged), Grafana Labs (unjudged), Gatling (unjudged), Microsoft (unjudged), AWS (unjudged), Mozilla (unjudged). Backing: unjudged.
 
 **Rule.** Write the performance budget down as a CI check that fails the build when it is exceeded.
 
@@ -326,7 +326,7 @@ k6: thresholds: { http_req_duration: ["p(95)<300"] }        # non-zero exit fail
 severity: should-fix  
 concerns: reliability, process  
 applies_when: Auditing a workflow or pipeline that publishes a release when a tag is pushed.  
-Backed by: Kubernetes, GitHub, GitLab, OpenJS Foundation, Envoy, Google.
+Backed by: Kubernetes (unjudged), GitHub (unjudged), GitLab (unjudged), OpenJS Foundation (supports), Envoy (supports), Google (supports). Backing: strong.
 
 **Rule.** Make a release or publish job depend on the checks passing for the tagged commit, never on the tag alone.
 
@@ -373,7 +373,7 @@ jobs:
 severity: should-fix  
 concerns: maintainability  
 applies_when: Auditing any written repo rule (AGENTS.md, CONTRIBUTING, a docs page, a code comment, repeated review comments) that a type check, lint rule, test or CI check could enforce.  
-Backed by: Cursor, Spotify, Stripe, Cabify.
+Backed by: Cursor (unjudged), Spotify (unjudged), Stripe (unjudged), Cabify (unjudged). Backing: unjudged.
 
 **Rule.** Back each written repo rule that a type, lint or CI check could enforce with that check, not with a line in an instruction file or a repeated review comment.
 
@@ -406,7 +406,7 @@ func TestNoBareHTTPGet(t *testing.T) { /* walk the AST, fail on http.Get */ }
 severity: discuss  
 concerns: testing, process  
 applies_when: Auditing how a contributor checks a small change.  
-Backed by: Cursor, Google, Django Software Foundation, Python Software Foundation.
+Backed by: Cursor (unjudged), Google (supports), Django Software Foundation (supports), Python Software Foundation (supports). Backing: strong.
 
 **Rule.** Document a command that checks one package or path, with readable output, so a small change does not need the full-repo run.
 
@@ -432,7 +432,7 @@ ruff check src/billing
 severity: block  
 concerns: security, process  
 applies_when: Any repository, including its history, issues and pull requests.  
-Backed by: GitHub, OWASP, CISA, GitLab.
+Backed by: GitHub (unjudged), OWASP (unjudged), CISA (unjudged), GitLab (unjudged). Backing: unjudged.
 
 **Rule.** Scan for committed credentials, and treat any hit as leaked: revoke and replace it first. With no scanner present and no secret found, the FAIL is the missing control; evidence is "absent in <paths>". A platform scanner (GitHub secret scanning with push protection, GitLab secret detection) counts when it is enabled on the repo and covers history.
 
@@ -458,7 +458,7 @@ key revoked and reissued the same day; new value comes from the secret store
 severity: should-fix  
 concerns: security, process  
 applies_when: The repo has open dependency alerts, update pull requests, or scan reports; with none open, mark it N/A.  
-Backed by: OpenSSF, CISA, GitHub, OWASP.
+Backed by: OpenSSF (unjudged), CISA (unjudged), GitHub (unjudged), OWASP (unjudged). Backing: unjudged.
 
 **Rule.** Write down how long a known-vulnerable dependency may stay unfixed and fix or upgrade it inside that window.
 
@@ -485,7 +485,7 @@ Open alerts: all younger than their window.
 severity: block  
 concerns: security, process  
 applies_when: Auditing CI workflow files and release pipelines.  
-Backed by: OpenSSF, OWASP, GitHub, StepSecurity.
+Backed by: OpenSSF (unjudged), OWASP (unjudged), GitHub (unjudged), StepSecurity (unjudged). Backing: unjudged.
 
 **Rule.** Pin every CI action to a full commit SHA.
 
@@ -516,7 +516,7 @@ steps:
 severity: should-fix  
 concerns: maintainability  
 applies_when: The project is Python and has a linter configuration.  
-Backed by: no organisation yet. People cited: Pablo González.
+Backed by: no organisation yet. People cited: Pablo González (unjudged).
 
 **Rule.** Enable the Ruff rule sets E, F, I, B, UP, SIM, BLE, TID and D in CI.
 

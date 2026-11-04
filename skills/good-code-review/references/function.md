@@ -6,7 +6,7 @@ severity: should-fix
 concerns: accessibility  
 applies_when: A custom widget sets `role` or an `aria-*` attribute because no native element fits.  
 context: ui  
-Backed by: W3C, Mozilla, Deque, Google. People cited: Heydon Pickering.
+Backed by: W3C (unjudged), Mozilla (unjudged), Deque (unjudged), Google (unjudged). Backing: unjudged. People cited: Heydon Pickering (unjudged).
 
 **Rule.** When a native element cannot do the job, give the custom widget the state attribute and the keys its role promises.
 
@@ -35,7 +35,7 @@ Backed by: W3C, Mozilla, Deque, Google. People cited: Heydon Pickering.
 severity: discuss  
 concerns: maintainability  
 applies_when: A call passes a literal `True` or `False` for a parameter.  
-Backed by: JetBrains, Swift project, Astral.
+Backed by: JetBrains (supports), Swift project (supports), Astral (supports). Backing: strong.
 
 **Rule.** Replace a boolean flag argument with an enum, keyword-only argument or two functions.
 
@@ -60,7 +60,7 @@ export(report, fmt=Format.CSV, header=Header.OMIT)
 severity: should-fix  
 concerns: correctness, reliability, security  
 applies_when: A function reads a file, a response or a request body through a reader that has a byte limit.  
-Backed by: Google, Django Software Foundation, IETF, OWASP, NVIDIA.
+Backed by: Google (unjudged), Django Software Foundation (unjudged), IETF (unjudged), OWASP (unjudged), NVIDIA (supports). Backing: mixed.
 
 **Rule.** When a size cap is reached, return an error; never hand back the first N bytes as if they were the whole input.
 
@@ -97,7 +97,7 @@ severity: should-fix
 concerns: accessibility, usability  
 applies_when: Styles or markup show an error, a required field, a status, or a link using colour.  
 context: ui  
-Backed by: W3C, Nielsen Norman Group, Apple. People cited: Heydon Pickering.
+Backed by: W3C (unjudged), Nielsen Norman Group (unjudged), Apple (unjudged). Backing: unjudged. People cited: Heydon Pickering (unjudged).
 
 **Rule.** Pair every colour that carries meaning with a second cue: text, an icon, a shape, or an underline.
 
@@ -126,7 +126,7 @@ a { color: #0a58ca; text-decoration: none; }   /* no underline, no hover or focu
 severity: should-fix  
 concerns: maintainability  
 applies_when: A comment sits next to code, or the code needs one to be understood.  
-Backed by: Google, Mozilla, Python Software Foundation, Apache Software Foundation. People cited: Sébastien Portebois, John Ousterhout, Henrik Warne.
+Backed by: Google (unjudged), Mozilla (unjudged), Python Software Foundation (unjudged), Apache Software Foundation (unjudged). Backing: unjudged. People cited: Sébastien Portebois (unjudged), John Ousterhout (unjudged), Henrik Warne (unjudged).
 
 **Rule.** Write comments that give a reason, a constraint, or a trade-off, and never restate what the next line does.
 
@@ -154,7 +154,7 @@ retry = False  # see the PR, currently disabled
 severity: should-fix  
 concerns: maintainability  
 applies_when: A comment or TODO says "currently", "for now", "not yet", "see the PR" or promises future work.  
-Backed by: Google, WebKit, PostHog. People cited: Sébastien Portebois.
+Backed by: Google (unjudged), WebKit (supports), PostHog (supports). Backing: mixed. People cited: Sébastien Portebois (unjudged).
 
 **Rule.** Write comments that remain true without outside context: no "currently", "for now" or "see the PR", and give a TODO the date or event that ends it.
 
@@ -180,7 +180,7 @@ retry = False  # see the PR, currently disabled
 severity: block  
 concerns: security  
 applies_when: Code opens, reads, writes or deletes a file whose name or path includes request data.  
-Backed by: OWASP, Google, GitHub.
+Backed by: OWASP (unjudged), Google (unjudged), GitHub (unjudged). Backing: unjudged.
 
 **Rule.** Resolve the final path and check that it stays inside the intended base directory before using it.
 
@@ -207,7 +207,7 @@ return send_file(p)
 severity: should-fix  
 concerns: security  
 applies_when: Code compares a caller-supplied API key, token, signature, MAC or CSRF value with a stored or computed secret.  
-Backed by: Python Software Foundation, Google, OpenJS Foundation, GitHub, OWASP, MITRE.
+Backed by: Python Software Foundation (unjudged), Google (unjudged), OpenJS Foundation (unjudged), GitHub (unjudged), OWASP (unjudged), MITRE (unjudged). Backing: unjudged.
 
 **Rule.** Compare a secret, token or MAC with the platform's constant-time function, never with `==` or `!=`.
 
@@ -238,7 +238,7 @@ def verify(body: bytes, header_sig: str, key: bytes) -> bool:
 severity: block  
 concerns: security  
 applies_when: Code generates a token, session ID, password-reset code, API key, nonce or IV.  
-Backed by: OWASP, Python Software Foundation, Mozilla, IETF, Google.
+Backed by: OWASP (unjudged), Python Software Foundation (unjudged), Mozilla (unjudged), IETF (unjudged), Google (unjudged). Backing: unjudged.
 
 **Rule.** Draw every security-relevant random value from the platform CSPRNG.
 
@@ -266,7 +266,7 @@ severity: should-fix
 concerns: usability  
 applies_when: A handler deletes user data, spends money, or sends something that cannot be recalled.  
 context: ui  
-Backed by: Nielsen Norman Group, Apple, W3C. People cited: Ben Shneiderman.
+Backed by: Nielsen Norman Group (unjudged), Apple (unjudged), W3C (unjudged). Backing: unjudged. People cited: Ben Shneiderman (unjudged).
 
 **Rule.** Make a destructive action reversible with undo, or ask the user to confirm it before it runs.
 
@@ -296,7 +296,7 @@ severity: block
 concerns: accessibility, usability  
 applies_when: A component opens a modal dialog, drawer, or menu that covers the page.  
 context: ui  
-Backed by: W3C, Mozilla, WebAIM, GitHub.
+Backed by: W3C (unjudged), Mozilla (unjudged), WebAIM (unjudged), GitHub (unjudged). Backing: unjudged.
 
 **Rule.** When a modal opens, move focus into it and keep Tab inside it. Make Escape close it.
 
@@ -329,7 +329,7 @@ severity: should-fix
 concerns: usability  
 applies_when: Markup or a component hides content behind a `<details>`, an accordion, a "Show more" link, or an "Advanced" toggle.  
 context: ui  
-Backed by: Nielsen Norman Group, GOV.UK, Appian.
+Backed by: Nielsen Norman Group (unjudged), GOV.UK (unjudged), Appian (unjudged). Backing: unjudged.
 
 **Rule.** Do not hide a required field or information most users need behind a disclosure that starts closed.
 
@@ -364,7 +364,7 @@ Backed by: Nielsen Norman Group, GOV.UK, Appian.
 severity: should-fix  
 concerns: correctness  
 applies_when: A function takes two or more arguments of one primitive type that mean different things (ids, amounts, units).  
-Backed by: Cursor, Rust project, Python Software Foundation.
+Backed by: Cursor (unjudged), Rust project (supports), Python Software Foundation (supports). Backing: mixed.
 
 **Rule.** Give arguments with different meanings distinct types, so a call that swaps them fails to type-check.
 
@@ -392,7 +392,7 @@ def refund(user_id: UserId, order_id: OrderId) -> None: ...
 severity: discuss  
 concerns: maintainability  
 applies_when: The project has a written language policy, or its code may be read by people outside one language group.  
-Backed by: Python Software Foundation, LLVM, GNU Project, Moodle, Drupal.
+Backed by: Python Software Foundation (unjudged), LLVM (unjudged), GNU Project (supports), Moodle (supports), Drupal (supports). Backing: strong.
 
 **Rule.** Write identifiers and comments in English, unless the project policy names another language.
 
@@ -418,7 +418,7 @@ severity: should-fix
 concerns: usability, accessibility  
 applies_when: Code builds the message shown when user input fails validation.  
 context: ui  
-Backed by: Nielsen Norman Group, GOV.UK, W3C, USWDS. People cited: Ben Shneiderman.
+Backed by: Nielsen Norman Group (unjudged), GOV.UK (unjudged), W3C (unjudged), USWDS (unjudged). Backing: unjudged. People cited: Ben Shneiderman (unjudged).
 
 **Rule.** Show each validation error next to its field, in plain words that name what is wrong and how to fix it.
 
@@ -448,7 +448,7 @@ severity: should-fix
 concerns: performance  
 applies_when: A function queries a database or an API and then filters, counts, or sums the result in application code.  
 context: data  
-Backed by: Microsoft, Django Software Foundation, SQLAlchemy. People cited: Markus Winand.
+Backed by: Microsoft (unjudged), Django Software Foundation (unjudged), SQLAlchemy (unjudged). Backing: unjudged. People cited: Markus Winand (unjudged).
 
 **Rule.** Filter, count, and aggregate in the query, and select only the columns the code uses.
 
@@ -478,7 +478,7 @@ severity: block
 concerns: accessibility, usability  
 applies_when: Styles or script change `outline`, `:focus`, or `:focus-visible`.  
 context: ui  
-Backed by: W3C, Google, WebAIM, The A11y Project.
+Backed by: W3C (unjudged), Google (unjudged), WebAIM (unjudged), The A11y Project (unjudged). Backing: unjudged.
 
 **Rule.** Keep a visible focus indicator on every focusable element. Never set `outline: none` without a replacement.
 
@@ -505,7 +505,7 @@ severity: block
 concerns: accessibility, usability  
 applies_when: Markup or a component renders an input, a select, or a textarea.  
 context: ui  
-Backed by: W3C, Mozilla, Deque, The A11y Project, jsx-eslint project, GOV.UK, WebAIM.
+Backed by: W3C (unjudged), Mozilla (unjudged), Deque (unjudged), The A11y Project (unjudged), jsx-eslint project (unjudged), GOV.UK (unjudged), WebAIM (unjudged). Backing: unjudged.
 
 **Rule.** Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.
 
@@ -536,7 +536,7 @@ severity: should-fix
 concerns: reliability, correctness  
 applies_when: Code calls `decodeURIComponent` or `decodeURI` on a query parameter, a hash, a path segment or other input a user controls.  
 context: ui, server  
-Backed by: Mozilla, OpenJS Foundation, Remix.
+Backed by: Mozilla (unjudged), OpenJS Foundation (unjudged), Remix (supports). Backing: mixed.
 
 **Rule.** Wrap `decodeURIComponent` on user input in a `try`/`catch`, or parse with `URLSearchParams`, so that a malformed `%` sequence cannot throw.
 
@@ -568,7 +568,7 @@ render(q);
 severity: should-fix  
 concerns: reliability, correctness  
 applies_when: Code starts a promise that can reject, such as `fetch`, `navigator.clipboard.writeText` or an async function, and does not return it.  
-Backed by: Mozilla, Google, typescript-eslint project, OpenJS Foundation.
+Backed by: Mozilla (unjudged), Google (unjudged), typescript-eslint project (unjudged), OpenJS Foundation (unjudged). Backing: unjudged.
 
 **Rule.** Handle the rejection of every promise you start: `await` it inside `try`/`catch`, end the chain with `.catch()`, or return it to a caller that does.
 
@@ -604,7 +604,7 @@ severity: should-fix
 concerns: accessibility, usability  
 applies_when: Markup or a component renders a title or a section heading.  
 context: ui  
-Backed by: W3C, Mozilla, The A11y Project.
+Backed by: W3C (unjudged), Mozilla (unjudged), The A11y Project (unjudged). Backing: unjudged.
 
 **Rule.** Mark every heading with a real `<h1>` to `<h6>` element, not a styled `div`, `span`, or `p`.
 
@@ -635,7 +635,7 @@ severity: should-fix
 concerns: accessibility  
 applies_when: Markup or a component renders an image, an icon, or a chart.  
 context: ui  
-Backed by: W3C, Mozilla, Deque, The A11y Project, jsx-eslint project.
+Backed by: W3C (unjudged), Mozilla (unjudged), Deque (unjudged), The A11y Project (unjudged), jsx-eslint project (unjudged). Backing: unjudged.
 
 **Rule.** Give every `<img>` an `alt` attribute: text that serves the image's purpose, or `alt=""` when the image is decorative.
 
@@ -665,7 +665,7 @@ Backed by: W3C, Mozilla, Deque, The A11y Project, jsx-eslint project.
 severity: should-fix  
 concerns: performance, correctness  
 applies_when: A function awaits or calls several I/O operations that do not depend on each other.  
-Backed by: Google, Cursor, Python Software Foundation, Mozilla, Microsoft, Apple.
+Backed by: Google (unjudged), Cursor (unjudged), Python Software Foundation (unjudged), Mozilla (unjudged), Microsoft (unjudged), Apple (unjudged). Backing: unjudged.
 
 **Rule.** Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.
 
@@ -693,7 +693,7 @@ user, orders, prefs = await asyncio.gather(
 severity: should-fix  
 concerns: performance  
 applies_when: A function builds a string from pieces in a loop whose length depends on input.  
-Backed by: Python Software Foundation, Google, Microsoft.
+Backed by: Python Software Foundation (unjudged), Google (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Build a string from a loop with a builder or a join, never with repeated `+=`.
 
@@ -721,7 +721,7 @@ severity: block
 concerns: security  
 applies_when: Code accepts a JWT as proof of identity or permission.  
 context: server  
-Backed by: IETF, OWASP, Microsoft, Google, GitHub, PyJWT project.
+Backed by: IETF (unjudged), OWASP (unjudged), Microsoft (unjudged), Google (unjudged), GitHub (unjudged), PyJWT project (unjudged). Backing: unjudged.
 
 **Rule.** Verify the signature against a fixed list of accepted algorithms, and check `iss` and `aud`, before reading any claim.
 
@@ -750,7 +750,7 @@ severity: should-fix
 concerns: usability  
 applies_when: A form handler or component re-renders after a failed validation or a failed submit.  
 context: ui  
-Backed by: Nielsen Norman Group, GOV.UK, Baymard Institute. People cited: Ben Shneiderman.
+Backed by: Nielsen Norman Group (unjudged), GOV.UK (unjudged), Baymard Institute (unjudged). Backing: unjudged. People cited: Ben Shneiderman (unjudged).
 
 **Rule.** After a failed validation or submit, show the form again with every value the user entered, correct or not.
 
@@ -784,7 +784,7 @@ severity: discuss
 concerns: usability, accessibility  
 applies_when: Markup or styles lay out a form field and its visible label.  
 context: ui  
-Backed by: GOV.UK, Atlassian, Nielsen Norman Group, W3C.
+Backed by: GOV.UK (unjudged), Atlassian (unjudged), Nielsen Norman Group (unjudged), W3C (unjudged). Backing: unjudged.
 
 **Rule.** Put the visible label of a text input, select, or textarea directly above it.
 
@@ -816,7 +816,7 @@ severity: should-fix
 concerns: security  
 applies_when: A URL taken from remote JSON, a query parameter or stored data is written to `href`, `src`, `location` or `window.open`.  
 context: ui  
-Backed by: OWASP, Google, WordPress.
+Backed by: OWASP (unjudged), Google (unjudged), WordPress (supports). Backing: mixed.
 
 **Rule.** Parse a URL that comes from data and allow only `https:` (and `http:` or `mailto:` where needed) before you set it as a link target.
 
@@ -845,7 +845,7 @@ severity: should-fix
 concerns: security, usability  
 applies_when: A CLI command, admin page or debug view prints stored configuration that can include tokens, API keys, or URLs with embedded secrets.  
 context: cli  
-Backed by: GitHub, Django Software Foundation, GitLab, OWASP, AWS, Kubernetes, Pulumi.
+Backed by: GitHub (unjudged), Django Software Foundation (unjudged), GitLab (unjudged), OWASP (unjudged), AWS (supports), Kubernetes (supports), Pulumi (supports). Backing: strong.
 
 **Rule.** Mask credentials in list, show and debug output (keep only the last four characters), and print a full value only behind an explicit flag.
 
@@ -878,7 +878,7 @@ print("api_key:", mask(settings.api_key))
 severity: discuss  
 concerns: maintainability  
 applies_when: An `if` or `while` joins three or more terms in one expression.  
-Backed by: Industrial Logic, GNOME, Epic Games. People cited: Sébastien Portebois.
+Backed by: Industrial Logic (supports), GNOME (supports), Epic Games (supports). Backing: strong. People cited: Sébastien Portebois (unjudged).
 
 **Rule.** Name each compound condition by assigning its sub-conditions to booleans that say what they mean.
 
@@ -906,7 +906,7 @@ severity: block
 concerns: accessibility, usability  
 applies_when: A component handles a click or tap, or navigates.  
 context: ui  
-Backed by: W3C, Mozilla, WebAIM, jsx-eslint project. People cited: Don Norman.
+Backed by: W3C (unjudged), Mozilla (unjudged), WebAIM (unjudged), jsx-eslint project (unjudged). Backing: unjudged. People cited: Don Norman (unjudged).
 
 **Rule.** Use `<button>` for an action and `<a href>` for navigation. Do not attach a click handler to a `div`, `span`, or `a` with no `href`.
 
@@ -935,7 +935,7 @@ Backed by: W3C, Mozilla, WebAIM, jsx-eslint project. People cited: Don Norman.
 severity: block  
 concerns: performance, correctness  
 applies_when: Code runs on an event loop or an async runtime (asyncio, Node.js, Tokio, ASP.NET async handlers).  
-Backed by: Python Software Foundation, OpenJS Foundation, Tokio project, Microsoft.
+Backed by: Python Software Foundation (unjudged), OpenJS Foundation (unjudged), Tokio project (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Never make a blocking I/O call or run long CPU work directly in async code; use the async API or hand the work to a thread or worker.
 
@@ -964,7 +964,7 @@ async def handler(req):
 severity: should-fix  
 concerns: correctness  
 applies_when: Code reads shared state, yields (await, I/O, a lock release), then writes based on the earlier read.  
-Backed by: OWASP, Oracle, PostgreSQL.
+Backed by: OWASP (supports), Oracle (supports), PostgreSQL (supports). Backing: strong.
 
 **Rule.** Make check-and-write one atomic operation where the state lives, and never split it across a suspension point.
 
@@ -993,7 +993,7 @@ if not await repo.debit_if_sufficient(acct, amount):
 severity: block  
 concerns: security  
 applies_when: Code runs `eval`, `exec`, or `new Function`, or compiles a template, and some of the text comes from a request, a file, a database row, or model output.  
-Backed by: OWASP, MITRE, Mozilla, PortSwigger, GitHub.
+Backed by: OWASP (unjudged), MITRE (unjudged), Mozilla (unjudged), PortSwigger (unjudged), GitHub (unjudged). Backing: unjudged.
 
 **Rule.** Never pass untrusted text to `eval`, `exec`, `new Function`, or a template compiler. Pass it to a fixed template or a parser as data.
 
@@ -1020,7 +1020,7 @@ html = render_template("hello.html", name=request.args["name"])
 severity: discuss  
 concerns: maintainability  
 applies_when: Code reads or writes an attribute or field by a dynamic key when the name is known at write time.  
-Backed by: PyCQA, Mozilla.ai, AlmaLinux.
+Backed by: PyCQA (supports), Mozilla.ai (supports), AlmaLinux (supports). Backing: strong.
 
 **Rule.** Use plain field access, and reserve dynamic access for genuinely dynamic names.
 
@@ -1045,7 +1045,7 @@ value = order.total
 severity: should-fix  
 concerns: maintainability  
 applies_when: A literal string or number carries meaning the reader must guess (status codes, mode names, limits).  
-Backed by: Google, ESLint, Carnegie Mellon SEI.
+Backed by: Google (unjudged), ESLint (supports), Carnegie Mellon SEI (supports). Backing: mixed.
 
 **Rule.** Give every meaningful literal a name: an enum member or a constant.
 
@@ -1073,7 +1073,7 @@ severity: block
 concerns: security  
 applies_when: A handler copies request fields into a model, ORM entity or settings object.  
 context: server  
-Backed by: OWASP, Microsoft, Ruby on Rails, Django Software Foundation.
+Backed by: OWASP (unjudged), Microsoft (unjudged), Ruby on Rails (unjudged), Django Software Foundation (unjudged). Backing: unjudged.
 
 **Rule.** Bind request data to a DTO or an explicit field allowlist, never straight onto the model.
 
@@ -1101,7 +1101,7 @@ user = User(**UserIn(**request.json).model_dump())
 severity: block  
 concerns: security  
 applies_when: Code turns bytes or text from outside the process into objects.  
-Backed by: OWASP, Python Software Foundation, Microsoft, Oracle, GitHub.
+Backed by: OWASP (unjudged), Python Software Foundation (unjudged), Microsoft (unjudged), Oracle (unjudged), GitHub (unjudged). Backing: unjudged.
 
 **Rule.** Parse untrusted input with a data-only format, never with a native object deserialiser.
 
@@ -1129,7 +1129,7 @@ severity: should-fix
 concerns: accessibility, usability  
 applies_when: Markup sets `tabindex`, or a layout reorders content with CSS.  
 context: ui  
-Backed by: W3C, Google, WebAIM, The A11y Project.
+Backed by: W3C (unjudged), Google (unjudged), WebAIM (unjudged), The A11y Project (unjudged). Backing: unjudged.
 
 **Rule.** Write the DOM in reading order and never set `tabindex` above 0.
 
@@ -1159,7 +1159,7 @@ Backed by: W3C, Google, WebAIM, The A11y Project.
 severity: block  
 concerns: security  
 applies_when: JavaScript or TypeScript code merges, clones, or assigns properties whose key names come from JSON, a query string, or other untrusted input.  
-Backed by: OWASP, MITRE, PortSwigger, GitHub, Snyk.
+Backed by: OWASP (unjudged), MITRE (unjudged), PortSwigger (unjudged), GitHub (unjudged), Snyk (unjudged). Backing: unjudged.
 
 **Rule.** Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys.
 
@@ -1195,7 +1195,7 @@ severity: block
 concerns: security  
 applies_when: Code writes a string into a page, a template or a rendered model-output view.  
 context: ui, server  
-Backed by: OWASP, Mozilla, Meta, Google, CISA.
+Backed by: OWASP (unjudged), Mozilla (unjudged), Meta (unjudged), Google (unjudged), CISA (unjudged). Backing: unjudged.
 
 **Rule.** Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.
 
@@ -1223,7 +1223,7 @@ el.textContent = comment.body;
 severity: block  
 concerns: security  
 applies_when: Code starts a process and some part of the command comes from a request, a file or model output.  
-Backed by: OWASP, Python Software Foundation, Google, CISA.
+Backed by: OWASP (unjudged), Python Software Foundation (unjudged), Google (unjudged), CISA (unjudged). Backing: unjudged.
 
 **Rule.** Start processes with the program and each argument as separate list items, and never through a shell string.
 
@@ -1251,7 +1251,7 @@ severity: block
 concerns: security  
 applies_when: A handler loads, changes or deletes a record by an ID that comes from the request.  
 context: server  
-Backed by: OWASP, Microsoft, Cloudflare, NIST.
+Backed by: OWASP (unjudged), Microsoft (unjudged), Cloudflare (unjudged), NIST (unjudged). Backing: unjudged.
 
 **Rule.** Check that the caller may act on the specific record before returning or changing it.
 
@@ -1280,7 +1280,7 @@ severity: block
 concerns: security  
 applies_when: Code stores or verifies a user password.  
 context: server  
-Backed by: OWASP, IETF, NIST.
+Backed by: OWASP (unjudged), IETF (unjudged), NIST (unjudged). Backing: unjudged.
 
 **Rule.** Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.
 
@@ -1308,7 +1308,7 @@ severity: should-fix
 concerns: security  
 applies_when: A handler redirects to a URL taken from a query parameter, form field, header, or stored value, such as `?next=` after login.  
 context: server  
-Backed by: OWASP, MITRE, Microsoft, PortSwigger, GitHub.
+Backed by: OWASP (unjudged), MITRE (unjudged), Microsoft (unjudged), PortSwigger (unjudged), GitHub (unjudged). Backing: unjudged.
 
 **Rule.** Redirect only to a local path or to a host on a server-side allowlist, never to a URL taken from the request as is.
 
@@ -1337,7 +1337,7 @@ severity: should-fix
 concerns: accessibility, usability  
 applies_when: Styles or script add a transition, an animation, a parallax effect, or autoplay motion.  
 context: ui  
-Backed by: Mozilla, W3C, Apple, The A11y Project, Google.
+Backed by: Mozilla (unjudged), W3C (unjudged), Apple (unjudged), The A11y Project (unjudged), Google (unjudged). Backing: unjudged.
 
 **Rule.** Switch off or replace large, repeating, or interaction-triggered motion when `prefers-reduced-motion: reduce` is set.
 
@@ -1369,7 +1369,7 @@ Backed by: Mozilla, W3C, Apple, The A11y Project, Google.
 severity: should-fix  
 concerns: performance  
 applies_when: Code builds a regular expression or similar compiled matcher inside a loop or a function that runs per request.  
-Backed by: Rust project, Google, Python Software Foundation, Microsoft.
+Backed by: Rust project (unjudged), Google (unjudged), Python Software Foundation (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Compile a regular expression once, at module or startup level, and reuse it.
 
@@ -1399,7 +1399,7 @@ severity: should-fix
 concerns: accessibility, usability  
 applies_when: Markup or a component renders a radio group, a checkbox group, or a value split across several inputs, such as a date or an address.  
 context: ui  
-Backed by: GOV.UK, W3C, USWDS, The A11y Project.
+Backed by: GOV.UK (unjudged), W3C (unjudged), USWDS (unjudged), The A11y Project (unjudged). Backing: unjudged.
 
 **Rule.** Wrap each radio group, checkbox group, and multi-part value, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.
 
@@ -1434,7 +1434,7 @@ Backed by: GOV.UK, W3C, USWDS, The A11y Project.
 severity: should-fix  
 concerns: reliability  
 applies_when: A function or job changes state and can be run twice, or can be killed partway.  
-Backed by: Cursor, Uber, Stripe, Dropbox, Netflix, GitHub.
+Backed by: Cursor (unjudged), Uber (unjudged), Stripe (unjudged), Dropbox (unjudged), Netflix (unjudged), GitHub (unjudged). Backing: unjudged.
 
 **Rule.** Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.
 
@@ -1466,7 +1466,7 @@ severity: should-fix
 concerns: security, compatibility  
 applies_when: A handler returns a stored object or entity to the client.  
 context: server  
-Backed by: OWASP, Microsoft, Django REST framework, NIST.
+Backed by: OWASP (unjudged), Microsoft (unjudged), Django REST framework (unjudged), NIST (unjudged). Backing: unjudged.
 
 **Rule.** Return a response type that lists each field, never the stored model or a generic dump of it.
 
@@ -1493,7 +1493,7 @@ return UserOut.model_validate(user)
 severity: should-fix  
 concerns: correctness  
 applies_when: Code catches exceptions in business logic.  
-Backed by: Google, Microsoft, Python Software Foundation. People cited: Sébastien Portebois.
+Backed by: Google (unjudged), Microsoft (supports), Python Software Foundation (supports). Backing: mixed. People cited: Sébastien Portebois (unjudged).
 
 **Rule.** Catch only the specific exception you can handle in business code.
 
@@ -1525,7 +1525,7 @@ severity: should-fix
 concerns: accessibility, usability  
 applies_when: Script shows a message after an async action without moving focus, such as "Saved", a result count, or an error.  
 context: ui  
-Backed by: W3C, Mozilla, WebAIM. People cited: Heydon Pickering.
+Backed by: W3C (unjudged), Mozilla (unjudged), WebAIM (unjudged). Backing: unjudged. People cited: Heydon Pickering (unjudged).
 
 **Rule.** Announce an async status message through a live region (`role="status"` or `role="alert"`), and put a `role="status"` or `aria-live` region in the markup before its text changes.
 
@@ -1556,7 +1556,7 @@ severity: should-fix
 concerns: accessibility, usability  
 applies_when: Styles size a button, icon button, checkbox, or link that a pointer or finger operates.  
 context: ui  
-Backed by: W3C, Apple, The A11y Project, Deque, Mozilla.
+Backed by: W3C (unjudged), Apple (unjudged), The A11y Project (unjudged), Deque (unjudged), Mozilla (unjudged). Backing: unjudged.
 
 **Rule.** Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.
 
@@ -1585,7 +1585,7 @@ Backed by: W3C, Apple, The A11y Project, Deque, Mozilla.
 severity: should-fix  
 concerns: testing, maintainability  
 applies_when: A test exercises a function, class, or module with callers.  
-Backed by: Google, Microsoft, Spotify. People cited: Kent Beck, Kent C. Dodds.
+Backed by: Google (unjudged), Microsoft (unjudged), Spotify (unjudged). Backing: unjudged. People cited: Kent Beck (unjudged), Kent C. Dodds (unjudged).
 
 **Rule.** Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.
 
@@ -1619,7 +1619,7 @@ def test_checkout_charges_the_sum_of_item_prices():
 severity: should-fix  
 concerns: correctness, testing  
 applies_when: A test asserts on a computed value.  
-Backed by: Cursor, Google, Microsoft, NASA, GitLab.
+Backed by: Cursor (unjudged), Google (unjudged), Microsoft (unjudged), NASA (supports), GitLab (supports). Backing: mixed.
 
 **Rule.** Take a test's expected value from the requirement, not from the code under test.
 
@@ -1644,7 +1644,7 @@ assert total([Item(price=300), Item(price=450)]) == 750
 severity: block  
 concerns: security  
 applies_when: Code makes an outbound HTTPS, database or message-broker connection.  
-Backed by: OWASP, IETF, Google, GitHub, Python Software Foundation.
+Backed by: OWASP (unjudged), IETF (unjudged), Google (unjudged), GitHub (unjudged), Python Software Foundation (unjudged). Backing: unjudged.
 
 **Rule.** Leave certificate and hostname verification on in every environment that ships.
 
@@ -1670,7 +1670,7 @@ requests.get(url, verify="/etc/ssl/company-ca.pem")   # private CA added, check 
 severity: should-fix  
 concerns: maintainability  
 applies_when: A type or function models a value that is one of several variants or states.  
-Backed by: Cursor, Microsoft, Rust project.
+Backed by: Cursor (unjudged), Microsoft (supports), Rust project (supports). Backing: mixed.
 
 **Rule.** Model variants as a tagged union, and make every switch over it fail the build when a variant is unhandled.
 
@@ -1707,7 +1707,7 @@ function label(job: Job): string {
 severity: block  
 concerns: security  
 applies_when: Code parses XML, SVG, SOAP, SAML, or an office document that a user or another system can supply.  
-Backed by: OWASP, MITRE, PortSwigger, GitHub.
+Backed by: OWASP (unjudged), MITRE (unjudged), PortSwigger (unjudged), GitHub (unjudged). Backing: unjudged.
 
 **Rule.** Parse untrusted XML with external entity resolution turned off, for example through a hardened parser such as `defusedxml`.
 
@@ -1734,7 +1734,7 @@ doc = ET.fromstring(request.get_data())   # rejects DTD entities by default
 severity: discuss  
 concerns: maintainability  
 applies_when: A Python function or class has, or lacks, a docstring.  
-Backed by: Google. People cited: Pablo González.
+Backed by: Google (unjudged). Backing: unjudged. People cited: Pablo González (unjudged).
 
 **Rule.** Write a Google-style docstring only when it adds what the signature cannot say.
 
@@ -1761,7 +1761,7 @@ def charge(order):
 severity: should-fix  
 concerns: correctness  
 applies_when: Annotations use `typing` aliases such as `Optional` or `Union`.  
-Backed by: no organisation yet. People cited: Pablo González.
+Backed by: no organisation yet. People cited: Pablo González (unjudged).
 
 **Rule.** Write `X | None` and builtin generics, not `typing` aliases.
 
@@ -1787,7 +1787,7 @@ def f(x: list[int] | None) -> None: ...
 severity: should-fix  
 concerns: correctness  
 applies_when: Code calls `typing.cast(...)`.  
-Backed by: no organisation yet. People cited: Pablo González.
+Backed by: no organisation yet. People cited: Pablo González (unjudged).
 
 **Rule.** Do not use `cast()`; parse the boundary into a typed model, or narrow with `isinstance`.
 
@@ -1814,7 +1814,7 @@ data = Payload.model_validate_json(raw)
 severity: should-fix  
 concerns: correctness  
 applies_when: Python code builds a path to a data file or fixture.  
-Backed by: no organisation yet. People cited: Pablo González.
+Backed by: no organisation yet. People cited: Pablo González (unjudged).
 
 **Rule.** Resolve paths from `__file__`, not the current working directory.
 
@@ -1839,7 +1839,7 @@ Path(__file__).parent / "fixtures" / "data.json"
 severity: should-fix  
 concerns: testing  
 applies_when: Tests differ only in inputs and expected values.  
-Backed by: Google, Microsoft, Vodafone, pytest. People cited: Pablo González.
+Backed by: Google (unjudged), Microsoft (unjudged), Vodafone (unjudged), pytest (unjudged). Backing: unjudged. People cited: Pablo González (unjudged).
 
 **Rule.** Write tests that differ only in inputs and expected values as one `@pytest.mark.parametrize` test.
 
