@@ -6,6 +6,7 @@ severity: should-fix
 concerns: accessibility, usability  
 applies_when: A new UI service or a major redesign is about to open to the public.  
 context: ui  
+tool gate: none; a launch checklist item that links the audit report.  
 Backed by: GOV.UK (unjudged), W3C (unjudged), Section508.gov (unjudged), Deque (unjudged), Government of British Columbia (supports), US Department of Veterans Affairs (supports). Backing: mixed.
 
 **Rule.** Before a public launch, run an accessibility audit against WCAG 2.2 AA that includes assistive technology, and link the report in the launch checklist.
@@ -62,6 +63,7 @@ latency p50/p99 histogram, errors split from successes
 severity: block  
 concerns: reliability  
 applies_when: A change, config or dependency update is rolled out to production.  
+tool gate: Deploy pipeline with canary stage and automatic abort.  
 Backed by: Google (unjudged), AWS (unjudged), OWASP (unjudged), Anthropic (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Roll out in stages behind a canary, and abort by rule, not by judgment.
@@ -119,6 +121,7 @@ if flags.enabled("checkout_v2"):   # runtime toggle, default off
 severity: should-fix  
 concerns: performance, observability  
 applies_when: A latency SLO, dashboard, or alert is defined for a service.  
+tool gate: Lint alert rules for avg() over latency or over pre-computed quantiles.  
 Backed by: Google (unjudged), AWS (unjudged), Prometheus (unjudged), OpenTelemetry (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Define latency SLOs and alerts on high percentiles, never on the mean.
@@ -146,6 +149,7 @@ SLO: 99% of requests under 300 ms over 28 days
 severity: should-fix  
 concerns: performance, reliability  
 applies_when: A new service, a new feature with its own traffic, or a large architecture change is about to launch.  
+tool gate: Load-test job with thresholds (k6, Gatling) in the release pipeline.  
 Backed by: Google (unjudged), Microsoft (unjudged), AWS (unjudged), Grafana Labs (unjudged). Backing: unjudged.
 
 **Rule.** Load test before launch, past the expected peak, with pass and fail thresholds written down.

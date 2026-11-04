@@ -6,6 +6,7 @@ severity: should-fix
 concerns: accessibility, testing  
 applies_when: The repo builds a web UI and has an automated test suite.  
 context: ui  
+tool gate: This card is the gate: axe (through `@axe-core/playwright` or similar) against rendered pages in the test step; `eslint-plugin-jsx-a11y` in the lint step for JSX code.  
 Backed by: jsx-eslint project (unjudged), Deque (unjudged), GOV.UK (supports), USWDS (unjudged), Microsoft (unjudged), CivicActions (supports), University of Arizona (supports). Backing: strong.
 
 **Rule.** Run an automated accessibility check, such as axe on rendered pages, in the automated tests, and fail the test on a violation.
@@ -60,6 +61,7 @@ docs/adr/0007-queue.md: context, decision, consequences, status, and the 2 optio
 severity: should-fix  
 concerns: process  
 applies_when: The repository has a build, a packaging, or a release step.  
+tool gate: Build twice in clean containers and compare checksums; `diffoscope` shows where two artifacts differ.  
 Backed by: Google (unjudged), Reproducible Builds (unjudged), Airbnb (unjudged), Slack (unjudged), Dropbox (unjudged). Backing: unjudged.
 
 **Rule.** Build from declared inputs only, so that the same source revision gives the same artifact.
@@ -90,6 +92,7 @@ steps:
 severity: should-fix  
 concerns: process  
 applies_when: Auditing which checks must pass before a change merges.  
+tool gate: Branch protection with required status checks.  
 Backed by: OpenSSF (unjudged), Palantir (unjudged), Kubernetes (unjudged). Backing: unjudged. People cited: McIntosh et al. (unjudged).
 
 **Rule.** Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
@@ -115,6 +118,7 @@ Protected main: 1 approval + required checks (build, test, lint, types).
 severity: discuss  
 concerns: correctness, maintainability  
 applies_when: Auditing whether one concern is solved in several incompatible ways across the repo.  
+tool gate: Lint rules that ban the deprecated pattern once a standard is chosen.  
 Backed by: The Pragmatic Engineer (unjudged), Google (unjudged), Spotify (unjudged), Uber (unjudged), Cabify (unjudged), Stripe (unjudged). Backing: unjudged. People cited: Sébastien Portebois (unjudged).
 
 **Rule.** For each recurring concern (errors, config, HTTP clients, logging), make one pattern the standard instead of leaving several as equal peers.
@@ -142,6 +146,7 @@ legacy sites listed in MIGRATION.md.
 severity: should-fix  
 concerns: maintainability  
 applies_when: Auditing for code, flags and files that nothing uses.  
+tool gate: An unused-code linter in CI (vulture, knip, or deadcode); allowlist each intentional exception with a reason.  
 Backed by: Palantir (unjudged), Google (unjudged), Meta (unjudged), Carnegie Mellon SEI (unjudged), Linux kernel (unjudged), NVIDIA (unjudged), Microsoft (unjudged), GitLab (unjudged), Uber (unjudged), Statsig (unjudged), JetBrains (unjudged), Lockheed Martin (unjudged). Backing: unjudged. People cited: Henrik Warne (unjudged), tef (programmingisterrible) (unjudged).
 
 **Rule.** Delete unreferenced functions and variables, and the branches of expired feature flags.
@@ -170,6 +175,7 @@ The unused-code linter reports 0 symbols, or each is allowlisted with a reason.
 severity: should-fix  
 concerns: security  
 applies_when: Auditing what third-party code the repo ships and under which terms.  
+tool gate: A vulnerability scanner such as OSV-Scanner or Dependabot alerts; an SBOM generator such as Syft.  
 Backed by: OWASP (unjudged), OpenSSF (unjudged), CISA (unjudged), NIST (unjudged), GitHub (unjudged), Cabify (unjudged). Backing: unjudged.
 
 **Rule.** Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule. Each ask is judged separately: name which one failed on the FAIL line.
@@ -196,6 +202,7 @@ release artifacts attach the SBOM.
 severity: block  
 concerns: security  
 applies_when: Auditing how the repo resolves third-party packages.  
+tool gate: Lockfile-required install in CI; dependency-update bot config present.  
 Backed by: OWASP (unjudged), OpenSSF (unjudged), Google (unjudged), Python Software Foundation (unjudged), npm (unjudged). Backing: unjudged.
 
 **Rule.** Commit a lockfile with hashes and install from it in CI.
@@ -238,6 +245,7 @@ CI: poetry install        (poetry.lock committed; fails if it is stale)
 severity: should-fix  
 concerns: maintainability  
 applies_when: Auditing a repo whose README, guides or AGENTS.md cite file paths, anchors or other pages.  
+tool gate: A link checker in CI, such as lychee (`lychee --offline --include-fragments docs README.md`) or mdBook linkcheck.  
 Backed by: GitHub (unjudged), GitLab (unjudged), Rust project (unjudged). Backing: unjudged.
 
 **Rule.** Run a link check in CI over the docs, so that every relative link and anchor they cite resolves.
@@ -299,6 +307,7 @@ Backed by: Dropbox (unjudged), Shopify (unjudged), Cabify (unjudged), Atlassian 
 severity: should-fix  
 concerns: performance, process  
 applies_when: The repo has a performance target (bundle size, page metrics, latency under load, or a benchmark) that matters to users.  
+tool gate: Lighthouse CI assert, size-limit, k6 thresholds, Gatling assertions, or a benchstat comparison in CI.  
 Backed by: Google (unjudged), Size Limit project (unjudged), Grafana Labs (unjudged), Gatling (unjudged), Microsoft (unjudged), AWS (unjudged), Mozilla (unjudged). Backing: unjudged.
 
 **Rule.** Write the performance budget down as a CI check that fails the build when it is exceeded.
@@ -326,6 +335,7 @@ k6: thresholds: { http_req_duration: ["p(95)<300"] }        # non-zero exit fail
 severity: should-fix  
 concerns: reliability, process  
 applies_when: Auditing a workflow or pipeline that publishes a release when a tag is pushed.  
+tool gate: Release job with `needs:` the test job, or a `workflow_run` trigger checked for `conclusion == 'success'`; a tag ruleset with required status checks.  
 Backed by: Kubernetes (unjudged), GitHub (unjudged), GitLab (unjudged), OpenJS Foundation (supports), Envoy (supports), Google (supports). Backing: strong.
 
 **Rule.** Make a release or publish job depend on the checks passing for the tagged commit, never on the tag alone.
@@ -373,6 +383,7 @@ jobs:
 severity: should-fix  
 concerns: maintainability  
 applies_when: Auditing any written repo rule (AGENTS.md, CONTRIBUTING, a docs page, a code comment, repeated review comments) that a type check, lint rule, test or CI check could enforce.  
+tool gate: The enforcer itself: a type, a lint rule or a CI check.  
 Backed by: Cursor (unjudged), Spotify (unjudged), Stripe (unjudged), Cabify (unjudged). Backing: unjudged.
 
 **Rule.** Back each written repo rule that a type, lint or CI check could enforce with that check, not with a line in an instruction file or a repeated review comment.
@@ -406,6 +417,7 @@ func TestNoBareHTTPGet(t *testing.T) { /* walk the AST, fail on http.Get */ }
 severity: discuss  
 concerns: testing, process  
 applies_when: Auditing how a contributor checks a small change.  
+tool gate: A documented command that runs tests and lint for one path or package.  
 Backed by: Cursor (unjudged), Google (supports), Django Software Foundation (supports), Python Software Foundation (supports). Backing: strong.
 
 **Rule.** Document a command that checks one package or path, with readable output, so a small change does not need the full-repo run.
@@ -432,6 +444,7 @@ ruff check src/billing
 severity: block  
 concerns: security, process  
 applies_when: Any repository, including its history, issues and pull requests.  
+tool gate: Secret scanning on push (provider or pre-commit hook) with push protection on.  
 Backed by: GitHub (unjudged), OWASP (unjudged), CISA (unjudged), GitLab (unjudged). Backing: unjudged.
 
 **Rule.** Scan for committed credentials, and treat any hit as leaked: revoke and replace it first. With no scanner present and no secret found, the FAIL is the missing control; evidence is "absent in <paths>". A platform scanner (GitHub secret scanning with push protection, GitLab secret detection) counts when it is enabled on the repo and covers history.
@@ -458,6 +471,7 @@ key revoked and reissued the same day; new value comes from the secret store
 severity: should-fix  
 concerns: security, process  
 applies_when: The repo has open dependency alerts, update pull requests, or scan reports; with none open, mark it N/A.  
+tool gate: Dependabot or Renovate alerts with a severity SLA; OSV-Scanner or Scorecard `Vulnerabilities` in CI.  
 Backed by: OpenSSF (unjudged), CISA (unjudged), GitHub (unjudged), OWASP (unjudged). Backing: unjudged.
 
 **Rule.** Write down how long a known-vulnerable dependency may stay unfixed and fix or upgrade it inside that window.
@@ -485,6 +499,7 @@ Open alerts: all younger than their window.
 severity: block  
 concerns: security, process  
 applies_when: Auditing CI workflow files and release pipelines.  
+tool gate: OpenSSF Scorecard `Pinned-Dependencies` check; zizmor `unpinned-uses` audit.  
 Backed by: OpenSSF (unjudged), OWASP (unjudged), GitHub (unjudged), StepSecurity (unjudged). Backing: unjudged.
 
 **Rule.** Pin every CI action to a full commit SHA.
@@ -516,6 +531,7 @@ steps:
 severity: should-fix  
 concerns: maintainability  
 applies_when: The project is Python and has a linter configuration.  
+tool gate: ruff  
 Backed by: no organisation yet. People cited: Pablo González (unjudged).
 
 **Rule.** Enable the Ruff rule sets E, F, I, B, UP, SIM, BLE, TID and D in CI.

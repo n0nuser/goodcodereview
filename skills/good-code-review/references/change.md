@@ -5,6 +5,7 @@
 severity: should-fix  
 concerns: maintainability, process  
 applies_when: The change was written fully or partly by an AI agent.  
+tool gate: Compiler, type checker and dependency-resolution in CI catch non-existent imports and calls.  
 Backed by: Kubernetes (unjudged), Google (unjudged), University of Texas at San Antonio (unjudged), Cloud Security Alliance (supports). Backing: mixed.
 
 **Rule.** Verify that every import and external call the agent wrote exists with that signature.
@@ -59,6 +60,7 @@ A human who can explain the change approves.
 severity: should-fix  
 concerns: process  
 applies_when: A review approval or verification result exists and the branch has been pushed or rebased since.  
+tool gate: Branch protection that dismisses stale approvals on new commits.  
 Backed by: Cursor (unjudged), Anthropic (unjudged), GitLab (supports), Kubernetes (supports), Gerrit Code Review (supports). Backing: strong.
 
 **Rule.** Treat an approval or verification verdict as current only if the patch is unchanged: compare `git patch-id` at the verdict commit with the current head. If the patches differ only in tests, docs, or lint config, the verdict can stand when the built output is the same; any other difference needs a fresh check.
@@ -86,6 +88,7 @@ Push that only edits a README: approval stands once the build output is shown to
 severity: should-fix  
 concerns: process  
 applies_when: Every change submitted for review.  
+tool gate: PR template with required sections; branch protection requiring green CI.  
 Backed by: Linux kernel (unjudged), Phacility (unjudged), Palantir (unjudged), Kubernetes (unjudged), GitLab (unjudged). Backing: unjudged.
 
 **Rule.** Self-review the diff and write the description before requesting review.
@@ -113,6 +116,7 @@ Author left inline notes on the two non-obvious hunks.
 severity: block  
 concerns: compatibility  
 applies_when: The change alters anything a caller can observe, documented or not.  
+tool gate: Contract tests and API-diff tooling.  
 Backed by: Python Software Foundation (unjudged), Google (unjudged), Microsoft (unjudged), Kubernetes (unjudged), OpenJDK (unjudged), AWS (unjudged), Pact (unjudged), Spring (unjudged). Backing: unjudged. People cited: Hyrum Wright (unjudged), Michael Feathers (unjudged).
 
 **Rule.** Treat any change that callers can observe in a signature, return values, error types, defaults, or side effects as breaking until a consumer check says otherwise.
@@ -168,6 +172,7 @@ severity: should-fix
 concerns: compatibility, maintainability  
 applies_when: The change adds a new API, path or config and every caller lives in this repo.  
 context: data  
+tool gate: Dead-code and unused-export checks.  
 Backed by: Cursor (unjudged), Stripe (unjudged), Google (supports), LLVM (supports). Backing: mixed.
 
 **Rule.** When no consumer sits outside the repo, move every caller to the new API and delete the old one, and the tests that pinned its internals, in the same change.
@@ -197,6 +202,7 @@ Backed by: Cursor (unjudged), Stripe (unjudged), Google (supports), LLVM (suppor
 severity: should-fix  
 concerns: compatibility, process  
 applies_when: The change renames an environment variable, remaps a port, moves a secret source, or adds a step needed to run or build the project.  
+tool gate: Startup check that fails fast on missing or unknown config keys.  
 Backed by: Cursor (unjudged), GitLab (supports), Spring (supports). Backing: mixed.
 
 **Rule.** Flag a change that renames or removes an environment variable, moves a secret, or remaps a port as breaking for developers and operators, and update every place that documents or sets it.
@@ -226,6 +232,7 @@ severity: block
 concerns: compatibility  
 applies_when: The change renames, removes or reshapes a column, API field, message, config key or exported symbol that other code reads.  
 context: data  
+tool gate: Schema or API diff tools (breaking-change detectors) in CI.  
 Backed by: Python Software Foundation (unjudged), GitLab (unjudged), Stripe (unjudged), Kubernetes (unjudged), Microsoft (unjudged). Backing: unjudged. People cited: Hyrum Wright (unjudged).
 
 **Rule.** Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.
@@ -253,6 +260,7 @@ ALTER TABLE users RENAME COLUMN name TO full_name;  -- app v1 still reads name
 severity: should-fix  
 concerns: correctness, maintainability  
 applies_when: The change adds code that solves a problem the codebase already solves somewhere.  
+tool gate: Repeated style nits mean a missing linter or formatter rule; add the gate instead of commenting.  
 Backed by: Google (unjudged), The Pragmatic Engineer (unjudged), Python Software Foundation (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Follow the established pattern nearby.
@@ -283,6 +291,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: A migration adds a column to a large PostgreSQL table.  
 context: data  
+tool gate: Migration linter that flags volatile defaults, stored generated columns and identity columns on ADD COLUMN.  
 Backed by: PostgreSQL (unjudged), PayPal (supports), Retool (supports). Backing: mixed.
 
 **Rule.** Add the column nullable or with a constant default, then fill volatile, computed, or identity values in batches.
@@ -309,6 +318,7 @@ ALTER TABLE events ADD COLUMN token uuid;                 -- no rewrite
 severity: should-fix  
 concerns: security, process  
 applies_when: The change adds an endpoint, input parser, file upload, dependency, permission, secret or outbound call.  
+tool gate: SAST and dependency scanning in CI catch the mechanical part.  
 Backed by: Google (unjudged), OWASP (unjudged), Mozilla (unjudged), Python Software Foundation (supports). Backing: mixed.
 
 **Rule.** List any new attack surface in the description.
@@ -336,6 +346,7 @@ Security reviewer tagged. Randomness uses a crypto source.
 severity: should-fix  
 concerns: correctness, maintainability, process  
 applies_when: The diff adds a suppression (lint ignore, type ignore, skipped test, swallowed error) or deletes a failing check.  
+tool gate: Linter rule that requires a reason and ticket on each suppression.  
 Backed by: Google (unjudged), Palantir (unjudged), Cursor (unjudged), ESLint (supports), Rust project (supports). Backing: mixed.
 
 **Rule.** Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
@@ -366,6 +377,7 @@ try: sync()
 severity: should-fix  
 concerns: process  
 applies_when: Every change.  
+tool gate: A CI check can label or warn on file count and diff size.  
 Backed by: Linux kernel (unjudged), Python Software Foundation (unjudged), Phacility (unjudged), Palantir (unjudged). Backing: unjudged.
 
 **Rule.** Make each change do one logical thing; if the description needs "and" between unrelated outcomes, split it.
@@ -418,6 +430,7 @@ Median of 7 alternating runs: 412 ms -> 301 ms, range 398-421 vs 295-310.
 severity: should-fix  
 concerns: compatibility  
 applies_when: The diff changes an existing field's type, default, label or name in a `.proto` file.  
+tool gate: `buf breaking` with the wire and JSON rule sets.  
 Backed by: Google (unjudged), Buf (supports), Istio (supports). Backing: mixed.
 
 **Rule.** Never change the type of a protobuf field, switch it between repeated and scalar, or rename it while any consumer reads JSON or text format; add a new field instead.
@@ -449,6 +462,7 @@ message Invoice {
 severity: should-fix  
 concerns: compatibility  
 applies_when: The diff deletes a field or enum value from a `.proto` message or enum.  
+tool gate: `buf breaking` or an equivalent descriptor diff in CI.  
 Backed by: Google (unjudged), Microsoft (supports), Deliveroo (supports). Backing: mixed.
 
 **Rule.** When you delete a protobuf field or enum value, add `reserved` for its number and name in the same change, and never reuse a number.
@@ -481,6 +495,7 @@ message Order {
 severity: should-fix  
 concerns: testing, maintainability  
 applies_when: The change restructures code and claims to keep its behaviour.  
+tool gate: Snapshot or golden-file tests in CI.  
 Backed by: Cursor (unjudged), GitHub (unjudged), Stripe (unjudged), SonarSource (unjudged), JetBrains (unjudged), Apache Software Foundation (unjudged). Backing: unjudged.
 
 **Rule.** Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
@@ -507,6 +522,7 @@ Commit 2: the split. The same test passes unchanged.
 severity: should-fix  
 concerns: maintainability, process  
 applies_when: The change both restructures or reformats code and changes behaviour, or moves code between files.  
+tool gate: A formatter check in CI removes the reformatting case.  
 Backed by: Linux kernel (unjudged), Google (unjudged), Apache Software Foundation (unjudged), Python Software Foundation (unjudged), LLVM (unjudged). Backing: unjudged. People cited: Henrik Warne (unjudged), Kent Beck (unjudged).
 
 **Rule.** Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
@@ -534,6 +550,7 @@ commit 2: fix off-by-one + test
 severity: should-fix  
 concerns: maintainability  
 applies_when: The change adds a helper, util, type or constant.  
+tool gate: Clone-detection in CI (jscpd, PMD CPD, or similar) can flag near-duplicate blocks.  
 Backed by: GitHub (unjudged), Cursor (unjudged), Google (unjudged), Linux kernel (unjudged), Refactoring.Guru (unjudged). Backing: unjudged. People cited: Sébastien Portebois (unjudged).
 
 **Rule.** Do not add a helper that duplicates one already in the repo; search for it first.
@@ -561,6 +578,7 @@ from utils.dates import parse_iso
 severity: discuss  
 concerns: process  
 applies_when: A reviewer is deciding what to comment on.  
+tool gate: Formatter, linter and type checker own style and mechanical rules.  
 Backed by: Google (unjudged), Slack (unjudged), The Pragmatic Engineer (unjudged), Microsoft (unjudged), Meta (unjudged), Anthropic (unjudged). Backing: unjudged.
 
 **Rule.** Do not spend review comments on what a tool enforces or on minor style points; spend them on the findings that matter.
@@ -588,6 +606,7 @@ one nit. Formatting left to the formatter, which CI enforces.
 severity: should-fix  
 concerns: reliability  
 applies_when: The change deploys schema, data, config or behaviour that is costly to undo.  
+tool gate: Migration linter requiring a down step; deploy pipeline with automatic abort.  
 Backed by: Anthropic (unjudged), Google (unjudged), GitLab (supports), Microsoft (supports), AWS (supports). Backing: strong. People cited: tef (programmingisterrible) (unjudged).
 
 **Rule.** State in the description how to undo the change.
@@ -615,6 +634,7 @@ Behaviour behind a flag; canary at 5% with an abort rule.
 severity: discuss  
 concerns: process  
 applies_when: The diff exceeds roughly 400 changed lines or about 20 files and is not generated or a pure move.  
+tool gate: Size labels or a diff-size warning in CI.  
 Backed by: Google (unjudged), Microsoft (unjudged), SmartBear (unjudged), The Pragmatic Engineer (unjudged), US Department of Veterans Affairs (unjudged), USGS (unjudged), Apache Software Foundation (unjudged), Godot Engine (unjudged), Ethereum Foundation (unjudged). Backing: unjudged.
 
 **Rule.** Split a change past about 400 changed lines or about 20 files, or say in the description why not; aim for about 200.
@@ -640,6 +660,7 @@ Stack of 6 changes of 150-300 lines, each builds and passes tests alone.
 severity: block  
 concerns: testing  
 applies_when: The change alters behaviour of non-trivial code.  
+tool gate: Coverage-delta or "changed source without changed tests" check in CI.  
 Backed by: Kubernetes (unjudged), Python Software Foundation (unjudged), Google (unjudged), Rust project (unjudged), Ruby on Rails (unjudged), Microsoft (unjudged), Mozilla (unjudged). Backing: unjudged.
 
 **Rule.** Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks.
@@ -668,6 +689,7 @@ severity: should-fix
 concerns: accessibility, usability, process  
 applies_when: The change alters markup, styles, or behaviour a user sees or operates.  
 context: ui  
+tool gate: A pull request template with a UI checklist; the screenshots and the keyboard result are the evidence.  
 Backed by: W3C (unjudged), WebAIM (unjudged), GOV.UK (unjudged), WordPress (unjudged), Elastic (unjudged), Mozilla (unjudged). Backing: unjudged.
 
 **Rule.** A UI change shows before-and-after screenshots and says what a keyboard-only pass and a 200% zoom check found on the changed screens.

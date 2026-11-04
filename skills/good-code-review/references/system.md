@@ -5,6 +5,7 @@
 severity: block  
 concerns: security, process  
 applies_when: An LLM agent can call tools, run code, or act on external systems.  
+tool gate: Tool registry reviewed in code; downstream credentials scoped in IAM and tested as the agent identity.  
 Backed by: OWASP (unjudged), NCSC (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Give the agent only the narrow tools and the minimal credentials its task needs.
@@ -92,6 +93,7 @@ severity: discuss
 concerns: usability, accessibility  
 applies_when: Several screens or apps show the same action, status, or concept to the same users.  
 context: ui  
+tool gate: none; list the labels and icons for one action across all screens.  
 Backed by: Nielsen Norman Group (unjudged), W3C (unjudged), GOV.UK (unjudged), USWDS (unjudged), Atlassian (unjudged). Backing: unjudged. People cited: Ben Shneiderman (unjudged).
 
 **Rule.** Use one label and one icon for the same action and the same concept across all screens.
@@ -176,6 +178,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: A migration creates an index on an existing large or busy table.  
 context: data  
+tool gate: Migration linter.  
 Backed by: PostgreSQL (unjudged), GitLab (unjudged), Heroku (supports), thoughtbot (supports). Backing: mixed.
 
 **Rule.** Create indexes with `CONCURRENTLY`, outside a transaction block, and handle a failed build that leaves an INVALID index.
@@ -204,6 +207,7 @@ severity: block
 concerns: reliability  
 applies_when: Work is buffered in a queue, a channel, or a thread pool between components.  
 context: server  
+tool gate: Lint for unbounded queue constructors.  
 Backed by: AWS (unjudged), Google (unjudged), Netflix (unjudged). Backing: unjudged.
 
 **Rule.** Bound every queue and reject excess work cheaply.
@@ -262,6 +266,7 @@ severity: block
 concerns: reliability, compatibility  
 applies_when: A change drops, renames, or retypes a column, or mixes schema change with a data backfill.  
 context: data  
+tool gate: Migration linter for DROP/RENAME COLUMN.  
 Backed by: GitLab (unjudged), Stripe (unjudged), Ecto (unjudged), CockroachDB (unjudged). Backing: unjudged. People cited: Andrew Kane (unjudged).
 
 **Rule.** Run data backfills in batches, in a migration separate from the schema change.
@@ -288,6 +293,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: A migration runs ALTER TABLE on a busy PostgreSQL table.  
 context: data  
+tool gate: Migration linter (e.g. flag ALTER without lock_timeout).  
 Backed by: PostgreSQL (unjudged), GitLab (unjudged), GoCardless (supports), Postgres.ai (supports), Doctolib (supports). Backing: strong.
 
 **Rule.** Set `lock_timeout` for the migration session and retry on timeout.
@@ -315,6 +321,7 @@ severity: should-fix
 concerns: performance  
 applies_when: Code loads related rows in a loop, or opens database connections per request.  
 context: data  
+tool gate: Query-count assertion in tests; ORM N+1 detector.  
 Backed by: Django Software Foundation (unjudged), Ruby on Rails (unjudged), SQLAlchemy (unjudged), Microsoft (unjudged), OpenJS Foundation (unjudged), PgBouncer project (unjudged), PostgreSQL (unjudged). Backing: unjudged.
 
 **Rule.** Fetch related rows in one query or batch, never one query per row.
@@ -342,6 +349,7 @@ for o in Order.objects.select_related("user"):
 severity: should-fix  
 concerns: security  
 applies_when: The system stores, copies or logs personal or otherwise sensitive data.  
+tool gate: Retention jobs with a TTL on tables and buckets; a data inventory checked in CI.  
 Backed by: OWASP (unjudged), ICO (unjudged), intersoft consulting (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Give every store of personal or sensitive data a retention period, and delete or anonymise the data when it ends.
@@ -395,6 +403,7 @@ destructive actions -> human confirm ; untrusted text labelled in the prompt
 severity: block  
 concerns: security, correctness  
 applies_when: The code handles credentials, logs data, or returns errors to clients.  
+tool gate: Secret scanner in CI; log-redaction tests.  
 Backed by: OWASP (unjudged), MITRE (unjudged), Heroku (unjudged), MIT (unjudged), IETF (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Fail closed: a validation or auth error must deny, never continue, and an error response must not carry internals such as stack traces, SQL or tokens.
@@ -425,6 +434,7 @@ except Exception as err:
 severity: block  
 concerns: security  
 applies_when: The server fetches a URL that a user or external data supplies.  
+tool gate: CodeQL `py/full-ssrf`; an egress proxy or firewall allowlist.  
 Backed by: OWASP (unjudged), GitHub (unjudged), AWS (unjudged), PortSwigger (unjudged). Backing: unjudged.
 
 **Rule.** Fetch a user-supplied URL only when its host matches a server-side allowlist.

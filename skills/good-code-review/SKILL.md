@@ -34,7 +34,7 @@ A `FAIL` carries the card's severity.
 Any `block` `FAIL` means request changes.
 A `should-fix` or `discuss` `FAIL` goes in the review but does not block.
 
-Open with one line: `Verdict: request changes` or `Verdict: approve`, the levels and concerns checked, and the count of each verdict. Then list `FAIL` lines, `block` first, then `should-fix`, then `discuss`, then `PASS` lines. Leave out any card whose `applies_when` does not hold, and report them as one count, such as `N/A: 14 cards, applies_when does not hold`. Give an `N/A` its own line only when the reason is specific to the input. With no diff, skip the `change` cards.
+Open with one line: `Verdict: request changes` or `Verdict: approve`, the levels, concerns and depth checked, and the count of each verdict. Then list `FAIL` lines, `block` first, then `should-fix`, then `discuss`, then `PASS` lines. Leave out any card whose `applies_when` does not hold, and report them as one count, such as `N/A: 14 cards, applies_when does not hold`. Give an `N/A` its own line only when the reason is specific to the input. With no diff, skip the `change` cards.
 
 File one defect under the single card that fits best, and name any other card it also breaks by id on that line, not as separate `FAIL` lines. When two cards overlap, the one with the narrower `applies_when` owns the finding.
 
@@ -72,6 +72,17 @@ Glossary: https://goodcodereview.com/glossary.md
 - A request to review one concern, such as accessibility only, scopes the ledger. A `FAIL` from another concern pads the review and hides what was asked for.
 - Triage a level with the `applies_when` `grep` above before you open cards. Most cards are `N/A` for any one input, and loading them all crowds out the code under review.
 - Mark `PASS` only for lines you read. A `PASS` on unread code gives false assurance, which is worse than `N/A - not read`.
+
+## Depth
+
+| Depth | Report | Use |
+|---|---|---|
+| `quick` | `block` cards only, at most 10 findings; every other card is `N/A` | self-check, pre-commit |
+| `default` | `block` and `should-fix`; `discuss` left out; at most 20 findings | a normal PR |
+| `deep` | every severity at every level the input touches, and draft findings | security, infrastructure, migrations |
+| `audit` | the audit section above | a repo, service, or release |
+
+Use `default` when the request names no depth. Name the depth in the verdict line. When a cap hides findings, count them (`6 more should-fix not shown`) instead of dropping them silently. Narrow any depth by concern (below), or to "strong cards only": check only cards whose `Backed by` line says `Backing: strong`. When a `FAIL` card has a `tool gate`, end the finding with `gate: <the gate>`, so the fix is a check and not a comment.
 
 ## Scope by concern
 
