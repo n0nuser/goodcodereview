@@ -45,7 +45,7 @@ EXAMPLE_HTML = f'<pre class="wrap"><code>{html.escape(EXAMPLE)}</code></pre>'
 DIFF_RULE = ("A diff or PR also checks the stable cards of each level its changed lines touch: `function` for changed code, `module` for a changed package boundary, "
              "shared state, or crypto, `service` for a changed endpoint, remote call, auth, session, or upload, `system` for a cross-service change, and `codebase` "
              "for CI, build, lockfile, or dependency changes. Judge the changed lines and what they call. A problem only in untouched code is a note, not a `FAIL`.")
-REPORT_RULE = ("Open with one line: `Verdict: request changes` or `Verdict: approve`, the levels and concerns checked, and the count of each verdict. "
+REPORT_RULE = ("Open with one line: `Verdict: request changes` or `Verdict: approve`, the levels, concerns and depth checked, and the count of each verdict. "
                "Then list `FAIL` lines, `block` first, then `should-fix`, then `discuss`, then `PASS` lines. "
                "Leave out any card whose `applies_when` does not hold, and report them as one count, such as `N/A: 14 cards, applies_when does not hold`. "
                "Give an `N/A` its own line only when the reason is specific to the input. With no diff, skip the `change` cards.")
@@ -97,6 +97,16 @@ AUDIT_INTRO = "An audit is a review of a whole input, with a scope and a report.
 AUDIT_MD = AUDIT_INTRO + "\n\n" + "\n".join(AUDIT_STEPS).replace("`references/drafts.md`", "[the draft cards](https://goodcodereview.com/.well-known/agent-skills/good-code-review/references/drafts.md)") + "\n"
 AUDIT_SECTION = ["## Audit a repo, service, or release", "", "An audit uses the same cards and verdicts and adds a scope and a report. Before you audit a repo, service, or release, read `references/audit.md`: scope and read order, how to rate a missing control, accepted risk, and the report shape. An audit certifies nothing.", ""]
 SCOPE_GREP = "To list every card's concerns in a level, run `grep -E '^(## |concerns:)' references/<level>.md`."
+DEPTH_TABLE = ["| Depth | Report | Use |", "|---|---|---|",
+               "| `quick` | `block` cards only, at most 10 findings; every other card is `N/A` | self-check, pre-commit |",
+               "| `default` | `block` and `should-fix`; `discuss` left out; at most 20 findings | a normal PR |",
+               "| `deep` | every severity at every level the input touches, and draft findings | security, infrastructure, migrations |",
+               "| `audit` | the audit section above | a repo, service, or release |"]
+DEPTH_RULE = ("Use `default` when the request names no depth. Name the depth in the verdict line. When a cap hides findings, count them (`6 more should-fix not shown`) instead of dropping them silently. "
+              "Narrow any depth by concern (below), or to \"strong cards only\": check only cards whose `Backed by` line says `Backing: strong`. "
+              "When a `FAIL` card has a `tool gate`, end the finding with `gate: <the gate>`, so the fix is a check and not a comment.")
+DEPTH_SHORT = ("Depth: `quick` (`block` only, at most 10 findings), `default` (`block` and `should-fix`, at most 20), `deep` (every severity and draft findings), `audit`. "
+               "Use `default` unless the request says otherwise, and name the depth in the verdict line.")
 EMPTY_MARK = "no vetted cards yet"
 EMPTY_RULE = (f'A level marked "{EMPTY_MARK}" has no stable cards. Give no verdict for it. Say that there are no vetted cards for that level yet. '
               "You may report its draft cards under Draft findings.")

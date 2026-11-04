@@ -6,6 +6,7 @@ severity: should-fix
 concerns: accessibility, usability  
 applies_when: A design-system module or theme defines foreground and background colour tokens.  
 context: ui  
+tool gate: axe `color-contrast` on rendered components; a unit test that computes the ratio for each token pair. axe cannot see text on images or gradients.  
 Backed by: W3C (unjudged), Deque (unjudged), The A11y Project (unjudged), Apple (unjudged), Google (unjudged), WebAIM (unjudged). Backing: unjudged.
 
 **Rule.** Make every text and background token pair meet 4.5:1 (3:1 for large text), and every border, icon, and focus colour meet 3:1 against its neighbour.
@@ -43,6 +44,7 @@ test.each(pairs)("%s meets 4.5:1", (fg, bg) => expect(ratio(fg, bg)).toBeGreater
 severity: should-fix  
 concerns: compatibility, maintainability  
 applies_when: A schema, spec, enum or list owns a shape that other code restates by hand.  
+tool gate: Codegen from the schema, or a test that diffs the two lists.  
 Backed by: Cursor (unjudged), Uber (unjudged), Stripe (unjudged), Spotify (unjudged). Backing: unjudged.
 
 **Rule.** Derive a type, list or enum from the schema or list that owns it, or add a build check that fails when the two disagree.
@@ -96,6 +98,7 @@ class Billing:
 severity: should-fix  
 concerns: maintainability  
 applies_when: A module has an intended public surface and internal files or symbols.  
+tool gate: Import-boundary lint (import-linter, ESLint `no-restricted-imports`, package `exports`).  
 Backed by: Cursor (unjudged), Google (supports), Microsoft (supports). Backing: mixed.
 
 **Rule.** Make a module's internals unimportable from outside it, and have a check fail the build when a caller reaches in.
@@ -121,6 +124,7 @@ billing/__init__.py exports calculate_tax; import-linter contract forbids billin
 severity: should-fix  
 concerns: maintainability  
 applies_when: The codebase has separable transport, logic, and outbound-boundary code.  
+tool gate: import-linter or similar  
 Backed by: Microsoft (supports), AWS (supports), Netflix (supports). Backing: strong.
 
 **Rule.** Make dependencies point inward: surface, then logic, then boundary.
@@ -324,6 +328,7 @@ async Task<string> Fetch(string url) => await Client.GetStringAsync(url);
 severity: should-fix  
 concerns: compatibility  
 applies_when: A `.proto` file defines an enum.  
+tool gate: Protobuf linter (`buf lint`, ENUM_ZERO_VALUE_SUFFIX).  
 Backed by: Google (unjudged), Dropbox (unjudged), Buf (supports), Envoy (supports), OpenTelemetry (supports). Backing: strong.
 
 **Rule.** Give every protobuf enum a zero value named `<ENUM>_UNSPECIFIED` with no real meaning.
@@ -382,6 +387,7 @@ or: state/a.json and state/b.json, one writer each; readers merge them
 severity: block  
 concerns: security  
 applies_when: A module encrypts or decrypts data.  
+tool gate: A grep for `MODE_ECB`, `MODE_CBC` with no MAC, and nonces built from constants.  
 Backed by: OWASP (unjudged), IETF (unjudged), NIST (unjudged), Google (unjudged). Backing: unjudged.
 
 **Rule.** Encrypt with an authenticated mode such as AES-GCM, and never reuse a nonce under one key.
@@ -435,6 +441,7 @@ def send_welcome_email(user): ...
 severity: discuss  
 concerns: maintainability  
 applies_when: A Python class has no state, only static methods, or a `Protocol` with one implementation.  
+tool gate: ruff PLR6301 (partial)  
 Backed by: Google (unjudged). Backing: unjudged. People cited: Pablo González (unjudged).
 
 **Rule.** Give a class real state or a collaborator; otherwise write a module function.
@@ -521,6 +528,7 @@ async def lifespan(app):
 severity: should-fix  
 concerns: maintainability  
 applies_when: A Python module has imports.  
+tool gate: ruff I, TID252, PLC0415  
 Backed by: no organisation yet. People cited: Pablo González (unjudged).
 
 **Rule.** Put imports at module top, absolute only.
@@ -572,6 +580,7 @@ def test_welcome_email_uses_user_name(): ...
 severity: discuss  
 concerns: testing  
 applies_when: A Python test uses the current date or time, or reaches the network.  
+tool gate: pytest-socket (`--disable-socket`)  
 Backed by: no organisation yet. People cited: Pablo González (unjudged).
 
 **Rule.** Freeze time and block network in tests.
