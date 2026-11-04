@@ -230,3 +230,28 @@ def get_order(order_id):
 ```
 
 **Counterpoint.** "Running both is slow and doubles the load." It is slower than a flag-day switch, and Netflix says that is the reason it trusts the result. Keep the cost down: shadow a sample, call the new system off the request path, and never shadow a call with side effects such as a charge or an email. For writes, compare data snapshots after replication, as Stripe does, instead of sending each write twice. A refactor inside one process needs a characterization test, not production traffic. See [chg-refactor-has-behaviour-pin](change.md#chg-refactor-has-behaviour-pin).
+
+## prod-slo-error-budget
+
+severity: discuss  
+concerns: reliability, observability  
+applies_when: A service has users or dependents who rely on its availability.  
+Backed by: Google, GitLab, Atlassian.
+
+**Rule.** Define an SLO with an indicator and window, and use its remaining error budget to gate risky releases.
+
+**Why.** Without a stated target, nobody can say whether reliability work or a freeze is warranted, and every incident is argued from feelings.
+
+**FAIL**
+
+```text
+"we aim for high availability" ; no SLI, alerts at arbitrary thresholds
+```
+
+**PASS**
+
+```text
+SLO: 99.9% of requests succeed in 300ms over 30d ; budget burn alert; freeze at 0
+```
+
+**Counterpoint.** "SLOs are bureaucracy for small teams." A one-line target is enough. Skip it for internal tools with no users.

@@ -3,8 +3,7 @@ id: chg-agent-independent-review
 level: change
 tags: [process, agents, review]
 severity: should-fix
-status: draft
-lacks: orgs, a person's sign-off has Stripe and Dropbox; the fresh-context reviewer option has 0 orgs; needs one more firm org or that option cut
+status: stable
 lang: core
 applies_when: An agent wrote the change, and an agent or the same session is asked to review it.
 tool_gate: none
@@ -15,6 +14,7 @@ borrowed_from:
   - https://stripe.dev/blog/minions-stripes-one-shot-end-to-end-coding-agents
   - https://www.uber.com/blog/efficient-software-factory/
   - https://dropbox.tech/culture/beyond-code-generation-rethinking-engineering-productivity-in-the-age-of-ai-agents
+  - https://www.anthropic.com/engineering/claude-code-best-practices
 ---
 
 **Rule.** Get sign-off from a person or a fresh-context reviewer who has the spec but not the author's reasoning; self-review by the writing session does not count.

@@ -144,6 +144,32 @@ return merge(hits, partial=len(hits) < len(shards))
 
 **Counterpoint.** "Hedging doubles the load." Sent at once to every replica, it does. Send the hedge only after a wait past about the 95th percentile, cap the attempts, and cancel the twin, and the extra load stays near 5%. Hedge only idempotent reads. A partial result needs a product decision. The deadline does not.
 
+## sys-health-liveness-readiness
+
+severity: should-fix  
+concerns: reliability  
+applies_when: A service exposes a health endpoint used by a load balancer, an orchestrator, or auto-replacement.  
+Backed by: AWS, Microsoft, GitLab.
+
+**Rule.** Wire load balancers and restarters to liveness and local checks only, never to shared-dependency checks.
+
+**Why.** Dependency status belongs in alarms. If the database blips, every host fails its check, all are removed at once, and a partial outage becomes total.
+
+**FAIL**
+
+```text
+GET /health -> SELECT 1 on primary db     # drives LB removal and restart
+```
+
+**PASS**
+
+```text
+/live: process responds ; /ready: local init done, no shared-dependency call
+dependency status -> metric + alarm only
+```
+
+**Counterpoint.** Readiness that reflects a dependency feels more honest. AWS accepts fail-open designs but is wary of behavior it cannot fully test, so a fail-open health policy counts as PASS only if you have actually tested it.
+
 ## sys-index-concurrently
 
 severity: should-fix  

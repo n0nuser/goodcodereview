@@ -401,6 +401,32 @@ func TestNoBareHTTPGet(t *testing.T) { /* walk the AST, fail on http.Get */ }
 
 **Counterpoint.** "Not every rule is checkable." Right, and judgement rules stay as prose. The FAIL is a checkable rule with no check. See [code-ci-gates](codebase.md#code-ci-gates) for where checks run, and [chg-review-signal](change.md#chg-review-signal) for what reviewers stop commenting on once a tool owns it.
 
+## code-scoped-validation-loop
+
+severity: discuss  
+concerns: testing, process  
+applies_when: Auditing how a contributor checks a small change.  
+Backed by: Cursor, Google, Django Software Foundation, Python Software Foundation.
+
+**Rule.** Document a command that checks one package or path, with readable output, so a small change does not need the full-repo run.
+
+**Why.** If the only check takes twenty minutes or prints thousands of lines, people skip it and push to CI, and agents cannot tell which failure is theirs.
+
+**FAIL**
+
+```text
+CONTRIBUTING.md: "run `make test` (all 14,000 tests, ~25 min)"
+```
+
+**PASS**
+
+```text
+pytest tests/billing -q        # about 20 s
+ruff check src/billing
+```
+
+**Counterpoint.** "CI runs everything anyway." CI is the last check, not the loop. A scoped command lets the author find a failure in seconds instead of after a push.
+
 ## code-secret-scan
 
 severity: block  

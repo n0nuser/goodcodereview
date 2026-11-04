@@ -3,8 +3,7 @@ id: svc-dlq
 level: service
 tags: [reliability, queues, resilience]
 severity: should-fix
-status: draft
-lacks: evidence, Dropbox's dead-letter queue is a proposal, not a practice; needs a third org that runs it
+status: stable
 lang: core
 applies_when: The code consumes from a queue or stream.
 context: [server]
@@ -14,6 +13,8 @@ borrowed_from:
   - https://aws.amazon.com/builders-library/avoiding-insurmountable-queue-backlogs/
   - https://netflixtechblog.com/behind-the-scenes-evolving-netflixs-ads-event-pipeline-for-live-part-ii-826ebf9ad9fb
   - https://dropbox.tech/infrastructure/asynchronous-task-scheduling-at-dropbox
+  - https://www.notion.com/blog/building-observability-into-notions-dead-letter-queue
+  - https://www.uber.com/blog/reliable-reprocessing/
 ---
 
 **Rule.** Give every consumer queue a dead-letter queue and a way to replay its messages after the fix.

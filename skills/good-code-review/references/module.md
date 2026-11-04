@@ -116,6 +116,60 @@ billing/__init__.py exports calculate_tax; import-linter contract forbids billin
 
 **Counterpoint.** "A boundary check is overhead for a small repo." One lint contract is cheap, and the first outside import of an internal costs more. For a single-file module, there is no inside to protect, so mark `N/A`.
 
+## mod-layers-point-inward
+
+severity: should-fix  
+concerns: maintainability  
+applies_when: The codebase has separable transport, logic, and outbound-boundary code.  
+Backed by: Microsoft, AWS, Netflix.
+
+**Rule.** Make dependencies point inward: surface, then logic, then boundary.
+
+**Why.** Once transport types leak into logic, you cannot reuse or test the logic without the transport, and a change to the API shape ripples into the rules. Name the layers for what they do (surface, logic, boundary).
+
+**FAIL**
+
+```text
+service/orders.py:  def create(request: HttpRequest) -> HttpResponse
+controller/orders.py: calls repository directly
+```
+
+**PASS**
+
+```text
+controller -> service -> repository      (imports only along this arrow)
+service takes plain domain types
+```
+
+**Counterpoint.** "Three layers is ceremony for a CRUD app." For a ten-endpoint app, yes; fold them. The check applies once you have real logic. It asks only that dependencies not point outward, not that you build all three folders.
+
+## mod-no-import-side-effects
+
+severity: should-fix  
+concerns: testing, maintainability  
+applies_when: A module does anything at import or load time other than defining names.  
+Backed by: Apache Software Foundation, Microsoft, Dagster, UK AI Security Institute.
+
+**Rule.** Keep I/O at the edges: importing a package must not touch the network, read files, or read the environment.
+
+**Why.** Import-time effects make tests slow and order-dependent, break tooling that merely imports the module, and fail in places that had no reason to need a network.
+
+**FAIL**
+
+```text
+CLIENT = HttpClient(os.environ["API_URL"])   # at import
+DATA = json.load(open("data.json"))
+```
+
+**PASS**
+
+```text
+def make_client(settings): return HttpClient(settings.api_url)
+def load_data(path): ...
+```
+
+**Counterpoint.** "Loading once at import is fast." Load once at startup, explicitly, where the caller controls it and tests can substitute it.
+
 ## mod-no-logic-in-constructors
 
 severity: should-fix  
@@ -207,6 +261,33 @@ dates.py, notifications.py, pricing.py, retry.py
 ```
 
 **Counterpoint.** "Tiny helpers do not deserve a file." Then inline them where they are used (YAGNI applies). When one is shared, naming its concept is the work that makes it findable.
+
+## mod-one-name-per-concept
+
+severity: should-fix  
+concerns: maintainability  
+applies_when: The change introduces or reuses names for domain concepts.  
+Backed by: Google, Ísland.is, TUM ESI, Microsoft. People cited: Sébastien Portebois.
+
+**Rule.** Use one name for one concept across the codebase.
+
+**Why.** If `customer`, `client`, and `account` all mean the same thing, readers wonder whether they differ. A name that misdescribes behaviour is worse than a vague one. Follow the project glossary, and never choose a name that says something the code does not do.
+
+**FAIL**
+
+```text
+get_customer(); load_client(); fetch_account()   # same entity
+def profile_data(df): ...   # inspects column types, not performance
+```
+
+**PASS**
+
+```text
+get_customer(); load_customer(); fetch_customer()
+def discover_structure(df): ...
+```
+
+**Counterpoint.** "Names are bikeshedding." Reviewers should not argue taste. They should check that the name is consistent and true. Vague names (names that could mean many things) are a design smell in Ousterhout's list. Do not rename wholesale in a feature change; make the rename a separate change.
 
 ## mod-pooled-clients-built-once
 

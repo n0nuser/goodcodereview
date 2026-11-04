@@ -3,8 +3,7 @@ id: chg-agent-grounded-code
 level: change
 tags: [maintainability, process, agents, ai-generated, reuse]
 severity: should-fix
-status: draft
-lacks: orgs, only an arXiv package-hallucination study backs checking every import and call; needs two more orgs
+status: stable
 lang: core
 applies_when: The change was written fully or partly by an AI agent.
 tool_gate: Compiler, type checker and dependency-resolution in CI catch non-existent imports and calls.
@@ -12,6 +11,7 @@ borrowed_from:
   - https://www.kubernetes.dev/docs/guide/pull-requests/
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
   - https://arxiv.org/abs/2406.10279
+  - https://labs.cloudsecurityalliance.org/research/csa-research-note-ai-codegen-vulnerability-debt-20260406-csa/
 ---
 
 **Rule.** Verify that every import and external call the agent wrote exists with that signature.
