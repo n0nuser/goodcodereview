@@ -132,7 +132,7 @@ def home_page(b: BuildInput) -> str:
              + copy_pre(INSTALL_PLUGIN, "Copy plugin commands") + "</details>")
     body = (
         f"<p>{HERO}</p>"
-        "<h2>What a review looks like</h2>" + sample_verdict() + '<p class="note">An example. The card ids are real; the paths and line numbers are made up.</p>' + agent +
+        "<h2>What a review looks like</h2>" + sample_verdict() + '<p class="note">The card ids are real. The paths and line numbers are made up.</p>' + agent +
         "<h2>Choose a review</h2>"
         "<p>To review by hand, pick the level that matches your input and work through its checklist. Only stable cards are vetted.</p>"
         f"<p>{b.tally}</p>{rows}"
