@@ -30,6 +30,67 @@ Backed by: W3C, Mozilla, Deque, Google. People cited: Heydon Pickering.
 
 **Counterpoint.** "ARIA patterns are in the guide, so we copy them." Copy the keyboard table as well as the attributes. For a plain toggle, a `button` with `aria-pressed` is enough, and the label should stay the same when the state changes.
 
+## fn-bool-arg-at-callsite
+
+severity: discuss  
+concerns: maintainability  
+applies_when: A call passes a literal `True` or `False` for a parameter.  
+Backed by: JetBrains, Swift project, Astral.
+
+**Rule.** Replace a boolean flag argument with an enum, keyword-only argument or two functions.
+
+**Why.** `render(doc, True, False)` says nothing. A boolean also hides that a third state is coming, and when it does, every caller changes.
+
+**FAIL**
+
+```text
+export(report, true, false)
+```
+
+**PASS**
+
+```text
+export(report, fmt=Format.CSV, header=Header.OMIT)
+```
+
+**Counterpoint.** "A keyword flag is fine and shorter." A named keyword-only flag is acceptable when it is truly binary and will stay so. The FAIL is the positional literal, which is why the severity is discuss.
+
+## fn-bounded-read-fails-at-cap
+
+severity: should-fix  
+concerns: correctness, reliability, security  
+applies_when: A function reads a file, a response or a request body through a reader that has a byte limit.  
+Backed by: Google, Django Software Foundation, IETF, OWASP, NVIDIA.
+
+**Rule.** When a size cap is reached, return an error; never hand back the first N bytes as if they were the whole input.
+
+**Why.** A reader that stops at the cap reports a normal end of input. The code then parses half a JSON document, saves a truncated file, or hashes a prefix, and nothing says the data was cut. The failure appears later as a corrupt record. Check for bytes beyond the cap, or use a reader that errors.
+
+**FAIL**
+
+```go
+body, err := io.ReadAll(io.LimitReader(resp.Body, 16<<20)) // 17 MiB payload: err == nil, body cut at 16 MiB
+if err != nil {
+	return nil, err
+}
+return body, nil
+```
+
+**PASS**
+
+```go
+body, err := io.ReadAll(io.LimitReader(resp.Body, 16<<20+1))
+if err != nil {
+	return nil, err
+}
+if len(body) > 16<<20 {
+	return nil, fmt.Errorf("response exceeds %d bytes", 16<<20)
+}
+return body, nil
+```
+
+**Counterpoint.** "We only need the first part, like a preview." Then say so in the name and the return value, such as `readPrefix` returning a `truncated` flag. The card fails a function that presents the prefix as the full content.
+
 ## fn-colour-not-sole-cue
 
 severity: should-fix  
@@ -87,6 +148,32 @@ retry = False  # see the PR, currently disabled
 ```
 
 **Counterpoint.** "Good names make comments unnecessary." Names carry *what*. They cannot carry why a branch exists, a unit, or what callers may rely on, and a missing reason costs more than a slightly stale one. Rename first, then comment what the name cannot say. A stale comment is a defect either way. The test is whether the comment adds information that the code cannot carry.
+
+## fn-comments-survive-context
+
+severity: should-fix  
+concerns: maintainability  
+applies_when: A comment or TODO says "currently", "for now", "not yet", "see the PR" or promises future work.  
+Backed by: Google, WebKit, PostHog. People cited: Sébastien Portebois.
+
+**Rule.** Write comments that remain true without outside context: no "currently", "for now" or "see the PR", and give a TODO the date or event that ends it.
+
+**Why.** The PR vanishes from memory and the "currently" never gets updated. A comment whose context has expired is a lie by the next release. A TODO with a removal condition tells the next reader when to act. A bug link in the TODO is welcome, as long as the comment says what to do and when.
+
+**FAIL**
+
+```text
+# TODO: handle the legacy case for now
+retry = False  # see the PR, currently disabled
+```
+
+**PASS**
+
+```text
+# TODO(JIRA-4412): drop this branch once every client sends v2 payloads
+```
+
+**Counterpoint.** "Ticket links help traceability." They do, and the PASS keeps one. The ticket alone is not enough, since trackers get migrated and closed. Name the condition in the comment too.
 
 ## fn-confine-file-path
 
@@ -272,6 +359,59 @@ Backed by: Nielsen Norman Group, GOV.UK, Appian.
 
 **Counterpoint.** "Hiding fields makes the form shorter." It makes the first view shorter, but required content still has to be found. Measure who opens the disclosure. If most users open it, the content belongs on the default view.
 
+## fn-distinct-types-for-ids
+
+severity: should-fix  
+concerns: correctness  
+applies_when: A function takes two or more arguments of one primitive type that mean different things (ids, amounts, units).  
+Backed by: Cursor, Rust project, Python Software Foundation.
+
+**Rule.** Give arguments with different meanings distinct types, so a call that swaps them fails to type-check.
+
+**Why.** Two `str` ids compile in either order. The swap passes review and fails in production, often as a "not found" that looks like missing data.
+
+**FAIL**
+
+```python
+def refund(user_id: str, order_id: str) -> None: ...
+refund(order.id, user.id)   # accepted
+```
+
+**PASS**
+
+```python
+UserId = NewType("UserId", str)
+OrderId = NewType("OrderId", str)
+def refund(user_id: UserId, order_id: OrderId) -> None: ...
+```
+
+**Counterpoint.** "Wrapper types add ceremony." A newtype costs one line and no runtime. Where the types differ only by argument position and the function has two arguments with obvious names, keyword-only parameters can be enough.
+
+## fn-english-identifiers
+
+severity: discuss  
+concerns: maintainability  
+applies_when: The project has a written language policy, or its code may be read by people outside one language group.  
+Backed by: Python Software Foundation, LLVM, GNU Project, Moodle, Drupal.
+
+**Rule.** Write identifiers and comments in English, unless the project policy names another language.
+
+**Why.** Mixed languages split search, break naming conventions, and exclude readers. The tools, libraries, and error messages the code touches are already in English.
+
+**FAIL**
+
+```text
+def calcular_precio_total(carrito): ...   # next to total_price() and cart.items
+```
+
+**PASS**
+
+```text
+def calculate_total_price(cart): ...
+```
+
+**Counterpoint.** "Domain terms have no English word." Keep the local term, once, in a glossary, and comment it ([mod-one-name-per-concept](module.md#mod-one-name-per-concept)). Python itself allows non-ASCII identifiers so that teams can name things in their own language (PEP 3131). If the code will never leave one language group, a team may choose that language. Write the choice down so the check can pass.
+
 ## fn-error-says-what-and-how
 
 severity: should-fix  
@@ -389,6 +529,39 @@ Backed by: W3C, Mozilla, Deque, The A11y Project, jsx-eslint project, GOV.UK, We
 ```
 
 **Counterpoint.** "The design shows a floating placeholder label." A floating label is a real label if it stays visible and is wired to the input. Use `aria-label` only where the purpose is already visible, such as a search field next to a Search button.
+
+## fn-guard-uri-decoding
+
+severity: should-fix  
+concerns: reliability, correctness  
+applies_when: Code calls `decodeURIComponent` or `decodeURI` on a query parameter, a hash, a path segment or other input a user controls.  
+context: ui, server  
+Backed by: Mozilla, OpenJS Foundation, Remix.
+
+**Rule.** Wrap `decodeURIComponent` on user input in a `try`/`catch`, or parse with `URLSearchParams`, so that a malformed `%` sequence cannot throw.
+
+**Why.** `decodeURIComponent("%E0%A4%A")` throws a `URIError`. A link with a stray `%` in its query then breaks the page script for that visitor, and anyone can craft such a link.
+
+**FAIL**
+
+```javascript
+const q = decodeURIComponent(location.hash.slice(1));
+render(q);
+```
+
+**PASS**
+
+```javascript
+let q;
+try {
+  q = decodeURIComponent(location.hash.slice(1));
+} catch {
+  q = "";
+}
+render(q);
+```
+
+**Counterpoint.** "Only our own links reach this code." The address bar accepts anything, and other sites, chat apps and crawlers produce broken links. A guard costs three lines.
 
 ## fn-handle-rejected-promises
 
@@ -637,6 +810,96 @@ Backed by: GOV.UK, Atlassian, Nielsen Norman Group, W3C.
 
 **Counterpoint.** "Labels to the left fit our long desktop admin form better." Labels beside the field are an accepted convention for very long desktop forms. Accept a left label on such a form if it stays next to its own field at every breakpoint. A wrapping label, as in the `fn-form-control-has-label` PASS, passes when CSS sets the label text to `display: block` so it sits above the field. A label below the field is still a `FAIL`. This card covers placement only. `fn-form-control-has-label` covers the code tie between label and field.
 
+## fn-link-url-scheme-allowlist
+
+severity: should-fix  
+concerns: security  
+applies_when: A URL taken from remote JSON, a query parameter or stored data is written to `href`, `src`, `location` or `window.open`.  
+context: ui  
+Backed by: OWASP, Google, WordPress.
+
+**Rule.** Parse a URL that comes from data and allow only `https:` (and `http:` or `mailto:` where needed) before you set it as a link target.
+
+**Why.** A `javascript:` URL in an `href` runs script in your origin when clicked, and a data feed or an API you do not fully control can supply one. Some frameworks block it, but the check belongs to the app, because the next sink may not be covered.
+
+**FAIL**
+
+```javascript
+const item = await (await fetch("/feed.json")).json();
+link.href = item.url;
+```
+
+**PASS**
+
+```javascript
+const item = await (await fetch("/feed.json")).json();
+const u = new URL(item.url, location.origin);
+link.href = ["https:", "http:"].includes(u.protocol) ? u.href : "#";
+```
+
+**Counterpoint.** "The feed is ours, so it is trusted." It is trusted until a third party writes into it or someone breaches it. The check is two lines and does not depend on who owns the source.
+
+## fn-mask-credentials-in-output
+
+severity: should-fix  
+concerns: security, usability  
+applies_when: A CLI command, admin page or debug view prints stored configuration that can include tokens, API keys, or URLs with embedded secrets.  
+context: cli  
+Backed by: GitHub, Django Software Foundation, GitLab, OWASP, AWS, Kubernetes, Pulumi.
+
+**Rule.** Mask credentials in list, show and debug output (keep only the last four characters), and print a full value only behind an explicit flag.
+
+**Why.** Output gets pasted into tickets, chat and CI logs, and screen-shared. A webhook URL that carries its token, or an API key shown whole by `config show`, becomes a leak the first time someone asks for help. Masking keeps the output useful for telling two credentials apart.
+
+**FAIL**
+
+```python
+for hook in hooks:
+    print(f"{hook.name}\t{hook.url}")      # https://hooks.example.com/T0/B1/xK9...full secret
+print("api_key:", settings.api_key)
+```
+
+**PASS**
+
+```python
+def mask(value: str) -> str:
+    return "****" + value[-4:] if len(value) > 8 else "****"
+
+for hook in hooks:
+    print(f"{hook.name}\t{urlsplit(hook.url).netloc}/...{hook.url[-4:]}")
+print("api_key:", mask(settings.api_key))
+# `show --reveal` prints the full value on request
+```
+
+**Counterpoint.** "Users need the value to copy it." Then give them an explicit reveal flag that is off by default, so the copy is a deliberate act and the default output is safe to paste. Never ask users to scrape the full secret out of a listing.
+
+## fn-name-intermediate-conditions
+
+severity: discuss  
+concerns: maintainability  
+applies_when: An `if` or `while` joins three or more terms in one expression.  
+Backed by: Industrial Logic, GNOME, Epic Games. People cited: Sébastien Portebois.
+
+**Rule.** Name each compound condition by assigning its sub-conditions to booleans that say what they mean.
+
+**Why.** Dense conditions force the reader to simulate them. A name states the intent and gives a place to put the next clause.
+
+**FAIL**
+
+```text
+if u.active and not u.banned and (u.plan == "pro" or u.trial_days > 0) and not u.locked:
+```
+
+**PASS**
+
+```text
+can_login = u.active and not u.banned and not u.locked
+has_access = u.plan == Plan.PRO or u.trial_days > 0
+if can_login and has_access:
+```
+
+**Counterpoint.** "More variables, more state to track." These are immutable one-use names, and they replace a comment you would otherwise write. If the names turn out vague (`flag1`), the condition probably mixes two concepts. Fix that instead.
+
 ## fn-native-button-or-link
 
 severity: block  
@@ -696,6 +959,35 @@ async def handler(req):
 
 **Counterpoint.** "This call is fast enough." A short read from a local SSD can be quicker synchronously. Measure it with asyncio debug mode or the runtime's equivalent. A call that crosses the network, or that waits on anything outside the process, is never in that class.
 
+## fn-no-check-then-act-across-await
+
+severity: should-fix  
+concerns: correctness  
+applies_when: Code reads shared state, yields (await, I/O, a lock release), then writes based on the earlier read.  
+Backed by: OWASP, Oracle, PostgreSQL.
+
+**Rule.** Make check-and-write one atomic operation where the state lives, and never split it across a suspension point.
+
+**Why.** Another task runs at every yield. Two withdrawals both read 100, both pass the check, and the balance goes negative.
+
+**FAIL**
+
+```text
+balance = await repo.get_balance(acct)
+if balance >= amount:
+    await repo.set_balance(acct, balance - amount)
+```
+
+**PASS**
+
+```text
+# UPDATE accounts SET balance = balance - :amt WHERE id = :id AND balance >= :amt
+if not await repo.debit_if_sufficient(acct, amount):
+    raise InsufficientFunds(acct)
+```
+
+**Counterpoint.** "A lock fixes it." A process-local lock covers one process. With two workers or two hosts, you need a transaction, an atomic statement, an idempotency key, or optimistic concurrency. Name the other readers and writers of that state.
+
 ## fn-no-eval-untrusted
 
 severity: block  
@@ -722,6 +1014,58 @@ html = render_template("hello.html", name=request.args["name"])
 ```
 
 **Counterpoint.** "Users need formulas, so we need `eval`." Write or adopt a small expression parser that knows only numbers and the operators you allow. A sandbox around `eval` loses to the next escape someone publishes.
+
+## fn-no-getattr-for-known-names
+
+severity: discuss  
+concerns: maintainability  
+applies_when: Code reads or writes an attribute or field by a dynamic key when the name is known at write time.  
+Backed by: PyCQA, Mozilla.ai, AlmaLinux.
+
+**Rule.** Use plain field access, and reserve dynamic access for genuinely dynamic names.
+
+**Why.** Dynamic access defeats rename tools, type checking, and grep. A rename misses it, and it fails at runtime.
+
+**FAIL**
+
+```text
+value = getattr(order, "total")
+```
+
+**PASS**
+
+```text
+value = order.total
+```
+
+**Counterpoint.** "I loop over field names." That is fine when the set of names is the data (a mapping from column names, a serializer). If the names are fixed, unroll the loop.
+
+## fn-no-magic-values
+
+severity: should-fix  
+concerns: maintainability  
+applies_when: A literal string or number carries meaning the reader must guess (status codes, mode names, limits).  
+Backed by: Google, ESLint, Carnegie Mellon SEI.
+
+**Rule.** Give every meaningful literal a name: an enum member or a constant.
+
+**Why.** Literals drift. `"canceled"` in one file and `"cancelled"` in another is a silent bug, and nobody can grep for what `3` means.
+
+**FAIL**
+
+```text
+if resp.status == 404 or retries > 3:
+    mode = "fast"
+```
+
+**PASS**
+
+```text
+if resp.status == HTTPStatus.NOT_FOUND or retries > MAX_RETRIES:
+    mode = Mode.FAST
+```
+
+**Counterpoint.** "A constant used once is noise." True for self-evident values (`0`, `1`, `""`, an index into a pair). The rule is for literals whose meaning is not visible at the use site, or that appear twice. The failure is two spellings of one concept, not the literal itself.
 
 ## fn-no-mass-assignment
 
@@ -1144,6 +1488,37 @@ return UserOut.model_validate(user)
 
 **Counterpoint.** "A response type per endpoint duplicates the model." Derive it from the model with a field list. The duplication is one line per field and shows up in the diff when a field is added.
 
+## fn-specific-exceptions-only
+
+severity: should-fix  
+concerns: correctness  
+applies_when: Code catches exceptions in business logic.  
+Backed by: Google, Microsoft, Python Software Foundation. People cited: Sébastien Portebois.
+
+**Rule.** Catch only the specific exception you can handle in business code.
+
+**Why.** A blanket catch treats a mistyped attribute the same as a network blip. Real bugs get swallowed, logged as a warning, and retried. [py-ruff-gate](codebase.md#py-ruff-gate) enforces this.
+
+**FAIL**
+
+```text
+try:
+    charge(order)
+except Exception:
+    return None
+```
+
+**PASS**
+
+```text
+try:
+    charge(order)
+except CardDeclined as err:
+    raise PaymentDeclined(order.id) from err
+```
+
+**Counterpoint.** "A worker loop must not die on one bad message." That is the one legitimate blanket catch: once, at the process boundary, with the traceback logged, playing the role that a web framework's error middleware plays for routes. Everywhere else, catch specific exceptions. The other exception is a security boundary: catch broadly there, log redacted, and deny (fail closed). See [sys-secrets-and-errors](system.md#sys-secrets-and-errors).
+
 ## fn-status-announced-live-region
 
 severity: should-fix  
@@ -1239,6 +1614,31 @@ def test_checkout_charges_the_sum_of_item_prices():
 
 **Counterpoint.** "Some internals are complex enough to test on their own." Then give that logic its own unit with a public interface and test it through that. Testing a private function directly is a debated choice, so say why in the test.
 
+## fn-test-oracle-independent
+
+severity: should-fix  
+concerns: correctness, testing  
+applies_when: A test asserts on a computed value.  
+Backed by: Cursor, Google, Microsoft, NASA, GitLab.
+
+**Rule.** Take a test's expected value from the requirement, not from the code under test.
+
+**Why.** An expected value computed by the code under test passes when the code is wrong. Likewise, a "not called" assertion passes when the spy is wired to the wrong target, so pair it with a case where the call happens.
+
+**FAIL**
+
+```python
+assert total(items) == sum(i.price for i in items)   # re-implements the code
+```
+
+**PASS**
+
+```python
+assert total([Item(price=300), Item(price=450)]) == 750
+```
+
+**Counterpoint.** "Recomputing keeps the test short." It also repeats the bug. Use a literal from the spec or a worked example.
+
 ## fn-tls-verify-on
 
 severity: block  
@@ -1264,6 +1664,43 @@ requests.get(url, verify="/etc/ssl/company-ca.pem")   # private CA added, check 
 ```
 
 **Counterpoint.** "It is an internal network." Internal links get sniffed after one compromised host. A private CA gives you the same convenience with the check intact.
+
+## fn-variants-as-tagged-union
+
+severity: should-fix  
+concerns: maintainability  
+applies_when: A type or function models a value that is one of several variants or states.  
+Backed by: Cursor, Microsoft, Rust project.
+
+**Rule.** Model variants as a tagged union, and make every switch over it fail the build when a variant is unhandled.
+
+**Why.** A bag of optional fields or booleans that must stay in sync allows states that mean nothing, and each reader has to know which combinations are legal. A new variant then slips past every switch that lacks an exhaustiveness check.
+
+**FAIL**
+
+```ts
+type Job = { running: boolean; failed: boolean; error?: string; result?: Result }
+```
+
+**PASS**
+
+```ts
+type Job =
+  | { kind: "running" }
+  | { kind: "failed"; error: string }
+  | { kind: "done"; result: Result }
+
+function label(job: Job): string {
+  switch (job.kind) {
+    case "running": return "running"
+    case "failed": return job.error
+    case "done": return "done"
+    default: { const _exhaustive: never = job; throw new Error("unhandled") }
+  }
+}
+```
+
+**Counterpoint.** "Two booleans are simpler." They are until a third state appears or the booleans disagree. For a true on/off flag with no related fields, a boolean is fine.
 
 ## fn-xml-no-external-entities
 

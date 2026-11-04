@@ -1,5 +1,35 @@
 # production
 
+## prod-a11y-audit-before-launch
+
+severity: should-fix  
+concerns: accessibility, usability  
+applies_when: A new UI service or a major redesign is about to open to the public.  
+context: ui  
+Backed by: GOV.UK, W3C, Section508.gov, Deque, Government of British Columbia, US Department of Veterans Affairs.
+
+**Rule.** Before a public launch, run an accessibility audit against WCAG 2.2 AA that includes assistive technology, and link the report in the launch checklist.
+
+**Why.** Quick checks and automated tools are a first pass, not an evaluation. A page can pass both and still block a screen-reader user from finishing the task. Finding that after launch means fixing it under load and in public.
+
+**FAIL**
+
+```text
+Launch checklist
+[x] Load test      [x] Rollback plan      [x] Monitoring
+(no accessibility line)
+```
+
+**PASS**
+
+```text
+Launch checklist
+[x] Accessibility audit vs WCAG 2.2 AA, with screen reader, magnifier, and voice input.
+    Report: docs/audit-2026-10.pdf. Open issues: 2, both minor, owner and date set.
+```
+
+**Counterpoint.** "We have no budget for an external audit." The auditor can be in-house, if they are trained and did not build the service. Cut scope instead of the audit: audit the main task flows first, and say in the report which parts are not covered.
+
 ## prod-alerts-symptoms-golden-signals
 
 severity: should-fix  
@@ -164,3 +194,64 @@ or: pprof on 127.0.0.1:6060 only, reached by port-forward; steps in runbook
 ```
 
 **Counterpoint.** "Profiling costs CPU and opens an endpoint." Sampling profilers stay at a few percent, and you can profile one replica at a time. Bind the endpoint to localhost or an admin port. A profile endpoint on a public listener is a security fail.
+
+## prod-shadow-compare-before-cutover
+
+severity: should-fix  
+concerns: correctness, reliability  
+applies_when: Reads, writes, or a pipeline's traffic move from an old system to a new one, such as a new data store, a database upgrade, or a rewritten service.  
+context: data  
+Backed by: Netflix, Stripe, Airbnb, GitHub, American Express, Microsoft, Shopify.
+
+**Rule.** Before you move traffic to a new system, run it beside the old one on live or captured production traffic, diff the results, and cut over only when every mismatch is fixed or explained.
+
+**Why.** Fixtures cover the cases someone thought of, and production holds the rest. Airbnb's replay of real queries against MySQL 5.7 and 8.0 found queries whose row order was never fixed, and an application that sent the same cacheable query over and over. Neither shows up in a test suite. A diff on real traffic finds these while the old system still answers users, so a mismatch costs a log line instead of an incident.
+
+**FAIL**
+
+```python
+def get_order(order_id):
+    return new_store.get(order_id)    # cut over in one step; never compared on real reads
+```
+
+**PASS**
+
+```python
+def get_order(order_id):
+    old = old_store.get(order_id)     # users still get the old answer
+    try:
+        if new_store.get(order_id) != old:
+            shadow_mismatch.inc()
+            log.info("shadow mismatch", extra={"order_id": order_id})
+    except Exception:
+        shadow_error.inc()
+    return old
+# the cutover flag flips once shadow_mismatch is zero or every mismatch is explained
+```
+
+**Counterpoint.** "Running both is slow and doubles the load." It is slower than a flag-day switch, and Netflix says that is the reason it trusts the result. Keep the cost down: shadow a sample, call the new system off the request path, and never shadow a call with side effects such as a charge or an email. For writes, compare data snapshots after replication, as Stripe does, instead of sending each write twice. A refactor inside one process needs a characterization test, not production traffic. See [chg-refactor-has-behaviour-pin](change.md#chg-refactor-has-behaviour-pin).
+
+## prod-slo-error-budget
+
+severity: discuss  
+concerns: reliability, observability  
+applies_when: A service has users or dependents who rely on its availability.  
+Backed by: Google, GitLab, Atlassian.
+
+**Rule.** Define an SLO with an indicator and window, and use its remaining error budget to gate risky releases.
+
+**Why.** Without a stated target, nobody can say whether reliability work or a freeze is warranted, and every incident is argued from feelings.
+
+**FAIL**
+
+```text
+"we aim for high availability" ; no SLI, alerts at arbitrary thresholds
+```
+
+**PASS**
+
+```text
+SLO: 99.9% of requests succeed in 300ms over 30d ; budget burn alert; freeze at 0
+```
+
+**Counterpoint.** "SLOs are bureaucracy for small teams." A one-line target is enough. Skip it for internal tools with no users.

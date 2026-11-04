@@ -3,14 +3,16 @@ id: mod-one-name-per-concept
 level: module
 tags: [maintainability, naming]
 severity: should-fix
-status: draft
-lacks: evidence, Netflix backs the converse, one concept per name; Slack's aliases are narrow; no org states the Rule
+status: stable
 lang: core
 applies_when: The change introduces or reuses names for domain concepts.
 tool_gate: none
 borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
+  - https://github.com/island-is/handbook/blob/master/docs/api-design-guide/naming-conventions.md
+  - https://github.com/tum-esi/common-coding-conventions
+  - https://github.com/microsoft/api-guidelines/blob/vNext/azure/ConsiderationsForServiceDesign.md
 ---
 
 **Rule.** Use one name for one concept across the codebase.

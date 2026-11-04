@@ -3,12 +3,14 @@ id: mod-inject-boundary-collaborators
 level: module
 tags: [testing, maintainability, design]
 severity: should-fix
-status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+status: stable
 lang: core
 applies_when: A class uses a database, HTTP, cloud or clock collaborator.
 tool_gate: none
-borrowed_from: []
+borrowed_from:
+  - https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection-guidelines
+  - https://symfony.com/doc/current/service_container.html
+  - https://testing.googleblog.com/2008/08/by-miko-hevery-so-you-decided-to.html
 note: from the author's own Python review guide
 ---
 

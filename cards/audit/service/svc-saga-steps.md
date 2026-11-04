@@ -3,14 +3,15 @@ id: svc-saga-steps
 level: service
 tags: [reliability, correctness, distributed, consistency]
 severity: should-fix
-status: draft
-lacks: orgs, Azure is the only backer; needs two more orgs that require idempotent steps and compensations
+status: stable
 lang: core
 applies_when: A business operation spans services, each with its own database, coordinated as a saga.
 context: [server]
 tool_gate: none
 borrowed_from:
   - https://learn.microsoft.com/en-us/azure/architecture/patterns/saga
+  - https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/saga-choreography.html
+  - https://docs.temporal.io/design-patterns/saga-pattern
 ---
 
 **Rule.** Make steps after the pivot idempotent and retryable, and make every compensation idempotent with a failure path.

@@ -3,8 +3,7 @@ id: fn-guard-uri-decoding
 level: function
 tags: [reliability, correctness, javascript]
 severity: should-fix
-status: draft
-lacks: orgs, Mozilla (MDN) and the Node.js docs back it; needs one more org that guards or avoids a throwing decode on user input
+status: stable
 lang: core
 applies_when: Code calls `decodeURIComponent` or `decodeURI` on a query parameter, a hash, a path segment or other input a user controls.
 context: [ui, server]
@@ -13,6 +12,7 @@ note: MDN lists the URIError and shows a try/catch; Node's querystring.unescape 
 borrowed_from:
   - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent
   - https://nodejs.org/api/querystring.html
+  - https://raw.githubusercontent.com/remix-run/react-router/main/packages/react-router/lib/router/utils.ts
 ---
 
 **Rule.** Wrap `decodeURIComponent` on user input in a `try`/`catch`, or parse with `URLSearchParams`, so that a malformed `%` sequence cannot throw.

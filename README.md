@@ -89,7 +89,7 @@ https://goodcodereview.com/cards.json?topic=forms
 
 `concern`, `topic`, and `level` take comma-separated values or repeat. A card matches when it has any value given for each filter. `group=concern|level|topic` groups the list.
 
-`cards.json` is one bounded file with no pagination, each level has its own file, `cards/<level>.json`, each concern has `cards/concern-<concern>.json` and `concerns/<concern>.md`, and `cards-index.json` is a slim lookup table; [docs/cards-json.md](docs/cards-json.md) gives the size budget and how to fetch part of it. The shape carries a `schema_version`, and [docs/api-versioning.md](docs/api-versioning.md) is the versioning policy.
+`cards.json` is one bounded file with no pagination, each level has its own file, `cards/<level>.json`, each concern has `cards/concern-<concern>.json` and `concerns/<concern>.md`, and `cards-index.json` is a slim lookup table; [docs/cards-json.md](docs/cards-json.md) says how to fetch part of it. The shape carries a `schema_version`, and [docs/api-versioning.md](docs/api-versioning.md) is the versioning policy.
 
 ## Verdict format
 

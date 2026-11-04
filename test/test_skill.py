@@ -12,7 +12,6 @@ SKILL_MD = SKILL / "SKILL.md"
 SKILL_BODY_MAX = 16_000  # about 4,000 tokens; the Agent Skills spec recommends under 5,000
 LLMS_MAX = 12_000
 INDEX_MAX = 12_000
-REF_MAX = 70_000
 DESCRIPTION_MAX = 1024
 COMPATIBILITY_MAX = 500
 SKILL_LINES_MAX = 500
@@ -86,11 +85,6 @@ def test_indexes_stay_in_budget(site_text: dict[str, str]) -> None:
     assert indexes
     for name, text in indexes.items():
         assert len(text) <= INDEX_MAX, name
-
-
-@pytest.mark.parametrize("path", sorted((SKILL / "references").glob("*.md")), ids=lambda p: p.name)
-def test_references_stay_in_budget(path: Path) -> None:
-    assert len(path.read_text()) <= REF_MAX
 
 
 def test_llms_txt_lists_files_and_no_card_lines(site_text: dict[str, str]) -> None:

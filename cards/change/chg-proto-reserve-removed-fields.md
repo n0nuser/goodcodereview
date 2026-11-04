@@ -3,13 +3,14 @@ id: chg-proto-reserve-removed-fields
 level: change
 tags: [compatibility, api, protobuf]
 severity: should-fix
-status: draft
-lacks: orgs, protobuf.dev is the only backer; needs two more orgs that require reserved on removal
+status: stable
 lang: core
 applies_when: The diff deletes a field or enum value from a `.proto` message or enum.
 tool_gate: `buf breaking` or an equivalent descriptor diff in CI.
 borrowed_from:
   - https://protobuf.dev/best-practices/dos-donts/
+  - https://learn.microsoft.com/en-us/aspnet/core/grpc/versioning
+  - https://deliveroo.engineering/2019/02/05/improving-stream-data-quality-with-protobuf-schema-validation.html
 ---
 
 **Rule.** When you delete a protobuf field or enum value, add `reserved` for its number and name in the same change, and never reuse a number.

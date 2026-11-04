@@ -1,5 +1,34 @@
 # service
 
+## svc-api-cache-control
+
+severity: should-fix  
+concerns: performance  
+applies_when: A service returns responses that a browser, CDN, gateway or client library may cache.  
+context: server  
+Backed by: IETF, Zalando, OWASP.
+
+**Rule.** Set an explicit `Cache-Control` on every response a cache may store, use `private` or `no-store` for user-specific data, and add `Vary` for any request header that changes the body.
+
+**Why.** With no directive, a cache may guess a lifetime from `Last-Modified`. A shared cache may then serve one user's response to another, or serve stale data for hours after a write.
+
+**FAIL**
+
+```text
+GET /me/orders  -> 200
+(no Cache-Control, no Vary; body differs per Authorization)
+```
+
+**PASS**
+
+```text
+GET /me/orders  -> 200  Cache-Control: private, no-cache
+GET /plans      -> 200  Cache-Control: public, max-age=300
+                         Vary: Accept-Language
+```
+
+**Counterpoint.** "Our CDN is configured to bypass the cache." That config is a second place to get wrong, and it does not cover browsers. The origin states the intent; the CDN may tighten it. `no-store` is not a privacy control against a cache that ignores it, so keep secrets out of cacheable URLs too.
+
 ## svc-api-conditional-writes
 
 severity: should-fix  
@@ -28,6 +57,34 @@ PUT /docs/4  If-Match: "v7"  -> 412 Precondition Failed
 ```
 
 **Counterpoint.** "Last write wins is fine here." For a log or a counter it is; say so in the spec. For a document, a profile or a config that two people edit, it loses work. The card applies to shared resources that people edit.
+
+## svc-api-contract-tests
+
+severity: should-fix  
+concerns: compatibility, testing  
+applies_when: A service calls, or is called by, another service owned by a different team or deployed on its own schedule.  
+context: server  
+Backed by: Pact, OpenAPI Initiative, Microsoft, Paradigma Digital, Thoughtworks.
+
+**Rule.** Run a contract test for each cross-service call, derived from the consumer's real requests, and fail the provider's build when it breaks one.
+
+**Why.** A provider's own tests check what the provider thinks callers need. A spec check says what could happen, not what the consumer relies on. Only a check built from the consumer's usage catches the removed field before deploy, without a full-system end-to-end run.
+
+**FAIL**
+
+```text
+billing calls GET /customers/{id} and reads "vat_id"
+customers team removes "vat_id"; its tests pass; billing breaks in production
+```
+
+**PASS**
+
+```text
+billing CI publishes a contract: GET /customers/{id} -> body has "vat_id"
+customers CI verifies every published contract and fails on the removal
+```
+
+**Counterpoint.** "End-to-end tests cover it." They are slow, need every service running, and run late. Contract tests run per service in minutes. Pact is one way; a consumer-written example set replayed against the provider also passes. For services deployed together from one repo, mark the card N/A.
 
 ## svc-api-deprecation-sunset
 
@@ -60,6 +117,40 @@ spec: deprecated: true
 
 **Counterpoint.** "Our only callers are internal." Then the call count with the header gives you the list of owners to ask, and removal is cheap. [chg-expand-contract](change.md#chg-expand-contract) covers the order of steps; this card covers what the response tells the caller. Both headers describe one resource, so send them on each deprecated route, not only on the API root.
 
+## svc-api-documented-errors
+
+severity: should-fix  
+concerns: correctness, compatibility  
+applies_when: A service has an OpenAPI description, or callers depend on its error responses.  
+context: server  
+Backed by: OpenAPI Initiative, Zalando, Siemens.
+
+**Rule.** Document every error status each operation can return, with a schema and one example.
+
+**Why.** Callers write error handling from the spec. An operation that lists only 200 teaches them nothing about 404, 409, 422 or 429, so they find out in production.
+
+**FAIL**
+
+```text
+/orders/{id}:
+  get:
+    responses:
+      "200": {description: ok}
+```
+
+**PASS**
+
+```text
+/orders/{id}:
+  get:
+    responses:
+      "200": {description: ok}
+      "404": {$ref: "#/components/responses/Problem"}   # has an example
+      "429": {$ref: "#/components/responses/RateLimited"}
+```
+
+**Counterpoint.** "A shared `default` response covers everything." OpenAPI allows `default`, but it hides which codes carry which meaning. List the codes a caller must act on and use `default` for the rest.
+
 ## svc-api-error-code-stable
 
 severity: should-fix  
@@ -88,6 +179,126 @@ if response.json()["type"] == "https://api.example.com/problems/order-exists":  
 ```
 
 **Counterpoint.** "The HTTP status is enough." It is too coarse: two different 409 conflicts need different handling. Add a code only where callers act differently; do not mint one for every branch.
+
+## svc-api-naming-consistent
+
+severity: discuss  
+concerns: maintainability  
+applies_when: A service defines JSON fields, query parameters, headers or path segments for an HTTP API.  
+context: server  
+Backed by: Zalando, Microsoft, Google, Kubernetes.
+
+**Rule.** Use one casing convention per location (fields, query parameters, headers, paths) across the whole API, and state it in the API guide.
+
+**Why.** Mixed casing in one API makes callers look up each name. A client that guesses `orderId` after meeting `order_id` gets a silent null.
+
+**FAIL**
+
+```text
+GET /orders?pageSize=20 -> {"order_id": 1, "createdAt": "...", "Total-Cents": 500}
+```
+
+**PASS**
+
+```text
+GET /orders?page_size=20 -> {"order_id": 1, "created_at": "...", "total_cents": 500}
+# snake_case everywhere, as docs/api-guide.md says
+```
+
+**Counterpoint.** "Pick the right convention." The sources disagree: Zalando asks for snake_case, Microsoft for camelCase in fields. Either passes. Do not change an existing API's casing to match a guide; that is a breaking change.
+
+## svc-api-problem-json
+
+severity: should-fix  
+concerns: compatibility  
+applies_when: A service returns errors from an HTTP API to other services or to clients.  
+context: server  
+Backed by: IETF, Zalando, UKHSA.
+
+**Rule.** Return errors as `application/problem+json` with a `status` that equals the HTTP status, and leave stack traces and internal detail out.
+
+**Why.** Callers then parse every error one way. A body that differs per endpoint, or a `status` that disagrees with the real code, makes generic client and proxy handling unreliable. A stack trace in `detail` hands an attacker the implementation.
+
+**FAIL**
+
+```text
+HTTP/1.1 500
+Content-Type: text/html
+
+<pre>NullPointerException at OrderRepo.java:88 ...</pre>
+```
+
+**PASS**
+
+```text
+HTTP/1.1 404
+Content-Type: application/problem+json
+
+{"type": "https://api.example.com/problems/order-not-found",
+ "title": "Order not found", "status": 404,
+ "detail": "No order with id 7731 for this account."}
+```
+
+**Counterpoint.** "We already have our own error envelope." That is fine inside one team's API, if it is one envelope and documented. The card asks for one shape everywhere; problem details is the one with a registered media type and existing client support. See [sys-secrets-and-errors](system.md#sys-secrets-and-errors) for what must stay out of any error.
+
+## svc-api-retry-after
+
+severity: should-fix  
+concerns: reliability  
+applies_when: A service answers 429 or 503 to HTTP callers.  
+context: server  
+Backed by: IETF, Zalando, Microsoft, Shopify, Slack.
+
+**Rule.** Send `Retry-After` on every 429 and 503, and set it no earlier than the time capacity returns.
+
+**Why.** Without it, every client invents its own backoff, and a hundred of them retry in the same second. The header lets the server pace its own recovery.
+
+**FAIL**
+
+```text
+HTTP/1.1 429 Too Many Requests
+
+{"error": "slow down"}
+```
+
+**PASS**
+
+```text
+HTTP/1.1 429 Too Many Requests
+Retry-After: 30
+Content-Type: application/problem+json
+```
+
+**Counterpoint.** "Clients should use exponential backoff anyway." They should, and [svc-retry-policy](service.md#svc-retry-policy) says so. A server hint narrows the guess; it does not replace the client's cap. The IETF `RateLimit` header fields are still an Internet-Draft, so the card requires only `Retry-After`, which is in the HTTP standard. The quota itself is [svc-rate-limit-quota](service.md#svc-rate-limit-quota).
+
+## svc-api-specific-status-codes
+
+severity: should-fix  
+concerns: compatibility  
+applies_when: A service returns HTTP responses that callers or intermediaries interpret by status code.  
+context: server  
+Backed by: IETF, Zalando, Microsoft.
+
+**Rule.** Return the most specific status code that fits: 201 with `Location` for a create, 405 with `Allow` for a wrong method, and a 4xx or 5xx for any failure.
+
+**Why.** Clients, proxies and monitors act on the status line. A 200 with an error in the body hides failures from retries, caches and error-rate alerts. A create that returns 200 without `Location` forces the caller to guess the new URL.
+
+**FAIL**
+
+```text
+POST /orders -> 200 {"error": "out of stock"}
+PATCH /orders (route is read-only) -> 404, no Allow header
+```
+
+**PASS**
+
+```text
+POST /orders -> 201  Location: /orders/9031
+POST /orders (out of stock) -> 409 application/problem+json
+PATCH /orders (not supported) -> 405  Allow: GET, POST
+```
+
+**Counterpoint.** "A 200 with a status field is easier for our clients." It breaks every generic tool that reads the status line, including your own dashboards. Choosing between two fitting codes is a style call; the card fails only a code that says the wrong thing.
 
 ## svc-api-versioning-policy
 
@@ -118,6 +329,34 @@ the rename ships under api-version=2026-09-01
 
 **Counterpoint.** "We will cross that bridge later." Later arrives with a customer on the old shape. The scheme can be minimal. A media type, a dated query parameter and a pinned header all work. Pick one and write it down. What counts as breaking is in [chg-breaking-change-taxonomy](change.md#chg-breaking-change-taxonomy).
 
+## svc-async-content-reserves-space
+
+severity: should-fix  
+concerns: usability, performance  
+applies_when: A page loads images, embeds, fonts, ads, or fetched content after the first paint.  
+context: ui  
+Backed by: Google, Apple, Nielsen Norman Group, Mozilla, WHATWG, Shopify, Cloudflare.
+
+**Rule.** Reserve the space for late-loading content with set dimensions or an aspect ratio, so nothing already on screen moves.
+
+**Why.** A page that jumps while someone reads or taps makes them hit the wrong target. A cumulative layout shift of 0.1 or less is good, and over 0.25 is poor, measured on real users at the 75th percentile.
+
+**FAIL**
+
+```html
+<img src="/hero.jpg">
+<div id="promo"></div>   <!-- script inserts a banner above the article -->
+```
+
+**PASS**
+
+```html
+<img src="/hero.jpg" width="1200" height="630" style="max-width: 100%; height: auto">
+<div id="promo" style="min-height: 90px"></div>
+```
+
+**Counterpoint.** "Ads vary in height." Reserve the common height, or the largest, and accept some blank space. A banner that pushes the article down is the worse trade.
+
 ## svc-auth-throttle-generic-errors
 
 severity: block  
@@ -147,6 +386,38 @@ if not (user and ok): record_failure(account_key); return "Invalid credentials",
 
 **Counterpoint.** "A lockout lets attackers lock out real users." Use a rising delay, not a permanent lock, and keep the recovery flow reachable. Log every lockout so abuse shows up.
 
+## svc-authn-by-default
+
+severity: should-fix  
+concerns: security  
+applies_when: The service has routes that need a signed-in user next to routes that are public.  
+context: server  
+Backed by: MITRE, Microsoft, Django Software Foundation, Spring.
+
+**Rule.** Require authentication on every route by default, and mark each public route by name.
+
+**Why.** When each handler opts in to authentication, the one that forgets is open to the internet, and nothing in the diff looks wrong. A global fallback flips the default: a new route is closed until someone marks it public, and that mark is a line a reviewer can question. Health checks and internal admin ports count as routes too.
+
+**FAIL**
+
+```python
+@app.get("/invoices/<id>")          # no login check; anonymous callers get the invoice
+def invoice(id): ...
+```
+
+**PASS**
+
+```python
+PUBLIC = {"login", "health", "static"}
+
+@app.before_request
+def require_login():
+    if request.endpoint not in PUBLIC and not current_user.is_authenticated:
+        abort(401)
+```
+
+**Counterpoint.** "Our gateway already checks the token." Then the service trusts every caller that can reach it without the gateway: another pod, a debug port, a misrouted path. Keep the gateway check and the fallback in the service. The fallback costs one middleware.
+
 ## svc-authz-central-deny-default
 
 severity: block  
@@ -175,6 +446,41 @@ def gate(): require_role(policy.get(request.endpoint))   # missing entry -> 403
 ```
 
 **Counterpoint.** "A central policy is a bottleneck for feature teams." Keep the engine central and let each team own its rows. The cost of a one-line policy entry is small next to an unguarded admin route.
+
+## svc-best-effort-optional-deps
+
+severity: should-fix  
+concerns: reliability, observability  
+applies_when: The critical path of a request or a job calls a dependency whose data the product can do without, such as enrichment, recommendations, analytics, or a rate-limit control plane.  
+Backed by: Netflix, Uber, Cabify, Spotify, Zalando.
+
+**Rule.** Give each call to a non-critical dependency a short budget and a default, so its failure degrades the result instead of failing the critical path, and count every fallback.
+
+**Why.** An order page should not fail because the recommendations service is slow. Netflix makes enrichment best-effort, so a slow dependency can degrade its knowledge graph but never block it. Uber's rate-limit clients let traffic through when the control plane is down, because blocking would cause an outage of its own. Cabify drops non-critical details from a driver offer when it cannot collect them in time. It also puts metrics and alerts on every such fallback, because SLO dashboards built for critical flows miss them.
+
+**FAIL**
+
+```python
+def trip_offer(trip_id):
+    trip = trips.get(trip_id, timeout=0.5)
+    eta = traffic.eta(trip.route, timeout=2.0)   # optional detail, but an error here fails the offer
+    return Offer(trip, eta)
+```
+
+**PASS**
+
+```python
+def trip_offer(trip_id):
+    trip = trips.get(trip_id, timeout=0.5)
+    try:
+        eta = traffic.eta(trip.route, timeout=0.1)
+    except (TimeoutError, ConnectionError):
+        eta = None                                # the offer goes out without the ETA
+        degraded.labels(dep="traffic").inc()      # alert on this rate
+    return Offer(trip, eta)
+```
+
+**Counterpoint.** "A silent default hides an outage." It does when nobody counts it, so the PASS needs the metric and an alert on it. Call a dependency non-critical only when the product works without its data. Authentication, payment, and authorization checks are critical, and they fail closed. Failing open on a rate limiter gives up protection to keep availability, so write that choice into the design. For the timeout itself, see [svc-timeouts](service.md#svc-timeouts). To check that the fallback really runs, see [prod-kill-switch-fallback](production.md#prod-kill-switch-fallback).
 
 ## svc-bound-client-controlled-sizes
 
@@ -241,6 +547,33 @@ async with asyncio.TaskGroup() as tg:
 ```
 
 **Counterpoint.** "Tasks are cheap." Creating them is, but what each one holds (a socket, a buffer, a database connection) is not. A semaphore around each handler also caps concurrency, though it still creates one task object per input. This card covers work that a service starts for itself. [sys-load-shedding-bounded-queues](system.md#sys-load-shedding-bounded-queues) covers refusing incoming requests under load.
+
+## svc-circuit-breaker-bulkhead
+
+severity: should-fix  
+concerns: reliability  
+applies_when: A service calls several dependencies from shared pools, or retries a dependency that may be down.  
+Backed by: Microsoft, AWS, Netflix.
+
+**Rule.** Give each critical dependency its own concurrency limit.
+
+**Why.** One shared pool lets a slow dependency use every thread and starve healthy paths. Retrying a dead dependency only adds load, so also fail fast through a breaker with limited half-open probing where retries are demonstrably harmful.
+
+**FAIL**
+
+```text
+pool = ThreadPool(50)               # used by billing, search, email alike
+breaker = None                      # retries a dead host every request
+```
+
+**PASS**
+
+```text
+pools = {"billing": asyncio.Semaphore(10), "search": asyncio.Semaphore(20)}
+# pseudocode: breaker logs and counts every state change; half-open allows 1 probe
+```
+
+**Counterpoint.** "More moving parts than a timeout." True. Start with the timeout and the per-dependency limit, and add the breaker where retries are demonstrably harmful. Retry and breaker have opposite aims, so do not present one as a substitute for the other.
 
 ## svc-cli-destructive-dry-run
 
@@ -452,6 +785,45 @@ Set-Cookie: sid=...; SameSite=Lax; Secure; HttpOnly
 ```
 
 **Counterpoint.** "Our API uses JSON, so browsers cannot forge it." A simple content type such as `text/plain` can carry a JSON body without a preflight. Reject it, or require a custom header such as `X-CSRF-Token`. Pure bearer-token APIs with no cookies are exempt.
+
+## svc-dlq
+
+severity: should-fix  
+concerns: reliability  
+applies_when: The code consumes from a queue or stream.  
+context: server  
+Backed by: AWS, Netflix, Dropbox, Notion, Uber.
+
+**Rule.** Give every consumer queue a dead-letter queue and a way to replay its messages after the fix.
+
+**Why.** A poison message otherwise loops forever, uses the consumers' capacity and hides the real backlog. Cap the retries, so that a failing message moves to the dead-letter queue after a few attempts. Alarm on any message in the dead-letter queue, because each one is a bug to fix. Also keep the visibility timeout longer than the worst-case processing time (or extend it), or slow work is delivered twice.
+
+**FAIL**
+
+```hcl
+resource "aws_sqs_queue" "orders" {
+  name = "orders"   # no redrive_policy: a message that always fails is retried forever
+}
+```
+
+**PASS**
+
+```hcl
+resource "aws_sqs_queue" "orders_dlq" {
+  name = "orders-dlq"
+}
+
+resource "aws_sqs_queue" "orders" {
+  name = "orders"
+  redrive_policy = jsonencode({
+    deadLetterTargetArn = aws_sqs_queue.orders_dlq.arn
+    maxReceiveCount     = 5
+  })
+}
+# replay after the fix: aws sqs start-message-move-task --source-arn <orders-dlq ARN>
+```
+
+**Counterpoint.** "A dead-letter queue just hides failures." Only if nobody watches it. With an alarm on its depth it shows each failure once, instead of hiding it in retries, and the replay step means a fix does not lose the messages that failed before it.
 
 ## svc-fail-closed-defaults
 
@@ -763,6 +1135,34 @@ for i in range(3):
 
 **Counterpoint.** "Retries make us more reliable." Only for transient faults and only within a budget. Past that they hurt, so a non-transient error should fail at once. A retry budget (retries capped as a share of traffic) helps further. This card leaves its size to the team.
 
+## svc-saga-steps
+
+severity: should-fix  
+concerns: reliability, correctness  
+applies_when: A business operation spans services, each with its own database, coordinated as a saga.  
+context: server  
+Backed by: Microsoft, AWS, Temporal.
+
+**Rule.** Make steps after the pivot idempotent and retryable, and make every compensation idempotent with a failure path.
+
+**Why.** After the pivot there is no undo, only retry until done. A compensation can itself fail, and unhandled it leaves the system inconsistent with nobody told.
+
+**FAIL**
+
+```text
+step 4 (after pivot): charge_card(order)     # retried -> double charge
+compensate: release_stock(order)             # throws; exception swallowed
+```
+
+**PASS**
+
+```text
+step 4: charge_card(order, idempotency_key=order.id)   # safe to retry
+compensate: release_stock(order) retried; on exhaustion -> alert + manual queue
+```
+
+**Counterpoint.** "Use a distributed transaction." Often unavailable across services. A saga has no isolation, so also guard against reading half-done data (semantic locks, re-reading values before acting). [svc-idempotency-key](service.md#svc-idempotency-key) covers keys, and [svc-dlq](service.md#svc-dlq) covers failed messages.
+
 ## svc-session-lifecycle
 
 severity: block  
@@ -848,6 +1248,35 @@ db.execute("SELECT * FROM users WHERE name = ?", (name,))
 ```
 
 **Counterpoint.** "An ORM makes this moot." Raw fragments still bypass it, and so do table, column and `ORDER BY` names, which cannot be bound. Map those to a fixed allowlist in code.
+
+## svc-stream-dont-materialise
+
+severity: should-fix  
+concerns: performance  
+applies_when: A handler reads, transforms, or returns a result whose size depends on the data (files, query results, response bodies).  
+Backed by: OpenJS Foundation, PostgreSQL, Reactive Streams.
+
+**Rule.** Process large results as a stream with backpressure; do not load them whole into memory.
+
+**Why.** A fast source piles data into memory faster than a slow consumer drains it. In the Node docs' test, memory grew from about 88 MB to about 1.5 GB. Memory then scales with data size, not with the code.
+
+**FAIL**
+
+```python
+rows = db.execute("SELECT * FROM events").fetchall()   # 50M rows
+return json.dumps(rows)
+```
+
+**PASS**
+
+```python
+def generate():
+    for row in db.execute("SELECT * FROM events"):     # server-side cursor
+        yield encode(row)
+return StreamingResponse(generate())
+```
+
+**Counterpoint.** "Streaming complicates errors and retries." Yes: a failure mid-stream cannot change the status code. For small, bounded results, loading the whole result is simpler and fine; state the bound. [sys-load-shedding-bounded-queues](system.md#sys-load-shedding-bounded-queues) covers queue limits.
 
 ## svc-timeouts
 

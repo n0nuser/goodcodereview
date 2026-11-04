@@ -3,8 +3,7 @@ id: chg-chestertons-fence
 level: change
 tags: [maintainability, process, legacy, history]
 severity: should-fix
-status: draft
-lacks: orgs, only Feathers backs a characterization test before a rewrite; Spolsky backs not rewriting from scratch
+status: stable
 lang: core
 applies_when: The change removes, rewrites or "simplifies" odd-looking existing code, or rewrites a module.
 tool_gate: none
@@ -13,6 +12,8 @@ borrowed_from:
   - https://michaelfeathers.silvrback.com/characterization-testing
   - https://github.com/cursor/plugins/blob/main/pstack/skills/why/SKILL.md
   - https://github.com/cursor/plugins/blob/main/dyl-stack/skills/dyl-review/SKILL.md
+  - https://getyourguide.careers/posts/how-we-work-efficiently-with-legacy-code
+  - https://www.redhat.com/en/blog/refactoring-speed-mission-agent-mesh-approach-legacy-system-modernization-red-hat-ai
 ---
 
 **Rule.** Add a characterization test before rewriting code you do not understand.

@@ -3,8 +3,7 @@ id: code-flaky-test-quarantine
 level: codebase
 tags: [testing, process, ci, flaky-tests]
 severity: should-fix
-status: draft
-lacks: orgs, quarantine with owner and ticket has Dropbox and Shopify; rerun-verified return to the gate has Dropbox only
+status: stable
 note: report and route flaky tests - Dropbox (Quarantine Keeper removes tests that fail too often and files a bug against the owner), Shopify (retries a failed test up to three times and notifies developers of every pass after a retry); rerun-verified fix - Dropbox only (100 or more CI runs); causes - Shopify (fixed pauses instead of waits), Cabify (state kept between tests), Dropbox (short timeouts, leftover state); only 2 orgs back the Rule
 lang: core
 applies_when: Auditing how the codebase handles tests that pass and fail on the same code.
@@ -15,6 +14,9 @@ borrowed_from:
   - https://shopify.engineering/unreasonable-effectiveness-test-retries-android-monorepo-case-study
   - https://shopify.engineering/mobile-e2e-testing
   - https://tech.cabify.com/blog/engineering/acceptance-testing-go-services-using-aceptadora
+  - https://www.atlassian.com/blog/atlassian-engineering/taming-test-flakiness-how-we-built-a-scalable-tool-to-detect-and-manage-flaky-tests
+  - https://handbook.gitlab.com/handbook/engineering/testing/quarantine-process/
+  - https://medium.com/airtable-eng/how-airtable-manages-flaky-tests-in-a-large-scale-monorepo-5fe09922e90c
 ---
 
 **Rule.** Report every test that passes only on retry, move it to a quarantine with a named owner and a ticket, and return it to the merge gate only after it passes many reruns.

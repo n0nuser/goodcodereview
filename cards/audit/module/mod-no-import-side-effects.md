@@ -3,12 +3,15 @@ id: mod-no-import-side-effects
 level: module
 tags: [testing, maintainability, architecture]
 severity: should-fix
-status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+status: stable
 lang: core
 applies_when: A module does anything at import or load time other than defining names.
 tool_gate: none
-borrowed_from: []
+borrowed_from:
+  - https://airflow.apache.org/docs/apache-airflow/2.10.0/best-practices.html
+  - https://azure.github.io/azure-sdk/typescript_implementation.html
+  - https://dagster.io/blog/dignified-python-10-rules-to-improve-your-llm-agents
+  - https://raw.githubusercontent.com/UKGovernmentBEIS/inspect_evals/main/BEST_PRACTICES.md
 note: from the author's own Python review guide
 ---
 

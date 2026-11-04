@@ -3,8 +3,7 @@ id: svc-api-problem-json
 level: service
 tags: [compatibility, api, errors]
 severity: should-fix
-status: draft
-lacks: orgs, IETF and Zalando back it; needs a third org
+status: stable
 lang: core
 applies_when: A service returns errors from an HTTP API to other services or to clients.
 context: [server]
@@ -12,6 +11,7 @@ tool_gate: Middleware that builds every error body from one problem-details type
 borrowed_from:
   - https://www.rfc-editor.org/rfc/rfc9457.html
   - https://opensource.zalando.com/restful-api-guidelines/
+  - https://ukhsa-collaboration.github.io/standards-org/api-design-guidelines/api-guidelines/error-handling/
 ---
 
 **Rule.** Return errors as `application/problem+json` with a `status` that equals the HTTP status, and leave stack traces and internal detail out.

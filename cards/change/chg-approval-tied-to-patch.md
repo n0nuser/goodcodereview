@@ -3,8 +3,7 @@ id: chg-approval-tied-to-patch
 level: change
 tags: [process, review]
 severity: should-fix
-status: draft
-lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
+status: stable
 lang: core
 applies_when: A review approval or verification result exists and the branch has been pushed or rebased since.
 tool_gate: Branch protection that dismisses stale approvals on new commits.
@@ -12,6 +11,9 @@ note: one vendor's engineering guidance (opinion), from poteto-mode/playbooks/sh
 borrowed_from:
   - https://github.com/cursor/plugins/blob/main/pstack/skills/poteto-mode/playbooks/shipping.md
   - https://x.com/addyosmani/status/2114604912520921136
+  - https://docs.gitlab.com/user/project/merge_requests/approvals/settings/
+  - https://docs.prow.k8s.io/docs/components/plugins/approve/approvers/
+  - https://gerrit-review.googlesource.com/Documentation/config-labels.html
 ---
 
 **Rule.** Treat an approval or verification verdict as current only if the patch is unchanged: compare `git patch-id` at the verdict commit with the current head. If the patches differ only in tests, docs, or lint config, the verdict can stand when the built output is the same; any other difference needs a fresh check.

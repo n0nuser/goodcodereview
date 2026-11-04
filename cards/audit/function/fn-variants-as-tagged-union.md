@@ -3,8 +3,7 @@ id: fn-variants-as-tagged-union
 level: function
 tags: [maintainability, types, modelling]
 severity: should-fix
-status: draft
-lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
+status: stable
 lang: core
 applies_when: A type or function models a value that is one of several variants or states.
 tool_gate: A type checker with exhaustiveness checking (`never` in TypeScript, `assert_never` in Python).
@@ -12,6 +11,8 @@ note: one vendor's engineering guidance (opinion), from pstack principle-model-t
 borrowed_from:
   - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-model-the-domain/SKILL.md
   - https://github.com/cursor/plugins/blob/main/pstack/skills/typescript-best-practices/SKILL.md
+  - https://www.typescriptlang.org/docs/handbook/2/narrowing.html
+  - https://doc.rust-lang.org/book/ch06-02-match.html
 ---
 
 **Rule.** Model variants as a tagged union, and make every switch over it fail the build when a variant is unhandled.

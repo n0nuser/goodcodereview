@@ -53,6 +53,39 @@ redis.conf: maxmemory 2gb, maxmemory-policy allkeys-lru
 
 **Counterpoint.** "Stale data is a business risk, not a review issue." It is one when the staleness window was never chosen. The rule asks for a decision, not a number. A soft TTL (refresh in the background) under a hard TTL (must refetch) balances freshness against load.
 
+## sys-cells-limit-blast-radius
+
+severity: discuss  
+concerns: reliability  
+applies_when: Many tenants, regions, or product surfaces share one cluster, control plane, or data store.  
+Backed by: Netflix, Slack, Airbnb, Cloudflare, AWS, American Express, Microsoft.
+
+**Rule.** Split shared infrastructure into independent cells, each with its own control plane and storage, and route each tenant or request to one cell, so one failure stops only that cell.
+
+**Why.** With one global cluster, every failure is global. A bad config push, an overloaded control plane, or a corrupt index stops every customer at once. Netflix divides each region into independent cells, which also caps how large any one control plane can grow. Slack moved its critical user-facing services to cells to limit the blast radius of site failures. Airbnb moved its metrics store to several clusters to get separate failure domains.
+
+**FAIL**
+
+```yaml
+# one cluster and one control plane serve every tenant
+clusters:
+  - name: metrics-prod
+    tenants: all
+```
+
+**PASS**
+
+```yaml
+# each cell has its own control plane and storage; no cross-cell call on the request path
+clusters:
+  - name: metrics-cell-1
+    tenants: [payments, search]
+  - name: metrics-cell-2
+    tenants: [checkout, ads]
+```
+
+**Counterpoint.** "Cells cost more and add a routing layer." They do, with spare capacity in every cell, and a small service with one team may not earn them. Ask what one failure takes down. If one cluster outage or one bad deploy stops every customer, and that matters at your scale, mark `FAIL`. Cloudflare's postmortem asks for exactly that test of the blast radius. A per-tenant quota inside one cluster stops a noisy tenant but not a failed control plane. See [svc-rate-limit-quota](service.md#svc-rate-limit-quota). Cells help only if a change reaches them one at a time. See [prod-canary-staged-rollout](production.md#prod-canary-staged-rollout).
+
 ## sys-consistent-ui-terms
 
 severity: discuss  
@@ -110,6 +143,60 @@ return merge(hits, partial=len(hits) < len(shards))
 ```
 
 **Counterpoint.** "Hedging doubles the load." Sent at once to every replica, it does. Send the hedge only after a wait past about the 95th percentile, cap the attempts, and cancel the twin, and the extra load stays near 5%. Hedge only idempotent reads. A partial result needs a product decision. The deadline does not.
+
+## sys-health-liveness-readiness
+
+severity: should-fix  
+concerns: reliability  
+applies_when: A service exposes a health endpoint used by a load balancer, an orchestrator, or auto-replacement.  
+Backed by: AWS, Microsoft, GitLab.
+
+**Rule.** Wire load balancers and restarters to liveness and local checks only, never to shared-dependency checks.
+
+**Why.** Dependency status belongs in alarms. If the database blips, every host fails its check, all are removed at once, and a partial outage becomes total.
+
+**FAIL**
+
+```text
+GET /health -> SELECT 1 on primary db     # drives LB removal and restart
+```
+
+**PASS**
+
+```text
+/live: process responds ; /ready: local init done, no shared-dependency call
+dependency status -> metric + alarm only
+```
+
+**Counterpoint.** Readiness that reflects a dependency feels more honest. AWS accepts fail-open designs but is wary of behavior it cannot fully test, so a fail-open health policy counts as PASS only if you have actually tested it.
+
+## sys-index-concurrently
+
+severity: should-fix  
+concerns: compatibility  
+applies_when: A migration creates an index on an existing large or busy table.  
+context: data  
+Backed by: PostgreSQL, GitLab, Heroku, thoughtbot.
+
+**Rule.** Create indexes with `CONCURRENTLY`, outside a transaction block, and handle a failed build that leaves an INVALID index.
+
+**Why.** A plain build blocks writes for its whole duration. A concurrent build fails inside a transaction. A concurrent build that fails leaves an invalid index that queries ignore but writes still pay for.
+
+**FAIL**
+
+```sql
+CREATE INDEX idx_orders_user ON orders (user_id);
+```
+
+**PASS**
+
+```sql
+-- migration with the DDL transaction disabled
+DROP INDEX CONCURRENTLY IF EXISTS idx_orders_user;
+CREATE INDEX CONCURRENTLY idx_orders_user ON orders (user_id);
+```
+
+**Counterpoint.** "CONCURRENTLY is slower." It does two scans, waits for older transactions, and runs only one concurrent build per table at a time. That is the price of not blocking writes. For a unique index, others can see violations before a failed build is cleaned up.
 
 ## sys-load-shedding-bounded-queues
 
@@ -194,6 +281,33 @@ N: add b, dual-write, ignore a in code ; N+1: batched backfill ; N+2: drop a
 ```
 
 **Counterpoint.** "One `UPDATE` is simpler than a batched job." On a small table it is, and this card does not apply there. Once the update holds a lock long enough to block live traffic, batch it.
+
+## sys-migration-lock-timeout
+
+severity: should-fix  
+concerns: compatibility  
+applies_when: A migration runs ALTER TABLE on a busy PostgreSQL table.  
+context: data  
+Backed by: PostgreSQL, GitLab, GoCardless, Postgres.ai, Doctolib.
+
+**Rule.** Set `lock_timeout` for the migration session and retry on timeout.
+
+**Why.** The default is 0, meaning wait forever, and most ALTER forms need the strongest lock. A migration stuck waiting can make later queries on that table wait behind it (inferred from how lock queues work).
+
+**FAIL**
+
+```sql
+ALTER TABLE orders ADD COLUMN note text;   -- no lock_timeout
+```
+
+**PASS**
+
+```sql
+SET lock_timeout = '5s';
+ALTER TABLE orders ADD COLUMN note text;   -- retry on timeout
+```
+
+**Counterpoint.** "Set it globally." The Postgres docs advise against setting it in postgresql.conf because it affects every session, so scope it to the migration. Also, with a non-zero `statement_timeout`, a larger `lock_timeout` has no effect.
 
 ## sys-n-plus-one-pooling
 

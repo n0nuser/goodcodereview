@@ -3,8 +3,7 @@ id: code-a11y-check-in-ci
 level: codebase
 tags: [accessibility, testing, frontend, ci]
 severity: should-fix
-status: draft
-lacks: held, kept draft by Pablo's call; no org backs failing the build on a violation
+status: stable
 lang: core
 applies_when: The repo builds a web UI and has an automated test suite.
 context: [ui]
@@ -19,6 +18,9 @@ borrowed_from:
   - https://www.gov.uk/service-manual/helping-people-to-use-your-service/testing-for-accessibility
   - https://playwright.dev/docs/accessibility-testing
   - https://github.com/dequelabs/axe-core
+  - https://accessibility.civicactions.com/posts/automated-accessibility-testing-leveraging-github-actions-and-pa11y-ci-with-axe
+  - https://accessibility-manual.dwp.gov.uk/best-practice/automated-testing-using-axe-core-and-pa11y
+  - https://accessibility.arizona.edu/web-apps/cicd-testing
 ---
 
 **Rule.** Run an automated accessibility check, such as axe on rendered pages, in the automated tests, and fail the test on a violation.

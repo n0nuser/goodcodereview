@@ -3,8 +3,7 @@ id: mod-proto-enum-zero-unspecified
 level: module
 tags: [compatibility, api, protobuf]
 severity: should-fix
-status: draft
-lacks: orgs, the _UNSPECIFIED name has Google only; a zero value with no meaning has Google and Dropbox
+status: stable
 lang: core
 applies_when: A `.proto` file defines an enum.
 tool_gate: Protobuf linter (`buf lint`, ENUM_ZERO_VALUE_SUFFIX).
@@ -12,6 +11,9 @@ note: a zero value with no real meaning has Google and Dropbox (UNKNOWN = 0); th
 borrowed_from:
   - https://protobuf.dev/best-practices/dos-donts/
   - https://dropbox.tech/infrastructure/courier-dropbox-migration-to-grpc
+  - https://buf.build/docs/lint/rules/
+  - https://github.com/envoyproxy/envoy/blob/main/api/STYLE.md
+  - https://github.com/open-telemetry/opentelemetry-proto/raw/refs/heads/main/opentelemetry/proto/trace/v1/trace.proto
 ---
 
 **Rule.** Give every protobuf enum a zero value named `<ENUM>_UNSPECIFIED` with no real meaning.

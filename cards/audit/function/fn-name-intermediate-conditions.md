@@ -3,13 +3,15 @@ id: fn-name-intermediate-conditions
 level: function
 tags: [maintainability, readability]
 severity: discuss
-status: draft
-lacks: evidence, the only backer is a dev.to summary of Ousterhout; needs two orgs that say to name sub-conditions
+status: stable
 lang: core
 applies_when: An `if` or `while` joins three or more terms in one expression.
 tool_gate: none
 borrowed_from:
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
+  - https://www.industriallogic.com/papers/extractboolean.html
+  - https://developer.gnome.org/documentation/guidelines/programming/coding-style.html
+  - https://docs.unrealengine.com/5.0/en-US/epic-cplusplus-coding-standard-for-unreal-engine/
 ---
 
 **Rule.** Name each compound condition by assigning its sub-conditions to booleans that say what they mean.

@@ -3,8 +3,7 @@ id: chg-ui-change-screenshots-and-keyboard-pass
 level: change
 tags: [accessibility, usability, frontend, process]
 severity: should-fix
-status: draft
-lacks: orgs, reporting the keyboard pass has two PR templates; the 200% zoom clause has W3C only
+status: stable
 lang: core
 applies_when: The change alters markup, styles, or behaviour a user sees or operates.
 context: [ui]

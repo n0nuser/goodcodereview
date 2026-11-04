@@ -3,8 +3,7 @@ id: fn-link-url-scheme-allowlist
 level: function
 tags: [security, xss, javascript]
 severity: should-fix
-status: draft
-lacks: orgs, OWASP and Angular (Google) back it; needs one more org that checks the scheme before data reaches href or src
+status: stable
 lang: core
 applies_when: A URL taken from remote JSON, a query parameter or stored data is written to `href`, `src`, `location` or `window.open`.
 context: [ui]
@@ -13,6 +12,7 @@ note: OWASP says URL properties need URL validation even where React blocks java
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
   - https://angular.dev/best-practices/security
+  - https://developer.wordpress.org/reference/functions/esc_url/
 ---
 
 **Rule.** Parse a URL that comes from data and allow only `https:` (and `http:` or `mailto:` where needed) before you set it as a link target.

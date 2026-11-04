@@ -3,13 +3,14 @@ id: fn-no-magic-values
 level: function
 tags: [maintainability, readability, types]
 severity: should-fix
-status: draft
-lacks: orgs, Google's review guide is the only backer; needs two more orgs
+status: stable
 lang: core
 applies_when: A literal string or number carries meaning the reader must guess (status codes, mode names, limits).
 tool_gate: none (partial: ruff PLR2004)
 borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
+  - https://eslint.org/docs/latest/rules/no-magic-numbers
+  - https://wiki.sei.cmu.edu/confluence/display/c/DCL06-C.+Use+meaningful+symbolic+constants+to+represent+literal+values
 ---
 
 **Rule.** Give every meaningful literal a name: an enum member or a constant.

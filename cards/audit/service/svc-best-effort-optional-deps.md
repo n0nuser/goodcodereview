@@ -3,8 +3,7 @@ id: svc-best-effort-optional-deps
 level: service
 tags: [reliability, resilience, dependencies, observability]
 severity: should-fix
-status: draft
-lacks: orgs, best-effort calls have Netflix, Uber and Cabify; counting every fallback has Cabify only
+status: stable
 note: best-effort calls - Netflix (calls to metrics, logs and other systems are best-effort; a slow dependency degrades the graph and never blocks it), Uber (rate-limit clients fail open when the control plane is down), Cabify (skips non-critical details in a driver offer when it cannot collect them fast enough); a metric and alert on each fallback - Cabify only
 lang: core
 applies_when: The critical path of a request or a job calls a dependency whose data the product can do without, such as enrichment, recommendations, analytics, or a rate-limit control plane.
@@ -13,6 +12,8 @@ borrowed_from:
   - https://netflixtechblog.com/ontology-driven-observability-building-an-end-to-end-knowledge-graph-at-netflix-scale-421392cf5adf
   - https://www.uber.com/es/en/blog/ubers-rate-limiting-system/
   - https://tech.cabify.com/blog/engineering/degraded-experiences
+  - https://engineering.atspotify.com/2013/03/achieving-fault-tolerance-with-intelligent-daemons
+  - https://engineering.zalando.com/posts/2022/04/operation-based-slos.html
 ---
 
 **Rule.** Give each call to a non-critical dependency a short budget and a default, so its failure degrades the result instead of failing the critical path, and count every fallback.

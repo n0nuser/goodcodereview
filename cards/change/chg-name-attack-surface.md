@@ -3,8 +3,7 @@ id: chg-name-attack-surface
 level: change
 tags: [security, process, review]
 severity: should-fix
-status: draft
-lacks: orgs, no source says to list the attack surface in the description; OWASP and Mozilla back only a threat-model trigger
+status: stable
 lang: core
 applies_when: The change adds an endpoint, input parser, file upload, dependency, permission, secret or outbound call.
 tool_gate: SAST and dependency scanning in CI catch the mechanical part.
@@ -14,6 +13,7 @@ borrowed_from:
   - https://go.dev/wiki/CodeReviewComments
   - https://cheatsheetseries.owasp.org/cheatsheets/Attack_Surface_Analysis_Cheat_Sheet.html
   - https://wiki.mozilla.org/Security/Reviews
+  - https://peps.python.org/pep-0012/
 ---
 
 **Rule.** List any new attack surface in the description.

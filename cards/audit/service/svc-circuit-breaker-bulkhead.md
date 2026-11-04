@@ -3,14 +3,15 @@ id: svc-circuit-breaker-bulkhead
 level: service
 tags: [reliability, resilience, isolation]
 severity: should-fix
-status: draft
-lacks: orgs, "per dependency" has Microsoft only; needs two more orgs that limit concurrency per downstream
+status: stable
 lang: core
 applies_when: A service calls several dependencies from shared pools, or retries a dependency that may be down.
 tool_gate: none
 borrowed_from:
   - https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker
   - https://learn.microsoft.com/en-us/azure/architecture/patterns/bulkhead
+  - https://aws.amazon.com/builders-library/dependency-isolation
+  - https://netflixtechblog.com/fault-tolerance-in-a-high-volume-distributed-system-91ab4faae74a
 ---
 
 **Rule.** Give each critical dependency its own concurrency limit.

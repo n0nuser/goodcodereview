@@ -3,13 +3,14 @@ id: sys-health-liveness-readiness
 level: system
 tags: [reliability, health, availability]
 severity: should-fix
-status: draft
-lacks: orgs, AWS is the only backer; needs two more orgs
+status: stable
 lang: core
 applies_when: A service exposes a health endpoint used by a load balancer, an orchestrator, or auto-replacement.
 tool_gate: none
 borrowed_from:
   - https://aws.amazon.com/builders-library/implementing-health-checks/
+  - https://learn.microsoft.com/en-us/azure/architecture/patterns/health-endpoint-monitoring
+  - https://docs.gitlab.com/administration/monitoring/health_check/
 ---
 
 **Rule.** Wire load balancers and restarters to liveness and local checks only, never to shared-dependency checks.

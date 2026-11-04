@@ -3,12 +3,14 @@ id: fn-no-getattr-for-known-names
 level: function
 tags: [maintainability, types, readability]
 severity: discuss
-status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+status: stable
 lang: core
 applies_when: Code reads or writes an attribute or field by a dynamic key when the name is known at write time.
 tool_gate: ruff B009 / B010
-borrowed_from: []
+borrowed_from:
+  - https://github.com/PyCQA/flake8-bugbear#readme
+  - https://github.com/mozilla-ai/any-llm/blob/main/AGENTS.md
+  - https://github.com/AlmaLinux/astra/blob/master/AGENTS.md
 note: from the author's own Python review guide
 ---
 

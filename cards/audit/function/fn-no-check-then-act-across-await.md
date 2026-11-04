@@ -3,12 +3,14 @@ id: fn-no-check-then-act-across-await
 level: function
 tags: [correctness, concurrency]
 severity: should-fix
-status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+status: stable
 lang: core
 applies_when: Code reads shared state, yields (await, I/O, a lock release), then writes based on the earlier read.
 tool_gate: none
-borrowed_from: []
+borrowed_from:
+  - https://community.owasp.org/pages/vulnerabilities/race_conditions
+  - https://dev.mysql.com/doc/refman/8.4/en/innodb-locking-reads.html
+  - https://www.postgresql.org/docs/current/applevel-consistency.html
 note: from the author's own Python review guide
 ---
 

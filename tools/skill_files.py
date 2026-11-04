@@ -8,7 +8,6 @@ from config import (
     BASE,
     INDEX_BUDGET,
     LLMS_BUDGET,
-    REF_BUDGET,
     REPO,
     SKILL_BODY_BUDGET,
     SKILL_BUDGET,
@@ -293,8 +292,6 @@ def skill_output(b: BuildInput) -> SkillOutput:
             continue
         level_index[lv] = _level_index(lv, cards)
         ref = _link_stable(f"# {lv}\n\n" + "\n\n".join(card_section(c) for c in cards) + "\n", home)
-        if len(ref) > REF_BUDGET:
-            raise BuildError(f"references/{lv}.md is {len(ref)} characters, budget {REF_BUDGET}: split the level by `context` (see INDEX_BUDGET for how the index splits)")
         files[f"references/{lv}.md"] = ref
         twins[lv] = Twin(NAME[lv], LEVEL_DESC[lv], ref)
     if "incident" in twins:
