@@ -124,9 +124,9 @@ DESIGN_NOTE = "For an unscoped system or codebase review, end with one short lin
 INVOKE = "After you install the skill, name it in your request, such as `/good-code-review review this PR`. An agent that is not told may review without it."
 FEEDBACK = f"Reviewed something with it? Tell us what was noisy, wrong, or missing: [open an issue]({REPO}/issues/new/choose)."
 HERO = ("Review code against rules that Google, OWASP, Microsoft, and others already publish. "
-        "Give the list to an AI coding agent, or work through it by hand, and every check ends in PASS, FAIL, or N/A with file:line evidence, so anyone can verify the review afterwards.")
-BACKING = ("Every rule is curated: a card is stable only when at least three independent organisations, such as Google, Microsoft, OWASP, GitHub, Mozilla, AWS, W3C, and NIST, "
-           "have published the same practice, or when its source is the maintainer's own guide (a recorded exception), and each card links its sources. Those organisations did not write or endorse this site.")
+        "Give the list to an AI coding agent or work through it by hand. Every check ends in PASS, FAIL, or N/A with file:line evidence, so anyone can verify the review afterwards.")
+BACKING = ("A card is stable only when at least three independent organisations have published the same practice, such as Google, Microsoft, OWASP, GitHub, Mozilla, AWS, W3C, and NIST. "
+           "The one exception is a card whose source is the maintainer's own guide, which is recorded as such. Each card links its sources. Those organisations did not write or endorse this site.")
 DRAFT_NOTE = "A draft card is not vetted. Report a `FAIL` of one under Draft findings, at `should-fix` at most, never in the ledger or the verdict."
 GUIDES_DESC = "Short explainers for common review questions, each listing the stable cards that answer it."
 PACK_DESC = "Cards specific to {pk}: stable ones are vetted, drafts are not. Use them with the level page that matches your input."
@@ -194,7 +194,7 @@ INDEX_MD = """# Good Code Review
 {example}
 ```
 
-An example. The card ids are real; the paths and line numbers are made up.
+The card ids are real. The paths and line numbers are made up.
 
 ## Start a review
 

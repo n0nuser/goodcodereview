@@ -23,7 +23,7 @@ N/A: 14 cards, applies_when does not hold
 
 Pick what you are reviewing (a diff, a function, a service, a whole codebase, a production setup, or an incident) and you get the checks for that level. Each check has a `FAIL` example and a `PASS` example, so a reviewer, human or agent, knows what each verdict means. Anyone can check the review afterwards, because every verdict names a card and a line.
 
-There are 141 stable checks: 127 across the eight levels and 14 in the Python pack. The site prints the live count on its home page.
+There are 202 stable checks: 188 across the eight levels and 14 in the language packs. The site prints the live count on its home page.
 
 ## How it differs
 
@@ -33,7 +33,7 @@ There are 141 stable checks: 127 across the eight levels and 14 in the Python pa
 
 ## Where the rules come from
 
-The rules are curated. Each stable check is backed by at least three independent organisations that have published the same practice (or, as a recorded exception, by the maintainer's own guide: [ADR 0001](docs/adr/0001-creator-sources-satisfy-the-stable-floor.md)), and the card links every source. They include Google, Microsoft, GitHub, AWS, Stripe, Cloudflare, Mozilla, OWASP, W3C, IETF, NIST, and GOV.UK. Those organisations did not write or endorse this project. Checks with less backing stay as drafts and never decide a verdict. [docs/COVERAGE.md](docs/COVERAGE.md) maps every source to its cards.
+Each stable check is backed by at least three independent organisations that have published the same practice. The exception is a check whose source is the maintainer's own guide, which the repository records ([ADR 0001](docs/adr/0001-creator-sources-satisfy-the-stable-floor.md)). The card links every source. The organisations include Google, Microsoft, GitHub, AWS, Stripe, Cloudflare, Mozilla, OWASP, W3C, IETF, NIST, and GOV.UK. Those organisations did not write or endorse this project. Checks with less backing stay as drafts and never decide a verdict. [docs/COVERAGE.md](docs/COVERAGE.md) maps every source to its cards.
 
 ## Quick start
 
@@ -89,7 +89,7 @@ https://goodcodereview.com/cards.json?topic=forms
 
 `concern`, `topic`, and `level` take comma-separated values or repeat. A card matches when it has any value given for each filter. `group=concern|level|topic` groups the list.
 
-`cards.json` is one bounded file with no pagination, each level has its own file, `cards/<level>.json`, each concern has `cards/concern-<concern>.json` and `concerns/<concern>.md`, and `cards-index.json` is a slim lookup table; [docs/cards-json.md](docs/cards-json.md) says how to fetch part of it. The shape carries a `schema_version`, and [docs/api-versioning.md](docs/api-versioning.md) is the versioning policy.
+`cards.json` is one file with no pagination. Each level has its own file, `cards/<level>.json`, and each concern has `cards/concern-<concern>.json` and `concerns/<concern>.md`. `cards-index.json` is a slim lookup table. [docs/cards-json.md](docs/cards-json.md) says how to fetch part of it. The shape carries a `schema_version`, and [docs/api-versioning.md](docs/api-versioning.md) is the versioning policy.
 
 ## Verdict format
 
