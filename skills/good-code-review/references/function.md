@@ -55,6 +55,42 @@ export(report, fmt=Format.CSV, header=Header.OMIT)
 
 **Counterpoint.** "A keyword flag is fine and shorter." A named keyword-only flag is acceptable when it is truly binary and will stay so. The FAIL is the positional literal, which is why the severity is discuss.
 
+## fn-bounded-read-fails-at-cap
+
+severity: should-fix  
+concerns: correctness, reliability, security  
+applies_when: A function reads a file, a response or a request body through a reader that has a byte limit.  
+Backed by: Google, Django Software Foundation, IETF, OWASP, NVIDIA.
+
+**Rule.** When a size cap is reached, return an error; never hand back the first N bytes as if they were the whole input.
+
+**Why.** A reader that stops at the cap reports a normal end of input. The code then parses half a JSON document, saves a truncated file, or hashes a prefix, and nothing says the data was cut. The failure appears later as a corrupt record. Check for bytes beyond the cap, or use a reader that errors.
+
+**FAIL**
+
+```go
+body, err := io.ReadAll(io.LimitReader(resp.Body, 16<<20)) // 17 MiB payload: err == nil, body cut at 16 MiB
+if err != nil {
+	return nil, err
+}
+return body, nil
+```
+
+**PASS**
+
+```go
+body, err := io.ReadAll(io.LimitReader(resp.Body, 16<<20+1))
+if err != nil {
+	return nil, err
+}
+if len(body) > 16<<20 {
+	return nil, fmt.Errorf("response exceeds %d bytes", 16<<20)
+}
+return body, nil
+```
+
+**Counterpoint.** "We only need the first part, like a preview." Then say so in the name and the return value, such as `readPrefix` returning a `truncated` flag. The card fails a function that presents the prefix as the full content.
+
 ## fn-colour-not-sole-cue
 
 severity: should-fix  
@@ -350,6 +386,31 @@ def refund(user_id: UserId, order_id: OrderId) -> None: ...
 ```
 
 **Counterpoint.** "Wrapper types add ceremony." A newtype costs one line and no runtime. Where the types differ only by argument position and the function has two arguments with obvious names, keyword-only parameters can be enough.
+
+## fn-english-identifiers
+
+severity: discuss  
+concerns: maintainability  
+applies_when: The project has a written language policy, or its code may be read by people outside one language group.  
+Backed by: Python Software Foundation, LLVM, GNU Project, Moodle, Drupal.
+
+**Rule.** Write identifiers and comments in English, unless the project policy names another language.
+
+**Why.** Mixed languages split search, break naming conventions, and exclude readers. The tools, libraries, and error messages the code touches are already in English.
+
+**FAIL**
+
+```text
+def calcular_precio_total(carrito): ...   # next to total_price() and cart.items
+```
+
+**PASS**
+
+```text
+def calculate_total_price(cart): ...
+```
+
+**Counterpoint.** "Domain terms have no English word." Keep the local term, once, in a glossary, and comment it ([mod-one-name-per-concept](module.md#mod-one-name-per-concept)). Python itself allows non-ASCII identifiers so that teams can name things in their own language (PEP 3131). If the code will never leave one language group, a team may choose that language. Write the choice down so the check can pass.
 
 ## fn-error-says-what-and-how
 
@@ -812,6 +873,33 @@ print("api_key:", mask(settings.api_key))
 
 **Counterpoint.** "Users need the value to copy it." Then give them an explicit reveal flag that is off by default, so the copy is a deliberate act and the default output is safe to paste. Never ask users to scrape the full secret out of a listing.
 
+## fn-name-intermediate-conditions
+
+severity: discuss  
+concerns: maintainability  
+applies_when: An `if` or `while` joins three or more terms in one expression.  
+Backed by: Industrial Logic, GNOME, Epic Games. People cited: Sébastien Portebois.
+
+**Rule.** Name each compound condition by assigning its sub-conditions to booleans that say what they mean.
+
+**Why.** Dense conditions force the reader to simulate them. A name states the intent and gives a place to put the next clause.
+
+**FAIL**
+
+```text
+if u.active and not u.banned and (u.plan == "pro" or u.trial_days > 0) and not u.locked:
+```
+
+**PASS**
+
+```text
+can_login = u.active and not u.banned and not u.locked
+has_access = u.plan == Plan.PRO or u.trial_days > 0
+if can_login and has_access:
+```
+
+**Counterpoint.** "More variables, more state to track." These are immutable one-use names, and they replace a comment you would otherwise write. If the names turn out vague (`flag1`), the condition probably mixes two concepts. Fix that instead.
+
 ## fn-native-button-or-link
 
 severity: block  
@@ -871,6 +959,35 @@ async def handler(req):
 
 **Counterpoint.** "This call is fast enough." A short read from a local SSD can be quicker synchronously. Measure it with asyncio debug mode or the runtime's equivalent. A call that crosses the network, or that waits on anything outside the process, is never in that class.
 
+## fn-no-check-then-act-across-await
+
+severity: should-fix  
+concerns: correctness  
+applies_when: Code reads shared state, yields (await, I/O, a lock release), then writes based on the earlier read.  
+Backed by: OWASP, Oracle, PostgreSQL.
+
+**Rule.** Make check-and-write one atomic operation where the state lives, and never split it across a suspension point.
+
+**Why.** Another task runs at every yield. Two withdrawals both read 100, both pass the check, and the balance goes negative.
+
+**FAIL**
+
+```text
+balance = await repo.get_balance(acct)
+if balance >= amount:
+    await repo.set_balance(acct, balance - amount)
+```
+
+**PASS**
+
+```text
+# UPDATE accounts SET balance = balance - :amt WHERE id = :id AND balance >= :amt
+if not await repo.debit_if_sufficient(acct, amount):
+    raise InsufficientFunds(acct)
+```
+
+**Counterpoint.** "A lock fixes it." A process-local lock covers one process. With two workers or two hosts, you need a transaction, an atomic statement, an idempotency key, or optimistic concurrency. Name the other readers and writers of that state.
+
 ## fn-no-eval-untrusted
 
 severity: block  
@@ -897,6 +1014,31 @@ html = render_template("hello.html", name=request.args["name"])
 ```
 
 **Counterpoint.** "Users need formulas, so we need `eval`." Write or adopt a small expression parser that knows only numbers and the operators you allow. A sandbox around `eval` loses to the next escape someone publishes.
+
+## fn-no-getattr-for-known-names
+
+severity: discuss  
+concerns: maintainability  
+applies_when: Code reads or writes an attribute or field by a dynamic key when the name is known at write time.  
+Backed by: PyCQA, Mozilla.ai, AlmaLinux.
+
+**Rule.** Use plain field access, and reserve dynamic access for genuinely dynamic names.
+
+**Why.** Dynamic access defeats rename tools, type checking, and grep. A rename misses it, and it fails at runtime.
+
+**FAIL**
+
+```text
+value = getattr(order, "total")
+```
+
+**PASS**
+
+```text
+value = order.total
+```
+
+**Counterpoint.** "I loop over field names." That is fine when the set of names is the data (a mapping from column names, a serializer). If the names are fixed, unroll the loop.
 
 ## fn-no-magic-values
 
@@ -1471,6 +1613,31 @@ def test_checkout_charges_the_sum_of_item_prices():
 ```
 
 **Counterpoint.** "Some internals are complex enough to test on their own." Then give that logic its own unit with a public interface and test it through that. Testing a private function directly is a debated choice, so say why in the test.
+
+## fn-test-oracle-independent
+
+severity: should-fix  
+concerns: correctness, testing  
+applies_when: A test asserts on a computed value.  
+Backed by: Cursor, Google, Microsoft, NASA, GitLab.
+
+**Rule.** Take a test's expected value from the requirement, not from the code under test.
+
+**Why.** An expected value computed by the code under test passes when the code is wrong. Likewise, a "not called" assertion passes when the spy is wired to the wrong target, so pair it with a case where the call happens.
+
+**FAIL**
+
+```python
+assert total(items) == sum(i.price for i in items)   # re-implements the code
+```
+
+**PASS**
+
+```python
+assert total([Item(price=300), Item(price=450)]) == 750
+```
+
+**Counterpoint.** "Recomputing keeps the test short." It also repeats the bug. Use a literal from the spec or a worked example.
 
 ## fn-tls-verify-on
 

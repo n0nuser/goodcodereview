@@ -40,3 +40,18 @@ A targeted second search for cards that had one or two supporting organisations 
 | `svc-dlq` | https://www.uber.com/blog/reliable-reprocessing/ | Uber republishes dead-letter messages for reprocessing; covers replay. |
 | `sys-health-liveness-readiness` | https://learn.microsoft.com/en-us/azure/architecture/patterns/health-endpoint-monitoring | Shallow liveness checks so dependency outages do not restart apps. |
 | `sys-health-liveness-readiness` | https://docs.gitlab.com/administration/monitoring/health_check/ | Do not load-balance on endpoint that checks shared backends. |
+| `fn-bounded-read-fails-at-cap` | https://github.com/NVIDIA/aicr/blob/main/AGENTS.md | Repo rule: cap reads and reject anything exceeding the cap |
+| `fn-english-identifiers` | https://www.gnu.org/prep/standards/standards.html | GNU standard: names should be English. |
+| `fn-english-identifiers` | https://moodledev.io/general/development/policies/codingstyle | Coding style requires English words for function names. |
+| `fn-english-identifiers` | https://project.pages.drupalcode.org/coding_standards/ | Comments and names in US English. |
+| `fn-name-intermediate-conditions` | https://www.industriallogic.com/papers/extractboolean.html | Consultancy documents extracting sub-conditions into named booleans |
+| `fn-name-intermediate-conditions` | https://developer.gnome.org/documentation/guidelines/programming/coding-style.html | Style guide: assign the condition to a well-named boolean variable. |
+| `fn-name-intermediate-conditions` | https://docs.unrealengine.com/5.0/en-US/epic-cplusplus-coding-standard-for-unreal-engine/ | Coding standard: sub-expressions go into intermediate variables with descriptive names. |
+| `fn-no-check-then-act-across-await` | https://community.owasp.org/pages/vulnerabilities/race_conditions | Names TOCTOU windows between await calls; community page, verify authority |
+| `fn-no-check-then-act-across-await` | https://dev.mysql.com/doc/refman/8.4/en/innodb-locking-reads.html | Plain read-then-write is unsafe; use locking reads where state lives. |
+| `fn-no-check-then-act-across-await` | https://www.postgresql.org/docs/current/applevel-consistency.html | SELECT FOR UPDATE to keep check valid against concurrent updates. |
+| `fn-no-getattr-for-known-names` | https://github.com/PyCQA/flake8-bugbear#readme | Lint rule states getattr with known name adds no safety |
+| `fn-no-getattr-for-known-names` | https://github.com/mozilla-ai/any-llm/blob/main/AGENTS.md | Prefer direct attribute access over getattr for typed fields. |
+| `fn-no-getattr-for-known-names` | https://github.com/AlmaLinux/astra/blob/master/AGENTS.md | Bans getattr in normal application code. |
+| `fn-test-oracle-independent` | https://swehb.nasa.gov/display/SWEHBVD/5.14+-+Test+-+Software+Test+Procedures | Expected test results traced to requirements. |
+| `fn-test-oracle-independent` | https://docs.gitlab.com/ee/development/testing_guide/frontend_testing.html | Literal expected values rather than constants imported from the code. |

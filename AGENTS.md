@@ -21,20 +21,20 @@ Four specs bind every change. Check them before you finish:
 - `site/.well-known/ard.json`: the ARD publisher spec https://agenticresourcediscovery.org/spec/ (v0.91, re-read on 2026-11-02): an `entries` array, each entry with `identifier` (`urn:air:<publisher>:[<namespace>:]<name>`), `displayName`, `type`, and exactly one of `url` or `data`, 2 to 5 `representativeQueries`, `rel="ard"` in every page head, and an `Agentmap:` line in `robots.txt`. `python3 tools/agent_ready_check.py` item 43 checks it and names the version. When the spec changes version, re-read it and update the check.
 - Every page an agent may need has a clean `.md` twin at the same URL.
 
-Progressive disclosure keeps the first read small however many cards exist. Each layer has a budget that `python3 tools/build.py` enforces and `test/test_skill.py` checks:
+Progressive disclosure keeps the first read small however many cards exist. The first two layers follow outside specs and have a budget that `python3 tools/build.py` enforces and `test/test_skill.py` checks. The index splits by `context` past its size. The reference files have no budget (the maintainer removed those on 2026-11-04, and the `cards.json` one with them):
 
 | Layer | Holds | Budget |
 |---|---|---|
 | `llms.txt` | routing, a compact verdict format, and links to everything else | 12,000 characters |
 | `SKILL.md` body | routing, verdict format, an audit pointer, gotchas | 16,000 characters (about 4,000 tokens) |
-| `<level>-index.md` | one line per stable card: id, severity, concerns, context, rule | 12,000 characters; past it the build splits by `context` |
-| `references/<level>.md`, `references/audit.md` | full card text and the audit procedure | 70,000 characters per file |
+| `<level>-index.md` | one line per stable card: id, severity, concerns, context, rule | past 12,000 characters the build splits by `context` |
+| `references/<level>.md`, `references/audit.md` | full card text and the audit procedure | none |
 
 Rules:
 
 - Never put card text, audit prose, or draft lists into `llms.txt` or `SKILL.md`. A new card adds one line to its level index and its text to the level file, nothing else.
 - Put new audit advice in `references/audit.md` (built from `AUDIT_STEPS` in `tools/build.py`), not in `SKILL.md`.
-- When a budget fails, split or move detail behind a link. Do not raise the number without the maintainer's approval.
+- When the `llms.txt` or `SKILL.md` budget fails, split or move detail behind a link. Do not raise the number without the maintainer's approval.
 - After you change the skill text, the description, or a card the evals plant, run `python3 tools/eval.py run --mode forced --runs 1` and `python3 tools/eval.py triggers --split train --runs 1`, and say what failed. `test/evals/README.md` explains the cases. They spend tokens, so CI does not run them.
 - Eval runs: ask the maintainer first, naming the case, mode, number of runs, and model. Always pass `--save <dir>` (for example `--save /tmp/evals`) so a failure can be read without a second run, and `--model sonnet` unless told otherwise. Example: `python3 tools/eval.py run --mode forced --runs 1 --model sonnet --save /tmp/evals audit_repo`. One sample is not a verdict: a single substance failure needs the saved reply read before you call it a regression.
 

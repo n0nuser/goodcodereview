@@ -159,16 +159,6 @@ lacks: orgs, only one vendor's review skill backs it; the all-or-nothing princip
 
 Make related writes succeed or fail together.
 
-## fn-bounded-read-fails-at-cap
-
-level: function  
-severity: should-fix  
-concerns: correctness, reliability, security  
-applies_when: A function reads a file, a response or a request body through a reader that has a byte limit.  
-lacks: evidence, the sources are API, setting and status-code definitions; only OWASP states the practice
-
-When a size cap is reached, return an error; never hand back the first N bytes as if they were the whole input.
-
 ## fn-empty-collection-not-none
 
 level: function  
@@ -178,16 +168,6 @@ applies_when: A function returns a list, set or map.
 lacks: orgs, only the author's own Python review guide backs it; no independent org
 
 Return an empty collection for "nothing found"; return `None` only when absent differs from empty.
-
-## fn-english-identifiers
-
-level: function  
-severity: discuss  
-concerns: maintainability  
-applies_when: The project has a written language policy, or its code may be read by people outside one language group.  
-lacks: orgs, PEP 8 and LLVM give the rule and PEP 3131 argues the other way; needs a third org that mandates English
-
-Write identifiers and comments in English, unless the project policy names another language.
 
 ## fn-known-keys-get-a-type
 
@@ -199,16 +179,6 @@ lacks: orgs, only the author's own Python review guide backs it; no independent 
 
 Give a fixed key set a record type (model, dataclass, or typed dict), and use a generic map only for open keys.
 
-## fn-name-intermediate-conditions
-
-level: function  
-severity: discuss  
-concerns: maintainability  
-applies_when: An `if` or `while` joins three or more terms in one expression.  
-lacks: evidence, the only backer is a dev.to summary of Ousterhout; needs two orgs that say to name sub-conditions
-
-Name each compound condition by assigning its sub-conditions to booleans that say what they mean.
-
 ## fn-no-anonymous-tuples
 
 level: function  
@@ -218,26 +188,6 @@ applies_when: A function returns or passes a tuple whose positions mean differen
 lacks: orgs, only the author's own Python review guide backs it; no independent org
 
 Return a small named record, not a positional tuple, once the fields differ in meaning.
-
-## fn-no-check-then-act-across-await
-
-level: function  
-severity: should-fix  
-concerns: correctness  
-applies_when: Code reads shared state, yields (await, I/O, a lock release), then writes based on the earlier read.  
-lacks: orgs, only the author's own Python review guide backs it; no independent org
-
-Make check-and-write one atomic operation where the state lives, and never split it across a suspension point.
-
-## fn-no-getattr-for-known-names
-
-level: function  
-severity: discuss  
-concerns: maintainability  
-applies_when: Code reads or writes an attribute or field by a dynamic key when the name is known at write time.  
-lacks: orgs, only the author's own Python review guide backs it; no independent org
-
-Use plain field access, and reserve dynamic access for genuinely dynamic names.
 
 ## fn-no-pass-through-wrapper
 
@@ -278,16 +228,6 @@ applies_when: Code starts a task, thread, goroutine, or subprocess, or opens a h
 lacks: orgs, one blog post on structured concurrency backs it; needs two more orgs
 
 Give every task and handle an owner that waits for it or closes it, on the error path too.
-
-## fn-test-oracle-independent
-
-level: function  
-severity: should-fix  
-concerns: correctness, testing  
-applies_when: A test asserts on a computed value.  
-lacks: orgs, Google states "from the requirement"; Microsoft backs "no logic in tests"; one source is person-authored
-
-Take a test's expected value from the requirement, not from the code under test.
 
 # module drafts
 

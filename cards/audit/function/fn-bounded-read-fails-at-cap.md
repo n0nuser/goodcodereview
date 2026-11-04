@@ -3,8 +3,7 @@ id: fn-bounded-read-fails-at-cap
 level: function
 tags: [correctness, reliability, security, io]
 severity: should-fix
-status: draft
-lacks: evidence, the sources are API, setting and status-code definitions; only OWASP states the practice
+status: stable
 lang: core
 applies_when: A function reads a file, a response or a request body through a reader that has a byte limit.
 tool_gate: Go lint rule against `io.LimitReader` on untrusted input; a test that feeds one byte more than the cap and expects an error.
@@ -15,6 +14,7 @@ borrowed_from:
   - https://docs.djangoproject.com/en/5.2/ref/settings/#data-upload-max-memory-size
   - https://www.rfc-editor.org/rfc/rfc9110.html#name-413-content-too-large
   - https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html
+  - https://github.com/NVIDIA/aicr/blob/main/AGENTS.md
 ---
 
 **Rule.** When a size cap is reached, return an error; never hand back the first N bytes as if they were the whole input.

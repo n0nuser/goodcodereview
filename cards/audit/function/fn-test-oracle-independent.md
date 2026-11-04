@@ -3,8 +3,7 @@ id: fn-test-oracle-independent
 level: function
 tags: [correctness, testing, tests]
 severity: should-fix
-status: draft
-lacks: orgs, Google states "from the requirement"; Microsoft backs "no logic in tests"; one source is person-authored
+status: stable
 lang: core
 applies_when: A test asserts on a computed value.
 tool_gate: Mutation testing.
@@ -13,6 +12,8 @@ borrowed_from:
   - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-test-behavior-not-implementation/SKILL.md
   - https://abseil.io/resources/swe-book/html/ch12.html
   - https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices
+  - https://swehb.nasa.gov/display/SWEHBVD/5.14+-+Test+-+Software+Test+Procedures
+  - https://docs.gitlab.com/ee/development/testing_guide/frontend_testing.html
 ---
 
 **Rule.** Take a test's expected value from the requirement, not from the code under test.

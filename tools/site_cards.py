@@ -7,7 +7,7 @@ import orgs
 import schema
 import site_concerns
 from card_fields import concerns, lacks, level_of, markdown_url, page_name, topics
-from config import BASE, CARDS_JSON_BUDGET, LICENCE_URL, SITE_NAME
+from config import BASE, LICENCE_URL, SITE_NAME
 from context import BuildInput
 from errors import BuildError
 from markdown import rule, section
@@ -75,14 +75,10 @@ def check_index(index: dict[str, Any], merged: list[dict[str, Any]]) -> None:
 
 
 def _emit(files: dict[str, str], name: str, data: dict[str, Any], sch: dict[str, Any]) -> None:
-    """Validate one file against its schema and the size budget, then add its text to `files`."""
+    """Validate one file against its schema, then add its text to `files`."""
     if problems := schema.check(sch, data):
         raise BuildError(f"{name} does not match its schema:\n" + "\n".join(problems[:10]))
-    text = json.dumps(data, indent=1, ensure_ascii=False) + "\n"
-    size = len(text.encode())
-    if size > CARDS_JSON_BUDGET:
-        raise BuildError(f"{name} is {size} bytes, budget {CARDS_JSON_BUDGET}: see docs/cards-json.md before raising it")
-    files[name] = text
+    files[name] = json.dumps(data, indent=1, ensure_ascii=False) + "\n"
 
 
 def cards_files(b: BuildInput) -> dict[str, str]:
@@ -93,8 +89,8 @@ def cards_files(b: BuildInput) -> dict[str, str]:
     - `cards/concern-<concern>.json` holds the stable cards that list the concern, so a card appears under each of its concerns.
     - `cards-index.json` is the slim index of the stable cards, `concerns/<concern>.md` and `concerns/level-<level>.md` the Markdown lists.
 
-    All of them come from the same card lists. The cards files share cards.schema.json and the index has cards-index.schema.json. Each stays
-    under CARDS_JSON_BUDGET. Raises BuildError when a file breaks its schema or budget, or when the files disagree with the merged file.
+    All of them come from the same card lists. The cards files share cards.schema.json and the index has cards-index.schema.json.
+    Raises BuildError when a file breaks its schema, or when the files disagree with the merged file.
     """
     sch = schema.json_schema(BASE)
     index_sch = schema.index_json_schema(BASE)
