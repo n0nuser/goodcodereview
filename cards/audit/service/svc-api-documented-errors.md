@@ -3,8 +3,7 @@ id: svc-api-documented-errors
 level: service
 tags: [correctness, compatibility, api, contracts, errors]
 severity: should-fix
-status: draft
-lacks: orgs, OpenAPI requires one response per operation; the stricter rule is Zalando's alone
+status: stable
 note: OpenAPI requires only one response per operation; the stricter rule comes from Zalando rule 151
 lang: core
 applies_when: A service has an OpenAPI description, or callers depend on its error responses.
@@ -13,6 +12,7 @@ tool_gate: Spec linter that requires 4xx and 5xx responses with a schema on ever
 borrowed_from:
   - https://spec.openapis.org/oas/v3.1.0.html
   - https://opensource.zalando.com/restful-api-guidelines/
+  - https://developer.siemens.com/guidelines/api-guidelines/rest/error.html
 ---
 
 **Rule.** Document every error status each operation can return, with a schema and one example.

@@ -3,12 +3,14 @@ id: mod-layers-point-inward
 level: module
 tags: [maintainability, architecture]
 severity: should-fix
-status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+status: stable
 lang: core
 applies_when: The codebase has separable transport, logic, and outbound-boundary code.
 tool_gate: import-linter or similar
-borrowed_from: []
+borrowed_from:
+  - https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures
+  - https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/hexagonal-architecture.html
+  - https://netflixtechblog.com/ready-for-changes-with-hexagonal-architecture-b315ec967749
 note: from the author's own Python review guide
 ---
 

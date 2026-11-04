@@ -4,26 +4,6 @@ A draft card is not vetted. Report a `FAIL` of one under Draft findings, at `sho
 
 # change drafts
 
-## chg-agent-grounded-code
-
-level: change  
-severity: should-fix  
-concerns: maintainability, process  
-applies_when: The change was written fully or partly by an AI agent.  
-lacks: orgs, only an arXiv package-hallucination study backs checking every import and call; needs two more orgs
-
-Verify that every import and external call the agent wrote exists with that signature.
-
-## chg-agent-independent-review
-
-level: change  
-severity: should-fix  
-concerns: process  
-applies_when: An agent wrote the change, and an agent or the same session is asked to review it.  
-lacks: orgs, a person's sign-off has Stripe and Dropbox; the fresh-context reviewer option has 0 orgs; needs one more firm org or that option cut
-
-Get sign-off from a person or a fresh-context reviewer who has the spec but not the author's reasoning; self-review by the writing session does not count.
-
 ## chg-agent-mock-asserting-tests
 
 level: change  
@@ -55,16 +35,6 @@ lacks: orgs, only Anthropic (a vendor) backs it; needs two more orgs that bar bo
 
 Do not let a bot or agent approval satisfy a required human approval.
 
-## chg-chestertons-fence
-
-level: change  
-severity: should-fix  
-concerns: maintainability, process  
-applies_when: The change removes, rewrites or "simplifies" odd-looking existing code, or rewrites a module.  
-lacks: orgs, only Feathers backs a characterization test before a rewrite; Spolsky backs not rewriting from scratch
-
-Add a characterization test before rewriting code you do not understand.
-
 ## chg-fix-root-cause-not-symptom
 
 level: change  
@@ -94,27 +64,6 @@ applies_when: The change links a ticket, spec or issue.
 lacks: orgs, checking the change against the spec has Google, plus Dropbox for security only; needs a third org
 
 Trace every behaviour change in the diff to the stated requirement, and flag missing requirements and any change nobody asked for.
-
-## chg-migration-add-column-rewrite
-
-level: change  
-severity: should-fix  
-concerns: compatibility  
-applies_when: A migration adds a column to a large PostgreSQL table.  
-context: data  
-lacks: orgs, PostgreSQL docs are the only backer; needs two more orgs
-
-Add the column nullable or with a constant default, then fill volatile, computed, or identity values in batches.
-
-## chg-name-attack-surface
-
-level: change  
-severity: should-fix  
-concerns: security, process  
-applies_when: The change adds an endpoint, input parser, file upload, dependency, permission, secret or outbound call.  
-lacks: orgs, no source says to list the attack surface in the description; OWASP and Mozilla back only a threat-model trigger
-
-List any new attack surface in the description.
 
 ## chg-new-api-has-usage
 
@@ -147,16 +96,6 @@ applies_when: The change adds a conditional, flag or nullable mode to code that 
 lacks: orgs, one vendor's review skill backs it, with no data; needs two more orgs
 
 Put a new case behind its own function or type; do not add a one-off branch to a shared flow.
-
-## chg-proto-reserve-removed-fields
-
-level: change  
-severity: should-fix  
-concerns: compatibility  
-applies_when: The diff deletes a field or enum value from a `.proto` message or enum.  
-lacks: orgs, protobuf.dev is the only backer; needs two more orgs that require reserved on removal
-
-When you delete a protobuf field or enum value, add `reserved` for its number and name in the same change, and never reuse a number.
 
 ## chg-review-comment-format
 
@@ -207,17 +146,6 @@ applies_when: The change touches code or config for auth, billing, CI or release
 lacks: orgs, only Anthropic (a vendor) backs it; needs two more orgs that name human owners for auth, billing, CI and release paths
 
 Name a human owner in CODEOWNERS for auth, billing, CI and release paths, and require that owner's approval.
-
-## chg-ui-change-screenshots-and-keyboard-pass
-
-level: change  
-severity: should-fix  
-concerns: accessibility, usability, process  
-applies_when: The change alters markup, styles, or behaviour a user sees or operates.  
-context: ui  
-lacks: orgs, reporting the keyboard pass has two PR templates; the 200% zoom clause has W3C only
-
-A UI change shows before-and-after screenshots and says what a keyboard-only pass and a 200% zoom check found on the changed screens.
 
 # function drafts
 
@@ -413,16 +341,6 @@ lacks: evidence, no Fowler or Beck source; backers are an Ousterhout summary and
 
 Name the smell, point to the line, and suggest the refactoring; do not file smells as taste.
 
-## mod-layers-point-inward
-
-level: module  
-severity: should-fix  
-concerns: maintainability  
-applies_when: The codebase has separable transport, logic, and outbound-boundary code.  
-lacks: orgs, only the author's own Python review guide backs it; no independent org
-
-Make dependencies point inward: surface, then logic, then boundary.
-
 ## mod-mock-at-boundaries-only
 
 level: module  
@@ -432,16 +350,6 @@ applies_when: A test uses mocks, patches or fakes.
 lacks: evidence, Airbnb mocks services in load tests and Cabify runs a real gRPC server; neither states the Rule
 
 Mock only at the process boundary (HTTP, DB, cloud, clock, I/O).
-
-## mod-no-import-side-effects
-
-level: module  
-severity: should-fix  
-concerns: testing, maintainability  
-applies_when: A module does anything at import or load time other than defining names.  
-lacks: orgs, only the author's own Python review guide backs it; no independent org
-
-Keep I/O at the edges: importing a package must not touch the network, read files, or read the environment.
 
 ## mod-no-wire-types-in-public-api
 
@@ -462,16 +370,6 @@ applies_when: A shared helper or base class has gained flags or conditionals so 
 lacks: orgs, Metz and Dodds back inlining; the re-split remedy has no third org, and the Counterpoint still cites an unsourced count
 
 Inline an abstraction that has grown flags for its callers, then re-split it.
-
-## mod-one-name-per-concept
-
-level: module  
-severity: should-fix  
-concerns: maintainability  
-applies_when: The change introduces or reuses names for domain concepts.  
-lacks: evidence, Netflix backs the converse, one concept per name; Slack's aliases are narrow; no org states the Rule
-
-Use one name for one concept across the codebase.
 
 ## mod-prefer-sync-api
 
@@ -525,17 +423,6 @@ Validate at the boundary, once, with a schema or model, so that inner layers rec
 
 # service drafts
 
-## svc-api-documented-errors
-
-level: service  
-severity: should-fix  
-concerns: correctness, compatibility  
-applies_when: A service has an OpenAPI description, or callers depend on its error responses.  
-context: server  
-lacks: orgs, OpenAPI requires one response per operation; the stricter rule is Zalando's alone
-
-Document every error status each operation can return, with a schema and one example.
-
 ## svc-api-safe-idempotent-methods
 
 level: service  
@@ -569,37 +456,6 @@ lacks: orgs, W3C is the only backer; needs two more orgs that forward trace head
 
 Forward `traceparent` and `tracestate` on every outgoing call, keep the incoming trace id, and set a new parent id for each hop.
 
-## svc-best-effort-optional-deps
-
-level: service  
-severity: should-fix  
-concerns: reliability, observability  
-applies_when: The critical path of a request or a job calls a dependency whose data the product can do without, such as enrichment, recommendations, analytics, or a rate-limit control plane.  
-lacks: orgs, best-effort calls have Netflix, Uber and Cabify; counting every fallback has Cabify only
-
-Give each call to a non-critical dependency a short budget and a default, so its failure degrades the result instead of failing the critical path, and count every fallback.
-
-## svc-circuit-breaker-bulkhead
-
-level: service  
-severity: should-fix  
-concerns: reliability  
-applies_when: A service calls several dependencies from shared pools, or retries a dependency that may be down.  
-lacks: orgs, "per dependency" has Microsoft only; needs two more orgs that limit concurrency per downstream
-
-Give each critical dependency its own concurrency limit.
-
-## svc-dlq
-
-level: service  
-severity: should-fix  
-concerns: reliability  
-applies_when: The code consumes from a queue or stream.  
-context: server  
-lacks: evidence, Dropbox's dead-letter queue is a proposal, not a practice; needs a third org that runs it
-
-Give every consumer queue a dead-letter queue and a way to replay its messages after the fix.
-
 ## svc-page-title-per-route
 
 level: service  
@@ -632,17 +488,6 @@ context: server
 lacks: evidence, the W3C spec does not mention logs; only Honeycomb backs putting the id on every log line
 
 Put the request or trace id on every log line written during a request.
-
-## svc-saga-steps
-
-level: service  
-severity: should-fix  
-concerns: reliability, correctness  
-applies_when: A business operation spans services, each with its own database, coordinated as a saga.  
-context: server  
-lacks: orgs, Azure is the only backer; needs two more orgs that require idempotent steps and compensations
-
-Make steps after the pivot idempotent and retryable, and make every compensation idempotent with a failure path.
 
 ## svc-security-event-logging
 
@@ -699,16 +544,6 @@ lacks: orgs, PostgreSQL docs are the only backer; needs two more orgs that add c
 
 Add the constraint `NOT VALID`, then run `VALIDATE CONSTRAINT` in a separate step, and never leave the VALIDATE out.
 
-## sys-health-liveness-readiness
-
-level: system  
-severity: should-fix  
-concerns: reliability  
-applies_when: A service exposes a health endpoint used by a load balancer, an orchestrator, or auto-replacement.  
-lacks: orgs, AWS is the only backer; needs two more orgs
-
-Wire load balancers and restarters to liveness and local checks only, never to shared-dependency checks.
-
 ## sys-leader-two-leaders
 
 level: system  
@@ -751,27 +586,7 @@ lacks: evidence, backers are a dev.to summary and a blog post; no org states a f
 
 Keep every hand-written source file under about 1,000 lines unless it has a listed exception, and split larger files by knowledge owned, not by execution order.
 
-## code-scoped-validation-loop
-
-level: codebase  
-severity: discuss  
-concerns: testing, process  
-applies_when: Auditing how a contributor checks a small change.  
-lacks: orgs, one vendor's local-loop review backs it; needs two more orgs that document a scoped local command
-
-Document a command that checks one package or path, with readable output, so a small change does not need the full-repo run.
-
 # production drafts
-
-## prod-slo-error-budget
-
-level: production  
-severity: discuss  
-concerns: reliability, observability  
-applies_when: A service has users or dependents who rely on its availability.  
-lacks: orgs, gating releases on the error budget has no backing row
-
-Define an SLO with an indicator and window, and use its remaining error budget to gate risky releases.
 
 ## prod-wide-events-bounded-labels
 

@@ -1,5 +1,59 @@
 # change
 
+## chg-agent-grounded-code
+
+severity: should-fix  
+concerns: maintainability, process  
+applies_when: The change was written fully or partly by an AI agent.  
+Backed by: Kubernetes, Google, University of Texas at San Antonio, Cloud Security Alliance.
+
+**Rule.** Verify that every import and external call the agent wrote exists with that signature.
+
+**Why.** Agents invent plausible APIs and rewrite nearby utilities without searching. A study of 16 code models found that at least about 5% of the packages they suggested (about 22% for open-source models) did not exist, and an attacker can publish a malicious package under a name that models keep inventing. A green build proves only what the compiler sees. [chg-reuse-before-write](change.md#chg-reuse-before-write) covers re-implemented helpers. The author must also be able to explain each hunk; see [chg-agent-independent-review](change.md#chg-agent-independent-review).
+
+**FAIL**
+
+```python
+import requests_cache_pro                # package does not exist, or exists only because an attacker registered it
+total = sum_cents(items)                 # new helper; money.sum_cents() already exists
+resp = client.fetch_json(url, retries=3) # fetch_json has no retries param
+```
+
+**PASS**
+
+```python
+from money import sum_cents
+resp = client.fetch_json(url)   # signature checked against source
+```
+
+**Counterpoint.** "Humans make the same mistakes." True, but agents make them fluently and at volume, and disclosure alone does not catch them. Kubernetes requires disclosure and an author who can explain the change. A compiler and a dependency check catch the mechanical part, so use this card for calls that resolve but behave differently than assumed.
+
+## chg-agent-independent-review
+
+severity: should-fix  
+concerns: process  
+applies_when: An agent wrote the change, and an agent or the same session is asked to review it.  
+Backed by: Kubernetes, Meta, Stripe, Uber, Dropbox, Anthropic.
+
+**Rule.** Get sign-off from a person or a fresh-context reviewer who has the spec but not the author's reasoning; self-review by the writing session does not count.
+
+**Why.** The same context repeats the same blind spots and assumptions. An approval without real reading is a rubber stamp. The person who submits the change must also be able to explain each hunk.
+
+**FAIL**
+
+```text
+Session writes the diff, then "reviews" it: "no issues found". Merged.
+```
+
+**PASS**
+
+```text
+Fresh reviewer given spec + diff + test output, runs the branch, files findings.
+A human who can explain the change approves.
+```
+
+**Counterpoint.** A same-session pass still catches typos and leftovers. Keep it as the author's self-review step, not as the gate. Meta tracks "eyeball time" as a guardrail against rubber-stamping, the failure this card targets.
+
 ## chg-approval-tied-to-patch
 
 severity: should-fix  
@@ -80,6 +134,33 @@ flag orders_newest_first defaults off for one release".
 ```
 
 **Counterpoint.** Treating everything as breaking freezes the code. Weigh each change by known consumers and blast radius, and use a staged rollout instead of a ban. Optional parameters with defaults are the safe way to add.
+
+## chg-chestertons-fence
+
+severity: should-fix  
+concerns: maintainability, process  
+applies_when: The change removes, rewrites or "simplifies" odd-looking existing code, or rewrites a module.  
+Backed by: Cursor, GetYourGuide, Red Hat. People cited: Joel Spolsky, Michael Feathers.
+
+**Rule.** Add a characterization test before rewriting code you do not understand.
+
+**Why.** Strange code often carries a fix for a bug that is no longer visible. Removing it re-ships the bug. Check the history first (blame, the PR that added it, tickets, postmortems); defensive code such as null checks, retries and timeouts usually answers a real incident. For a rewrite, name the defect that justifies it.
+
+**FAIL**
+
+```text
+PR "simplify retry loop": removes sleep(0.2) and a dedup check.
+No blame/history cited; no test. Rewrite justified by "this is a mess".
+```
+
+**PASS**
+
+```text
+git blame shows sleep added for rate-limit incident INC-17.
+PR keeps it with a comment, adds a characterization test first.
+```
+
+**Counterpoint.** Joel Spolsky's anti-rewrite case rests on anecdotes (Netscape, Borland), and Hickey argues for restating the problem, which may mean a new design. Rethinking is allowed. A big-bang rewrite needs small shippable steps, the old path working meanwhile, and a named defect.
 
 ## chg-delete-legacy-after-migration
 
@@ -196,6 +277,60 @@ Code the PR touches anyway is improved in passing.
 
 **Counterpoint.** "Consistency preserves bugs." Consistency is a tie-breaker, not a reason to copy something that breaks a rule or hurts code health, so a reviewer must not demand matching code that makes things worse. When the nearby pattern is bad, keep to the local style in this change, file a ticket, and propose the new standard in its own change, improving what you touch. A second pattern slipped into a feature change without a word is the failure.
 
+## chg-migration-add-column-rewrite
+
+severity: should-fix  
+concerns: compatibility  
+applies_when: A migration adds a column to a large PostgreSQL table.  
+context: data  
+Backed by: PostgreSQL, PayPal, Retool.
+
+**Rule.** Add the column nullable or with a constant default, then fill volatile, computed, or identity values in batches.
+
+**Why.** A constant or NULL default is a metadata change. A volatile default, a stored generated column, or an identity column rewrites the whole table, and the default lock (ACCESS EXCLUSIVE) blocks every query on it for the duration.
+
+**FAIL**
+
+```sql
+ALTER TABLE events ADD COLUMN token uuid DEFAULT gen_random_uuid();   -- volatile: rewrites 400M rows
+```
+
+**PASS**
+
+```sql
+ALTER TABLE events ADD COLUMN token uuid;                 -- no rewrite
+-- backfill in batches, then SET DEFAULT for new rows only
+```
+
+**Counterpoint.** "The table is small." Then the rewrite is cheap and the one-step form is fine. State the row count in the description. [sys-migration-lock-timeout](system.md#sys-migration-lock-timeout) covers locking and timeouts.
+
+## chg-name-attack-surface
+
+severity: should-fix  
+concerns: security, process  
+applies_when: The change adds an endpoint, input parser, file upload, dependency, permission, secret or outbound call.  
+Backed by: Google, OWASP, Mozilla, Python Software Foundation.
+
+**Rule.** List any new attack surface in the description.
+
+**Why.** A generalist reviewing a diff will not spot an exposed route the author never mentioned. A new input, trust boundary, credential, or dependency counts, and security-relevant changes go to a qualified reviewer.
+
+**FAIL**
+
+```text
+PR "add debug endpoint /admin/dump". Description: "helper for support".
+Auth not mentioned, merged by one general reviewer.
+```
+
+**PASS**
+
+```text
+Description: "new endpoint, admin-only via role X, rate limited, no PII".
+Security reviewer tagged. Randomness uses a crypto source.
+```
+
+**Counterpoint.** Naming threats on every PR is theatre. Only changes that add one of the listed surfaces need the section, and most PRs write "none".
+
 ## chg-no-silenced-diagnostics
 
 severity: should-fix  
@@ -308,6 +443,38 @@ message Invoice {
 ```
 
 **Counterpoint.** "Both ends deploy together." A rolling deploy runs both versions at once, and stored data does not redeploy. If the message never leaves one binary, mark the card N/A.
+
+## chg-proto-reserve-removed-fields
+
+severity: should-fix  
+concerns: compatibility  
+applies_when: The diff deletes a field or enum value from a `.proto` message or enum.  
+Backed by: Google, Microsoft, Deliveroo.
+
+**Rule.** When you delete a protobuf field or enum value, add `reserved` for its number and name in the same change, and never reuse a number.
+
+**Why.** Old data and old clients still carry the number. A new field that takes it is read as the old type, and the failure is silent corruption, not an error.
+
+**FAIL**
+
+```proto
+message Order {
+-  string coupon = 4;
++  int32 loyalty_points = 4;   // number 4 reused
+}
+```
+
+**PASS**
+
+```proto
+message Order {
+  reserved 4;
+  reserved "coupon";
+  int32 loyalty_points = 5;
+}
+```
+
+**Counterpoint.** "Nobody sends field 4 any more." Stored messages, queued messages and a client on last month's build do. Reserving costs one line and cannot be undone by accident.
 
 ## chg-refactor-has-behaviour-pin
 
@@ -494,6 +661,37 @@ PR adds discount.py change and test_discount.py with the edge cases
 ```
 
 **Counterpoint.** "Holding a good change for tests blocks progress." Approve changes that improve the code even when imperfect, but the test is part of the change, not polish. Untestable cases exist (config, pure docs, emergency fixes), and a written reason plus a ticket for the test is the usual way to ship without one.
+
+## chg-ui-change-screenshots-and-keyboard-pass
+
+severity: should-fix  
+concerns: accessibility, usability, process  
+applies_when: The change alters markup, styles, or behaviour a user sees or operates.  
+context: ui  
+Backed by: W3C, WebAIM, GOV.UK, WordPress, Elastic, Mozilla.
+
+**Rule.** A UI change shows before-and-after screenshots and says what a keyboard-only pass and a 200% zoom check found on the changed screens.
+
+**Why.** A reviewer reading a diff cannot see focus, order, or overflow. A screenshot shows the visual change, and the keyboard pass shows what the diff hides: a lost focus ring, a trap, a control that cannot be reached.
+
+**FAIL**
+
+```text
+PR: "Redesign the settings dialog"
+Files: Settings.tsx, settings.css
+(no screenshots, no mention of keyboard or zoom)
+```
+
+**PASS**
+
+```text
+PR: "Redesign the settings dialog"
+Before / after: screenshots attached (default and 200% zoom).
+Keyboard: Tab reaches every control in order, Esc closes, focus returns to the gear button.
+Not covered: screen reader, not tested.
+```
+
+**Counterpoint.** "Automated checks run in CI." They find a minority of problems. They cannot tell that Tab order is wrong or that focus vanished. Say what you did not test, as the last line shows.
 
 ## chg-verify-before-claim
 

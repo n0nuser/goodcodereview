@@ -3,14 +3,15 @@ id: chg-migration-add-column-rewrite
 level: change
 tags: [compatibility, database, migration, postgres]
 severity: should-fix
-status: draft
-lacks: orgs, PostgreSQL docs are the only backer; needs two more orgs
+status: stable
 lang: core
 applies_when: A migration adds a column to a large PostgreSQL table.
 context: [data]
 tool_gate: Migration linter that flags volatile defaults, stored generated columns and identity columns on ADD COLUMN.
 borrowed_from:
   - https://www.postgresql.org/docs/current/sql-altertable.html
+  - https://medium.com/paypal-tech/postgresql-at-scale-database-schema-changes-without-downtime-20d3749ed680
+  - https://retool.com/blog/running-safe-database-migrations-using-postgres
 ---
 
 **Rule.** Add the column nullable or with a constant default, then fill volatile, computed, or identity values in batches.

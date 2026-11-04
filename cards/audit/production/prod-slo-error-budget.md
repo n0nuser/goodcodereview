@@ -3,13 +3,15 @@ id: prod-slo-error-budget
 level: production
 tags: [reliability, observability, slo]
 severity: discuss
-status: draft
-lacks: orgs, gating releases on the error budget has no backing row
+status: stable
 note: no source yet; first-hand reasoning
 lang: core
 applies_when: A service has users or dependents who rely on its availability.
 tool_gate: none
-borrowed_from: []
+borrowed_from:
+  - https://sre.google/workbook/error-budget-policy/
+  - https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/database/
+  - https://www.atlassian.com/blog/atlassian-engineering/unlocking-reliability-with-splunk-smartstore
 ---
 
 **Rule.** Define an SLO with an indicator and window, and use its remaining error budget to gate risky releases.

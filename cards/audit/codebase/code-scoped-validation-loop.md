@@ -3,14 +3,16 @@ id: code-scoped-validation-loop
 level: codebase
 tags: [testing, process, onboarding]
 severity: discuss
-status: draft
-lacks: orgs, one vendor's local-loop review backs it; needs two more orgs that document a scoped local command
+status: stable
 lang: core
 applies_when: Auditing how a contributor checks a small change.
 tool_gate: A documented command that runs tests and lint for one path or package.
 note: one vendor's engineering guidance (opinion), from agent-compatibility validation-review
 borrowed_from:
   - https://github.com/cursor/plugins/blob/main/agent-compatibility/agents/validation-review.md
+  - https://android.googlesource.com/platform/frameworks/support/+/17957fcb324a42599abc868ffe8204a0384b2aee/camera/AGENTS.md
+  - https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/unit-tests/
+  - https://devguide.python.org/testing/run-write-tests/
 ---
 
 **Rule.** Document a command that checks one package or path, with readable output, so a small change does not need the full-repo run.
