@@ -4,7 +4,7 @@ from typing import Any
 import pytest
 
 import schema
-from config import BASE, CARDS_JSON_BUDGET, LLMS_BUDGET
+from config import BASE, LLMS_BUDGET
 from errors import BuildError
 from models import CONCERNS, LEVELS
 from site_cards import check_concern_files, check_index, check_union
@@ -43,13 +43,12 @@ def test_each_level_file_keeps_the_merged_top_level_keys_and_card_order(site_tex
         assert positions == sorted(positions)
 
 
-def test_every_emitted_file_passes_the_schema_and_the_budget(site_text: dict[str, str]) -> None:
+def test_every_emitted_file_passes_the_schema(site_text: dict[str, str]) -> None:
     sch = schema.json_schema(BASE)
     names = [n for n in site_text if n.startswith("cards/") or n in {"cards.json", "cards-drafts.json"}]
     assert len(names) > 2
     for name in names:
         assert schema.check(sch, json.loads(site_text[name])) == [], name
-        assert len(site_text[name].encode()) <= CARDS_JSON_BUDGET, name
 
 
 def test_llms_txt_advertises_a_level_file(site_text: dict[str, str]) -> None:

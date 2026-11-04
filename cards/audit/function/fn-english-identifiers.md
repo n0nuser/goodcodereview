@@ -3,8 +3,7 @@ id: fn-english-identifiers
 level: function
 tags: [maintainability, naming, readability]
 severity: discuss
-status: draft
-lacks: orgs, PEP 8 and LLVM give the rule and PEP 3131 argues the other way; needs a third org that mandates English
+status: stable
 lang: core
 applies_when: The project has a written language policy, or its code may be read by people outside one language group.
 tool_gate: Spell-check or non-ASCII identifier lint.
@@ -13,6 +12,9 @@ borrowed_from:
   - https://peps.python.org/pep-0008/
   - https://peps.python.org/pep-3131/
   - https://llvm.org/docs/CodingStandards.html
+  - https://www.gnu.org/prep/standards/standards.html
+  - https://moodledev.io/general/development/policies/codingstyle
+  - https://project.pages.drupalcode.org/coding_standards/
 ---
 
 **Rule.** Write identifiers and comments in English, unless the project policy names another language.

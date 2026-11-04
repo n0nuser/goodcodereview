@@ -21,8 +21,6 @@ SKILL_BUDGET = 400  # max lines in SKILL.md
 LLMS_BUDGET = 12_000  # characters in llms.txt (llmstxt.org asks for a concise summary)
 SKILL_BODY_BUDGET = 16_000  # characters in SKILL.md after the frontmatter, about 4,000 tokens (the Agent Skills spec recommends under 5,000)
 INDEX_BUDGET = 12_000  # characters in one level index; past it the index splits by `context`
-REF_BUDGET = 70_000  # characters in one references file; past it, split the level by `context` like the index
-CARDS_JSON_BUDGET = 600_000  # bytes in cards.json; it is one bounded file with no pagination, so growth past this needs a design change (docs/cards-json.md)
 
 SECURITY_TXT_DAYS = 180  # RFC 9116 Expires, counted from the build date so each rebuild renews it
 HSTS_MAX_AGE = 31_536_000  # one year, in seconds

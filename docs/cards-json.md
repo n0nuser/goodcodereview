@@ -15,7 +15,7 @@ Each file has the same top-level keys as `cards.json` (`levels` and `concerns` s
 
 ## Bounded files
 
-None of the files is paginated. They are static files that the build writes, so they cannot grow past what the cards hold, and no query can return an unbounded result. Today `cards.json` is about 437,000 bytes (about 436 KB) and the largest level file, `cards/function.json`, is about 145,000 bytes. The build fails if any emitted file passes `CARDS_JSON_BUDGET`, 600,000 bytes (`tools/config.py`). If it does, split further before you raise the number; see [AGENTS.md](../AGENTS.md) on budgets.
+None of the files is paginated. They are static files that the build writes, so they cannot grow past what the cards hold, and no query can return an unbounded result. `cards.json` is about 614,000 bytes (about 600 KB) and the largest level file, `cards/function.json`, is about 190,000 bytes. The build used to fail past 600,000 bytes; the maintainer removed that limit on 2026-11-04. An agent that wants a smaller response fetches a level or concern file instead.
 
 ## One file per concern, and a slim index
 

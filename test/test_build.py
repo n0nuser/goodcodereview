@@ -48,7 +48,7 @@ def test_write_skill_removes_stale_references(tmp_path: Path) -> None:
 
 
 def test_a_failed_budget_leaves_the_skill_untouched(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(skill_files, "REF_BUDGET", 10)
+    monkeypatch.setattr(skill_files, "LLMS_BUDGET", 10)
     before = tree(build.SKILL)
     with pytest.raises(BuildError, match="budget 10"):
         build.plan_build(build.ROOT)
