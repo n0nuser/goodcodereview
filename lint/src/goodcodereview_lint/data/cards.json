@@ -1,0 +1,1622 @@
+{
+"generated": "2026-11-04",
+"schema_version": 5,
+"cards": {
+"code-a11y-check-in-ci": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Run an automated accessibility check, such as axe on rendered pages, in the automated tests, and fail the test on a violation.",
+"url": "https://goodcodereview.com/codebase#code-a11y-check-in-ci",
+"tool_gate": "This card is the gate: axe (through `@axe-core/playwright` or similar) against rendered pages in the test step; `eslint-plugin-jsx-a11y` in the lint step for JSX code."
+},
+"code-adr": {
+"level": "codebase",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Keep a short written record for each significant design choice (datastore, framework, deviation from a pattern) that states the context, the decision, and its consequences.",
+"url": "https://goodcodereview.com/codebase#code-adr",
+"tool_gate": null
+},
+"code-build-hermetic": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Build from declared inputs only, so that the same source revision gives the same artifact.",
+"url": "https://goodcodereview.com/codebase#code-build-hermetic",
+"tool_gate": "Build twice in clean containers and compare checksums; `diffoscope` shows where two artifacts differ."
+},
+"code-ci-gates": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.",
+"url": "https://goodcodereview.com/codebase#code-ci-gates",
+"tool_gate": "Branch protection with required status checks."
+},
+"code-consistency-drift": {
+"level": "codebase",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "For each recurring concern (errors, config, HTTP clients, logging), make one pattern the standard instead of leaving several as equal peers.",
+"url": "https://goodcodereview.com/codebase#code-consistency-drift",
+"tool_gate": "Lint rules that ban the deprecated pattern once a standard is chosen."
+},
+"code-dead-code": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Delete unreferenced functions and variables, and the branches of expired feature flags.",
+"url": "https://goodcodereview.com/codebase#code-dead-code",
+"tool_gate": "An unused-code linter in CI (vulture, knip, or deadcode); allowlist each intentional exception with a reason."
+},
+"code-dependency-licence-sbom": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule. Each ask is judged separately: name which one failed on the FAIL line.",
+"url": "https://goodcodereview.com/codebase#code-dependency-licence-sbom",
+"tool_gate": "A vulnerability scanner such as OSV-Scanner or Dependabot alerts; an SBOM generator such as Syft."
+},
+"code-dependency-pinning": {
+"level": "codebase",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Commit a lockfile with hashes and install from it in CI.",
+"url": "https://goodcodereview.com/codebase#code-dependency-pinning",
+"tool_gate": "Lockfile-required install in CI; dependency-update bot config present."
+},
+"code-docs-refs-resolve": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Run a link check in CI over the docs, so that every relative link and anchor they cite resolves.",
+"url": "https://goodcodereview.com/codebase#code-docs-refs-resolve",
+"tool_gate": "A link checker in CI, such as lychee (`lychee --offline --include-fragments docs README.md`) or mdBook linkcheck."
+},
+"code-flaky-test-quarantine": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Report every test that passes only on retry, move it to a quarantine with a named owner and a ticket, and return it to the merge gate only after it passes many reruns.",
+"url": "https://goodcodereview.com/codebase#code-flaky-test-quarantine",
+"tool_gate": null
+},
+"code-perf-budget-in-ci": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Write the performance budget down as a CI check that fails the build when it is exceeded.",
+"url": "https://goodcodereview.com/codebase#code-perf-budget-in-ci",
+"tool_gate": "Lighthouse CI assert, size-limit, k6 thresholds, Gatling assertions, or a benchstat comparison in CI."
+},
+"code-release-gated-on-ci": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Make a release or publish job depend on the checks passing for the tagged commit, never on the tag alone.",
+"url": "https://goodcodereview.com/codebase#code-release-gated-on-ci",
+"tool_gate": "Release job with `needs:` the test job, or a `workflow_run` trigger checked for `conclusion == 'success'`; a tag ruleset with required status checks."
+},
+"code-rule-has-enforcer": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Back each written repo rule that a type, lint or CI check could enforce with that check, not with a line in an instruction file or a repeated review comment.",
+"url": "https://goodcodereview.com/codebase#code-rule-has-enforcer",
+"tool_gate": "The enforcer itself: a type, a lint rule or a CI check."
+},
+"code-scoped-validation-loop": {
+"level": "codebase",
+"severity": "discuss",
+"backing": "strong",
+"rule": "Document a command that checks one package or path, with readable output, so a small change does not need the full-repo run.",
+"url": "https://goodcodereview.com/codebase#code-scoped-validation-loop",
+"tool_gate": "A documented command that runs tests and lint for one path or package."
+},
+"code-secret-scan": {
+"level": "codebase",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Scan for committed credentials, and treat any hit as leaked: revoke and replace it first. With no scanner present and no secret found, the FAIL is the missing control; evidence is \"absent in <paths>\". A platform scanner (GitHub secret scanning with push protection, GitLab secret detection) counts when it is enabled on the repo and covers history.",
+"url": "https://goodcodereview.com/codebase#code-secret-scan",
+"tool_gate": "Secret scanning on push (provider or pre-commit hook) with push protection on."
+},
+"code-vuln-remediation-window": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Write down how long a known-vulnerable dependency may stay unfixed and fix or upgrade it inside that window.",
+"url": "https://goodcodereview.com/codebase#code-vuln-remediation-window",
+"tool_gate": "Dependabot or Renovate alerts with a severity SLA; OSV-Scanner or Scorecard `Vulnerabilities` in CI."
+},
+"code-workflow-supply-chain": {
+"level": "codebase",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Pin every CI action to a full commit SHA.",
+"url": "https://goodcodereview.com/codebase#code-workflow-supply-chain",
+"tool_gate": "OpenSSF Scorecard `Pinned-Dependencies` check; zizmor `unpinned-uses` audit."
+},
+"fn-aria-role-has-state-and-keys": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "When a native element cannot do the job, give the custom widget the state attribute and the keys its role promises.",
+"url": "https://goodcodereview.com/function#fn-aria-role-has-state-and-keys",
+"tool_gate": "ESLint `jsx-a11y/role-has-required-aria-props`; axe `aria-required-attr`. Neither checks that the keys work."
+},
+"fn-bool-arg-at-callsite": {
+"level": "function",
+"severity": "discuss",
+"backing": "strong",
+"rule": "Replace a boolean flag argument with an enum, keyword-only argument or two functions.",
+"url": "https://goodcodereview.com/function#fn-bool-arg-at-callsite",
+"tool_gate": "ruff FBT"
+},
+"fn-bounded-read-fails-at-cap": {
+"level": "function",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "When a size cap is reached, return an error; never hand back the first N bytes as if they were the whole input.",
+"url": "https://goodcodereview.com/function#fn-bounded-read-fails-at-cap",
+"tool_gate": "Go lint rule against `io.LimitReader` on untrusted input; a test that feeds one byte more than the cap and expects an error."
+},
+"fn-colour-not-sole-cue": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Pair every colour that carries meaning with a second cue: text, an icon, a shape, or an underline.",
+"url": "https://goodcodereview.com/function#fn-colour-not-sole-cue",
+"tool_gate": "none; view the page in greyscale, or run a browser colour-vision emulation."
+},
+"fn-comments-explain-why": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Write comments that give a reason, a constraint, or a trade-off, and never restate what the next line does.",
+"url": "https://goodcodereview.com/function#fn-comments-explain-why",
+"tool_gate": null
+},
+"fn-comments-survive-context": {
+"level": "function",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Write comments that remain true without outside context: no \"currently\", \"for now\" or \"see the PR\", and give a TODO the date or event that ends it.",
+"url": "https://goodcodereview.com/function#fn-comments-survive-context",
+"tool_gate": null
+},
+"fn-confine-file-path": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Resolve the final path and check that it stays inside the intended base directory before using it.",
+"url": "https://goodcodereview.com/function#fn-confine-file-path",
+"tool_gate": "CodeQL `py/path-injection` (CWE-22) or the equivalent query for your language."
+},
+"fn-constant-time-secret-compare": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Compare a secret, token or MAC with the platform's constant-time function, never with `==` or `!=`.",
+"url": "https://goodcodereview.com/function#fn-constant-time-secret-compare",
+"tool_gate": "Semgrep or CodeQL rules for `==` on secrets; Bandit has no rule for this, so grep for `==` next to names such as `token`, `signature`, `api_key`, `digest`."
+},
+"fn-csprng-for-secrets": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Draw every security-relevant random value from the platform CSPRNG.",
+"url": "https://goodcodereview.com/function#fn-csprng-for-secrets",
+"tool_gate": "Bandit B311 (`random`) for Python; elsewhere a grep for `Math.random` and `rand()` in code that builds tokens or keys."
+},
+"fn-destructive-confirm-or-undo": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Make a destructive action reversible with undo, or ask the user to confirm it before it runs.",
+"url": "https://goodcodereview.com/function#fn-destructive-confirm-or-undo",
+"tool_gate": "none; a test that triggers the action and asserts a confirm step or an undo path exists."
+},
+"fn-dialog-focus-managed": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "When a modal opens, move focus into it and keep Tab inside it. Make Escape close it.",
+"url": "https://goodcodereview.com/function#fn-dialog-focus-managed",
+"tool_gate": "none; a component test that opens the dialog, presses Tab and Escape, and asserts `document.activeElement`."
+},
+"fn-disclosure-hides-only-secondary": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Do not hide a required field or information most users need behind a disclosure that starts closed.",
+"url": "https://goodcodereview.com/function#fn-disclosure-hides-only-secondary",
+"tool_gate": null
+},
+"fn-distinct-types-for-ids": {
+"level": "function",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Give arguments with different meanings distinct types, so a call that swaps them fails to type-check.",
+"url": "https://goodcodereview.com/function#fn-distinct-types-for-ids",
+"tool_gate": "Type checker with a newtype or branded-type pattern."
+},
+"fn-english-identifiers": {
+"level": "function",
+"severity": "discuss",
+"backing": "strong",
+"rule": "Write identifiers and comments in English, unless the project policy names another language.",
+"url": "https://goodcodereview.com/function#fn-english-identifiers",
+"tool_gate": "Spell-check or non-ASCII identifier lint."
+},
+"fn-error-says-what-and-how": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Show each validation error next to its field, in plain words that name what is wrong and how to fix it.",
+"url": "https://goodcodereview.com/function#fn-error-says-what-and-how",
+"tool_gate": "none; a rendered check that submits each invalid field."
+},
+"fn-fetch-only-needed-data": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Filter, count, and aggregate in the query, and select only the columns the code uses.",
+"url": "https://goodcodereview.com/function#fn-fetch-only-needed-data",
+"tool_gate": null
+},
+"fn-focus-indicator-visible": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Keep a visible focus indicator on every focusable element. Never set `outline: none` without a replacement.",
+"url": "https://goodcodereview.com/function#fn-focus-indicator-visible",
+"tool_gate": "Stylelint `declaration-property-value-disallowed-list` with `outline: [\"none\", \"0\"]`."
+},
+"fn-form-control-has-label": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.",
+"url": "https://goodcodereview.com/function#fn-form-control-has-label",
+"tool_gate": "ESLint `jsx-a11y/label-has-associated-control` and axe `label`."
+},
+"fn-guard-uri-decoding": {
+"level": "function",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Wrap `decodeURIComponent` on user input in a `try`/`catch`, or parse with `URLSearchParams`, so that a malformed `%` sequence cannot throw.",
+"url": "https://goodcodereview.com/function#fn-guard-uri-decoding",
+"tool_gate": null
+},
+"fn-handle-rejected-promises": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Handle the rejection of every promise you start: `await` it inside `try`/`catch`, end the chain with `.catch()`, or return it to a caller that does.",
+"url": "https://goodcodereview.com/function#fn-handle-rejected-promises",
+"tool_gate": "typescript-eslint `no-floating-promises`."
+},
+"fn-heading-structure": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Mark every heading with a real `<h1>` to `<h6>` element, not a styled `div`, `span`, or `p`.",
+"url": "https://goodcodereview.com/function#fn-heading-structure",
+"tool_gate": "axe `p-as-heading` (experimental) flags a bold paragraph styled as a heading; axe `heading-order` flags skipped levels."
+},
+"fn-img-alt-text": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Give every `<img>` an `alt` attribute: text that serves the image's purpose, or `alt=\"\"` when the image is decorative.",
+"url": "https://goodcodereview.com/function#fn-img-alt-text",
+"tool_gate": "ESLint `jsx-a11y/alt-text` and axe `image-alt` catch a missing `alt`. Only a person can judge whether the text is accurate."
+},
+"fn-independent-work-concurrent": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.",
+"url": "https://goodcodereview.com/function#fn-independent-work-concurrent",
+"tool_gate": null
+},
+"fn-join-dont-concat-in-loop": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Build a string from a loop with a builder or a join, never with repeated `+=`.",
+"url": "https://goodcodereview.com/function#fn-join-dont-concat-in-loop",
+"tool_gate": "Linter rule for string concatenation in a loop (for example pylint `consider-using-join`)."
+},
+"fn-jwt-verify-pinned": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Verify the signature against a fixed list of accepted algorithms, and check `iss` and `aud`, before reading any claim.",
+"url": "https://goodcodereview.com/function#fn-jwt-verify-pinned",
+"tool_gate": "CodeQL `js/jwt-missing-verification`; a grep for `verify_signature\": False` and for `jwt.decode(` calls with no `algorithms=`."
+},
+"fn-keep-input-on-error": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "After a failed validation or submit, show the form again with every value the user entered, correct or not.",
+"url": "https://goodcodereview.com/function#fn-keep-input-on-error",
+"tool_gate": "none; a test that submits an invalid form and asserts the entered values are still there."
+},
+"fn-label-above-field": {
+"level": "function",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Put the visible label of a text input, select, or textarea directly above it.",
+"url": "https://goodcodereview.com/function#fn-label-above-field",
+"tool_gate": null
+},
+"fn-link-url-scheme-allowlist": {
+"level": "function",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Parse a URL that comes from data and allow only `https:` (and `http:` or `mailto:` where needed) before you set it as a link target.",
+"url": "https://goodcodereview.com/function#fn-link-url-scheme-allowlist",
+"tool_gate": null
+},
+"fn-mask-credentials-in-output": {
+"level": "function",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Mask credentials in list, show and debug output (keep only the last four characters), and print a full value only behind an explicit flag.",
+"url": "https://goodcodereview.com/function#fn-mask-credentials-in-output",
+"tool_gate": "A test that seeds a fake token, runs the list/show/debug command, and asserts the full value is absent from stdout and stderr."
+},
+"fn-name-intermediate-conditions": {
+"level": "function",
+"severity": "discuss",
+"backing": "strong",
+"rule": "Name each compound condition by assigning its sub-conditions to booleans that say what they mean.",
+"url": "https://goodcodereview.com/function#fn-name-intermediate-conditions",
+"tool_gate": null
+},
+"fn-native-button-or-link": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Use `<button>` for an action and `<a href>` for navigation. Do not attach a click handler to a `div`, `span`, or `a` with no `href`.",
+"url": "https://goodcodereview.com/function#fn-native-button-or-link",
+"tool_gate": "ESLint `jsx-a11y/click-events-have-key-events` and `jsx-a11y/no-static-element-interactions`; `jsx-a11y/anchor-is-valid` for `href=\"#\"`."
+},
+"fn-no-blocking-call-in-async-code": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Never make a blocking I/O call or run long CPU work directly in async code; use the async API or hand the work to a thread or worker.",
+"url": "https://goodcodereview.com/function#fn-no-blocking-call-in-async-code",
+"tool_gate": "Linter rule for blocking calls in async functions (for example ruff ASYNC); asyncio debug mode flags slow callbacks."
+},
+"fn-no-check-then-act-across-await": {
+"level": "function",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Make check-and-write one atomic operation where the state lives, and never split it across a suspension point.",
+"url": "https://goodcodereview.com/function#fn-no-check-then-act-across-await",
+"tool_gate": null
+},
+"fn-no-eval-untrusted": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Never pass untrusted text to `eval`, `exec`, `new Function`, or a template compiler. Pass it to a fixed template or a parser as data.",
+"url": "https://goodcodereview.com/function#fn-no-eval-untrusted",
+"tool_gate": "Bandit B307 (`eval`) and B102 (`exec_used`); CodeQL `py/code-injection` and `py/template-injection`; ESLint `no-eval` and `no-implied-eval`."
+},
+"fn-no-getattr-for-known-names": {
+"level": "function",
+"severity": "discuss",
+"backing": "strong",
+"rule": "Use plain field access, and reserve dynamic access for genuinely dynamic names.",
+"url": "https://goodcodereview.com/function#fn-no-getattr-for-known-names",
+"tool_gate": "ruff B009 / B010"
+},
+"fn-no-magic-values": {
+"level": "function",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Give every meaningful literal a name: an enum member or a constant.",
+"url": "https://goodcodereview.com/function#fn-no-magic-values",
+"tool_gate": "none (partial: ruff PLR2004)"
+},
+"fn-no-mass-assignment": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Bind request data to a DTO or an explicit field allowlist, never straight onto the model.",
+"url": "https://goodcodereview.com/function#fn-no-mass-assignment",
+"tool_gate": "A custom Semgrep rule for `Model(**request.json)`; tests that post extra fields such as `is_admin` and assert they are ignored or rejected."
+},
+"fn-no-native-deserialise-untrusted": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Parse untrusted input with a data-only format, never with a native object deserialiser.",
+"url": "https://goodcodereview.com/function#fn-no-native-deserialise-untrusted",
+"tool_gate": "Bandit B301 (`pickle`) and B506 (`yaml_load`), CodeQL `py/unsafe-deserialization`; a grep for `ObjectInputStream`, `BinaryFormatter` and `unserialize` elsewhere."
+},
+"fn-no-positive-tabindex": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Write the DOM in reading order and never set `tabindex` above 0.",
+"url": "https://goodcodereview.com/function#fn-no-positive-tabindex",
+"tool_gate": "ESLint `jsx-a11y/tabindex-no-positive`; axe `tabindex`."
+},
+"fn-no-prototype-pollution": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys.",
+"url": "https://goodcodereview.com/function#fn-no-prototype-pollution",
+"tool_gate": "CodeQL `js/prototype-pollution-utility` and `js/prototype-polluting-assignment`."
+},
+"fn-no-raw-html-sink": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.",
+"url": "https://goodcodereview.com/function#fn-no-raw-html-sink",
+"tool_gate": "ESLint (`no-unsanitized/property`, `no-unsanitized/method`, `react/no-danger`) and template-engine autoescape checks."
+},
+"fn-no-shell-with-input": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Start processes with the program and each argument as separate list items, and never through a shell string.",
+"url": "https://goodcodereview.com/function#fn-no-shell-with-input",
+"tool_gate": "Bandit B602 (`subprocess_popen_with_shell_equals_true`) and B605 (`start_process_with_a_shell`) for Python."
+},
+"fn-object-level-authz": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Check that the caller may act on the specific record before returning or changing it.",
+"url": "https://goodcodereview.com/function#fn-object-level-authz",
+"tool_gate": "Authorization tests that call each endpoint as a second user; no static gate catches a missing check."
+},
+"fn-password-slow-hash": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.",
+"url": "https://goodcodereview.com/function#fn-password-slow-hash",
+"tool_gate": "Grep or SAST rule for `md5`, `sha1`, `sha256` near a `password` identifier."
+},
+"fn-redirect-target-allowlist": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Redirect only to a local path or to a host on a server-side allowlist, never to a URL taken from the request as is.",
+"url": "https://goodcodereview.com/function#fn-redirect-target-allowlist",
+"tool_gate": "CodeQL `py/url-redirection`; ASP.NET Core `LocalRedirect` or `Url.IsLocalUrl`."
+},
+"fn-reduced-motion-respected": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Switch off or replace large, repeating, or interaction-triggered motion when `prefers-reduced-motion: reduce` is set.",
+"url": "https://goodcodereview.com/function#fn-reduced-motion-respected",
+"tool_gate": "Stylelint `a11y/media-prefers-reduced-motion` from the `stylelint-a11y` plugin. A browser run with reduced motion emulated."
+},
+"fn-regex-compiled-once": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Compile a regular expression once, at module or startup level, and reuse it.",
+"url": "https://goodcodereview.com/function#fn-regex-compiled-once",
+"tool_gate": "Linter rule for a regex constructor in a loop, where the language has one."
+},
+"fn-related-controls-in-fieldset": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Wrap each radio group, checkbox group, and multi-part value, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.",
+"url": "https://goodcodereview.com/function#fn-related-controls-in-fieldset",
+"tool_gate": null
+},
+"fn-rerun-safe-after-crash": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.",
+"url": "https://goodcodereview.com/function#fn-rerun-safe-after-crash",
+"tool_gate": null
+},
+"fn-response-fields-explicit": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Return a response type that lists each field, never the stored model or a generic dump of it.",
+"url": "https://goodcodereview.com/function#fn-response-fields-explicit",
+"tool_gate": "Response-schema tests that fail on unlisted fields."
+},
+"fn-specific-exceptions-only": {
+"level": "function",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Catch only the specific exception you can handle in business code.",
+"url": "https://goodcodereview.com/function#fn-specific-exceptions-only",
+"tool_gate": "ruff BLE001 / E722 (Python)"
+},
+"fn-status-announced-live-region": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Announce an async status message through a live region (`role=\"status\"` or `role=\"alert\"`), and put a `role=\"status\"` or `aria-live` region in the markup before its text changes.",
+"url": "https://goodcodereview.com/function#fn-status-announced-live-region",
+"tool_gate": "none; a screen-reader pass, or a test that the region exists with a role before the text changes."
+},
+"fn-target-size": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.",
+"url": "https://goodcodereview.com/function#fn-target-size",
+"tool_gate": "axe `target-size` (WCAG 2.2); a rendered check for the spacing exception."
+},
+"fn-test-behaviour-not-implementation": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.",
+"url": "https://goodcodereview.com/function#fn-test-behaviour-not-implementation",
+"tool_gate": "Refactor the code without changing what it does and run the tests; mutation testing shows whether they still catch real faults."
+},
+"fn-test-oracle-independent": {
+"level": "function",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Take a test's expected value from the requirement, not from the code under test.",
+"url": "https://goodcodereview.com/function#fn-test-oracle-independent",
+"tool_gate": "Mutation testing."
+},
+"fn-tls-verify-on": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Leave certificate and hostname verification on in every environment that ships.",
+"url": "https://goodcodereview.com/function#fn-tls-verify-on",
+"tool_gate": "Bandit B501 (`request_with_no_cert_validation`), CodeQL `py/request-without-cert-validation`; a grep for `rejectUnauthorized: false` and `InsecureSkipVerify: true`."
+},
+"fn-variants-as-tagged-union": {
+"level": "function",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Model variants as a tagged union, and make every switch over it fail the build when a variant is unhandled.",
+"url": "https://goodcodereview.com/function#fn-variants-as-tagged-union",
+"tool_gate": "A type checker with exhaustiveness checking (`never` in TypeScript, `assert_never` in Python)."
+},
+"fn-xml-no-external-entities": {
+"level": "function",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Parse untrusted XML with external entity resolution turned off, for example through a hardened parser such as `defusedxml`.",
+"url": "https://goodcodereview.com/function#fn-xml-no-external-entities",
+"tool_gate": "CodeQL `py/xxe`; Bandit B313 to B319 (stdlib XML parse calls) and B405 to B409 (XML imports)."
+},
+"inc-perf-fix-has-profile-evidence": {
+"level": "incident",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Tie the performance fix to evidence that names the bottleneck: a profile, a trace, or a USE check.",
+"url": "https://goodcodereview.com/incident#inc-perf-fix-has-profile-evidence",
+"tool_gate": null
+},
+"inc-rollback-path-tested": {
+"level": "incident",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Exercise each mitigation that a runbook names (rollback, failover, flag off) on a regular schedule.",
+"url": "https://goodcodereview.com/incident#inc-rollback-path-tested",
+"tool_gate": null
+},
+"mod-colour-tokens-meet-contrast": {
+"level": "module",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Make every text and background token pair meet 4.5:1 (3:1 for large text), and every border, icon, and focus colour meet 3:1 against its neighbour.",
+"url": "https://goodcodereview.com/module#mod-colour-tokens-meet-contrast",
+"tool_gate": "axe `color-contrast` on rendered components; a unit test that computes the ratio for each token pair. axe cannot see text on images or gradients."
+},
+"mod-derive-dont-duplicate": {
+"level": "module",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Derive a type, list or enum from the schema or list that owns it, or add a build check that fails when the two disagree.",
+"url": "https://goodcodereview.com/module#mod-derive-dont-duplicate",
+"tool_gate": "Codegen from the schema, or a test that diffs the two lists."
+},
+"mod-inject-boundary-collaborators": {
+"level": "module",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Inject boundary collaborators through the constructor; do not construct them inside or reach for a global.",
+"url": "https://goodcodereview.com/module#mod-inject-boundary-collaborators",
+"tool_gate": null
+},
+"mod-internals-unreachable": {
+"level": "module",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Make a module's internals unimportable from outside it, and have a check fail the build when a caller reaches in.",
+"url": "https://goodcodereview.com/module#mod-internals-unreachable",
+"tool_gate": "Import-boundary lint (import-linter, ESLint `no-restricted-imports`, package `exports`)."
+},
+"mod-layers-point-inward": {
+"level": "module",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Make dependencies point inward: surface, then logic, then boundary.",
+"url": "https://goodcodereview.com/module#mod-layers-point-inward",
+"tool_gate": "import-linter or similar"
+},
+"mod-no-import-side-effects": {
+"level": "module",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Keep I/O at the edges: importing a package must not touch the network, read files, or read the environment.",
+"url": "https://goodcodereview.com/module#mod-no-import-side-effects",
+"tool_gate": null
+},
+"mod-no-logic-in-constructors": {
+"level": "module",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Assign only in constructors, and put I/O, parsing, and heavy computation in a named factory.",
+"url": "https://goodcodereview.com/module#mod-no-logic-in-constructors",
+"tool_gate": null
+},
+"mod-no-module-mutable-state": {
+"level": "module",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Keep no mutable state at module level.",
+"url": "https://goodcodereview.com/module#mod-no-module-mutable-state",
+"tool_gate": null
+},
+"mod-no-utils-grab-bag": {
+"level": "module",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Put a helper in the module that owns the concept, or in a new module named after the concept.",
+"url": "https://goodcodereview.com/module#mod-no-utils-grab-bag",
+"tool_gate": null
+},
+"mod-one-name-per-concept": {
+"level": "module",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Use one name for one concept across the codebase.",
+"url": "https://goodcodereview.com/module#mod-one-name-per-concept",
+"tool_gate": null
+},
+"mod-pooled-clients-built-once": {
+"level": "module",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Build pooled clients once at startup and reuse them.",
+"url": "https://goodcodereview.com/module#mod-pooled-clients-built-once",
+"tool_gate": null
+},
+"mod-proto-enum-zero-unspecified": {
+"level": "module",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Give every protobuf enum a zero value named `<ENUM>_UNSPECIFIED` with no real meaning.",
+"url": "https://goodcodereview.com/module#mod-proto-enum-zero-unspecified",
+"tool_gate": "Protobuf linter (`buf lint`, ENUM_ZERO_VALUE_SUFFIX)."
+},
+"mod-single-writer-per-state": {
+"level": "module",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Let only one writer change a piece of state at a time, through a single owner, a queue that serialises the writes, or compare-and-swap, never by convention.",
+"url": "https://goodcodereview.com/module#mod-single-writer-per-state",
+"tool_gate": null
+},
+"mod-vetted-crypto-only": {
+"level": "module",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Encrypt with an authenticated mode such as AES-GCM, and never reuse a nonce under one key.",
+"url": "https://goodcodereview.com/module#mod-vetted-crypto-only",
+"tool_gate": "A grep for `MODE_ECB`, `MODE_CBC` with no MAC, and nonces built from constants."
+},
+"mod-yagni": {
+"level": "module",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Do not build an abstraction or capability for a need that does not exist yet; add it when the need or a second use appears.",
+"url": "https://goodcodereview.com/module#mod-yagni",
+"tool_gate": null
+},
+"prod-a11y-audit-before-launch": {
+"level": "production",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Before a public launch, run an accessibility audit against WCAG 2.2 AA that includes assistive technology, and link the report in the launch checklist.",
+"url": "https://goodcodereview.com/production#prod-a11y-audit-before-launch",
+"tool_gate": "none; a launch checklist item that links the audit report."
+},
+"prod-alerts-symptoms-golden-signals": {
+"level": "production",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Page on user-visible symptoms, such as error rate and latency, not on causes.",
+"url": "https://goodcodereview.com/production#prod-alerts-symptoms-golden-signals",
+"tool_gate": null
+},
+"prod-canary-staged-rollout": {
+"level": "production",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Roll out in stages behind a canary, and abort by rule, not by judgment.",
+"url": "https://goodcodereview.com/production#prod-canary-staged-rollout",
+"tool_gate": "Deploy pipeline with canary stage and automatic abort."
+},
+"prod-kill-switch-fallback": {
+"level": "production",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Make a risky feature switchable off without a deploy, and exercise every fallback path in test or in production on a schedule.",
+"url": "https://goodcodereview.com/production#prod-kill-switch-fallback",
+"tool_gate": null
+},
+"prod-latency-slo-percentile": {
+"level": "production",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Define latency SLOs and alerts on high percentiles, never on the mean.",
+"url": "https://goodcodereview.com/production#prod-latency-slo-percentile",
+"tool_gate": "Lint alert rules for avg() over latency or over pre-computed quantiles."
+},
+"prod-load-test-before-launch": {
+"level": "production",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Load test before launch, past the expected peak, with pass and fail thresholds written down.",
+"url": "https://goodcodereview.com/production#prod-load-test-before-launch",
+"tool_gate": "Load-test job with thresholds (k6, Gatling) in the release pipeline."
+},
+"prod-profile-on-demand": {
+"level": "production",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Make a CPU and memory profile of a production instance obtainable, through a continuous profiler or a private profile endpoint.",
+"url": "https://goodcodereview.com/production#prod-profile-on-demand",
+"tool_gate": null
+},
+"prod-shadow-compare-before-cutover": {
+"level": "production",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Before you move traffic to a new system, run it beside the old one on live or captured production traffic, diff the results, and cut over only when every mismatch is fixed or explained.",
+"url": "https://goodcodereview.com/production#prod-shadow-compare-before-cutover",
+"tool_gate": null
+},
+"prod-slo-error-budget": {
+"level": "production",
+"severity": "discuss",
+"backing": "strong",
+"rule": "Define an SLO with an indicator and window, and use its remaining error budget to gate risky releases.",
+"url": "https://goodcodereview.com/production#prod-slo-error-budget",
+"tool_gate": null
+},
+"svc-api-cache-control": {
+"level": "service",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Set an explicit `Cache-Control` on every response a cache may store, use `private` or `no-store` for user-specific data, and add `Vary` for any request header that changes the body.",
+"url": "https://goodcodereview.com/service#svc-api-cache-control",
+"tool_gate": "Integration test or header lint that rejects a 200 GET without `Cache-Control`."
+},
+"svc-api-conditional-writes": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Return an `ETag` on reads and honour `If-Match` on writes, answering 412 when the entity tag is stale.",
+"url": "https://goodcodereview.com/service#svc-api-conditional-writes",
+"tool_gate": "Integration test that sends a write with a stale `If-Match` and expects 412."
+},
+"svc-api-contract-tests": {
+"level": "service",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Run a contract test for each cross-service call, derived from the consumer's real requests, and fail the provider's build when it breaks one.",
+"url": "https://goodcodereview.com/service#svc-api-contract-tests",
+"tool_gate": "Contract test run in CI for both sides, and a gate that blocks deploy when a consumer's contract fails against the provider."
+},
+"svc-api-deprecation-sunset": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers.",
+"url": "https://goodcodereview.com/service#svc-api-deprecation-sunset",
+"tool_gate": "Middleware that adds both headers for routes tagged deprecated; a spec linter on `deprecated: true` without a sunset date; a dashboard counting calls that carry the headers."
+},
+"svc-api-documented-errors": {
+"level": "service",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Document every error status each operation can return, with a schema and one example.",
+"url": "https://goodcodereview.com/service#svc-api-documented-errors",
+"tool_gate": "Spec linter that requires 4xx and 5xx responses with a schema on every operation, and an example on each."
+},
+"svc-api-error-code-stable": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Give each error a stable machine-readable code that callers branch on, and never make them parse the message text.",
+"url": "https://goodcodereview.com/service#svc-api-error-code-stable",
+"tool_gate": "Spec linter that requires an enumerated error `type` or `reason` per operation; a test that pins the codes."
+},
+"svc-api-naming-consistent": {
+"level": "service",
+"severity": "discuss",
+"backing": "mixed",
+"rule": "Use one casing convention per location (fields, query parameters, headers, paths) across the whole API, and state it in the API guide.",
+"url": "https://goodcodereview.com/service#svc-api-naming-consistent",
+"tool_gate": "Spec linter with a casing rule per location."
+},
+"svc-api-problem-json": {
+"level": "service",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Return errors as `application/problem+json` with a `status` that equals the HTTP status, and leave stack traces and internal detail out.",
+"url": "https://goodcodereview.com/service#svc-api-problem-json",
+"tool_gate": "Middleware that builds every error body from one problem-details type; a test that fails on an error response without the media type."
+},
+"svc-api-retry-after": {
+"level": "service",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Send `Retry-After` on every 429 and 503, and set it no earlier than the time capacity returns.",
+"url": "https://goodcodereview.com/service#svc-api-retry-after",
+"tool_gate": "Integration test that forces a 429 and a 503 and asserts a `Retry-After` header."
+},
+"svc-api-specific-status-codes": {
+"level": "service",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Return the most specific status code that fits: 201 with `Location` for a create, 405 with `Allow` for a wrong method, and a 4xx or 5xx for any failure.",
+"url": "https://goodcodereview.com/service#svc-api-specific-status-codes",
+"tool_gate": "Integration tests asserting status and headers per operation; a spec linter for 201 and 405 responses."
+},
+"svc-api-versioning-policy": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Write down one versioning scheme for the API, and ship no breaking change inside a version it has published.",
+"url": "https://goodcodereview.com/service#svc-api-versioning-policy",
+"tool_gate": "Spec diff in CI that fails on a breaking change inside a published version."
+},
+"svc-async-content-reserves-space": {
+"level": "service",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Reserve the space for late-loading content with set dimensions or an aspect ratio, so nothing already on screen moves.",
+"url": "https://goodcodereview.com/service#svc-async-content-reserves-space",
+"tool_gate": "Lighthouse CI assertion on `cumulative-layout-shift`."
+},
+"svc-auth-throttle-generic-errors": {
+"level": "service",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Limit failed attempts per account, and return the same message and status code whether or not the account exists.",
+"url": "https://goodcodereview.com/service#svc-auth-throttle-generic-errors",
+"tool_gate": "Rate-limit middleware on auth routes; test that known and unknown users get identical responses."
+},
+"svc-authn-by-default": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Require authentication on every route by default, and mark each public route by name.",
+"url": "https://goodcodereview.com/service#svc-authn-by-default",
+"tool_gate": "A framework fallback that requires authentication (ASP.NET Core `FallbackPolicy`, Django `LoginRequiredMiddleware`, Spring Security `anyRequest().authenticated()`); a test that calls every route without credentials and expects 401 or a login redirect unless the route is on the public list."
+},
+"svc-authz-central-deny-default": {
+"level": "service",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Route every request through one authorization layer that denies when no rule allows it.",
+"url": "https://goodcodereview.com/service#svc-authz-central-deny-default",
+"tool_gate": "Router that denies routes with no policy; a test that lists every route and its required role."
+},
+"svc-best-effort-optional-deps": {
+"level": "service",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Give each call to a non-critical dependency a short budget and a default, so its failure degrades the result instead of failing the critical path, and count every fallback.",
+"url": "https://goodcodereview.com/service#svc-best-effort-optional-deps",
+"tool_gate": null
+},
+"svc-bound-client-controlled-sizes": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Cap every client-controlled size and count on the server: body bytes, string length, array items, page size and batch size.",
+"url": "https://goodcodereview.com/service#svc-bound-client-controlled-sizes",
+"tool_gate": "Gateway request-size limit; schema `maxLength`/`maxItems`; test with a 10 MB body and `limit=1000000`."
+},
+"svc-bounded-background-tasks": {
+"level": "service",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Cap how many background tasks run at once, and never spawn one per input with no limit.",
+"url": "https://goodcodereview.com/service#svc-bounded-background-tasks",
+"tool_gate": null
+},
+"svc-circuit-breaker-bulkhead": {
+"level": "service",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Give each critical dependency its own concurrency limit.",
+"url": "https://goodcodereview.com/service#svc-circuit-breaker-bulkhead",
+"tool_gate": null
+},
+"svc-cli-destructive-dry-run": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Give a destructive command a preview flag that changes nothing and a flag that skips the confirmation prompt.",
+"url": "https://goodcodereview.com/service#svc-cli-destructive-dry-run",
+"tool_gate": "CLI test that runs the command with the preview flag and checks nothing changed."
+},
+"svc-cli-exit-codes-and-streams": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Exit non-zero when a command fails, and write results to stdout and errors and progress to stderr.",
+"url": "https://goodcodereview.com/service#svc-cli-exit-codes-and-streams",
+"tool_gate": "CLI test that runs a failing command and checks the exit code and that stdout is empty."
+},
+"svc-cli-non-interactive": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Let the caller turn every prompt off with a flag or an environment variable, so the command never waits on a terminal.",
+"url": "https://goodcodereview.com/service#svc-cli-non-interactive",
+"tool_gate": "CLI test that runs every command with stdin closed."
+},
+"svc-cors-allowlist": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Allow cross-origin access only to a fixed list of named origins, and never echo the request `Origin` header back unchecked.",
+"url": "https://goodcodereview.com/service#svc-cors-allowlist",
+"tool_gate": "Integration test that sends a hostile `Origin` and asserts it is not echoed."
+},
+"svc-csp-strict-script-src": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Send a `Content-Security-Policy` whose `script-src` uses a per-response nonce or script hashes, with `object-src 'none'` and `base-uri 'none'`.",
+"url": "https://goodcodereview.com/service#svc-csp-strict-script-src",
+"tool_gate": "Google CSP Evaluator on the policy; a CI header check against a staging URL."
+},
+"svc-csrf-state-changing": {
+"level": "service",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Require a CSRF token (or an equivalent header check) on every cookie-authenticated request that changes state, and never change state on GET.",
+"url": "https://goodcodereview.com/service#svc-csrf-state-changing",
+"tool_gate": "Framework CSRF middleware enabled; test that a POST without the token returns 403."
+},
+"svc-dlq": {
+"level": "service",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Give every consumer queue a dead-letter queue and a way to replay its messages after the fix.",
+"url": "https://goodcodereview.com/service#svc-dlq",
+"tool_gate": "A config check that every consumed queue has a dead-letter target (for SQS in Terraform, a `redrive_policy` with `maxReceiveCount`), and an alarm on dead-letter queue depth."
+},
+"svc-fail-closed-defaults": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Ship every security control switched on, with an empty allow-list denying everything.",
+"url": "https://goodcodereview.com/service#svc-fail-closed-defaults",
+"tool_gate": "A startup check that raises on a missing or placeholder secret (Django refuses an unset `SECRET_KEY`; Pydantic Settings fields without a default); a test that boots the service with an empty environment and expects a failed start or denied requests."
+},
+"svc-idempotency-key": {
+"level": "service",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.",
+"url": "https://goodcodereview.com/service#svc-idempotency-key",
+"tool_gate": null
+},
+"svc-invalid-input-is-4xx": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Check each caller-supplied value against its allowed domain (range, allowed set, an id that must exist, an encoding the code can handle) at the boundary, and answer a failed check with a 4xx, never a 5xx.",
+"url": "https://goodcodereview.com/service#svc-invalid-input-is-4xx",
+"tool_gate": "Schema or model constraints on every field (minimum, maximum, enum, format); a test that posts a negative number, an unknown id and a non-ASCII header and expects a 4xx."
+},
+"svc-list-endpoint-paginates": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Paginate every list endpoint, with a default page size and a server-side maximum.",
+"url": "https://goodcodereview.com/service#svc-list-endpoint-paginates",
+"tool_gate": "Contract test that calls the list with a huge page size and asserts the clamp or a 400."
+},
+"svc-no-redundant-entry": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Do not ask for information the user already gave in the same flow. Fill it in, or let the user pick it.",
+"url": "https://goodcodereview.com/service#svc-no-redundant-entry",
+"tool_gate": "none; a walk through the flow that lists each field asked twice."
+},
+"svc-no-secrets-in-url": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Send tokens, keys, passwords, and personal data in a header or the request body, never in the path or query string.",
+"url": "https://goodcodereview.com/service#svc-no-secrets-in-url",
+"tool_gate": null
+},
+"svc-rate-limit-quota": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Enforce a per-tenant quota on shared APIs and queues.",
+"url": "https://goodcodereview.com/service#svc-rate-limit-quota",
+"tool_gate": null
+},
+"svc-reflow-and-zoom": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Make the page usable at 320 CSS pixels wide and at 200% text zoom, with no sideways scrolling, no clipped content, and no blocked pinch-zoom.",
+"url": "https://goodcodereview.com/service#svc-reflow-and-zoom",
+"tool_gate": "axe `meta-viewport`; a rendered check at a 320 px viewport and at 200% text zoom."
+},
+"svc-retry-policy": {
+"level": "service",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Retry only transient errors, with capped attempts and jittered exponential backoff.",
+"url": "https://goodcodereview.com/service#svc-retry-policy",
+"tool_gate": null
+},
+"svc-saga-steps": {
+"level": "service",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Make steps after the pivot idempotent and retryable, and make every compensation idempotent with a failure path.",
+"url": "https://goodcodereview.com/service#svc-saga-steps",
+"tool_gate": null
+},
+"svc-session-lifecycle": {
+"level": "service",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Issue a new session ID at login, and set `Secure`, `HttpOnly` and `SameSite` on the session cookie.",
+"url": "https://goodcodereview.com/service#svc-session-lifecycle",
+"tool_gate": "Header test on the login response; session fixation test in the end-to-end suite."
+},
+"svc-slow-operation-shows-progress": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Show that a slow action is under way, and show its progress when it runs long.",
+"url": "https://goodcodereview.com/service#svc-slow-operation-shows-progress",
+"tool_gate": "none; throttle the network and run the action."
+},
+"svc-sqli-authn": {
+"level": "service",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Pass untrusted data to queries as bound parameters, never by string concatenation or formatting.",
+"url": "https://goodcodereview.com/service#svc-sqli-authn",
+"tool_gate": "Bandit B608 (`hardcoded_sql_expressions`), CodeQL `py/sql-injection`."
+},
+"svc-stream-dont-materialise": {
+"level": "service",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Process large results as a stream with backpressure; do not load them whole into memory.",
+"url": "https://goodcodereview.com/service#svc-stream-dont-materialise",
+"tool_gate": "Memory limit in tests with a large fixture."
+},
+"svc-timeouts": {
+"level": "service",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Set an explicit timeout on every remote call.",
+"url": "https://goodcodereview.com/service#svc-timeouts",
+"tool_gate": null
+},
+"svc-tls-modern-only": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Accept only TLS 1.2 and TLS 1.3 on servers.",
+"url": "https://goodcodereview.com/service#svc-tls-modern-only",
+"tool_gate": "testssl.sh or a similar scan against the public endpoint in CI; the load balancer's named security policy checked in config review."
+},
+"svc-update-rollback-on-failure": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "When an update fails, restore the previous version instead of leaving a missing or half-written one.",
+"url": "https://goodcodereview.com/service#svc-update-rollback-on-failure",
+"tool_gate": "Test that makes the final step fail and checks the old version still runs."
+},
+"svc-update-verify-provenance": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Verify a downloaded update against a signature, an attestation or a pinned key, or against a checksum that reached you by another route than the file; a checksum fetched from the same host as the file does not count.",
+"url": "https://goodcodereview.com/service#svc-update-verify-provenance",
+"tool_gate": null
+},
+"svc-upload-validate-store": {
+"level": "service",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Allowlist the file type, cap the size, and store each upload under a generated name where the server will not execute it.",
+"url": "https://goodcodereview.com/service#svc-upload-validate-store",
+"tool_gate": "Upload tests with a renamed `.php`, an oversized file and a zip bomb."
+},
+"sys-agent-tool-least-privilege": {
+"level": "system",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Give the agent only the narrow tools and the minimal credentials its task needs.",
+"url": "https://goodcodereview.com/system#sys-agent-tool-least-privilege",
+"tool_gate": "Tool registry reviewed in code; downstream credentials scoped in IAM and tested as the agent identity."
+},
+"sys-cache-bounds-invalidation": {
+"level": "system",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Bound every cache by size and give its entries an expiry.",
+"url": "https://goodcodereview.com/system#sys-cache-bounds-invalidation",
+"tool_gate": null
+},
+"sys-cells-limit-blast-radius": {
+"level": "system",
+"severity": "discuss",
+"backing": "strong",
+"rule": "Split shared infrastructure into independent cells, each with its own control plane and storage, and route each tenant or request to one cell, so one failure stops only that cell.",
+"url": "https://goodcodereview.com/system#sys-cells-limit-blast-radius",
+"tool_gate": null
+},
+"sys-consistent-ui-terms": {
+"level": "system",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Use one label and one icon for the same action and the same concept across all screens.",
+"url": "https://goodcodereview.com/system#sys-consistent-ui-terms",
+"tool_gate": "none; list the labels and icons for one action across all screens."
+},
+"sys-fanout-leg-deadlines": {
+"level": "system",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Give every leg of a fan-out its own deadline, and decide in code what happens when a leg misses it: a partial result, a hedged request, or an error.",
+"url": "https://goodcodereview.com/system#sys-fanout-leg-deadlines",
+"tool_gate": null
+},
+"sys-health-liveness-readiness": {
+"level": "system",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Wire load balancers and restarters to liveness and local checks only, never to shared-dependency checks.",
+"url": "https://goodcodereview.com/system#sys-health-liveness-readiness",
+"tool_gate": null
+},
+"sys-index-concurrently": {
+"level": "system",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Create indexes with `CONCURRENTLY`, outside a transaction block, and handle a failed build that leaves an INVALID index.",
+"url": "https://goodcodereview.com/system#sys-index-concurrently",
+"tool_gate": "Migration linter."
+},
+"sys-load-shedding-bounded-queues": {
+"level": "system",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Bound every queue and reject excess work cheaply.",
+"url": "https://goodcodereview.com/system#sys-load-shedding-bounded-queues",
+"tool_gate": "Lint for unbounded queue constructors."
+},
+"sys-lock-fencing": {
+"level": "system",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Check a correctness lock on the resource side (fencing token or compare-and-set), never by lock possession alone.",
+"url": "https://goodcodereview.com/system#sys-lock-fencing",
+"tool_gate": null
+},
+"sys-migration-expand-contract": {
+"level": "system",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Run data backfills in batches, in a migration separate from the schema change.",
+"url": "https://goodcodereview.com/system#sys-migration-expand-contract",
+"tool_gate": "Migration linter for DROP/RENAME COLUMN."
+},
+"sys-migration-lock-timeout": {
+"level": "system",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Set `lock_timeout` for the migration session and retry on timeout.",
+"url": "https://goodcodereview.com/system#sys-migration-lock-timeout",
+"tool_gate": "Migration linter (e.g. flag ALTER without lock_timeout)."
+},
+"sys-n-plus-one-pooling": {
+"level": "system",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Fetch related rows in one query or batch, never one query per row.",
+"url": "https://goodcodereview.com/system#sys-n-plus-one-pooling",
+"tool_gate": "Query-count assertion in tests; ORM N+1 detector."
+},
+"sys-pii-minimise-retention": {
+"level": "system",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Give every store of personal or sensitive data a retention period, and delete or anonymise the data when it ends.",
+"url": "https://goodcodereview.com/system#sys-pii-minimise-retention",
+"tool_gate": "Retention jobs with a TTL on tables and buckets; a data inventory checked in CI."
+},
+"sys-prompt-injection": {
+"level": "system",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Validate model output deterministically before code acts on it.",
+"url": "https://goodcodereview.com/system#sys-prompt-injection",
+"tool_gate": null
+},
+"sys-secrets-and-errors": {
+"level": "system",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Fail closed: a validation or auth error must deny, never continue, and an error response must not carry internals such as stack traces, SQL or tokens.",
+"url": "https://goodcodereview.com/system#sys-secrets-and-errors",
+"tool_gate": "Secret scanner in CI; log-redaction tests."
+},
+"sys-ssrf": {
+"level": "system",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Fetch a user-supplied URL only when its host matches a server-side allowlist.",
+"url": "https://goodcodereview.com/system#sys-ssrf",
+"tool_gate": "CodeQL `py/full-ssrf`; an egress proxy or firewall allowlist."
+},
+"chg-agent-grounded-code": {
+"level": "change",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Verify that every import and external call the agent wrote exists with that signature.",
+"url": "https://goodcodereview.com/change#chg-agent-grounded-code",
+"tool_gate": "Compiler, type checker and dependency-resolution in CI catch non-existent imports and calls."
+},
+"chg-agent-independent-review": {
+"level": "change",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Get sign-off from a person or a fresh-context reviewer who has the spec but not the author's reasoning; self-review by the writing session does not count.",
+"url": "https://goodcodereview.com/change#chg-agent-independent-review",
+"tool_gate": null
+},
+"chg-approval-tied-to-patch": {
+"level": "change",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "Treat an approval or verification verdict as current only if the patch is unchanged: compare `git patch-id` at the verdict commit with the current head. If the patches differ only in tests, docs, or lint config, the verdict can stand when the built output is the same; any other difference needs a fresh check.",
+"url": "https://goodcodereview.com/change#chg-approval-tied-to-patch",
+"tool_gate": "Branch protection that dismisses stale approvals on new commits."
+},
+"chg-author-hygiene": {
+"level": "change",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Self-review the diff and write the description before requesting review.",
+"url": "https://goodcodereview.com/change#chg-author-hygiene",
+"tool_gate": "PR template with required sections; branch protection requiring green CI."
+},
+"chg-breaking-change-taxonomy": {
+"level": "change",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Treat any change that callers can observe in a signature, return values, error types, defaults, or side effects as breaking until a consumer check says otherwise.",
+"url": "https://goodcodereview.com/change#chg-breaking-change-taxonomy",
+"tool_gate": "Contract tests and API-diff tooling."
+},
+"chg-chestertons-fence": {
+"level": "change",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Add a characterization test before rewriting code you do not understand.",
+"url": "https://goodcodereview.com/change#chg-chestertons-fence",
+"tool_gate": null
+},
+"chg-delete-legacy-after-migration": {
+"level": "change",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "When no consumer sits outside the repo, move every caller to the new API and delete the old one, and the tests that pinned its internals, in the same change.",
+"url": "https://goodcodereview.com/change#chg-delete-legacy-after-migration",
+"tool_gate": "Dead-code and unused-export checks."
+},
+"chg-devex-breaking-config": {
+"level": "change",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Flag a change that renames or removes an environment variable, moves a secret, or remaps a port as breaking for developers and operators, and update every place that documents or sets it.",
+"url": "https://goodcodereview.com/change#chg-devex-breaking-config",
+"tool_gate": "Startup check that fails fast on missing or unknown config keys."
+},
+"chg-expand-contract": {
+"level": "change",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.",
+"url": "https://goodcodereview.com/change#chg-expand-contract",
+"tool_gate": "Schema or API diff tools (breaking-change detectors) in CI."
+},
+"chg-match-codebase-pattern": {
+"level": "change",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Follow the established pattern nearby.",
+"url": "https://goodcodereview.com/change#chg-match-codebase-pattern",
+"tool_gate": "Repeated style nits mean a missing linter or formatter rule; add the gate instead of commenting."
+},
+"chg-migration-add-column-rewrite": {
+"level": "change",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Add the column nullable or with a constant default, then fill volatile, computed, or identity values in batches.",
+"url": "https://goodcodereview.com/change#chg-migration-add-column-rewrite",
+"tool_gate": "Migration linter that flags volatile defaults, stored generated columns and identity columns on ADD COLUMN."
+},
+"chg-name-attack-surface": {
+"level": "change",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "List any new attack surface in the description.",
+"url": "https://goodcodereview.com/change#chg-name-attack-surface",
+"tool_gate": "SAST and dependency scanning in CI catch the mechanical part."
+},
+"chg-no-silenced-diagnostics": {
+"level": "change",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.",
+"url": "https://goodcodereview.com/change#chg-no-silenced-diagnostics",
+"tool_gate": "Linter rule that requires a reason and ticket on each suppression."
+},
+"chg-one-concern": {
+"level": "change",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Make each change do one logical thing; if the description needs \"and\" between unrelated outcomes, split it.",
+"url": "https://goodcodereview.com/change#chg-one-concern",
+"tool_gate": "A CI check can label or warn on file count and diff size."
+},
+"chg-perf-claim-evidence": {
+"level": "change",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Back a performance claim with measured before-and-after numbers.",
+"url": "https://goodcodereview.com/change#chg-perf-claim-evidence",
+"tool_gate": null
+},
+"chg-proto-no-field-type-change": {
+"level": "change",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Never change the type of a protobuf field, switch it between repeated and scalar, or rename it while any consumer reads JSON or text format; add a new field instead.",
+"url": "https://goodcodereview.com/change#chg-proto-no-field-type-change",
+"tool_gate": "`buf breaking` with the wire and JSON rule sets."
+},
+"chg-proto-reserve-removed-fields": {
+"level": "change",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "When you delete a protobuf field or enum value, add `reserved` for its number and name in the same change, and never reuse a number.",
+"url": "https://goodcodereview.com/change#chg-proto-reserve-removed-fields",
+"tool_gate": "`buf breaking` or an equivalent descriptor diff in CI."
+},
+"chg-refactor-has-behaviour-pin": {
+"level": "change",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.",
+"url": "https://goodcodereview.com/change#chg-refactor-has-behaviour-pin",
+"tool_gate": "Snapshot or golden-file tests in CI."
+},
+"chg-refactor-separate": {
+"level": "change",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.",
+"url": "https://goodcodereview.com/change#chg-refactor-separate",
+"tool_gate": "A formatter check in CI removes the reformatting case."
+},
+"chg-reuse-before-write": {
+"level": "change",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Do not add a helper that duplicates one already in the repo; search for it first.",
+"url": "https://goodcodereview.com/change#chg-reuse-before-write",
+"tool_gate": "Clone-detection in CI (jscpd, PMD CPD, or similar) can flag near-duplicate blocks."
+},
+"chg-review-signal": {
+"level": "change",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Do not spend review comments on what a tool enforces or on minor style points; spend them on the findings that matter.",
+"url": "https://goodcodereview.com/change#chg-review-signal",
+"tool_gate": "Formatter, linter and type checker own style and mechanical rules."
+},
+"chg-rollback-path": {
+"level": "change",
+"severity": "should-fix",
+"backing": "strong",
+"rule": "State in the description how to undo the change.",
+"url": "https://goodcodereview.com/change#chg-rollback-path",
+"tool_gate": "Migration linter requiring a down step; deploy pipeline with automatic abort."
+},
+"chg-size-ceiling": {
+"level": "change",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Split a change past about 400 changed lines or about 20 files, or say in the description why not; aim for about 200.",
+"url": "https://goodcodereview.com/change#chg-size-ceiling",
+"tool_gate": "Size labels or a diff-size warning in CI."
+},
+"chg-tests-ship-with-change": {
+"level": "change",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks.",
+"url": "https://goodcodereview.com/change#chg-tests-ship-with-change",
+"tool_gate": "Coverage-delta or \"changed source without changed tests\" check in CI."
+},
+"chg-ui-change-screenshots-and-keyboard-pass": {
+"level": "change",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "A UI change shows before-and-after screenshots and says what a keyboard-only pass and a 200% zoom check found on the changed screens.",
+"url": "https://goodcodereview.com/change#chg-ui-change-screenshots-and-keyboard-pass",
+"tool_gate": "A pull request template with a UI checklist; the screenshots and the keyboard result are the evidence."
+},
+"chg-verify-before-claim": {
+"level": "change",
+"severity": "block",
+"backing": "unjudged",
+"rule": "Back every \"works\" or \"bug\" claim with something run: a repro, a test or command output.",
+"url": "https://goodcodereview.com/change#chg-verify-before-claim",
+"tool_gate": null
+},
+"py-cancellation": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Re-raise `CancelledError` (do not catch it via bare `except` or `BaseException`), and catch `TimeoutError` outside the `asyncio.timeout()` block.",
+"url": "https://goodcodereview.com/pack-python#py-cancellation",
+"tool_gate": "Ruff BLE001 / S110 for broad swallow; lint for CancelledError needs custom rule."
+},
+"py-class-earns-its-instance": {
+"level": "module",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Give a class real state or a collaborator; otherwise write a module function.",
+"url": "https://goodcodereview.com/pack-python#py-class-earns-its-instance",
+"tool_gate": "ruff PLR6301 (partial)"
+},
+"py-docstrings-google": {
+"level": "function",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Write a Google-style docstring only when it adds what the signature cannot say.",
+"url": "https://goodcodereview.com/pack-python#py-docstrings-google",
+"tool_gate": "ruff D (convention=google, D1xx ignored)"
+},
+"py-field-only-when-adds": {
+"level": "module",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Use `Field()` only when it adds something (a constraint, an alias, or API docs), and set plain defaults directly.",
+"url": "https://goodcodereview.com/pack-python#py-field-only-when-adds",
+"tool_gate": null
+},
+"py-httpx-client-lifespan": {
+"level": "module",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Pass an explicit `httpx.Timeout` to every `httpx` client.",
+"url": "https://goodcodereview.com/pack-python#py-httpx-client-lifespan",
+"tool_gate": null
+},
+"py-imports": {
+"level": "module",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Put imports at module top, absolute only.",
+"url": "https://goodcodereview.com/pack-python#py-imports",
+"tool_gate": "ruff I, TID252, PLC0415"
+},
+"py-modern-typing": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Write `X | None` and builtin generics, not `typing` aliases.",
+"url": "https://goodcodereview.com/pack-python#py-modern-typing",
+"tool_gate": "ruff UP; mypy --strict; pyright"
+},
+"py-no-cast": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Do not use `cast()`; parse the boundary into a typed model, or narrow with `isinstance`.",
+"url": "https://goodcodereview.com/pack-python#py-no-cast",
+"tool_gate": "ruff TID251 (banned-api)"
+},
+"py-no-init-or-model-tests": {
+"level": "module",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Cover `__init__` and plain models through the behaviour that uses them.",
+"url": "https://goodcodereview.com/pack-python#py-no-init-or-model-tests",
+"tool_gate": null
+},
+"py-paths-from-file": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Resolve paths from `__file__`, not the current working directory.",
+"url": "https://goodcodereview.com/pack-python#py-paths-from-file",
+"tool_gate": null
+},
+"py-pytest-parametrize": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Write tests that differ only in inputs and expected values as one `@pytest.mark.parametrize` test.",
+"url": "https://goodcodereview.com/pack-python#py-pytest-parametrize",
+"tool_gate": "ruff PT006/PT007 (style only)"
+},
+"py-ruff-gate": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Enable the Ruff rule sets E, F, I, B, UP, SIM, BLE, TID and D in CI.",
+"url": "https://goodcodereview.com/pack-python#py-ruff-gate",
+"tool_gate": "ruff"
+},
+"py-task-reference": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Never discard the result of `create_task`; keep a reference and surface its exceptions, preferably through a `TaskGroup`.",
+"url": "https://goodcodereview.com/pack-python#py-task-reference",
+"tool_gate": "Ruff RUF006 (asyncio-dangling-task)."
+},
+"py-test-hygiene": {
+"level": "module",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Freeze time and block network in tests.",
+"url": "https://goodcodereview.com/pack-python#py-test-hygiene",
+"tool_gate": "pytest-socket (`--disable-socket`)"
+}
+}
+}
