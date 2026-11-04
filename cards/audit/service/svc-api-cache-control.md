@@ -3,8 +3,7 @@ id: svc-api-cache-control
 level: service
 tags: [performance, api, http, caching]
 severity: should-fix
-status: draft
-lacks: orgs, IETF and Zalando back it; needs a third org
+status: stable
 lang: core
 applies_when: A service returns responses that a browser, CDN, gateway or client library may cache.
 context: [server]
@@ -12,6 +11,7 @@ tool_gate: Integration test or header lint that rejects a 200 GET without `Cache
 borrowed_from:
   - https://www.rfc-editor.org/rfc/rfc9111.html
   - https://opensource.zalando.com/restful-api-guidelines/
+  - https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html
 ---
 
 **Rule.** Set an explicit `Cache-Control` on every response a cache may store, use `private` or `no-store` for user-specific data, and add `Vary` for any request header that changes the body.

@@ -3,8 +3,7 @@ id: chg-delete-legacy-after-migration
 level: change
 tags: [compatibility, maintainability, migration, cleanup]
 severity: should-fix
-status: draft
-lacks: orgs, "in the same change" has cursor/plugins and Stripe; Dropbox, GitHub, Shopify and Slack delete in a later step
+status: stable
 lang: core
 applies_when: The change adds a new API, path or config and every caller lives in this repo.
 context: [data]
@@ -15,6 +14,8 @@ borrowed_from:
   - https://github.com/cursor/plugins/blob/main/pstack/skills/architect/references/design-red-flags.md
   - https://github.com/cursor/plugins/blob/main/pstack/skills/interrogate/references/rubric.md
   - https://stripe.dev/blog/migrating-to-typescript
+  - https://research.google/pubs/large-scale-automated-refactoring-using-clangmr
+  - https://llvm.org/docs/SupportPolicy.html
 ---
 
 **Rule.** When no consumer sits outside the repo, move every caller to the new API and delete the old one, and the tests that pinned its internals, in the same change.

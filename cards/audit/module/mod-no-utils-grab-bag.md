@@ -3,13 +3,15 @@ id: mod-no-utils-grab-bag
 level: module
 tags: [maintainability, architecture, naming]
 severity: should-fix
-status: draft
-lacks: evidence, the only backer is a dev.to summary of Ousterhout; needs two orgs that say to name helpers after a concept
+status: stable
 lang: core
 applies_when: The diff adds or grows a module named `utils`, `helpers`, `common`, or `misc`.
 tool_gate: none
 borrowed_from:
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
+  - https://source.android.com/docs/setup/contribute/api-guidelines
+  - https://docs.gitlab.com/development/software_design/
+  - https://feature-sliced.design/docs/guides/issues/desegmented
 ---
 
 **Rule.** Put a helper in the module that owns the concept, or in a new module named after the concept.

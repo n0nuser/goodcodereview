@@ -3,8 +3,7 @@ id: prod-shadow-compare-before-cutover
 level: production
 tags: [correctness, reliability, migration, release]
 severity: should-fix
-status: draft
-lacks: evidence, Netflix, Stripe, Airbnb and GitHub describe doing it; none recommends it as a practice for others
+status: stable
 note: Netflix (ran the old and new ad-event pipelines in parallel and diffed their output on live traffic), Stripe (compared point-in-time snapshots of source and target shards before the traffic switch), Airbnb (replayed captured production queries on MySQL 5.7 and 8.0 and diffed the results), GitHub (a Scientist experiment ran a candidate code block beside the control and compared results and timing); Cabify checks for zero replication lag before a swap, which is a precondition and not a diff, so it is not cited
 lang: core
 applies_when: Reads, writes, or a pipeline's traffic move from an old system to a new one, such as a new data store, a database upgrade, or a rewritten service.
@@ -15,6 +14,9 @@ borrowed_from:
   - https://stripe.dev/blog/how-stripes-document-databases-supported-99.999-uptime-with-zero-downtime-data-migrations
   - https://airbnb.tech/infrastructure/beyond-synthetic-testing-capturing-and-replaying-real-database-workloads-at-airbnb/
   - https://github.blog/engineering/engineering-principles/how-we-improved-availability-through-iterative-simplification
+  - https://americanexpress.io/migrating-the-payments-network-twice
+  - https://microsoft.github.io/code-with-engineering-playbook/automated-testing/shadow-testing/
+  - https://shopify.engineering/scaling-inventory-reservations
 ---
 
 **Rule.** Before you move traffic to a new system, run it beside the old one on live or captured production traffic, diff the results, and cut over only when every mismatch is fixed or explained.

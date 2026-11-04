@@ -3,8 +3,7 @@ id: svc-async-content-reserves-space
 level: service
 tags: [usability, performance, frontend, css]
 severity: should-fix
-status: draft
-lacks: orgs, injected content and ads have Google only; the image-dimensions part has Google and Mozilla
+status: stable
 lang: core
 applies_when: A page loads images, embeds, fonts, ads, or fetched content after the first paint.
 context: [ui]
@@ -17,6 +16,8 @@ borrowed_from:
   - https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img
   - https://developer.mozilla.org/en-US/docs/Glossary/CLS
   - https://html.spec.whatwg.org/multipage/embedded-content.html
+  - https://shopify.dev/docs/storefronts/themes/best-practices/performance/prevent-image-layout-shift
+  - https://www.cloudflare.com/learning/performance/what-are-core-web-vitals/
 ---
 
 **Rule.** Reserve the space for late-loading content with set dimensions or an aspect ratio, so nothing already on screen moves.

@@ -3,8 +3,7 @@ id: code-release-gated-on-ci
 level: codebase
 tags: [reliability, process, ci, release]
 severity: should-fix
-status: draft
-lacks: evidence, GitHub and GitLab pages describe the feature; only Kubernetes states the practice (red jobs, no release); needs two more orgs that gate releases on CI
+status: stable
 lang: core
 applies_when: Auditing a workflow or pipeline that publishes a release when a tag is pushed.
 tool_gate: Release job with `needs:` the test job, or a `workflow_run` trigger checked for `conclusion == 'success'`; a tag ruleset with required status checks.
@@ -14,6 +13,9 @@ borrowed_from:
   - https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-jobs
   - https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets
   - https://docs.gitlab.com/ci/pipelines/
+  - https://github.com/nodejs/node/blob/main/doc/contributing/releases.md
+  - https://github.com/envoyproxy/envoy/blob/main/RELEASES.md
+  - https://sre.google/sre-book/release-engineering/
 ---
 
 **Rule.** Make a release or publish job depend on the checks passing for the tagged commit, never on the tag alone.

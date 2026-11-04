@@ -45,16 +45,6 @@ lacks: orgs, OpenAPI and Zalando back it; needs a third org
 
 Update the API spec in the same change that alters the routes, fields, status codes or headers it describes.
 
-## chg-approval-tied-to-patch
-
-level: change  
-severity: should-fix  
-concerns: process  
-applies_when: A review approval or verification result exists and the branch has been pushed or rebased since.  
-lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
-
-Treat an approval or verification verdict as current only if the patch is unchanged: compare `git patch-id` at the verdict commit with the current head. If the patches differ only in tests, docs, or lint config, the verdict can stand when the built output is the same; any other difference needs a fresh check.
-
 ## chg-bot-approval-not-human
 
 level: change  
@@ -74,27 +64,6 @@ applies_when: The change removes, rewrites or "simplifies" odd-looking existing 
 lacks: orgs, only Feathers backs a characterization test before a rewrite; Spolsky backs not rewriting from scratch
 
 Add a characterization test before rewriting code you do not understand.
-
-## chg-delete-legacy-after-migration
-
-level: change  
-severity: should-fix  
-concerns: compatibility, maintainability  
-applies_when: The change adds a new API, path or config and every caller lives in this repo.  
-context: data  
-lacks: orgs, "in the same change" has cursor/plugins and Stripe; Dropbox, GitHub, Shopify and Slack delete in a later step
-
-When no consumer sits outside the repo, move every caller to the new API and delete the old one, and the tests that pinned its internals, in the same change.
-
-## chg-devex-breaking-config
-
-level: change  
-severity: should-fix  
-concerns: compatibility, process  
-applies_when: The change renames an environment variable, remaps a port, moves a secret source, or adds a step needed to run or build the project.  
-lacks: orgs, one vendor's review skill (cursor/plugins) backs it; needs two more orgs
-
-Flag a change that renames or removes an environment variable, moves a secret, or remaps a port as breaking for developers and operators, and update every place that documents or sets it.
 
 ## chg-fix-root-cause-not-symptom
 
@@ -169,16 +138,6 @@ lacks: failable, without "attach the plan" a change review has nothing to mark F
 
 Attach the query plan for each new or rewritten query on a growing table, taken on production-sized data.
 
-## chg-no-silenced-diagnostics
-
-level: change  
-severity: should-fix  
-concerns: correctness, maintainability, process  
-applies_when: The diff adds a suppression (lint ignore, type ignore, skipped test, swallowed error) or deletes a failing check.  
-lacks: orgs, reason and ticket on each suppression has cursor/plugins only; Stripe tracked suppressions as a group
-
-Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
-
 ## chg-no-special-case-branches
 
 level: change  
@@ -188,16 +147,6 @@ applies_when: The change adds a conditional, flag or nullable mode to code that 
 lacks: orgs, one vendor's review skill backs it, with no data; needs two more orgs
 
 Put a new case behind its own function or type; do not add a one-off branch to a shared flow.
-
-## chg-proto-no-field-type-change
-
-level: change  
-severity: should-fix  
-concerns: compatibility  
-applies_when: The diff changes an existing field's type, default, label or name in a `.proto` file.  
-lacks: orgs, "no field type change" has Google only; Uber and Cabify back renumbering and the buf breaking gate instead
-
-Never change the type of a protobuf field, switch it between repeated and scalar, or rename it while any consumer reads JSON or text format; add a new field instead.
 
 ## chg-proto-reserve-removed-fields
 
@@ -249,16 +198,6 @@ lacks: orgs, only Anthropic (a vendor) backs it; needs two more orgs that block 
 
 Do not merge while any review thread is open; each one ends as a fix or as a resolution with a stated reason.
 
-## chg-rollback-path
-
-level: change  
-severity: should-fix  
-concerns: reliability  
-applies_when: The change deploys schema, data, config or behaviour that is costly to undo.  
-lacks: orgs, only Anthropic (a vendor) says to state the undo in the change description; Google SRE backs canary rollback, not the statement
-
-State in the description how to undo the change.
-
 ## chg-sensitive-paths-human-owner
 
 level: change  
@@ -292,16 +231,6 @@ lacks: orgs, only one vendor's review skill backs it; the all-or-nothing princip
 
 Make related writes succeed or fail together.
 
-## fn-bool-arg-at-callsite
-
-level: function  
-severity: discuss  
-concerns: maintainability  
-applies_when: A call passes a literal `True` or `False` for a parameter.  
-lacks: orgs, only the author's own Python review guide backs it; no independent org
-
-Replace a boolean flag argument with an enum, keyword-only argument or two functions.
-
 ## fn-bounded-read-fails-at-cap
 
 level: function  
@@ -311,26 +240,6 @@ applies_when: A function reads a file, a response or a request body through a re
 lacks: evidence, the sources are API, setting and status-code definitions; only OWASP states the practice
 
 When a size cap is reached, return an error; never hand back the first N bytes as if they were the whole input.
-
-## fn-comments-survive-context
-
-level: function  
-severity: should-fix  
-concerns: maintainability  
-applies_when: A comment or TODO says "currently", "for now", "not yet", "see the PR" or promises future work.  
-lacks: orgs, Google's three style guides back a dated or event-based TODO; no second org found that bans "currently" or "for now" comments
-
-Write comments that remain true without outside context: no "currently", "for now" or "see the PR", and give a TODO the date or event that ends it.
-
-## fn-distinct-types-for-ids
-
-level: function  
-severity: should-fix  
-concerns: correctness  
-applies_when: A function takes two or more arguments of one primitive type that mean different things (ids, amounts, units).  
-lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
-
-Give arguments with different meanings distinct types, so a call that swaps them fails to type-check.
 
 ## fn-empty-collection-not-none
 
@@ -352,17 +261,6 @@ lacks: orgs, PEP 8 and LLVM give the rule and PEP 3131 argues the other way; nee
 
 Write identifiers and comments in English, unless the project policy names another language.
 
-## fn-guard-uri-decoding
-
-level: function  
-severity: should-fix  
-concerns: reliability, correctness  
-applies_when: Code calls `decodeURIComponent` or `decodeURI` on a query parameter, a hash, a path segment or other input a user controls.  
-context: ui, server  
-lacks: orgs, Mozilla (MDN) and the Node.js docs back it; needs one more org that guards or avoids a throwing decode on user input
-
-Wrap `decodeURIComponent` on user input in a `try`/`catch`, or parse with `URLSearchParams`, so that a malformed `%` sequence cannot throw.
-
 ## fn-known-keys-get-a-type
 
 level: function  
@@ -372,28 +270,6 @@ applies_when: A function takes or returns a dictionary whose keys are fixed and 
 lacks: orgs, only the author's own Python review guide backs it; no independent org
 
 Give a fixed key set a record type (model, dataclass, or typed dict), and use a generic map only for open keys.
-
-## fn-link-url-scheme-allowlist
-
-level: function  
-severity: should-fix  
-concerns: security  
-applies_when: A URL taken from remote JSON, a query parameter or stored data is written to `href`, `src`, `location` or `window.open`.  
-context: ui  
-lacks: orgs, OWASP and Angular (Google) back it; needs one more org that checks the scheme before data reaches href or src
-
-Parse a URL that comes from data and allow only `https:` (and `http:` or `mailto:` where needed) before you set it as a link target.
-
-## fn-mask-credentials-in-output
-
-level: function  
-severity: should-fix  
-concerns: security, usability  
-applies_when: A CLI command, admin page or debug view prints stored configuration that can include tokens, API keys, or URLs with embedded secrets.  
-context: cli  
-lacks: orgs, GitHub and Django state masking for display; GitLab covers CI logs and OWASP covers logs, so the list/show clause has two organisations
-
-Mask credentials in list, show and debug output (keep only the last four characters), and print a full value only behind an explicit flag.
 
 ## fn-name-intermediate-conditions
 
@@ -435,16 +311,6 @@ lacks: orgs, only the author's own Python review guide backs it; no independent 
 
 Use plain field access, and reserve dynamic access for genuinely dynamic names.
 
-## fn-no-magic-values
-
-level: function  
-severity: should-fix  
-concerns: maintainability  
-applies_when: A literal string or number carries meaning the reader must guess (status codes, mode names, limits).  
-lacks: orgs, Google's review guide is the only backer; needs two more orgs
-
-Give every meaningful literal a name: an enum member or a constant.
-
 ## fn-no-pass-through-wrapper
 
 level: function  
@@ -485,16 +351,6 @@ lacks: orgs, one blog post on structured concurrency backs it; needs two more or
 
 Give every task and handle an owner that waits for it or closes it, on the error path too.
 
-## fn-specific-exceptions-only
-
-level: function  
-severity: should-fix  
-concerns: correctness  
-applies_when: Code catches exceptions in business logic.  
-lacks: orgs, the Go wiki and an Ousterhout summary back it; needs a third independent org
-
-Catch only the specific exception you can handle in business code.
-
 ## fn-test-oracle-independent
 
 level: function  
@@ -504,16 +360,6 @@ applies_when: A test asserts on a computed value.
 lacks: orgs, Google states "from the requirement"; Microsoft backs "no logic in tests"; one source is person-authored
 
 Take a test's expected value from the requirement, not from the code under test.
-
-## fn-variants-as-tagged-union
-
-level: function  
-severity: should-fix  
-concerns: maintainability  
-applies_when: A type or function models a value that is one of several variants or states.  
-lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
-
-Model variants as a tagged union, and make every switch over it fail the build when a variant is unhandled.
 
 # module drafts
 
@@ -567,26 +413,6 @@ lacks: evidence, no Fowler or Beck source; backers are an Ousterhout summary and
 
 Name the smell, point to the line, and suggest the refactoring; do not file smells as taste.
 
-## mod-inject-boundary-collaborators
-
-level: module  
-severity: should-fix  
-concerns: testing, maintainability  
-applies_when: A class uses a database, HTTP, cloud or clock collaborator.  
-lacks: orgs, only the author's own Python review guide backs it; no independent org
-
-Inject boundary collaborators through the constructor; do not construct them inside or reach for a global.
-
-## mod-internals-unreachable
-
-level: module  
-severity: should-fix  
-concerns: maintainability  
-applies_when: A module has an intended public surface and internal files or symbols.  
-lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
-
-Make a module's internals unimportable from outside it, and have a check fail the build when a caller reaches in.
-
 ## mod-layers-point-inward
 
 level: module  
@@ -616,26 +442,6 @@ applies_when: A module does anything at import or load time other than defining 
 lacks: orgs, only the author's own Python review guide backs it; no independent org
 
 Keep I/O at the edges: importing a package must not touch the network, read files, or read the environment.
-
-## mod-no-logic-in-constructors
-
-level: module  
-severity: should-fix  
-concerns: correctness, testing  
-applies_when: A constructor does work beyond assigning its arguments.  
-lacks: orgs, only the author's own Python review guide backs it; no independent org
-
-Assign only in constructors, and put I/O, parsing, and heavy computation in a named factory.
-
-## mod-no-utils-grab-bag
-
-level: module  
-severity: should-fix  
-concerns: maintainability  
-applies_when: The diff adds or grows a module named `utils`, `helpers`, `common`, or `misc`.  
-lacks: evidence, the only backer is a dev.to summary of Ousterhout; needs two orgs that say to name helpers after a concept
-
-Put a helper in the module that owns the concept, or in a new module named after the concept.
 
 ## mod-no-wire-types-in-public-api
 
@@ -676,16 +482,6 @@ applies_when: A module wraps protocol, parsing or business logic and offers it t
 lacks: evidence, the sans-io and async-pressure posts are opinion and neither states this as a rule; the card combines them
 
 Keep logic in plain synchronous functions with no I/O, and add async wrappers at the edge only.
-
-## mod-proto-enum-zero-unspecified
-
-level: module  
-severity: should-fix  
-concerns: compatibility  
-applies_when: A `.proto` file defines an enum.  
-lacks: orgs, the _UNSPECIFIED name has Google only; a zero value with no meaning has Google and Dropbox
-
-Give every protobuf enum a zero value named `<ENUM>_UNSPECIFIED` with no real meaning.
 
 ## mod-shim-fails-loudly
 
@@ -729,28 +525,6 @@ Validate at the boundary, once, with a schema or model, so that inner layers rec
 
 # service drafts
 
-## svc-api-cache-control
-
-level: service  
-severity: should-fix  
-concerns: performance  
-applies_when: A service returns responses that a browser, CDN, gateway or client library may cache.  
-context: server  
-lacks: orgs, IETF and Zalando back it; needs a third org
-
-Set an explicit `Cache-Control` on every response a cache may store, use `private` or `no-store` for user-specific data, and add `Vary` for any request header that changes the body.
-
-## svc-api-contract-tests
-
-level: service  
-severity: should-fix  
-concerns: compatibility, testing  
-applies_when: A service calls, or is called by, another service owned by a different team or deployed on its own schedule.  
-context: server  
-lacks: orgs, Pact is the only backer; OpenAPI does not back contract tests and provider verification is not asserted
-
-Run a contract test for each cross-service call, derived from the consumer's real requests, and fail the provider's build when it breaks one.
-
 ## svc-api-documented-errors
 
 level: service  
@@ -761,39 +535,6 @@ context: server
 lacks: orgs, OpenAPI requires one response per operation; the stricter rule is Zalando's alone
 
 Document every error status each operation can return, with a schema and one example.
-
-## svc-api-naming-consistent
-
-level: service  
-severity: discuss  
-concerns: maintainability  
-applies_when: A service defines JSON fields, query parameters, headers or path segments for an HTTP API.  
-context: server  
-lacks: orgs, Zalando and Microsoft back it, and they disagree on casing; needs a third org that asks for consistency
-
-Use one casing convention per location (fields, query parameters, headers, paths) across the whole API, and state it in the API guide.
-
-## svc-api-problem-json
-
-level: service  
-severity: should-fix  
-concerns: compatibility  
-applies_when: A service returns errors from an HTTP API to other services or to clients.  
-context: server  
-lacks: orgs, IETF and Zalando back it; needs a third org
-
-Return errors as `application/problem+json` with a `status` that equals the HTTP status, and leave stack traces and internal detail out.
-
-## svc-api-retry-after
-
-level: service  
-severity: should-fix  
-concerns: reliability  
-applies_when: A service answers 429 or 503 to HTTP callers.  
-context: server  
-lacks: orgs, IETF and Zalando back it; needs a third org
-
-Send `Retry-After` on every 429 and 503, and set it no earlier than the time capacity returns.
 
 ## svc-api-safe-idempotent-methods
 
@@ -817,17 +558,6 @@ lacks: contradiction, the Rule makes the spec the source of truth, then allows g
 
 Keep the OpenAPI document as the source of truth, and generate it from the code or test the running service against it in CI.
 
-## svc-api-specific-status-codes
-
-level: service  
-severity: should-fix  
-concerns: compatibility  
-applies_when: A service returns HTTP responses that callers or intermediaries interpret by status code.  
-context: server  
-lacks: orgs, IETF and Zalando back it; needs a third org
-
-Return the most specific status code that fits: 201 with `Location` for a create, 405 with `Allow` for a wrong method, and a 4xx or 5xx for any failure.
-
 ## svc-api-trace-context
 
 level: service  
@@ -838,28 +568,6 @@ context: server
 lacks: orgs, W3C is the only backer; needs two more orgs that forward trace headers on every call
 
 Forward `traceparent` and `tracestate` on every outgoing call, keep the incoming trace id, and set a new parent id for each hop.
-
-## svc-async-content-reserves-space
-
-level: service  
-severity: should-fix  
-concerns: usability, performance  
-applies_when: A page loads images, embeds, fonts, ads, or fetched content after the first paint.  
-context: ui  
-lacks: orgs, injected content and ads have Google only; the image-dimensions part has Google and Mozilla
-
-Reserve the space for late-loading content with set dimensions or an aspect ratio, so nothing already on screen moves.
-
-## svc-authn-by-default
-
-level: service  
-severity: should-fix  
-concerns: security  
-applies_when: The service has routes that need a signed-in user next to routes that are public.  
-context: server  
-lacks: evidence, only Microsoft and Spring say why auth by default; Django, Rails and NestJS describe the default without a reason
-
-Require authentication on every route by default, and mark each public route by name.
 
 ## svc-best-effort-optional-deps
 
@@ -958,16 +666,6 @@ lacks: held, kept draft by Pablo's call
 
 Send `Strict-Transport-Security` on every HTTPS response.
 
-## svc-stream-dont-materialise
-
-level: service  
-severity: should-fix  
-concerns: performance  
-applies_when: A handler reads, transforms, or returns a result whose size depends on the data (files, query results, response bodies).  
-lacks: orgs, the Node.js backpressure guide is the only backer, and its claim is Node-specific
-
-Process large results as a stream with backpressure; do not load them whole into memory.
-
 # system drafts
 
 ## sys-append-only-stores-have-retention
@@ -990,16 +688,6 @@ lacks: orgs, AWS is the only backer; needs two more orgs
 
 Cap and coalesce the cache-miss path so an empty cache cannot overwhelm the origin.
 
-## sys-cells-limit-blast-radius
-
-level: system  
-severity: discuss  
-concerns: reliability  
-applies_when: Many tenants, regions, or product surfaces share one cluster, control plane, or data store.  
-lacks: evidence, Netflix and Slack run cells; Airbnb's multi-cluster store and Cloudflare's postmortem describe failure domains, not cells
-
-Split shared infrastructure into independent cells, each with its own control plane and storage, and route each tenant or request to one cell, so one failure stops only that cell.
-
 ## sys-constraint-not-valid
 
 level: system  
@@ -1021,17 +709,6 @@ lacks: orgs, AWS is the only backer; needs two more orgs
 
 Wire load balancers and restarters to liveness and local checks only, never to shared-dependency checks.
 
-## sys-index-concurrently
-
-level: system  
-severity: should-fix  
-concerns: compatibility  
-applies_when: A migration creates an index on an existing large or busy table.  
-context: data  
-lacks: orgs, PostgreSQL and GitLab back it; needs a third org
-
-Create indexes with `CONCURRENTLY`, outside a transaction block, and handle a failed build that leaves an INVALID index.
-
 ## sys-leader-two-leaders
 
 level: system  
@@ -1042,29 +719,7 @@ lacks: orgs, AWS is the only backer; needs two more orgs
 
 Make leader work safe if two leaders overlap: make it idempotent, check the lease before acting, and stop when renewal fails.
 
-## sys-migration-lock-timeout
-
-level: system  
-severity: should-fix  
-concerns: compatibility  
-applies_when: A migration runs ALTER TABLE on a busy PostgreSQL table.  
-context: data  
-lacks: orgs, PostgreSQL and GitLab back it; the lock-queue reason is inferred; needs a third org
-
-Set `lock_timeout` for the migration session and retry on timeout.
-
 # codebase drafts
-
-## code-a11y-check-in-ci
-
-level: codebase  
-severity: should-fix  
-concerns: accessibility, testing  
-applies_when: The repo builds a web UI and has an automated test suite.  
-context: ui  
-lacks: held, kept draft by Pablo's call; no org backs failing the build on a violation
-
-Run an automated accessibility check, such as axe on rendered pages, in the automated tests, and fail the test on a violation.
 
 ## code-ai-pr-disclosure
 
@@ -1096,26 +751,6 @@ lacks: evidence, backers are a dev.to summary and a blog post; no org states a f
 
 Keep every hand-written source file under about 1,000 lines unless it has a listed exception, and split larger files by knowledge owned, not by execution order.
 
-## code-flaky-test-quarantine
-
-level: codebase  
-severity: should-fix  
-concerns: testing, process  
-applies_when: Auditing how the codebase handles tests that pass and fail on the same code.  
-lacks: orgs, quarantine with owner and ticket has Dropbox and Shopify; rerun-verified return to the gate has Dropbox only
-
-Report every test that passes only on retry, move it to a quarantine with a named owner and a ticket, and return it to the merge gate only after it passes many reruns.
-
-## code-release-gated-on-ci
-
-level: codebase  
-severity: should-fix  
-concerns: reliability, process  
-applies_when: Auditing a workflow or pipeline that publishes a release when a tag is pushed.  
-lacks: evidence, GitHub and GitLab pages describe the feature; only Kubernetes states the practice (red jobs, no release); needs two more orgs that gate releases on CI
-
-Make a release or publish job depend on the checks passing for the tagged commit, never on the tag alone.
-
 ## code-scoped-validation-loop
 
 level: codebase  
@@ -1127,28 +762,6 @@ lacks: orgs, one vendor's local-loop review backs it; needs two more orgs that d
 Document a command that checks one package or path, with readable output, so a small change does not need the full-repo run.
 
 # production drafts
-
-## prod-a11y-audit-before-launch
-
-level: production  
-severity: should-fix  
-concerns: accessibility, usability  
-applies_when: A new UI service or a major redesign is about to open to the public.  
-context: ui  
-lacks: orgs, "before a public launch" has GOV.UK only; the audit content has GOV.UK, W3C and Deque
-
-Before a public launch, run an accessibility audit against WCAG 2.2 AA that includes assistive technology, and link the report in the launch checklist.
-
-## prod-shadow-compare-before-cutover
-
-level: production  
-severity: should-fix  
-concerns: correctness, reliability  
-applies_when: Reads, writes, or a pipeline's traffic move from an old system to a new one, such as a new data store, a database upgrade, or a rewritten service.  
-context: data  
-lacks: evidence, Netflix, Stripe, Airbnb and GitHub describe doing it; none recommends it as a practice for others
-
-Before you move traffic to a new system, run it beside the old one on live or captured production traffic, diff the results, and cut over only when every mismatch is fixed or explained.
 
 ## prod-slo-error-budget
 

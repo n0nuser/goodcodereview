@@ -3,14 +3,15 @@ id: fn-specific-exceptions-only
 level: function
 tags: [correctness, errors]
 severity: should-fix
-status: draft
-lacks: orgs, the Go wiki and an Ousterhout summary back it; needs a third independent org
+status: stable
 lang: core
 applies_when: Code catches exceptions in business logic.
 tool_gate: ruff BLE001 / E722 (Python)
 borrowed_from:
   - https://go.dev/wiki/CodeReviewComments
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
+  - https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1031
+  - https://peps.python.org/pep-0008/
 ---
 
 **Rule.** Catch only the specific exception you can handle in business code.

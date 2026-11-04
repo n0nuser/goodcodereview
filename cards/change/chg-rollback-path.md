@@ -3,8 +3,7 @@ id: chg-rollback-path
 level: change
 tags: [reliability, release, rollback]
 severity: should-fix
-status: draft
-lacks: orgs, only Anthropic (a vendor) says to state the undo in the change description; Google SRE backs canary rollback, not the statement
+status: stable
 lang: core
 applies_when: The change deploys schema, data, config or behaviour that is costly to undo.
 tool_gate: Migration linter requiring a down step; deploy pipeline with automatic abort.
@@ -13,6 +12,9 @@ borrowed_from:
   - https://x.com/addyosmani/status/2114604912520921136
   - https://sre.google/workbook/canarying-releases/
   - https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to
+  - https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/platform-leadership-review/
+  - https://learn.microsoft.com/en-us/compliance/assurance/assurance-microsoft-365-change-management
+  - https://docs.aws.amazon.com/wellarchitected/latest/framework/ops_mit_deploy_risks_plan_for_unsucessful_changes.html
 ---
 
 **Rule.** State in the description how to undo the change.

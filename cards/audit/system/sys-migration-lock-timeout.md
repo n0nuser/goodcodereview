@@ -3,8 +3,7 @@ id: sys-migration-lock-timeout
 level: system
 tags: [compatibility, database, migration, postgres]
 severity: should-fix
-status: draft
-lacks: orgs, PostgreSQL and GitLab back it; the lock-queue reason is inferred; needs a third org
+status: stable
 note: lock-queue consequence is inference, not stated in the Postgres page read
 lang: core
 applies_when: A migration runs ALTER TABLE on a busy PostgreSQL table.
@@ -14,6 +13,9 @@ borrowed_from:
   - https://www.postgresql.org/docs/current/runtime-config-client.html
   - https://www.postgresql.org/docs/current/sql-altertable.html
   - https://docs.gitlab.com/development/migration_style_guide/
+  - https://gocardless.com/blog/zero-downtime-postgres-migrations-a-little-help
+  - https://postgres.ai/blog/20210923-zero-downtime-postgres-schema-migrations-lock-timeout-and-retries
+  - https://github.com/doctolib/safe-pg-migrations
 ---
 
 **Rule.** Set `lock_timeout` for the migration session and retry on timeout.

@@ -3,12 +3,14 @@ id: mod-no-logic-in-constructors
 level: module
 tags: [correctness, testing, state]
 severity: should-fix
-status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+status: stable
 lang: core
 applies_when: A constructor does work beyond assigning its arguments.
 tool_gate: none
-borrowed_from: []
+borrowed_from:
+  - https://learn.microsoft.com/en-us/dotnet/standard/design-guidelines/constructor
+  - https://google.github.io/styleguide/cppguide.html
+  - https://legacy.reactjs.org/docs/react-component.html
 note: from the author's own Python review guide
 ---
 

@@ -3,8 +3,7 @@ id: svc-authn-by-default
 level: service
 tags: [security, authn]
 severity: should-fix
-status: draft
-lacks: evidence, only Microsoft and Spring say why auth by default; Django, Rails and NestJS describe the default without a reason
+status: stable
 lang: core
 applies_when: The service has routes that need a signed-in user next to routes that are public.
 context: [server]

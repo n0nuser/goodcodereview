@@ -3,14 +3,15 @@ id: chg-devex-breaking-config
 level: change
 tags: [compatibility, process, config]
 severity: should-fix
-status: draft
-lacks: orgs, one vendor's review skill (cursor/plugins) backs it; needs two more orgs
+status: stable
 lang: core
 applies_when: The change renames an environment variable, remaps a port, moves a secret source, or adds a step needed to run or build the project.
 tool_gate: Startup check that fails fast on missing or unknown config keys.
 note: from one vendor's review skill (opinion); the rule is the narrow, checkable part
 borrowed_from:
   - https://github.com/cursor/plugins/blob/main/thermos/skills/thermo-nuclear-review/SKILL.md
+  - https://docs.gitlab.com/administration/package_information/deprecation_policy
+  - https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide
 ---
 
 **Rule.** Flag a change that renames or removes an environment variable, moves a secret, or remaps a port as breaking for developers and operators, and update every place that documents or sets it.

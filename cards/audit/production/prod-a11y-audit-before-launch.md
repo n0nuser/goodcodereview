@@ -3,8 +3,7 @@ id: prod-a11y-audit-before-launch
 level: production
 tags: [accessibility, usability, frontend, release]
 severity: should-fix
-status: draft
-lacks: orgs, "before a public launch" has GOV.UK only; the audit content has GOV.UK, W3C and Deque
+status: stable
 lang: core
 applies_when: A new UI service or a major redesign is about to open to the public.
 context: [ui]
@@ -17,6 +16,8 @@ borrowed_from:
   - https://www.section508.gov/test/
   - https://www.w3.org/WAI/test-evaluate/
   - https://www.deque.com/web-accessibility-beginners-guide/
+  - https://www2.gov.bc.ca/gov/content/home/accessible-government/toolkit/testing-and-auditing
+  - https://design.va.gov/accessibility/
 ---
 
 **Rule.** Before a public launch, run an accessibility audit against WCAG 2.2 AA that includes assistive technology, and link the report in the launch checklist.

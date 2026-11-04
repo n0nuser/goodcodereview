@@ -3,14 +3,16 @@ id: mod-internals-unreachable
 level: module
 tags: [maintainability, encapsulation, boundaries]
 severity: should-fix
-status: draft
-lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
+status: stable
 lang: core
 applies_when: A module has an intended public surface and internal files or symbols.
 tool_gate: Import-boundary lint (import-linter, ESLint `no-restricted-imports`, package `exports`).
 note: one vendor's engineering guidance (opinion), from pstack architect/references/design-red-flags
 borrowed_from:
   - https://github.com/cursor/plugins/blob/main/pstack/skills/architect/references/design-red-flags.md
+  - https://bazel.build/concepts/visibility
+  - https://pkg.go.dev/cmd/go#hdr-Internal_packages
+  - https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/internal
 ---
 
 **Rule.** Make a module's internals unimportable from outside it, and have a check fail the build when a caller reaches in.
