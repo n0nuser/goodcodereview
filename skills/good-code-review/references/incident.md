@@ -5,7 +5,7 @@
 severity: should-fix  
 concerns: performance, testing  
 applies_when: An incident or a slowdown is closed by a code or config change meant to make it faster.  
-Backed by: Google, GitLab, Microsoft. People cited: Brendan Gregg.
+Backed by: Google (unjudged), GitLab (unjudged), Microsoft (unjudged). Backing: unjudged. People cited: Brendan Gregg (unjudged).
 
 **Rule.** Tie the performance fix to evidence that names the bottleneck: a profile, a trace, or a USE check.
 
@@ -32,7 +32,7 @@ fix: stream the response; after: p99 1.9 s -> 240 ms, same load replay
 severity: should-fix  
 concerns: reliability  
 applies_when: A runbook or incident response relies on rollback, failover, or a manual mitigation.  
-Backed by: Google, AWS, Dropbox, Slack, Cloudflare, Shopify.
+Backed by: Google (unjudged), AWS (unjudged), Dropbox (unjudged), Slack (unjudged), Cloudflare (unjudged), Shopify (unjudged). Backing: unjudged.
 
 **Rule.** Exercise each mitigation that a runbook names (rollback, failover, flag off) on a regular schedule.
 

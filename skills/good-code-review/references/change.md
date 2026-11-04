@@ -5,7 +5,7 @@
 severity: should-fix  
 concerns: maintainability, process  
 applies_when: The change was written fully or partly by an AI agent.  
-Backed by: Kubernetes, Google, University of Texas at San Antonio, Cloud Security Alliance.
+Backed by: Kubernetes (unjudged), Google (unjudged), University of Texas at San Antonio (unjudged), Cloud Security Alliance (supports). Backing: mixed.
 
 **Rule.** Verify that every import and external call the agent wrote exists with that signature.
 
@@ -33,7 +33,7 @@ resp = client.fetch_json(url)   # signature checked against source
 severity: should-fix  
 concerns: process  
 applies_when: An agent wrote the change, and an agent or the same session is asked to review it.  
-Backed by: Kubernetes, Meta, Stripe, Uber, Dropbox, Anthropic.
+Backed by: Kubernetes (unjudged), Meta (unjudged), Stripe (unjudged), Uber (unjudged), Dropbox (unjudged), Anthropic (supports). Backing: mixed.
 
 **Rule.** Get sign-off from a person or a fresh-context reviewer who has the spec but not the author's reasoning; self-review by the writing session does not count.
 
@@ -59,7 +59,7 @@ A human who can explain the change approves.
 severity: should-fix  
 concerns: process  
 applies_when: A review approval or verification result exists and the branch has been pushed or rebased since.  
-Backed by: Cursor, Anthropic, GitLab, Kubernetes, Gerrit Code Review.
+Backed by: Cursor (unjudged), Anthropic (unjudged), GitLab (supports), Kubernetes (supports), Gerrit Code Review (supports). Backing: strong.
 
 **Rule.** Treat an approval or verification verdict as current only if the patch is unchanged: compare `git patch-id` at the verdict commit with the current head. If the patches differ only in tests, docs, or lint config, the verdict can stand when the built output is the same; any other difference needs a fresh check.
 
@@ -86,7 +86,7 @@ Push that only edits a README: approval stands once the build output is shown to
 severity: should-fix  
 concerns: process  
 applies_when: Every change submitted for review.  
-Backed by: Linux kernel, Phacility, Palantir, Kubernetes, GitLab.
+Backed by: Linux kernel (unjudged), Phacility (unjudged), Palantir (unjudged), Kubernetes (unjudged), GitLab (unjudged). Backing: unjudged.
 
 **Rule.** Self-review the diff and write the description before requesting review.
 
@@ -113,7 +113,7 @@ Author left inline notes on the two non-obvious hunks.
 severity: block  
 concerns: compatibility  
 applies_when: The change alters anything a caller can observe, documented or not.  
-Backed by: Python Software Foundation, Google, Microsoft, Kubernetes, OpenJDK, AWS, Pact, Spring. People cited: Hyrum Wright, Michael Feathers.
+Backed by: Python Software Foundation (unjudged), Google (unjudged), Microsoft (unjudged), Kubernetes (unjudged), OpenJDK (unjudged), AWS (unjudged), Pact (unjudged), Spring (unjudged). Backing: unjudged. People cited: Hyrum Wright (unjudged), Michael Feathers (unjudged).
 
 **Rule.** Treat any change that callers can observe in a signature, return values, error types, defaults, or side effects as breaking until a consumer check says otherwise.
 
@@ -140,7 +140,7 @@ flag orders_newest_first defaults off for one release".
 severity: should-fix  
 concerns: maintainability, process  
 applies_when: The change removes, rewrites or "simplifies" odd-looking existing code, or rewrites a module.  
-Backed by: Cursor, GetYourGuide, Red Hat. People cited: Joel Spolsky, Michael Feathers.
+Backed by: Cursor (unjudged), GetYourGuide (supports), Red Hat (supports). Backing: mixed. People cited: Joel Spolsky (unjudged), Michael Feathers (unjudged).
 
 **Rule.** Add a characterization test before rewriting code you do not understand.
 
@@ -168,7 +168,7 @@ severity: should-fix
 concerns: compatibility, maintainability  
 applies_when: The change adds a new API, path or config and every caller lives in this repo.  
 context: data  
-Backed by: Cursor, Stripe, Google, LLVM.
+Backed by: Cursor (unjudged), Stripe (unjudged), Google (supports), LLVM (supports). Backing: mixed.
 
 **Rule.** When no consumer sits outside the repo, move every caller to the new API and delete the old one, and the tests that pinned its internals, in the same change.
 
@@ -197,7 +197,7 @@ Backed by: Cursor, Stripe, Google, LLVM.
 severity: should-fix  
 concerns: compatibility, process  
 applies_when: The change renames an environment variable, remaps a port, moves a secret source, or adds a step needed to run or build the project.  
-Backed by: Cursor, GitLab, Spring.
+Backed by: Cursor (unjudged), GitLab (supports), Spring (supports). Backing: mixed.
 
 **Rule.** Flag a change that renames or removes an environment variable, moves a secret, or remaps a port as breaking for developers and operators, and update every place that documents or sets it.
 
@@ -226,7 +226,7 @@ severity: block
 concerns: compatibility  
 applies_when: The change renames, removes or reshapes a column, API field, message, config key or exported symbol that other code reads.  
 context: data  
-Backed by: Python Software Foundation, GitLab, Stripe, Kubernetes, Microsoft. People cited: Hyrum Wright.
+Backed by: Python Software Foundation (unjudged), GitLab (unjudged), Stripe (unjudged), Kubernetes (unjudged), Microsoft (unjudged). Backing: unjudged. People cited: Hyrum Wright (unjudged).
 
 **Rule.** Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.
 
@@ -253,7 +253,7 @@ ALTER TABLE users RENAME COLUMN name TO full_name;  -- app v1 still reads name
 severity: should-fix  
 concerns: correctness, maintainability  
 applies_when: The change adds code that solves a problem the codebase already solves somewhere.  
-Backed by: Google, The Pragmatic Engineer, Python Software Foundation, Microsoft.
+Backed by: Google (unjudged), The Pragmatic Engineer (unjudged), Python Software Foundation (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Follow the established pattern nearby.
 
@@ -283,7 +283,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: A migration adds a column to a large PostgreSQL table.  
 context: data  
-Backed by: PostgreSQL, PayPal, Retool.
+Backed by: PostgreSQL (unjudged), PayPal (supports), Retool (supports). Backing: mixed.
 
 **Rule.** Add the column nullable or with a constant default, then fill volatile, computed, or identity values in batches.
 
@@ -309,7 +309,7 @@ ALTER TABLE events ADD COLUMN token uuid;                 -- no rewrite
 severity: should-fix  
 concerns: security, process  
 applies_when: The change adds an endpoint, input parser, file upload, dependency, permission, secret or outbound call.  
-Backed by: Google, OWASP, Mozilla, Python Software Foundation.
+Backed by: Google (unjudged), OWASP (unjudged), Mozilla (unjudged), Python Software Foundation (supports). Backing: mixed.
 
 **Rule.** List any new attack surface in the description.
 
@@ -336,7 +336,7 @@ Security reviewer tagged. Randomness uses a crypto source.
 severity: should-fix  
 concerns: correctness, maintainability, process  
 applies_when: The diff adds a suppression (lint ignore, type ignore, skipped test, swallowed error) or deletes a failing check.  
-Backed by: Google, Palantir, Cursor, ESLint, Rust project.
+Backed by: Google (unjudged), Palantir (unjudged), Cursor (unjudged), ESLint (supports), Rust project (supports). Backing: mixed.
 
 **Rule.** Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
 
@@ -366,7 +366,7 @@ try: sync()
 severity: should-fix  
 concerns: process  
 applies_when: Every change.  
-Backed by: Linux kernel, Python Software Foundation, Phacility, Palantir.
+Backed by: Linux kernel (unjudged), Python Software Foundation (unjudged), Phacility (unjudged), Palantir (unjudged). Backing: unjudged.
 
 **Rule.** Make each change do one logical thing; if the description needs "and" between unrelated outcomes, split it.
 
@@ -392,7 +392,7 @@ PR 1: dependency bump.  PR 2: rename (no logic change).  PR 3: export button.
 severity: should-fix  
 concerns: performance, testing  
 applies_when: The change or its description claims a speed, throughput, memory or cost improvement.  
-Backed by: Cursor, Linux kernel, GitLab, Phacility.
+Backed by: Cursor (unjudged), Linux kernel (unjudged), GitLab (unjudged), Phacility (unjudged). Backing: unjudged.
 
 **Rule.** Back a performance claim with measured before-and-after numbers.
 
@@ -418,7 +418,7 @@ Median of 7 alternating runs: 412 ms -> 301 ms, range 398-421 vs 295-310.
 severity: should-fix  
 concerns: compatibility  
 applies_when: The diff changes an existing field's type, default, label or name in a `.proto` file.  
-Backed by: Google, Buf, Istio.
+Backed by: Google (unjudged), Buf (supports), Istio (supports). Backing: mixed.
 
 **Rule.** Never change the type of a protobuf field, switch it between repeated and scalar, or rename it while any consumer reads JSON or text format; add a new field instead.
 
@@ -449,7 +449,7 @@ message Invoice {
 severity: should-fix  
 concerns: compatibility  
 applies_when: The diff deletes a field or enum value from a `.proto` message or enum.  
-Backed by: Google, Microsoft, Deliveroo.
+Backed by: Google (unjudged), Microsoft (supports), Deliveroo (supports). Backing: mixed.
 
 **Rule.** When you delete a protobuf field or enum value, add `reserved` for its number and name in the same change, and never reuse a number.
 
@@ -481,7 +481,7 @@ message Order {
 severity: should-fix  
 concerns: testing, maintainability  
 applies_when: The change restructures code and claims to keep its behaviour.  
-Backed by: Cursor, GitHub, Stripe, SonarSource, JetBrains, Apache Software Foundation.
+Backed by: Cursor (unjudged), GitHub (unjudged), Stripe (unjudged), SonarSource (unjudged), JetBrains (unjudged), Apache Software Foundation (unjudged). Backing: unjudged.
 
 **Rule.** Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
 
@@ -507,7 +507,7 @@ Commit 2: the split. The same test passes unchanged.
 severity: should-fix  
 concerns: maintainability, process  
 applies_when: The change both restructures or reformats code and changes behaviour, or moves code between files.  
-Backed by: Linux kernel, Google, Apache Software Foundation, Python Software Foundation, LLVM. People cited: Henrik Warne, Kent Beck.
+Backed by: Linux kernel (unjudged), Google (unjudged), Apache Software Foundation (unjudged), Python Software Foundation (unjudged), LLVM (unjudged). Backing: unjudged. People cited: Henrik Warne (unjudged), Kent Beck (unjudged).
 
 **Rule.** Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
 
@@ -534,7 +534,7 @@ commit 2: fix off-by-one + test
 severity: should-fix  
 concerns: maintainability  
 applies_when: The change adds a helper, util, type or constant.  
-Backed by: GitHub, Cursor, Google, Linux kernel, Refactoring.Guru. People cited: Sébastien Portebois.
+Backed by: GitHub (unjudged), Cursor (unjudged), Google (unjudged), Linux kernel (unjudged), Refactoring.Guru (unjudged). Backing: unjudged. People cited: Sébastien Portebois (unjudged).
 
 **Rule.** Do not add a helper that duplicates one already in the repo; search for it first.
 
@@ -561,7 +561,7 @@ from utils.dates import parse_iso
 severity: discuss  
 concerns: process  
 applies_when: A reviewer is deciding what to comment on.  
-Backed by: Google, Slack, The Pragmatic Engineer, Microsoft, Meta, Anthropic.
+Backed by: Google (unjudged), Slack (unjudged), The Pragmatic Engineer (unjudged), Microsoft (unjudged), Meta (unjudged), Anthropic (unjudged). Backing: unjudged.
 
 **Rule.** Do not spend review comments on what a tool enforces or on minor style points; spend them on the findings that matter.
 
@@ -588,7 +588,7 @@ one nit. Formatting left to the formatter, which CI enforces.
 severity: should-fix  
 concerns: reliability  
 applies_when: The change deploys schema, data, config or behaviour that is costly to undo.  
-Backed by: Anthropic, Google, GitLab, Microsoft, AWS. People cited: tef (programmingisterrible).
+Backed by: Anthropic (unjudged), Google (unjudged), GitLab (supports), Microsoft (supports), AWS (supports). Backing: strong. People cited: tef (programmingisterrible) (unjudged).
 
 **Rule.** State in the description how to undo the change.
 
@@ -615,7 +615,7 @@ Behaviour behind a flag; canary at 5% with an abort rule.
 severity: discuss  
 concerns: process  
 applies_when: The diff exceeds roughly 400 changed lines or about 20 files and is not generated or a pure move.  
-Backed by: Google, Microsoft, SmartBear, The Pragmatic Engineer, US Department of Veterans Affairs, USGS, Apache Software Foundation, Godot Engine, Ethereum Foundation.
+Backed by: Google (unjudged), Microsoft (unjudged), SmartBear (unjudged), The Pragmatic Engineer (unjudged), US Department of Veterans Affairs (unjudged), USGS (unjudged), Apache Software Foundation (unjudged), Godot Engine (unjudged), Ethereum Foundation (unjudged). Backing: unjudged.
 
 **Rule.** Split a change past about 400 changed lines or about 20 files, or say in the description why not; aim for about 200.
 
@@ -640,7 +640,7 @@ Stack of 6 changes of 150-300 lines, each builds and passes tests alone.
 severity: block  
 concerns: testing  
 applies_when: The change alters behaviour of non-trivial code.  
-Backed by: Kubernetes, Python Software Foundation, Google, Rust project, Ruby on Rails, Microsoft, Mozilla.
+Backed by: Kubernetes (unjudged), Python Software Foundation (unjudged), Google (unjudged), Rust project (unjudged), Ruby on Rails (unjudged), Microsoft (unjudged), Mozilla (unjudged). Backing: unjudged.
 
 **Rule.** Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks.
 
@@ -668,7 +668,7 @@ severity: should-fix
 concerns: accessibility, usability, process  
 applies_when: The change alters markup, styles, or behaviour a user sees or operates.  
 context: ui  
-Backed by: W3C, WebAIM, GOV.UK, WordPress, Elastic, Mozilla.
+Backed by: W3C (unjudged), WebAIM (unjudged), GOV.UK (unjudged), WordPress (unjudged), Elastic (unjudged), Mozilla (unjudged). Backing: unjudged.
 
 **Rule.** A UI change shows before-and-after screenshots and says what a keyboard-only pass and a 200% zoom check found on the changed screens.
 
@@ -698,7 +698,7 @@ Not covered: screen reader, not tested.
 severity: block  
 concerns: testing, process  
 applies_when: The author or reviewer asserts the change works or a finding is real.  
-Backed by: Python Software Foundation, Phacility, Google, Anthropic, GitLab. People cited: Dan Luu.
+Backed by: Python Software Foundation (unjudged), Phacility (unjudged), Google (unjudged), Anthropic (unjudged), GitLab (unjudged). Backing: unjudged. People cited: Dan Luu (unjudged).
 
 **Rule.** Back every "works" or "bug" claim with something run: a repro, a test or command output.
 

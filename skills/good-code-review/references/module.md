@@ -6,7 +6,7 @@ severity: should-fix
 concerns: accessibility, usability  
 applies_when: A design-system module or theme defines foreground and background colour tokens.  
 context: ui  
-Backed by: W3C, Deque, The A11y Project, Apple, Google, WebAIM.
+Backed by: W3C (unjudged), Deque (unjudged), The A11y Project (unjudged), Apple (unjudged), Google (unjudged), WebAIM (unjudged). Backing: unjudged.
 
 **Rule.** Make every text and background token pair meet 4.5:1 (3:1 for large text), and every border, icon, and focus colour meet 3:1 against its neighbour.
 
@@ -43,7 +43,7 @@ test.each(pairs)("%s meets 4.5:1", (fg, bg) => expect(ratio(fg, bg)).toBeGreater
 severity: should-fix  
 concerns: compatibility, maintainability  
 applies_when: A schema, spec, enum or list owns a shape that other code restates by hand.  
-Backed by: Cursor, Uber, Stripe, Spotify.
+Backed by: Cursor (unjudged), Uber (unjudged), Stripe (unjudged), Spotify (unjudged). Backing: unjudged.
 
 **Rule.** Derive a type, list or enum from the schema or list that owns it, or add a build check that fails when the two disagree.
 
@@ -69,7 +69,7 @@ status.py is generated from openapi.yaml in the build, or a test asserts the two
 severity: should-fix  
 concerns: testing, maintainability  
 applies_when: A class uses a database, HTTP, cloud or clock collaborator.  
-Backed by: Microsoft, Symfony, Google.
+Backed by: Microsoft (supports), Symfony (supports), Google (supports). Backing: strong.
 
 **Rule.** Inject boundary collaborators through the constructor; do not construct them inside or reach for a global.
 
@@ -96,7 +96,7 @@ class Billing:
 severity: should-fix  
 concerns: maintainability  
 applies_when: A module has an intended public surface and internal files or symbols.  
-Backed by: Cursor, Google, Microsoft.
+Backed by: Cursor (unjudged), Google (supports), Microsoft (supports). Backing: mixed.
 
 **Rule.** Make a module's internals unimportable from outside it, and have a check fail the build when a caller reaches in.
 
@@ -121,7 +121,7 @@ billing/__init__.py exports calculate_tax; import-linter contract forbids billin
 severity: should-fix  
 concerns: maintainability  
 applies_when: The codebase has separable transport, logic, and outbound-boundary code.  
-Backed by: Microsoft, AWS, Netflix.
+Backed by: Microsoft (supports), AWS (supports), Netflix (supports). Backing: strong.
 
 **Rule.** Make dependencies point inward: surface, then logic, then boundary.
 
@@ -148,7 +148,7 @@ service takes plain domain types
 severity: should-fix  
 concerns: testing, maintainability  
 applies_when: A module does anything at import or load time other than defining names.  
-Backed by: Apache Software Foundation, Microsoft, Dagster, UK AI Security Institute.
+Backed by: Apache Software Foundation (supports), Microsoft (supports), Dagster (supports), UK AI Security Institute (supports). Backing: strong.
 
 **Rule.** Keep I/O at the edges: importing a package must not touch the network, read files, or read the environment.
 
@@ -175,7 +175,7 @@ def load_data(path): ...
 severity: should-fix  
 concerns: correctness, testing  
 applies_when: A constructor does work beyond assigning its arguments.  
-Backed by: Microsoft, Google, Meta.
+Backed by: Microsoft (supports), Google (supports), Meta (supports). Backing: strong.
 
 **Rule.** Assign only in constructors, and put I/O, parsing, and heavy computation in a named factory.
 
@@ -205,7 +205,7 @@ class PriceList:
 severity: should-fix  
 concerns: correctness, testing  
 applies_when: A module defines a variable that changes after load: a list, dict, counter, cache, client or singleton.  
-Backed by: Google, Uber, Microsoft.
+Backed by: Google (unjudged), Uber (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Keep no mutable state at module level.
 
@@ -242,7 +242,7 @@ class Loader:
 severity: should-fix  
 concerns: maintainability  
 applies_when: The diff adds or grows a module named `utils`, `helpers`, `common`, or `misc`.  
-Backed by: Google, GitLab, Feature-Sliced Design. People cited: Sébastien Portebois.
+Backed by: Google (supports), GitLab (supports), Feature-Sliced Design (supports). Backing: strong. People cited: Sébastien Portebois (unjudged).
 
 **Rule.** Put a helper in the module that owns the concept, or in a new module named after the concept.
 
@@ -267,7 +267,7 @@ dates.py, notifications.py, pricing.py, retry.py
 severity: should-fix  
 concerns: maintainability  
 applies_when: The change introduces or reuses names for domain concepts.  
-Backed by: Google, Ísland.is, TUM ESI, Microsoft. People cited: Sébastien Portebois.
+Backed by: Google (unjudged), Ísland.is (supports), TUM ESI (supports), Microsoft (supports). Backing: strong. People cited: Sébastien Portebois (unjudged).
 
 **Rule.** Use one name for one concept across the codebase.
 
@@ -294,7 +294,7 @@ def discover_structure(df): ...
 severity: should-fix  
 concerns: performance  
 applies_when: Code creates a network or database client.  
-Backed by: Microsoft, Google, Requests project, OpenJS Foundation.
+Backed by: Microsoft (unjudged), Google (unjudged), Requests project (unjudged), OpenJS Foundation (unjudged). Backing: unjudged.
 
 **Rule.** Build pooled clients once at startup and reuse them.
 
@@ -324,7 +324,7 @@ async Task<string> Fetch(string url) => await Client.GetStringAsync(url);
 severity: should-fix  
 concerns: compatibility  
 applies_when: A `.proto` file defines an enum.  
-Backed by: Google, Dropbox, Buf, Envoy, OpenTelemetry.
+Backed by: Google (unjudged), Dropbox (unjudged), Buf (supports), Envoy (supports), OpenTelemetry (supports). Backing: strong.
 
 **Rule.** Give every protobuf enum a zero value named `<ENUM>_UNSPECIFIED` with no real meaning.
 
@@ -356,7 +356,7 @@ enum Status {
 severity: should-fix  
 concerns: correctness  
 applies_when: More than one module, worker or process writes the same state.  
-Backed by: Cursor, Netflix, Cabify, GitHub.
+Backed by: Cursor (unjudged), Netflix (unjudged), Cabify (unjudged), GitHub (unjudged). Backing: unjudged.
 
 **Rule.** Let only one writer change a piece of state at a time, through a single owner, a queue that serialises the writes, or compare-and-swap, never by convention.
 
@@ -382,7 +382,7 @@ or: state/a.json and state/b.json, one writer each; readers merge them
 severity: block  
 concerns: security  
 applies_when: A module encrypts or decrypts data.  
-Backed by: OWASP, IETF, NIST, Google.
+Backed by: OWASP (unjudged), IETF (unjudged), NIST (unjudged), Google (unjudged). Backing: unjudged.
 
 **Rule.** Encrypt with an authenticated mode such as AES-GCM, and never reuse a nonce under one key.
 
@@ -409,7 +409,7 @@ ct = aead.encrypt(os.urandom(12), msg, aad)      # fresh nonce per message
 severity: should-fix  
 concerns: maintainability, process  
 applies_when: The code adds or keeps an abstraction, parameter, hook or option.  
-Backed by: Google, Wikimedia (MediaWiki), Microsoft, Shopify, NVIDIA. People cited: Kent C. Dodds, Martin Fowler, Henrik Warne.
+Backed by: Google (unjudged), Wikimedia (MediaWiki) (unjudged), Microsoft (unjudged), Shopify (unjudged), NVIDIA (unjudged). Backing: unjudged. People cited: Kent C. Dodds (unjudged), Martin Fowler (unjudged), Henrik Warne (unjudged).
 
 **Rule.** Do not build an abstraction or capability for a need that does not exist yet; add it when the need or a second use appears.
 
@@ -435,7 +435,7 @@ def send_welcome_email(user): ...
 severity: discuss  
 concerns: maintainability  
 applies_when: A Python class has no state, only static methods, or a `Protocol` with one implementation.  
-Backed by: Google. People cited: Pablo González.
+Backed by: Google (unjudged). Backing: unjudged. People cited: Pablo González (unjudged).
 
 **Rule.** Give a class real state or a collaborator; otherwise write a module function.
 
@@ -464,7 +464,7 @@ dates.py:  def parse(s): ...
 severity: discuss  
 concerns: correctness  
 applies_when: A pydantic model or settings class uses `Field()`.  
-Backed by: no organisation yet. People cited: Pablo González.
+Backed by: no organisation yet. People cited: Pablo González (unjudged).
 
 **Rule.** Use `Field()` only when it adds something (a constraint, an alias, or API docs), and set plain defaults directly.
 
@@ -490,7 +490,7 @@ max_batch_size: int = Field(default=500, gt=0, le=2_000)
 severity: should-fix  
 concerns: performance  
 applies_when: A Python service creates an `httpx` client.  
-Backed by: no organisation yet. People cited: Pablo González.
+Backed by: no organisation yet. People cited: Pablo González (unjudged).
 
 **Rule.** Pass an explicit `httpx.Timeout` to every `httpx` client.
 
@@ -521,7 +521,7 @@ async def lifespan(app):
 severity: should-fix  
 concerns: maintainability  
 applies_when: A Python module has imports.  
-Backed by: no organisation yet. People cited: Pablo González.
+Backed by: no organisation yet. People cited: Pablo González (unjudged).
 
 **Rule.** Put imports at module top, absolute only.
 
@@ -547,7 +547,7 @@ from app.billing.parsing import parse
 severity: should-fix  
 concerns: testing  
 applies_when: The code adds `test_init_*` or a test file for a plain model or dataclass.  
-Backed by: no organisation yet. People cited: Pablo González.
+Backed by: no organisation yet. People cited: Pablo González (unjudged).
 
 **Rule.** Cover `__init__` and plain models through the behaviour that uses them.
 
@@ -572,7 +572,7 @@ def test_welcome_email_uses_user_name(): ...
 severity: discuss  
 concerns: testing  
 applies_when: A Python test uses the current date or time, or reaches the network.  
-Backed by: no organisation yet. People cited: Pablo González.
+Backed by: no organisation yet. People cited: Pablo González (unjudged).
 
 **Rule.** Freeze time and block network in tests.
 

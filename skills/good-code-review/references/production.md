@@ -6,7 +6,7 @@ severity: should-fix
 concerns: accessibility, usability  
 applies_when: A new UI service or a major redesign is about to open to the public.  
 context: ui  
-Backed by: GOV.UK, W3C, Section508.gov, Deque, Government of British Columbia, US Department of Veterans Affairs.
+Backed by: GOV.UK (unjudged), W3C (unjudged), Section508.gov (unjudged), Deque (unjudged), Government of British Columbia (supports), US Department of Veterans Affairs (supports). Backing: mixed.
 
 **Rule.** Before a public launch, run an accessibility audit against WCAG 2.2 AA that includes assistive technology, and link the report in the launch checklist.
 
@@ -35,7 +35,7 @@ Launch checklist
 severity: should-fix  
 concerns: observability  
 applies_when: A service ships alerts or dashboards.  
-Backed by: Google, Prometheus, Grafana Labs, Datadog.
+Backed by: Google (unjudged), Prometheus (unjudged), Grafana Labs (unjudged), Datadog (unjudged). Backing: unjudged.
 
 **Rule.** Page on user-visible symptoms, such as error rate and latency, not on causes.
 
@@ -62,7 +62,7 @@ latency p50/p99 histogram, errors split from successes
 severity: block  
 concerns: reliability  
 applies_when: A change, config or dependency update is rolled out to production.  
-Backed by: Google, AWS, OWASP, Anthropic, Microsoft.
+Backed by: Google (unjudged), AWS (unjudged), OWASP (unjudged), Anthropic (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Roll out in stages behind a canary, and abort by rule, not by judgment.
 
@@ -90,7 +90,7 @@ deploy: all hosts at once, no comparison, rollback = "ask someone"
 severity: should-fix  
 concerns: reliability  
 applies_when: A new risky feature or a dependency fallback is added.  
-Backed by: AWS, Cloudflare, GitHub, Slack, Dropbox, Shopify, Anthropic.
+Backed by: AWS (unjudged), Cloudflare (unjudged), GitHub (unjudged), Slack (unjudged), Dropbox (unjudged), Shopify (unjudged), Anthropic (unjudged). Backing: unjudged.
 
 **Rule.** Make a risky feature switchable off without a deploy, and exercise every fallback path in test or in production on a schedule.
 
@@ -119,7 +119,7 @@ if flags.enabled("checkout_v2"):   # runtime toggle, default off
 severity: should-fix  
 concerns: performance, observability  
 applies_when: A latency SLO, dashboard, or alert is defined for a service.  
-Backed by: Google, AWS, Prometheus, OpenTelemetry, Microsoft.
+Backed by: Google (unjudged), AWS (unjudged), Prometheus (unjudged), OpenTelemetry (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Define latency SLOs and alerts on high percentiles, never on the mean.
 
@@ -146,7 +146,7 @@ SLO: 99% of requests under 300 ms over 28 days
 severity: should-fix  
 concerns: performance, reliability  
 applies_when: A new service, a new feature with its own traffic, or a large architecture change is about to launch.  
-Backed by: Google, Microsoft, AWS, Grafana Labs.
+Backed by: Google (unjudged), Microsoft (unjudged), AWS (unjudged), Grafana Labs (unjudged). Backing: unjudged.
 
 **Rule.** Load test before launch, past the expected peak, with pass and fail thresholds written down.
 
@@ -173,7 +173,7 @@ thresholds: p99 < 400 ms, errors < 0.1%; result linked in the launch doc
 severity: discuss  
 concerns: performance, observability  
 applies_when: A service runs in production where CPU, memory, or latency problems would need a diagnosis.  
-Backed by: Google, Grafana Labs, Python Software Foundation. People cited: Brendan Gregg.
+Backed by: Google (unjudged), Grafana Labs (unjudged), Python Software Foundation (unjudged). Backing: unjudged. People cited: Brendan Gregg (unjudged).
 
 **Rule.** Make a CPU and memory profile of a production instance obtainable, through a continuous profiler or a private profile endpoint.
 
@@ -201,7 +201,7 @@ severity: should-fix
 concerns: correctness, reliability  
 applies_when: Reads, writes, or a pipeline's traffic move from an old system to a new one, such as a new data store, a database upgrade, or a rewritten service.  
 context: data  
-Backed by: Netflix, Stripe, Airbnb, GitHub, American Express, Microsoft, Shopify.
+Backed by: Netflix (unjudged), Stripe (unjudged), Airbnb (unjudged), GitHub (unjudged), American Express (supports), Microsoft (supports), Shopify (supports). Backing: strong.
 
 **Rule.** Before you move traffic to a new system, run it beside the old one on live or captured production traffic, diff the results, and cut over only when every mismatch is fixed or explained.
 
@@ -236,7 +236,7 @@ def get_order(order_id):
 severity: discuss  
 concerns: reliability, observability  
 applies_when: A service has users or dependents who rely on its availability.  
-Backed by: Google, GitLab, Atlassian.
+Backed by: Google (supports), GitLab (supports), Atlassian (supports). Backing: strong.
 
 **Rule.** Define an SLO with an indicator and window, and use its remaining error budget to gate risky releases.
 
