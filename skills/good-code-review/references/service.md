@@ -6,6 +6,7 @@ severity: should-fix
 concerns: performance  
 applies_when: A service returns responses that a browser, CDN, gateway or client library may cache.  
 context: server  
+tool gate: Integration test or header lint that rejects a 200 GET without `Cache-Control`.  
 Backed by: IETF (unjudged), Zalando (unjudged), OWASP (supports). Backing: mixed.
 
 **Rule.** Set an explicit `Cache-Control` on every response a cache may store, use `private` or `no-store` for user-specific data, and add `Vary` for any request header that changes the body.
@@ -35,6 +36,7 @@ severity: should-fix
 concerns: correctness  
 applies_when: Two callers can update the same resource through PUT, PATCH or DELETE.  
 context: server  
+tool gate: Integration test that sends a write with a stale `If-Match` and expects 412.  
 Backed by: IETF (unjudged), Microsoft (unjudged), Zalando (unjudged). Backing: unjudged.
 
 **Rule.** Return an `ETag` on reads and honour `If-Match` on writes, answering 412 when the entity tag is stale.
@@ -64,6 +66,7 @@ severity: should-fix
 concerns: compatibility, testing  
 applies_when: A service calls, or is called by, another service owned by a different team or deployed on its own schedule.  
 context: server  
+tool gate: Contract test run in CI for both sides, and a gate that blocks deploy when a consumer's contract fails against the provider.  
 Backed by: Pact (unjudged), OpenAPI Initiative (unjudged), Microsoft (supports), Paradigma Digital (supports), Thoughtworks (supports). Backing: strong.
 
 **Rule.** Run a contract test for each cross-service call, derived from the consumer's real requests, and fail the provider's build when it breaks one.
@@ -92,6 +95,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: A service retires an endpoint, field, version or parameter that outside callers use.  
 context: server  
+tool gate: Middleware that adds both headers for routes tagged deprecated; a spec linter on `deprecated: true` without a sunset date; a dashboard counting calls that carry the headers.  
 Backed by: IETF (unjudged), Zalando (unjudged), OpenAPI Initiative (unjudged), GitHub (unjudged), Google (unjudged). Backing: unjudged.
 
 **Rule.** Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers.
@@ -123,6 +127,7 @@ severity: should-fix
 concerns: correctness, compatibility  
 applies_when: A service has an OpenAPI description, or callers depend on its error responses.  
 context: server  
+tool gate: Spec linter that requires 4xx and 5xx responses with a schema on every operation, and an example on each.  
 Backed by: OpenAPI Initiative (unjudged), Zalando (unjudged), Siemens (supports). Backing: mixed.
 
 **Rule.** Document every error status each operation can return, with a schema and one example.
@@ -157,6 +162,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: Callers of an HTTP or RPC API branch on the kind of error.  
 context: server  
+tool gate: Spec linter that requires an enumerated error `type` or `reason` per operation; a test that pins the codes.  
 Backed by: IETF (unjudged), Google (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Give each error a stable machine-readable code that callers branch on, and never make them parse the message text.
@@ -186,6 +192,7 @@ severity: discuss
 concerns: maintainability  
 applies_when: A service defines JSON fields, query parameters, headers or path segments for an HTTP API.  
 context: server  
+tool gate: Spec linter with a casing rule per location.  
 Backed by: Zalando (unjudged), Microsoft (unjudged), Google (supports), Kubernetes (supports). Backing: mixed.
 
 **Rule.** Use one casing convention per location (fields, query parameters, headers, paths) across the whole API, and state it in the API guide.
@@ -213,6 +220,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: A service returns errors from an HTTP API to other services or to clients.  
 context: server  
+tool gate: Middleware that builds every error body from one problem-details type; a test that fails on an error response without the media type.  
 Backed by: IETF (unjudged), Zalando (unjudged), UKHSA (supports). Backing: mixed.
 
 **Rule.** Return errors as `application/problem+json` with a `status` that equals the HTTP status, and leave stack traces and internal detail out.
@@ -247,6 +255,7 @@ severity: should-fix
 concerns: reliability  
 applies_when: A service answers 429 or 503 to HTTP callers.  
 context: server  
+tool gate: Integration test that forces a 429 and a 503 and asserts a `Retry-After` header.  
 Backed by: IETF (unjudged), Zalando (unjudged), Microsoft (supports), Shopify (supports), Slack (supports). Backing: strong.
 
 **Rule.** Send `Retry-After` on every 429 and 503, and set it no earlier than the time capacity returns.
@@ -277,6 +286,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: A service returns HTTP responses that callers or intermediaries interpret by status code.  
 context: server  
+tool gate: Integration tests asserting status and headers per operation; a spec linter for 201 and 405 responses.  
 Backed by: IETF (unjudged), Zalando (unjudged), Microsoft (supports). Backing: mixed.
 
 **Rule.** Return the most specific status code that fits: 201 with `Location` for a create, 405 with `Allow` for a wrong method, and a 4xx or 5xx for any failure.
@@ -306,6 +316,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: A service offers an HTTP API to callers you do not deploy together with it.  
 context: server  
+tool gate: Spec diff in CI that fails on a breaking change inside a published version.  
 Backed by: Zalando (unjudged), Microsoft (unjudged), Stripe (unjudged). Backing: unjudged.
 
 **Rule.** Write down one versioning scheme for the API, and ship no breaking change inside a version it has published.
@@ -335,6 +346,7 @@ severity: should-fix
 concerns: usability, performance  
 applies_when: A page loads images, embeds, fonts, ads, or fetched content after the first paint.  
 context: ui  
+tool gate: Lighthouse CI assertion on `cumulative-layout-shift`.  
 Backed by: Google (unjudged), Apple (unjudged), Nielsen Norman Group (unjudged), Mozilla (unjudged), WHATWG (unjudged), Shopify (supports), Cloudflare (supports). Backing: mixed.
 
 **Rule.** Reserve the space for late-loading content with set dimensions or an aspect ratio, so nothing already on screen moves.
@@ -363,6 +375,7 @@ severity: block
 concerns: security  
 applies_when: The service has a login, password-reset or one-time-code endpoint.  
 context: server  
+tool gate: Rate-limit middleware on auth routes; test that known and unknown users get identical responses.  
 Backed by: OWASP (unjudged), NIST (unjudged), PortSwigger (unjudged), Microsoft (unjudged), Okta (Auth0) (unjudged), Google (unjudged). Backing: unjudged.
 
 **Rule.** Limit failed attempts per account, and return the same message and status code whether or not the account exists.
@@ -392,6 +405,7 @@ severity: should-fix
 concerns: security  
 applies_when: The service has routes that need a signed-in user next to routes that are public.  
 context: server  
+tool gate: A framework fallback that requires authentication (ASP.NET Core `FallbackPolicy`, Django `LoginRequiredMiddleware`, Spring Security `anyRequest().authenticated()`); a test that calls every route without credentials and expects 401 or a login redirect unless the route is on the public list.  
 Backed by: MITRE (unjudged), Microsoft (unjudged), Django Software Foundation (unjudged), Spring (unjudged). Backing: unjudged.
 
 **Rule.** Require authentication on every route by default, and mark each public route by name.
@@ -424,6 +438,7 @@ severity: block
 concerns: security  
 applies_when: The service exposes routes or functions that different roles may call.  
 context: server  
+tool gate: Router that denies routes with no policy; a test that lists every route and its required role.  
 Backed by: OWASP (unjudged), PortSwigger (unjudged), AWS (unjudged), NIST (unjudged). Backing: unjudged.
 
 **Rule.** Route every request through one authorization layer that denies when no rule allows it.
@@ -488,6 +503,7 @@ severity: should-fix
 concerns: security  
 applies_when: A request parameter or body sets how many records, bytes, items or operations the server handles.  
 context: server  
+tool gate: Gateway request-size limit; schema `maxLength`/`maxItems`; test with a 10 MB body and `limit=1000000`.  
 Backed by: OWASP (unjudged), NIST (unjudged), Google (unjudged), Django Software Foundation (unjudged). Backing: unjudged.
 
 **Rule.** Cap every client-controlled size and count on the server: body bytes, string length, array items, page size and batch size.
@@ -581,6 +597,7 @@ severity: should-fix
 concerns: reliability, maintainability  
 applies_when: A command-line tool has a command that deletes, overwrites or sends something.  
 context: cli  
+tool gate: CLI test that runs the command with the preview flag and checks nothing changed.  
 Backed by: Kubernetes (unjudged), Git (unjudged), GNU Project (unjudged), GitHub (unjudged), Microsoft (unjudged), Google (unjudged), HashiCorp (unjudged), Cursor (unjudged). Backing: unjudged. People cited: Command Line Interface Guidelines (unjudged).
 
 **Rule.** Give a destructive command a preview flag that changes nothing and a flag that skips the confirmation prompt.
@@ -633,6 +650,7 @@ severity: should-fix
 concerns: correctness, maintainability  
 applies_when: The code ships a command-line tool that scripts or other programs may run.  
 context: cli  
+tool gate: CLI test that runs a failing command and checks the exit code and that stdout is empty.  
 Backed by: Google (unjudged), GitHub (unjudged), AWS (unjudged), HashiCorp (unjudged), The Open Group (unjudged), Heroku (unjudged), Rust project (unjudged). Backing: unjudged. People cited: Command Line Interface Guidelines (unjudged).
 
 **Rule.** Exit non-zero when a command fails, and write results to stdout and errors and progress to stderr.
@@ -665,6 +683,7 @@ severity: should-fix
 concerns: maintainability, process  
 applies_when: The code ships a command-line tool that scripts or agents may run.  
 context: cli  
+tool gate: CLI test that runs every command with stdin closed.  
 Backed by: GitHub (unjudged), Google (unjudged), HashiCorp (unjudged), Microsoft (unjudged), Cursor (unjudged). Backing: unjudged. People cited: Command Line Interface Guidelines (unjudged).
 
 **Rule.** Let the caller turn every prompt off with a flag or an environment variable, so the command never waits on a terminal.
@@ -706,6 +725,7 @@ severity: should-fix
 concerns: security  
 applies_when: The service sends CORS headers and browsers send credentials or cookies to it, or the API is not meant to be public. A public bearer-key API with `*` and no credentials is outside it.  
 context: server  
+tool gate: Integration test that sends a hostile `Origin` and asserts it is not echoed.  
 Backed by: OWASP (unjudged), Mozilla (unjudged), PortSwigger (unjudged), GitHub (unjudged). Backing: unjudged.
 
 **Rule.** Allow cross-origin access only to a fixed list of named origins, and never echo the request `Origin` header back unchecked.
@@ -736,6 +756,7 @@ severity: should-fix
 concerns: security  
 applies_when: The service serves HTML pages to browsers.  
 context: server  
+tool gate: Google CSP Evaluator on the policy; a CI header check against a staging URL.  
 Backed by: OWASP (unjudged), Mozilla (unjudged), Google (unjudged). Backing: unjudged.
 
 **Rule.** Send a `Content-Security-Policy` whose `script-src` uses a per-response nonce or script hashes, with `object-src 'none'` and `base-uri 'none'`.
@@ -763,6 +784,7 @@ severity: block
 concerns: security  
 applies_when: The service authenticates browsers with cookies and changes state on requests.  
 context: server  
+tool gate: Framework CSRF middleware enabled; test that a POST without the token returns 403.  
 Backed by: OWASP (unjudged), Mozilla (unjudged), Django Software Foundation (unjudged), IETF (unjudged). Backing: unjudged.
 
 **Rule.** Require a CSRF token (or an equivalent header check) on every cookie-authenticated request that changes state, and never change state on GET.
@@ -792,6 +814,7 @@ severity: should-fix
 concerns: reliability  
 applies_when: The code consumes from a queue or stream.  
 context: server  
+tool gate: A config check that every consumed queue has a dead-letter target (for SQS in Terraform, a `redrive_policy` with `maxReceiveCount`), and an alarm on dead-letter queue depth.  
 Backed by: AWS (unjudged), Netflix (unjudged), Dropbox (unjudged), Notion (supports), Uber (supports). Backing: mixed.
 
 **Rule.** Give every consumer queue a dead-letter queue and a way to replay its messages after the fix.
@@ -831,6 +854,7 @@ severity: should-fix
 concerns: security  
 applies_when: The service reads configuration for authentication, an allow-list, a safety check, or a signing secret.  
 context: server  
+tool gate: A startup check that raises on a missing or placeholder secret (Django refuses an unset `SECRET_KEY`; Pydantic Settings fields without a default); a test that boots the service with an empty environment and expects a failed start or denied requests.  
 Backed by: OWASP (unjudged), Microsoft (unjudged), Google (unjudged), Django Software Foundation (unjudged), MITRE (unjudged), AWS (unjudged), CISA (unjudged), NIST (unjudged). Backing: unjudged.
 
 **Rule.** Ship every security control switched on, with an empty allow-list denying everything.
@@ -903,6 +927,7 @@ severity: should-fix
 concerns: correctness, reliability  
 applies_when: A handler takes a number, an id, a header or a body field from the caller and uses it in a query, a calculation or an encoder.  
 context: server  
+tool gate: Schema or model constraints on every field (minimum, maximum, enum, format); a test that posts a negative number, an unknown id and a non-ASCII header and expects a 4xx.  
 Backed by: OWASP (unjudged), Google (unjudged), Kubernetes (unjudged), IETF (unjudged), Microsoft (unjudged), Stripe (unjudged). Backing: unjudged.
 
 **Rule.** Check each caller-supplied value against its allowed domain (range, allowed set, an id that must exist, an encoding the code can handle) at the boundary, and answer a failed check with a 4xx, never a 5xx.
@@ -951,6 +976,7 @@ severity: should-fix
 concerns: performance  
 applies_when: The service exposes an endpoint or RPC that returns a collection.  
 context: server  
+tool gate: Contract test that calls the list with a huge page size and asserts the clamp or a 400.  
 Backed by: Google (unjudged), Microsoft (unjudged), Zalando (unjudged), GitHub (unjudged), Stripe (unjudged). Backing: unjudged.
 
 **Rule.** Paginate every list endpoint, with a default page size and a server-side maximum.
@@ -979,6 +1005,7 @@ severity: should-fix
 concerns: usability, accessibility  
 applies_when: A multi-step flow, such as checkout or signup, asks for data in more than one step.  
 context: ui  
+tool gate: none; a walk through the flow that lists each field asked twice.  
 Backed by: W3C (unjudged), Nielsen Norman Group (unjudged), GOV.UK (unjudged), Baymard Institute (unjudged). Backing: unjudged. People cited: Ben Shneiderman (unjudged).
 
 **Rule.** Do not ask for information the user already gave in the same flow. Fill it in, or let the user pick it.
@@ -1069,6 +1096,7 @@ severity: should-fix
 concerns: accessibility, usability  
 applies_when: A page or app is served to browsers on screens of any size.  
 context: ui  
+tool gate: axe `meta-viewport`; a rendered check at a 320 px viewport and at 200% text zoom.  
 Backed by: W3C (unjudged), Deque (unjudged), The A11y Project (unjudged), WebAIM (unjudged), Mozilla (unjudged), Google (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Make the page usable at 320 CSS pixels wide and at 200% text zoom, with no sideways scrolling, no clipped content, and no blocked pinch-zoom.
@@ -1169,6 +1197,7 @@ severity: block
 concerns: security  
 applies_when: The service sets a session cookie or session ID after login.  
 context: server  
+tool gate: Header test on the login response; session fixation test in the end-to-end suite.  
 Backed by: OWASP (unjudged), Mozilla (unjudged), NIST (unjudged), Spring (unjudged), Ruby on Rails (unjudged). Backing: unjudged.
 
 **Rule.** Issue a new session ID at login, and set `Secure`, `HttpOnly` and `SameSite` on the session cookie.
@@ -1197,6 +1226,7 @@ severity: should-fix
 concerns: usability, accessibility  
 applies_when: A page action, such as a save, an upload, a search, or a page load, can take more than about a second.  
 context: ui  
+tool gate: none; throttle the network and run the action.  
 Backed by: Nielsen Norman Group (unjudged), Apple (unjudged), W3C (unjudged), Microsoft (unjudged), Atlassian (unjudged). Backing: unjudged. People cited: Ben Shneiderman (unjudged).
 
 **Rule.** Show that a slow action is under way, and show its progress when it runs long.
@@ -1227,6 +1257,7 @@ severity: block
 concerns: security  
 applies_when: The code builds a SQL query that includes request data or other untrusted input.  
 context: server, data  
+tool gate: Bandit B608 (`hardcoded_sql_expressions`), CodeQL `py/sql-injection`.  
 Backed by: OWASP (unjudged), Python Software Foundation (unjudged), GitHub (unjudged), PortSwigger (unjudged), Google (unjudged). Backing: unjudged.
 
 **Rule.** Pass untrusted data to queries as bound parameters, never by string concatenation or formatting.
@@ -1254,6 +1285,7 @@ db.execute("SELECT * FROM users WHERE name = ?", (name,))
 severity: should-fix  
 concerns: performance  
 applies_when: A handler reads, transforms, or returns a result whose size depends on the data (files, query results, response bodies).  
+tool gate: Memory limit in tests with a large fixture.  
 Backed by: OpenJS Foundation (unjudged), PostgreSQL (supports), Reactive Streams (supports). Backing: mixed.
 
 **Rule.** Process large results as a stream with backpressure; do not load them whole into memory.
@@ -1315,6 +1347,7 @@ severity: should-fix
 concerns: security  
 applies_when: The service or its load balancer terminates TLS.  
 context: server  
+tool gate: testssl.sh or a similar scan against the public endpoint in CI; the load balancer's named security policy checked in config review.  
 Backed by: IETF (unjudged), NIST (unjudged), OWASP (unjudged), Microsoft (unjudged). Backing: unjudged.
 
 **Rule.** Accept only TLS 1.2 and TLS 1.3 on servers.
@@ -1342,6 +1375,7 @@ ctx.minimum_version = ssl.TLSVersion.TLSv1_2
 severity: should-fix  
 concerns: reliability  
 applies_when: The code replaces its own binary or an installed program with a new version.  
+tool gate: Test that makes the final step fail and checks the old version still runs.  
 Backed by: Microsoft (unjudged), Google (unjudged), Mender (unjudged). Backing: unjudged. People cited: go-update (Alan Shreve) (unjudged).
 
 **Rule.** When an update fails, restore the previous version instead of leaving a missing or half-written one.
@@ -1423,6 +1457,7 @@ severity: block
 concerns: security  
 applies_when: The service accepts file uploads.  
 context: server  
+tool gate: Upload tests with a renamed `.php`, an oversized file and a zip bomb.  
 Backed by: OWASP (unjudged), Microsoft (unjudged), PortSwigger (unjudged), Django Software Foundation (unjudged). Backing: unjudged.
 
 **Rule.** Allowlist the file type, cap the size, and store each upload under a generated name where the server will not execute it.
@@ -1450,6 +1485,7 @@ file.save(STORE / f"{uuid4()}.bin")   # outside web root; served by /files/<id>
 severity: should-fix  
 concerns: reliability, correctness  
 applies_when: Async code catches exceptions around awaits or uses asyncio.timeout.  
+tool gate: Ruff BLE001 / S110 for broad swallow; lint for CancelledError needs custom rule.  
 Backed by: Python Software Foundation (unjudged). Backing: unjudged. People cited: Pablo González (unjudged).
 
 **Rule.** Re-raise `CancelledError` (do not catch it via bare `except` or `BaseException`), and catch `TimeoutError` outside the `asyncio.timeout()` block.
@@ -1482,6 +1518,7 @@ except TimeoutError:
 severity: should-fix  
 concerns: correctness  
 applies_when: Python code calls asyncio.create_task or ensure_future.  
+tool gate: Ruff RUF006 (asyncio-dangling-task).  
 Backed by: Python Software Foundation (unjudged). Backing: unjudged. People cited: Pablo González (unjudged).
 
 **Rule.** Never discard the result of `create_task`; keep a reference and surface its exceptions, preferably through a `TaskGroup`.

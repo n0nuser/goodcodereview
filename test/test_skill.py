@@ -103,3 +103,16 @@ def test_focused_skills_meet_the_spec(path: Path) -> None:
     assert re.search(rf"(?m)^name: {re.escape(path.parent.name)}$", front)
     assert 0 < len(json.loads(re.search(r'(?m)^description: (".*")$', front)[1])) <= DESCRIPTION_MAX
     assert len(text.splitlines()) < SKILL_LINES_MAX
+
+
+def test_skill_names_every_depth_and_llms_points_to_them(site_text: dict[str, str]) -> None:
+    skill = SKILL_MD.read_text()
+    assert "## Depth" in skill
+    for depth in ("quick", "default", "deep", "audit"):
+        assert f"| `{depth}` |" in skill
+        assert f"`{depth}`" in site_text["llms.txt"]
+
+
+def test_references_show_the_tool_gate_of_a_gated_card() -> None:
+    text = (SKILL / "references" / "function.md").read_text()
+    assert "\ntool gate: " in text

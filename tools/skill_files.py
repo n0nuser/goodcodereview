@@ -22,6 +22,9 @@ from prose import (
     AUDIT_MD,
     AUDIT_SECTION,
     DATA_RULE,
+    DEPTH_RULE,
+    DEPTH_SHORT,
+    DEPTH_TABLE,
     DESIGN_NOTE,
     DIFF_RULE,
     DRAFT_NOTE,
@@ -90,10 +93,15 @@ def draft_line(card: Card) -> str:
     return index_line(card) + f" {backers(card)}" + (f" Lacks ({draft_lack.reason}): {draft_lack.note}" if draft_lack else "")
 
 
+def _gate_line(card: Card) -> str:
+    gate = card.fm.get("tool_gate", "none")
+    return f"tool gate: {gate}  \n" if gate and gate != "none" else ""
+
+
 def card_section(card: Card) -> str:
     fm = card.fm
     return (f"## {fm['id']}\n\nseverity: {fm['severity']}  \nconcerns: {', '.join(concerns(card))}  \napplies_when: {fm['applies_when']}  \n"
-            f"{_context_line(card)}{backers(card)}\n\n{card.body.strip()}")
+            f"{_context_line(card)}{_gate_line(card)}{backers(card)}\n\n{card.body.strip()}")
 
 
 def draft_section(card: Card) -> str:
@@ -132,13 +140,13 @@ _SCOPE = ["## Scope by concern", "",
 
 
 def _skill_scope() -> list[str]:
-    """The Scope by concern section of SKILL.md."""
-    return [*_SCOPE, SCOPE_GREP, ""]
+    """The Depth and Scope by concern sections of SKILL.md."""
+    return ["## Depth", "", *DEPTH_TABLE, "", DEPTH_RULE, "", *_SCOPE, SCOPE_GREP, ""]
 
 
 def _llms_scope() -> list[str]:
-    """The Scope by concern section of llms.txt, which says "in braces" because its index lines show concerns in braces."""
-    return [_SCOPE[0], _SCOPE[1], _SCOPE[2].replace("lists its concerns:", "lists its concerns in braces:"), _SCOPE[3], ""]
+    """The Depth line and Scope by concern section of llms.txt, which says "in braces" because its index lines show concerns in braces."""
+    return [DEPTH_SHORT, "", _SCOPE[0], _SCOPE[1], _SCOPE[2].replace("lists its concerns:", "lists its concerns in braces:"), _SCOPE[3], ""]
 
 
 def _skill_md(b: BuildInput, empty: list[Level]) -> SkillMd:
