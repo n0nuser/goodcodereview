@@ -3,14 +3,15 @@ id: fn-distinct-types-for-ids
 level: function
 tags: [correctness, types]
 severity: should-fix
-status: draft
-lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
+status: stable
 lang: core
 applies_when: A function takes two or more arguments of one primitive type that mean different things (ids, amounts, units).
 tool_gate: Type checker with a newtype or branded-type pattern.
 note: one vendor's engineering guidance (opinion), from pstack principle-type-system-discipline
 borrowed_from:
   - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-type-system-discipline/SKILL.md
+  - https://rust-lang.github.io/api-guidelines/type-safety.html
+  - https://docs.python.org/3/library/typing.html#typing.NewType
 ---
 
 **Rule.** Give arguments with different meanings distinct types, so a call that swaps them fails to type-check.

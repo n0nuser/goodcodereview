@@ -3,12 +3,14 @@ id: fn-bool-arg-at-callsite
 level: function
 tags: [maintainability, readability, api]
 severity: discuss
-status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+status: stable
 lang: core
 applies_when: A call passes a literal `True` or `False` for a parameter.
 tool_gate: ruff FBT
-borrowed_from: []
+borrowed_from:
+  - https://kotlinlang.org/docs/coding-conventions.html
+  - https://www.swift.org/documentation/api-design-guidelines/
+  - https://docs.astral.sh/ruff/rules/boolean-positional-value-in-call/
 note: from the author's own Python review guide
 ---
 

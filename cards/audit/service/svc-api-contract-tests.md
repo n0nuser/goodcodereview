@@ -3,8 +3,7 @@ id: svc-api-contract-tests
 level: service
 tags: [compatibility, testing, api, contracts]
 severity: should-fix
-status: draft
-lacks: orgs, Pact is the only backer; OpenAPI does not back contract tests and provider verification is not asserted
+status: stable
 note: the Pact page read does not describe provider verification or the broker; those steps are not asserted here
 lang: core
 applies_when: A service calls, or is called by, another service owned by a different team or deployed on its own schedule.
@@ -13,6 +12,9 @@ tool_gate: Contract test run in CI for both sides, and a gate that blocks deploy
 borrowed_from:
   - https://docs.pact.io/
   - https://spec.openapis.org/oas/v3.1.0.html
+  - https://devblogs.microsoft.com/ise/pact-contract-testing-because-not-everything-needs-full-integration-tests
+  - https://en.paradigmadigital.com/dev/architecture-patterns-microservices-consumer-driven-contract-testing/
+  - https://www.thoughtworks.com/radar/techniques/consumer-driven-contract-testing
 ---
 
 **Rule.** Run a contract test for each cross-service call, derived from the consumer's real requests, and fail the provider's build when it breaks one.

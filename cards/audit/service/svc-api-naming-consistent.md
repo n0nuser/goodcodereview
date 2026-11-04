@@ -3,8 +3,7 @@ id: svc-api-naming-consistent
 level: service
 tags: [maintainability, api, naming]
 severity: discuss
-status: draft
-lacks: orgs, Zalando and Microsoft back it, and they disagree on casing; needs a third org that asks for consistency
+status: stable
 note: Zalando and Microsoft disagree on the convention, so the card checks consistency, not the choice
 lang: core
 applies_when: A service defines JSON fields, query parameters, headers or path segments for an HTTP API.
@@ -13,6 +12,8 @@ tool_gate: Spec linter with a casing rule per location.
 borrowed_from:
   - https://opensource.zalando.com/restful-api-guidelines/
   - https://github.com/microsoft/api-guidelines/blob/vNext/azure/Guidelines.md
+  - https://google.aip.dev/140
+  - https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md
 ---
 
 **Rule.** Use one casing convention per location (fields, query parameters, headers, paths) across the whole API, and state it in the API guide.

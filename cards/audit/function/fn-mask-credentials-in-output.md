@@ -3,8 +3,7 @@ id: fn-mask-credentials-in-output
 level: function
 tags: [security, secrets, usability]
 severity: should-fix
-status: draft
-lacks: orgs, GitHub and Django state masking for display; GitLab covers CI logs and OWASP covers logs, so the list/show clause has two organisations
+status: stable
 lang: core
 applies_when: A CLI command, admin page or debug view prints stored configuration that can include tokens, API keys, or URLs with embedded secrets.
 context: [cli]
@@ -15,6 +14,9 @@ borrowed_from:
   - https://docs.djangoproject.com/en/5.2/ref/settings/
   - https://docs.gitlab.com/ci/variables/
   - https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html
+  - https://docs.aws.amazon.com/cli/latest/reference/configure/list.html
+  - https://kubernetes.io/docs/reference/kubectl/generated/kubectl_config/kubectl_config_view/
+  - https://www.pulumi.com/docs/iac/concepts/secrets/
 ---
 
 **Rule.** Mask credentials in list, show and debug output (keep only the last four characters), and print a full value only behind an explicit flag.

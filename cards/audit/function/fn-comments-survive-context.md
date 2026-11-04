@@ -3,8 +3,7 @@ id: fn-comments-survive-context
 level: function
 tags: [maintainability, docs]
 severity: should-fix
-status: draft
-lacks: orgs, Google's three style guides back a dated or event-based TODO; no second org found that bans "currently" or "for now" comments
+status: stable
 lang: core
 applies_when: A comment or TODO says "currently", "for now", "not yet", "see the PR" or promises future work.
 tool_gate: none
@@ -14,6 +13,8 @@ borrowed_from:
   - https://google.github.io/styleguide/pyguide.html
   - https://google.github.io/styleguide/javaguide.html
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
+  - https://docs.webkit.org/Deep%20Dive/Web%20Inspector/Compatibility.html
+  - https://github.com/PostHog/posthog/blob/master/.agents/skills/writing-code-comments/SKILL.md
 ---
 
 **Rule.** Write comments that remain true without outside context: no "currently", "for now" or "see the PR", and give a TODO the date or event that ends it.

@@ -64,6 +64,88 @@ status.py is generated from openapi.yaml in the build, or a test asserts the two
 
 **Counterpoint.** "Generated code is awkward to read." A parity test gives the same safety with hand-written types. The rule fails only when neither derivation nor a check exists.
 
+## mod-inject-boundary-collaborators
+
+severity: should-fix  
+concerns: testing, maintainability  
+applies_when: A class uses a database, HTTP, cloud or clock collaborator.  
+Backed by: Microsoft, Symfony, Google.
+
+**Rule.** Inject boundary collaborators through the constructor; do not construct them inside or reach for a global.
+
+**Why.** Hard-wired collaborators force tests to patch module internals and tie the class to one environment.
+
+**FAIL**
+
+```text
+class Billing:
+    def charge(self, o): return StripeClient(KEY).charge(o)
+```
+
+**PASS**
+
+```text
+class Billing:
+    def __init__(self, gateway): self._gateway = gateway
+```
+
+**Counterpoint.** "Injection everywhere is enterprise bloat." Inject only the boundary (DB, HTTP, cloud, clock). Internal collaborators stay plain and real in tests.
+
+## mod-internals-unreachable
+
+severity: should-fix  
+concerns: maintainability  
+applies_when: A module has an intended public surface and internal files or symbols.  
+Backed by: Cursor, Google, Microsoft.
+
+**Rule.** Make a module's internals unimportable from outside it, and have a check fail the build when a caller reaches in.
+
+**Why.** Anything a caller can import becomes the interface. A naming convention such as a leading underscore stops no one, and the module can no longer change its internals without breaking callers.
+
+**FAIL**
+
+```python
+from billing.internal.tax_tables import RATES   # nothing stops this
+```
+
+**PASS**
+
+```text
+billing/__init__.py exports calculate_tax; import-linter contract forbids billing.internal.* from outside billing
+```
+
+**Counterpoint.** "A boundary check is overhead for a small repo." One lint contract is cheap, and the first outside import of an internal costs more. For a single-file module, there is no inside to protect, so mark `N/A`.
+
+## mod-no-logic-in-constructors
+
+severity: should-fix  
+concerns: correctness, testing  
+applies_when: A constructor does work beyond assigning its arguments.  
+Backed by: Microsoft, Google, Meta.
+
+**Rule.** Assign only in constructors, and put I/O, parsing, and heavy computation in a named factory.
+
+**Why.** A constructor with side effects makes every instantiation, including in tests, read a file or call an API. You need a real resource or a patch just to build the object.
+
+**FAIL**
+
+```text
+class PriceList:
+    def __init__(self, path):
+        self._prices = json.loads(path.read_text())
+```
+
+**PASS**
+
+```text
+class PriceList:
+    def __init__(self, prices): self._prices = prices
+    @classmethod
+    def from_file(cls, path): ...
+```
+
+**Counterpoint.** "A factory per class is ceremony." For a value object with no I/O, there is nothing to factor out. The rule targets constructors that read, call, or parse. With the factory, the test builds the object in one line.
+
 ## mod-no-module-mutable-state
 
 severity: should-fix  
@@ -101,6 +183,31 @@ class Loader:
 
 **Counterpoint.** "A module global is the simplest cache." It is also unbounded and shared by everything. If you need one, bound it (LRU or TTL), inject it, and tie its lifetime to what it caches.
 
+## mod-no-utils-grab-bag
+
+severity: should-fix  
+concerns: maintainability  
+applies_when: The diff adds or grows a module named `utils`, `helpers`, `common`, or `misc`.  
+Backed by: Google, GitLab, Feature-Sliced Design. People cited: Sébastien Portebois.
+
+**Rule.** Put a helper in the module that owns the concept, or in a new module named after the concept.
+
+**Why.** A grab-bag has no owner and no cohesion. It becomes the dependency of everything and the place where unrelated code accretes.
+
+**FAIL**
+
+```text
+utils.py: parse_date, send_email, price_with_tax, retry
+```
+
+**PASS**
+
+```text
+dates.py, notifications.py, pricing.py, retry.py
+```
+
+**Counterpoint.** "Tiny helpers do not deserve a file." Then inline them where they are used (YAGNI applies). When one is shared, naming its concept is the work that makes it findable.
+
 ## mod-pooled-clients-built-once
 
 severity: should-fix  
@@ -130,6 +237,38 @@ async Task<string> Fetch(string url) => await Client.GetStringAsync(url);
 ```
 
 **Counterpoint.** "A throwaway client is simpler." For a one-off script, yes (scope it with `with`). On a server path it exhausts sockets under load.
+
+## mod-proto-enum-zero-unspecified
+
+severity: should-fix  
+concerns: compatibility  
+applies_when: A `.proto` file defines an enum.  
+Backed by: Google, Dropbox, Buf, Envoy, OpenTelemetry.
+
+**Rule.** Give every protobuf enum a zero value named `<ENUM>_UNSPECIFIED` with no real meaning.
+
+**Why.** A reader that sees an unset or unknown field gets zero. If zero means a real state, such as `PAID`, a missing field reads as a payment.
+
+**FAIL**
+
+```proto
+enum Status {
+  PAID = 0;
+  REFUNDED = 1;
+}
+```
+
+**PASS**
+
+```proto
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  PAID = 1;
+  REFUNDED = 2;
+}
+```
+
+**Counterpoint.** "Zero as the common default saves a field on the wire." The saving is a byte on a field already at its most common value, and the cost is a silent wrong state. Published enums keep their numbers, so the fix for an existing enum is a new unspecified name only if no value has to be renumbered.
 
 ## mod-single-writer-per-state
 

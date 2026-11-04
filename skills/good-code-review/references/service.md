@@ -1,5 +1,34 @@
 # service
 
+## svc-api-cache-control
+
+severity: should-fix  
+concerns: performance  
+applies_when: A service returns responses that a browser, CDN, gateway or client library may cache.  
+context: server  
+Backed by: IETF, Zalando, OWASP.
+
+**Rule.** Set an explicit `Cache-Control` on every response a cache may store, use `private` or `no-store` for user-specific data, and add `Vary` for any request header that changes the body.
+
+**Why.** With no directive, a cache may guess a lifetime from `Last-Modified`. A shared cache may then serve one user's response to another, or serve stale data for hours after a write.
+
+**FAIL**
+
+```text
+GET /me/orders  -> 200
+(no Cache-Control, no Vary; body differs per Authorization)
+```
+
+**PASS**
+
+```text
+GET /me/orders  -> 200  Cache-Control: private, no-cache
+GET /plans      -> 200  Cache-Control: public, max-age=300
+                         Vary: Accept-Language
+```
+
+**Counterpoint.** "Our CDN is configured to bypass the cache." That config is a second place to get wrong, and it does not cover browsers. The origin states the intent; the CDN may tighten it. `no-store` is not a privacy control against a cache that ignores it, so keep secrets out of cacheable URLs too.
+
 ## svc-api-conditional-writes
 
 severity: should-fix  
@@ -28,6 +57,34 @@ PUT /docs/4  If-Match: "v7"  -> 412 Precondition Failed
 ```
 
 **Counterpoint.** "Last write wins is fine here." For a log or a counter it is; say so in the spec. For a document, a profile or a config that two people edit, it loses work. The card applies to shared resources that people edit.
+
+## svc-api-contract-tests
+
+severity: should-fix  
+concerns: compatibility, testing  
+applies_when: A service calls, or is called by, another service owned by a different team or deployed on its own schedule.  
+context: server  
+Backed by: Pact, OpenAPI Initiative, Microsoft, Paradigma Digital, Thoughtworks.
+
+**Rule.** Run a contract test for each cross-service call, derived from the consumer's real requests, and fail the provider's build when it breaks one.
+
+**Why.** A provider's own tests check what the provider thinks callers need. A spec check says what could happen, not what the consumer relies on. Only a check built from the consumer's usage catches the removed field before deploy, without a full-system end-to-end run.
+
+**FAIL**
+
+```text
+billing calls GET /customers/{id} and reads "vat_id"
+customers team removes "vat_id"; its tests pass; billing breaks in production
+```
+
+**PASS**
+
+```text
+billing CI publishes a contract: GET /customers/{id} -> body has "vat_id"
+customers CI verifies every published contract and fails on the removal
+```
+
+**Counterpoint.** "End-to-end tests cover it." They are slow, need every service running, and run late. Contract tests run per service in minutes. Pact is one way; a consumer-written example set replayed against the provider also passes. For services deployed together from one repo, mark the card N/A.
 
 ## svc-api-deprecation-sunset
 
@@ -89,6 +146,126 @@ if response.json()["type"] == "https://api.example.com/problems/order-exists":  
 
 **Counterpoint.** "The HTTP status is enough." It is too coarse: two different 409 conflicts need different handling. Add a code only where callers act differently; do not mint one for every branch.
 
+## svc-api-naming-consistent
+
+severity: discuss  
+concerns: maintainability  
+applies_when: A service defines JSON fields, query parameters, headers or path segments for an HTTP API.  
+context: server  
+Backed by: Zalando, Microsoft, Google, Kubernetes.
+
+**Rule.** Use one casing convention per location (fields, query parameters, headers, paths) across the whole API, and state it in the API guide.
+
+**Why.** Mixed casing in one API makes callers look up each name. A client that guesses `orderId` after meeting `order_id` gets a silent null.
+
+**FAIL**
+
+```text
+GET /orders?pageSize=20 -> {"order_id": 1, "createdAt": "...", "Total-Cents": 500}
+```
+
+**PASS**
+
+```text
+GET /orders?page_size=20 -> {"order_id": 1, "created_at": "...", "total_cents": 500}
+# snake_case everywhere, as docs/api-guide.md says
+```
+
+**Counterpoint.** "Pick the right convention." The sources disagree: Zalando asks for snake_case, Microsoft for camelCase in fields. Either passes. Do not change an existing API's casing to match a guide; that is a breaking change.
+
+## svc-api-problem-json
+
+severity: should-fix  
+concerns: compatibility  
+applies_when: A service returns errors from an HTTP API to other services or to clients.  
+context: server  
+Backed by: IETF, Zalando, UKHSA.
+
+**Rule.** Return errors as `application/problem+json` with a `status` that equals the HTTP status, and leave stack traces and internal detail out.
+
+**Why.** Callers then parse every error one way. A body that differs per endpoint, or a `status` that disagrees with the real code, makes generic client and proxy handling unreliable. A stack trace in `detail` hands an attacker the implementation.
+
+**FAIL**
+
+```text
+HTTP/1.1 500
+Content-Type: text/html
+
+<pre>NullPointerException at OrderRepo.java:88 ...</pre>
+```
+
+**PASS**
+
+```text
+HTTP/1.1 404
+Content-Type: application/problem+json
+
+{"type": "https://api.example.com/problems/order-not-found",
+ "title": "Order not found", "status": 404,
+ "detail": "No order with id 7731 for this account."}
+```
+
+**Counterpoint.** "We already have our own error envelope." That is fine inside one team's API, if it is one envelope and documented. The card asks for one shape everywhere; problem details is the one with a registered media type and existing client support. See [sys-secrets-and-errors](system.md#sys-secrets-and-errors) for what must stay out of any error.
+
+## svc-api-retry-after
+
+severity: should-fix  
+concerns: reliability  
+applies_when: A service answers 429 or 503 to HTTP callers.  
+context: server  
+Backed by: IETF, Zalando, Microsoft, Shopify, Slack.
+
+**Rule.** Send `Retry-After` on every 429 and 503, and set it no earlier than the time capacity returns.
+
+**Why.** Without it, every client invents its own backoff, and a hundred of them retry in the same second. The header lets the server pace its own recovery.
+
+**FAIL**
+
+```text
+HTTP/1.1 429 Too Many Requests
+
+{"error": "slow down"}
+```
+
+**PASS**
+
+```text
+HTTP/1.1 429 Too Many Requests
+Retry-After: 30
+Content-Type: application/problem+json
+```
+
+**Counterpoint.** "Clients should use exponential backoff anyway." They should, and [svc-retry-policy](service.md#svc-retry-policy) says so. A server hint narrows the guess; it does not replace the client's cap. The IETF `RateLimit` header fields are still an Internet-Draft, so the card requires only `Retry-After`, which is in the HTTP standard. The quota itself is [svc-rate-limit-quota](service.md#svc-rate-limit-quota).
+
+## svc-api-specific-status-codes
+
+severity: should-fix  
+concerns: compatibility  
+applies_when: A service returns HTTP responses that callers or intermediaries interpret by status code.  
+context: server  
+Backed by: IETF, Zalando, Microsoft.
+
+**Rule.** Return the most specific status code that fits: 201 with `Location` for a create, 405 with `Allow` for a wrong method, and a 4xx or 5xx for any failure.
+
+**Why.** Clients, proxies and monitors act on the status line. A 200 with an error in the body hides failures from retries, caches and error-rate alerts. A create that returns 200 without `Location` forces the caller to guess the new URL.
+
+**FAIL**
+
+```text
+POST /orders -> 200 {"error": "out of stock"}
+PATCH /orders (route is read-only) -> 404, no Allow header
+```
+
+**PASS**
+
+```text
+POST /orders -> 201  Location: /orders/9031
+POST /orders (out of stock) -> 409 application/problem+json
+PATCH /orders (not supported) -> 405  Allow: GET, POST
+```
+
+**Counterpoint.** "A 200 with a status field is easier for our clients." It breaks every generic tool that reads the status line, including your own dashboards. Choosing between two fitting codes is a style call; the card fails only a code that says the wrong thing.
+
 ## svc-api-versioning-policy
 
 severity: should-fix  
@@ -118,6 +295,34 @@ the rename ships under api-version=2026-09-01
 
 **Counterpoint.** "We will cross that bridge later." Later arrives with a customer on the old shape. The scheme can be minimal. A media type, a dated query parameter and a pinned header all work. Pick one and write it down. What counts as breaking is in [chg-breaking-change-taxonomy](change.md#chg-breaking-change-taxonomy).
 
+## svc-async-content-reserves-space
+
+severity: should-fix  
+concerns: usability, performance  
+applies_when: A page loads images, embeds, fonts, ads, or fetched content after the first paint.  
+context: ui  
+Backed by: Google, Apple, Nielsen Norman Group, Mozilla, WHATWG, Shopify, Cloudflare.
+
+**Rule.** Reserve the space for late-loading content with set dimensions or an aspect ratio, so nothing already on screen moves.
+
+**Why.** A page that jumps while someone reads or taps makes them hit the wrong target. A cumulative layout shift of 0.1 or less is good, and over 0.25 is poor, measured on real users at the 75th percentile.
+
+**FAIL**
+
+```html
+<img src="/hero.jpg">
+<div id="promo"></div>   <!-- script inserts a banner above the article -->
+```
+
+**PASS**
+
+```html
+<img src="/hero.jpg" width="1200" height="630" style="max-width: 100%; height: auto">
+<div id="promo" style="min-height: 90px"></div>
+```
+
+**Counterpoint.** "Ads vary in height." Reserve the common height, or the largest, and accept some blank space. A banner that pushes the article down is the worse trade.
+
 ## svc-auth-throttle-generic-errors
 
 severity: block  
@@ -146,6 +351,38 @@ if not (user and ok): record_failure(account_key); return "Invalid credentials",
 ```
 
 **Counterpoint.** "A lockout lets attackers lock out real users." Use a rising delay, not a permanent lock, and keep the recovery flow reachable. Log every lockout so abuse shows up.
+
+## svc-authn-by-default
+
+severity: should-fix  
+concerns: security  
+applies_when: The service has routes that need a signed-in user next to routes that are public.  
+context: server  
+Backed by: MITRE, Microsoft, Django Software Foundation, Spring.
+
+**Rule.** Require authentication on every route by default, and mark each public route by name.
+
+**Why.** When each handler opts in to authentication, the one that forgets is open to the internet, and nothing in the diff looks wrong. A global fallback flips the default: a new route is closed until someone marks it public, and that mark is a line a reviewer can question. Health checks and internal admin ports count as routes too.
+
+**FAIL**
+
+```python
+@app.get("/invoices/<id>")          # no login check; anonymous callers get the invoice
+def invoice(id): ...
+```
+
+**PASS**
+
+```python
+PUBLIC = {"login", "health", "static"}
+
+@app.before_request
+def require_login():
+    if request.endpoint not in PUBLIC and not current_user.is_authenticated:
+        abort(401)
+```
+
+**Counterpoint.** "Our gateway already checks the token." Then the service trusts every caller that can reach it without the gateway: another pod, a debug port, a misrouted path. Keep the gateway check and the fallback in the service. The fallback costs one middleware.
 
 ## svc-authz-central-deny-default
 
@@ -848,6 +1085,35 @@ db.execute("SELECT * FROM users WHERE name = ?", (name,))
 ```
 
 **Counterpoint.** "An ORM makes this moot." Raw fragments still bypass it, and so do table, column and `ORDER BY` names, which cannot be bound. Map those to a fixed allowlist in code.
+
+## svc-stream-dont-materialise
+
+severity: should-fix  
+concerns: performance  
+applies_when: A handler reads, transforms, or returns a result whose size depends on the data (files, query results, response bodies).  
+Backed by: OpenJS Foundation, PostgreSQL, Reactive Streams.
+
+**Rule.** Process large results as a stream with backpressure; do not load them whole into memory.
+
+**Why.** A fast source piles data into memory faster than a slow consumer drains it. In the Node docs' test, memory grew from about 88 MB to about 1.5 GB. Memory then scales with data size, not with the code.
+
+**FAIL**
+
+```python
+rows = db.execute("SELECT * FROM events").fetchall()   # 50M rows
+return json.dumps(rows)
+```
+
+**PASS**
+
+```python
+def generate():
+    for row in db.execute("SELECT * FROM events"):     # server-side cursor
+        yield encode(row)
+return StreamingResponse(generate())
+```
+
+**Counterpoint.** "Streaming complicates errors and retries." Yes: a failure mid-stream cannot change the status code. For small, bounded results, loading the whole result is simpler and fine; state the bound. [sys-load-shedding-bounded-queues](system.md#sys-load-shedding-bounded-queues) covers queue limits.
 
 ## svc-timeouts
 

@@ -1,5 +1,35 @@
 # codebase
 
+## code-a11y-check-in-ci
+
+severity: should-fix  
+concerns: accessibility, testing  
+applies_when: The repo builds a web UI and has an automated test suite.  
+context: ui  
+Backed by: jsx-eslint project, Deque, GOV.UK, USWDS, Microsoft, CivicActions, University of Arizona.
+
+**Rule.** Run an automated accessibility check, such as axe on rendered pages, in the automated tests, and fail the test on a violation.
+
+**Why.** A violation that nobody sees at review ships. A failing test catches the missing label or `alt` on the pull request that adds it, and run in CI on every change it blocks the merge. A JSX lint such as `jsx-a11y` catches some of the same problems earlier, in the editor. Either way it is a floor: tools find only part of the problems, so a person still tests with a keyboard.
+
+**FAIL**
+
+```js
+// e2e: axe runs, but nothing fails on what it finds
+const results = await new AxeBuilder({ page }).analyze();
+console.log(results.violations.length);
+```
+
+**PASS**
+
+```js
+// e2e: fail on any axe violation
+const results = await new AxeBuilder({ page }).analyze();
+expect(results.violations).toEqual([]);
+```
+
+**Counterpoint.** "Tools only catch a minority, and we have a backlog, so a failing check would turn every build red." The check catches the cheap failures at no review cost, which frees the manual pass for what only a person can judge. For the backlog, exclude the known violations by name (`disableRules`, `exclude`, or a fingerprint of each known issue) and fail on anything new. Remove each exclusion once it is fixed.
+
 ## code-adr
 
 severity: discuss  
@@ -234,6 +264,36 @@ docs-links:
 
 **Counterpoint.** "External links flake, so the job will be red half the time." Check local paths and anchors on every change, where the result is stable. Run the external links on a schedule, so a dead site never blocks a merge.
 
+## code-flaky-test-quarantine
+
+severity: should-fix  
+concerns: testing, process  
+applies_when: Auditing how the codebase handles tests that pass and fail on the same code.  
+Backed by: Dropbox, Shopify, Cabify, Atlassian, GitLab, Airtable.
+
+**Rule.** Report every test that passes only on retry, move it to a quarantine with a named owner and a ticket, and return it to the merge gate only after it passes many reruns.
+
+**Why.** A test that fails at random on unchanged code teaches people to rerun until green, and then a real regression looks like noise. Dropbox removes tests that fail too often from the main pool and files a bug against the owner. Its fix workflow then runs the test 100 or more times in CI before the fix lands. Shopify retries a failed test but tells developers about every pass after a retry. The usual causes are a fixed pause where the test should wait for an element (Shopify) and state left behind by an earlier test (Cabify, Dropbox).
+
+**FAIL**
+
+```yaml
+# .github/workflows/test.yml
+- run: pytest --reruns 3          # a pass on retry counts as a pass, and nobody hears about it
+```
+
+**PASS**
+
+```yaml
+# .github/workflows/test.yml
+- run: pytest --reruns 3 -m "not quarantine" --junitxml=report.xml
+- run: python tools/flaky_report.py report.xml   # opens a ticket per pass after retry, owner from CODEOWNERS
+# nightly.yml: a quarantined test rejoins the gate after 100 clean runs
+- run: pytest -m quarantine --count 100
+```
+
+**Counterpoint.** "Retries keep the build green, and quarantine hides coverage." Shopify's data backs retries: a slightly slower build beats an engineer rerunning it by hand. Retries are fine when each pass after a retry reaches someone. A quarantined test still runs outside the gate, and its owner and ticket stop it from staying there for good. Skipping or deleting a flaky test in a diff is a separate FAIL. See [chg-no-silenced-diagnostics](change.md#chg-no-silenced-diagnostics). For the merge gate itself, see [code-ci-gates](codebase.md#code-ci-gates).
+
 ## code-perf-budget-in-ci
 
 severity: should-fix  
@@ -260,6 +320,53 @@ k6: thresholds: { http_req_duration: ["p(95)<300"] }        # non-zero exit fail
 ```
 
 **Counterpoint.** "Benchmarks in CI are noisy and flake." They are when a gate trusts one run. Gate on a stable budget, compare repeated runs (benchstat wants 10 to 20), and keep the threshold above the noise. On a site with much room to improve, a tight budget only turns every build red, so set it at today's level and lower it later.
+
+## code-release-gated-on-ci
+
+severity: should-fix  
+concerns: reliability, process  
+applies_when: Auditing a workflow or pipeline that publishes a release when a tag is pushed.  
+Backed by: Kubernetes, GitHub, GitLab, OpenJS Foundation, Envoy, Google.
+
+**Rule.** Make a release or publish job depend on the checks passing for the tagged commit, never on the tag alone.
+
+**Why.** A tag can point at a commit that was never built or tested, or one whose checks are red. A workflow that fires on the tag then ships it. Branch protection does not help, because the tag does not go through a pull request.
+
+**FAIL**
+
+```yaml
+on:
+  push:
+    tags: ["v*"]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@<40-char-sha>
+      - run: make publish
+```
+
+**PASS**
+
+```yaml
+on:
+  push:
+    tags: ["v*"]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@<40-char-sha>
+      - run: make test
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@<40-char-sha>
+      - run: make publish
+```
+
+**Counterpoint.** "CI already passed on the pull request, so rerunning tests on the tag wastes time." The pull request tested another commit if the base moved or the tag was cut elsewhere. Reuse the result by requiring the status check on the tagged commit, instead of dropping the gate.
 
 ## code-rule-has-enforcer
 

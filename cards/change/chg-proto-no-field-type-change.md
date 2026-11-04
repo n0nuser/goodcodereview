@@ -3,13 +3,14 @@ id: chg-proto-no-field-type-change
 level: change
 tags: [compatibility, api, protobuf]
 severity: should-fix
-status: draft
-lacks: orgs, "no field type change" has Google only; Uber and Cabify back renumbering and the buf breaking gate instead
+status: stable
 lang: core
 applies_when: The diff changes an existing field's type, default, label or name in a `.proto` file.
 tool_gate: `buf breaking` with the wire and JSON rule sets.
 borrowed_from:
   - https://protobuf.dev/best-practices/dos-donts/
+  - https://buf.build/docs/breaking/rules/
+  - https://github.com/istio/api/blob/master/GUIDELINES.md
 ---
 
 **Rule.** Never change the type of a protobuf field, switch it between repeated and scalar, or rename it while any consumer reads JSON or text format; add a new field instead.

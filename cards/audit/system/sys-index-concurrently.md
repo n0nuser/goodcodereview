@@ -3,8 +3,7 @@ id: sys-index-concurrently
 level: system
 tags: [compatibility, database, migration, postgres]
 severity: should-fix
-status: draft
-lacks: orgs, PostgreSQL and GitLab back it; needs a third org
+status: stable
 lang: core
 applies_when: A migration creates an index on an existing large or busy table.
 context: [data]
@@ -12,6 +11,8 @@ tool_gate: Migration linter.
 borrowed_from:
   - https://www.postgresql.org/docs/current/sql-createindex.html
   - https://docs.gitlab.com/development/migration_style_guide/
+  - https://devcenter.heroku.com/articles/postgresql-indexes
+  - https://thoughtbot.com/blog/how-to-create-postgres-indexes-concurrently-in
 ---
 
 **Rule.** Create indexes with `CONCURRENTLY`, outside a transaction block, and handle a failed build that leaves an INVALID index.

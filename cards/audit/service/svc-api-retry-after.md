@@ -3,8 +3,7 @@ id: svc-api-retry-after
 level: service
 tags: [reliability, api, http, resilience]
 severity: should-fix
-status: draft
-lacks: orgs, IETF and Zalando back it; needs a third org
+status: stable
 note: the draft rate-limit header fields are not required here; RFC 6585 on 429 was not fetched
 lang: core
 applies_when: A service answers 429 or 503 to HTTP callers.
@@ -14,6 +13,9 @@ borrowed_from:
   - https://www.rfc-editor.org/rfc/rfc9110.html
   - https://opensource.zalando.com/restful-api-guidelines/
   - https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/
+  - https://learn.microsoft.com/en-us/azure/architecture/patterns/throttling
+  - https://shopify.dev/docs/api/admin-rest/usage/rate-limits
+  - https://docs.slack.dev/apis/web-api/rate-limits
 ---
 
 **Rule.** Send `Retry-After` on every 429 and 503, and set it no earlier than the time capacity returns.

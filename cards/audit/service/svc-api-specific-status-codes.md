@@ -3,8 +3,7 @@ id: svc-api-specific-status-codes
 level: service
 tags: [compatibility, api, http]
 severity: should-fix
-status: draft
-lacks: orgs, IETF and Zalando back it; needs a third org
+status: stable
 note: RFC 9110 sections 9.3.4, 10.2.1 and 15.3.2; section 15.5.6 on 405 was not read
 lang: core
 applies_when: A service returns HTTP responses that callers or intermediaries interpret by status code.
@@ -13,6 +12,7 @@ tool_gate: Integration tests asserting status and headers per operation; a spec 
 borrowed_from:
   - https://www.rfc-editor.org/rfc/rfc9110.html
   - https://opensource.zalando.com/restful-api-guidelines/
+  - https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-implementation
 ---
 
 **Rule.** Return the most specific status code that fits: 201 with `Location` for a create, 405 with `Allow` for a wrong method, and a 4xx or 5xx for any failure.
