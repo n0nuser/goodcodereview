@@ -20,7 +20,8 @@ JSON_CT = "application/json; charset=utf-8"
 
 def page_slugs(b: BuildInput) -> list[str]:
     """Every page in the sitemap, as a slug."""
-    return ["index", "concerns", *[s for lv in LEVELS for s in (lv, *[f"{lv}-{g}" for g in (b.parts(lv) if lv in b.split else [])])], *[f"pack-{pk}" for pk in b.packs], "glossary", "drafts", "about", "privacy", "audit",
+    levels = [s for lv in LEVELS for s in (lv, *[f"{lv}-{g}" for g in (b.parts(lv) if lv in b.split else [])])]
+    return ["index", "concerns", *levels, *[f"pack-{pk}" for pk in b.packs], "glossary", "drafts", "about", "privacy", "audit",
             "guides", *[f"guides/{g.slug}" for g in GUIDES]]
 
 

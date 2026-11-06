@@ -3,6 +3,8 @@
 
 No network: it reads files only. Prints one PASS or FAIL line per check, names the checklist item, and exits 1 on any FAIL.
 """
+from __future__ import annotations
+
 import hashlib
 import json
 import re
@@ -61,7 +63,7 @@ class Page(HTMLParser):
         self._in = ""
 
     @classmethod
-    def parse(cls, src: str) -> "Page":
+    def parse(cls, src: str) -> Page:
         page = cls()
         page.feed(src)
         return page

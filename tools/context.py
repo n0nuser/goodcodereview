@@ -1,4 +1,6 @@
 """Everything the writers share, derived once from the cards: the build input."""
+from __future__ import annotations
+
 import datetime
 import subprocess
 from dataclasses import dataclass, field, replace
@@ -52,7 +54,7 @@ class BuildInput:
         """The context parts of a split level, each with its cards (stable and draft), in card order."""
         return group_by_context(self.core_at(level))
 
-    def with_split(self, split: frozenset[Level]) -> "BuildInput":
+    def with_split(self, split: frozenset[Level]) -> BuildInput:
         """The same input with `split` levels set and every card link pointing at the page that holds the card."""
         moved = replace(self, split=split)
         return replace(moved, ids={**self.ids, **{c.fm["id"]: f"{moved.page_of(c)}.html#{c.fm['id']}" for c in self.cards}})

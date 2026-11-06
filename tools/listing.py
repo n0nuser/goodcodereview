@@ -8,7 +8,7 @@ import strength
 from card_fields import concerns, is_stable, lacks
 from config import REPO
 from markdown import inline, md, rule
-from models import CONCERNS, LEVELS, Card, NavLink, PageSpec
+from models import CONCERNS, LEVELS, Card, Level, NavLink, PageSpec
 from prose import DRAFT_NOTE, EXAMPLE_HTML, LACKS_LABEL, LEGEND, NAME, NONE_NOTE, VERDICT
 from shell import page
 
@@ -127,7 +127,7 @@ def listing(spec: PageSpec, ids: dict[str, str], links: Sequence[NavLink], *, em
     slug = spec.file[:-5]
 
     def render(body: str) -> str:
-        parent = ((NAME[spec.parent], spec.parent),) if spec.parent else ()
+        parent = ((NAME[Level(spec.parent)], spec.parent),) if spec.parent else ()
         return page(spec.title, body, links=links, cur=f"{spec.parent}.html" if spec.parent else spec.file, desc=spec.desc, slug=slug, script=True, updated=date,
                     crumbs=(("Home", "index"), *parent, (spec.title, slug)))
 

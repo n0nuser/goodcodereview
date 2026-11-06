@@ -87,10 +87,10 @@ def markdown_twins(b: BuildInput, skill: SkillOutput) -> dict[str, str]:
     twins["index"] = _index_page(b, skill.plain_verdict)
     twins["concerns"] = _concerns_page(b, skill.plain_verdict)
     for lv in b.split:
-        for g, cs in b.parts(lv).items():
+        for ctx, cs in b.parts(lv).items():
             stable = [card_section(c) for c in cs if is_stable(c)] or ["No vetted cards for this context yet."]
-            text = link_stable(f"# {lv}, {g}\n\nThe stable {lv} cards for the `{g}` context. The whole level is at {BASE}/{lv}.md.\n\n" + "\n\n".join(stable) + "\n", skill.stable_home)
-            twins[f"{lv}-{g}"] = Twin(f"{NAME[lv]}, {g} cards", part_spec(lv, g, cs).desc, text)
+            text = link_stable(f"# {lv}, {ctx}\n\nThe stable {lv} cards for the `{ctx}` context. The whole level is at {BASE}/{lv}.md.\n\n" + "\n\n".join(stable) + "\n", skill.stable_home)
+            twins[f"{lv}-{ctx}"] = Twin(f"{NAME[lv]}, {ctx} cards", part_spec(lv, ctx, cs).desc, text)
     for pk in b.packs:
         text = (f"# {pack_name(pk)} pack\n\nEach card says whether it is stable or draft. Stable cards are vetted and also appear in their level file. {DRAFT_NOTE} {DRAFT_RULE}\n\n"
                 + "\n\n".join(card_section(c) for c in b.cards if c.fm["lang"] == pk) + "\n")
