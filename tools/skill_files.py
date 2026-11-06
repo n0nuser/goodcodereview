@@ -182,6 +182,11 @@ def _check_routes(by_level: dict[Level, list[Card]], ref_files: set[str], skill_
     return errs
 
 
+# The site's .md twin of an index adds YAML frontmatter (title, description, canonical, updated), about 200 characters.
+# The budget counts the served file, so leave room for it.
+TWIN_FRONT = 300
+
+
 def _level_index(level: Level, cards: list[Card]) -> list[IndexPart]:
     """The index of a level: one file, or one per `context` when it would pass INDEX_BUDGET."""
     parts: dict[str, list[str]] = {}  # context group -> card lines, in card order; a card with no `context` is in "any"
@@ -189,7 +194,7 @@ def _level_index(level: Level, cards: list[Card]) -> list[IndexPart]:
         parts.setdefault((context(c) or ["any"])[0], []).append(index_line(c))
     whole = (f"# {NAME[level]} index\n\nOne line per stable {level} card: id, severity, concerns, context, rule. "
              f"The full card is at {BASE}/{level}.md#<id>.\n\n" + "\n".join(line for lines in parts.values() for line in lines) + "\n")
-    if len(whole) <= INDEX_BUDGET:
+    if len(whole) + TWIN_FRONT <= INDEX_BUDGET:
         return [IndexPart(f"{level}-index", f"{NAME[level]} index", whole, len(cards))]
     split = [
         IndexPart(
@@ -198,9 +203,13 @@ def _level_index(level: Level, cards: list[Card]) -> list[IndexPart]:
             + "\n".join(lines) + "\n", len(lines))
         for g, lines in parts.items()
     ]
-    if any(len(p.text) > INDEX_BUDGET for p in split):
+    if any(len(p.text) + TWIN_FRONT > INDEX_BUDGET for p in split):
         raise BuildError(f"{level}: a context group is over {INDEX_BUDGET} characters of index; add a context or split the level")
-    return split
+    # Progressive disclosure: llms.txt links only this hub, so it stays one line per level however many parts there are.
+    hub = (f"# {NAME[level]} index\n\nThe {level} index is split by `context`; read the part that matches the code under review "
+           f"(`any` holds cards that apply to every context). The full card is at {BASE}/{level}.md#<id>.\n\n"
+           + "\n".join(f"- [{p.title}]({BASE}/{p.slug}.md): {p.count} stable card{'s' if p.count != 1 else ''}." for p in split) + "\n")
+    return [IndexPart(f"{level}-index", f"{NAME[level]} index", hub, len(cards))] + split
 
 
 def _link_stable(text: str, home: dict[str, str]) -> str:
@@ -227,8 +236,10 @@ def _llms(head: list[str], llms_scope: list[str], level_index: dict[Level, list[
         if lv not in level_index:
             continue
         out += [f"## {lv}", ""]
-        for part in level_index[lv]:
-            out.append(f"- [{part.title}]({BASE}/{part.slug}.md): {part.count} stable card{'s' if part.count != 1 else ''}, one line each: id, severity, concerns, context, rule.")
+        part = level_index[lv][0]  # the whole index, or the hub that links its context parts
+        split = len(level_index[lv]) > 1
+        out.append(f"- [{part.title}]({BASE}/{part.slug}.md): {part.count} stable card{'s' if part.count != 1 else ''}, "
+                   + ("split by context; the page links each part." if split else "one line each: id, severity, concerns, context, rule."))
         out += [f"- [{NAME[lv]}, full text]({BASE}/{lv}.md): every stable {lv} card with its FAIL and PASS examples and who backs it.", ""]
     out += ["## Audit", "", f"- [Audit a repo, service, or release]({BASE}/audit.md): scope, read order, missing controls, accepted risk, and the report shape.", ""]
     out += ["## Glossary", "", f"- [Glossary]({BASE}/glossary.md): terms the cards link to.", "",
