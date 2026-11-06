@@ -7,7 +7,7 @@ import orgs
 import schema
 import site_concerns
 import strength
-from card_fields import concerns, lacks, level_of, markdown_url, page_name, topics
+from card_fields import concerns, lacks, level_of, markdown_url, topics
 from config import BASE, LICENCE_URL, SITE_NAME
 from context import BuildInput
 from errors import BuildError
@@ -17,7 +17,7 @@ from prose import INPUT, LEVEL_DESC, NAME
 from shell import page_url
 
 
-def _card_model(card: Card) -> schema.Card:
+def _card_model(card: Card, b: BuildInput) -> schema.Card:
     fm = card.fm
     found = orgs.split(fm["borrowed_from"])
     draft_lack = lacks(card)
@@ -31,7 +31,7 @@ def _card_model(card: Card) -> schema.Card:
         orgs=[schema.Org(g.id, orgs.ORGS[g.id], g.urls, strength.of_org(fm["id"], g.urls)) for g in found.organisations],
         people=[schema.Org(g.id, orgs.ORGS[g.id], g.urls, strength.of_org(fm["id"], g.urls)) for g in found.people],
         backing=strength.backing(fm["id"], [g.urls for g in found.organisations]),
-        url=f"{page_url(page_name(card))}#{fm['id']}", markdown_url=markdown_url(card))
+        url=f"{page_url(b.page_of(card))}#{fm['id']}", markdown_url=markdown_url(card))
 
 
 def corpus(kind: schema.Kind, cards: Sequence[Card], b: BuildInput) -> schema.Corpus:
@@ -40,7 +40,7 @@ def corpus(kind: schema.Kind, cards: Sequence[Card], b: BuildInput) -> schema.Co
         id=lv, name=NAME[lv], input=INPUT[lv], description=LEVEL_DESC[lv], stable_count=b.counts[lv].stable, draft_count=b.counts[lv].draft,
         gives_verdict=bool(b.counts[lv].stable), url=page_url(lv), markdown_url=f"{BASE}/{lv}.md") for lv in LEVELS]
     return schema.Corpus(schema.SCHEMA_VERSION, kind, SITE_NAME, f"{BASE}/", LICENCE_URL, b.date, list(CONCERNS), levels,
-                         [_card_model(c) for c in cards])
+                         [_card_model(c, b) for c in cards])
 
 
 def check_union(merged: list[str], by_file: dict[str, list[str]]) -> None:
@@ -61,11 +61,11 @@ def check_concern_files(merged: list[dict[str, Any]], by_file: dict[str, list[st
             raise BuildError(f"{name} holds {len(by_file.get(name, []))} cards, the merged file has {len(expected)} that list {concern}")
 
 
-def index_model(cards: Sequence[Card]) -> schema.CardsIndex:
+def index_model(cards: Sequence[Card], b: BuildInput) -> schema.CardsIndex:
     """The slim index: one short record per card."""
     return schema.CardsIndex(
         schema.SCHEMA_VERSION, [str(c) for c in CONCERNS], list(LEVELS),
-        [schema.IndexCard(c.fm["id"], c.fm["level"], c.fm["severity"], concerns(c), topics(c), rule(c.body), f"{page_url(page_name(c))}#{c.fm['id']}") for c in cards])
+        [schema.IndexCard(c.fm["id"], c.fm["level"], c.fm["severity"], concerns(c), topics(c), rule(c.body), f"{page_url(b.page_of(c))}#{c.fm['id']}") for c in cards])
 
 
 def check_index(index: dict[str, Any], merged: list[dict[str, Any]]) -> None:
@@ -115,7 +115,7 @@ def cards_files(b: BuildInput) -> dict[str, str]:
         check_union(merged_ids, {n: i for n, i in ids.items() if n not in concern_ids})
         if kind == schema.Kind.STABLE:
             check_concern_files(merged_stable, concern_ids)
-    index = schema.to_dict(index_model(b.stable))
+    index = schema.to_dict(index_model(b.stable, b))
     _emit(files, "cards-index.json", index, index_sch)
     check_index(index, merged_stable)
     files.update(site_concerns.files(index))

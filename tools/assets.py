@@ -137,7 +137,7 @@ const mine=(a,v)=>k=='l'?a.dataset.level==v:tg(a).includes(v),other=rows.filter(
 Q.textContent='';
 [...vals.map(v=>[v,rows.filter(a=>mine(a,v))]),['no '+G,other]].forEach(([v,rs])=>{if(!rs.length)return;
 const w=document.createElement('div'),h=document.createElement('h3'),u=document.createElement('ul');w.className='ckw';h.className='gh';h.textContent=v+' ('+rs.length+')';u.className='ck';
-u.append(th.cloneNode(true),...rs.map(a=>a.cloneNode(true)));w.append(h,u);Q.append(w)})}
+u.append(th.cloneNode(true),...rs.map(a=>{const c=a.cloneNode(true);c.removeAttribute('id');return c}));w.append(h,u);Q.append(w)})}
 function go(sync){q('[data-tags]').forEach(a=>{const g=tg(a);
 a.hidden=(S.c.size>0&&![...S.c].some(x=>g.includes(x)))||(S.t.size>0&&![...S.t].some(x=>g.includes(x)))||(S.l.size>0&&!S.l.has(a.dataset.level))});
 const on=S.c.size+S.t.size+S.l.size>0,rows=q('#flat li[data-tags]:not([hidden])'),s=rows.length,d=q('details [data-tags]:not([hidden])').length;

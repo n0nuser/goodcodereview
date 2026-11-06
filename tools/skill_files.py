@@ -3,7 +3,7 @@ import json
 import re
 from dataclasses import dataclass
 
-from card_fields import backers, concerns, context, is_core, is_stable, lacks, level_of
+from card_fields import backers, concerns, context, group_by_context, is_core, is_stable, lacks, level_of
 from config import (
     BASE,
     INDEX_BUDGET,
@@ -189,9 +189,7 @@ TWIN_FRONT = 300
 
 def _level_index(level: Level, cards: list[Card]) -> list[IndexPart]:
     """The index of a level: one file, or one per `context` when it would pass INDEX_BUDGET."""
-    parts: dict[str, list[str]] = {}  # context group -> card lines, in card order; a card with no `context` is in "any"
-    for c in cards:
-        parts.setdefault((context(c) or ["any"])[0], []).append(index_line(c))
+    parts = {g: [index_line(c) for c in cs] for g, cs in group_by_context(cards).items()}  # context group -> card lines
     whole = (f"# {NAME[level]} index\n\nOne line per stable {level} card: id, severity, concerns, context, rule. "
              f"The full card is at {BASE}/{level}.md#<id>.\n\n" + "\n".join(line for lines in parts.values() for line in lines) + "\n")
     if len(whole) + TWIN_FRONT <= INDEX_BUDGET:
@@ -212,7 +210,7 @@ def _level_index(level: Level, cards: list[Card]) -> list[IndexPart]:
     return [IndexPart(f"{level}-index", f"{NAME[level]} index", hub, len(cards))] + split
 
 
-def _link_stable(text: str, home: dict[str, str]) -> str:
+def link_stable(text: str, home: dict[str, str]) -> str:
     """A stable card links only to another stable card, as a relative path inside references/. Any other target is plain text."""
     return re.sub(r"\[\[([^\]]+)\]\]", lambda m: f"[{m[1]}]({home[m[1]]}.md#{m[1]})" if m[1] in home else m[1], text)
 
@@ -310,7 +308,7 @@ def skill_output(b: BuildInput) -> SkillOutput:
             twins[lv] = Twin(NAME[lv], LEVEL_DESC[lv], f"# {lv}\n\nNo vetted cards for this level yet. It gives no verdict.\n")
             continue
         level_index[lv] = _level_index(lv, cards)
-        ref = _link_stable(f"# {lv}\n\n" + "\n\n".join(card_section(c) for c in cards) + "\n", home)
+        ref = link_stable(f"# {lv}\n\n" + "\n\n".join(card_section(c) for c in cards) + "\n", home)
         files[f"references/{lv}.md"] = ref
         twins[lv] = Twin(NAME[lv], LEVEL_DESC[lv], ref)
     if "incident" in twins:

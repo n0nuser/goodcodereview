@@ -19,7 +19,7 @@ from context import BuildInput, build_date, read_input
 from errors import ToolError
 from site_cards import cards_files
 from site_meta import agent_files, headers_file, page_slugs, robots, security_txt, sitemap, skill_discovery
-from site_pages import html_pages
+from site_pages import html_pages, split_levels
 from site_twins import markdown_twins
 from skill_files import SkillOutput, skill_output
 from skills_extra import extra_files
@@ -65,7 +65,7 @@ def site_files(b: BuildInput, skill: SkillOutput) -> Files:
 
 def plan_build(root: Path) -> Plan:
     """Read the cards and produce every output in memory. Raises ToolError before anything is written."""
-    b = read_input(root, build_date())
+    b = split_levels(read_input(root, build_date()))
     skill = skill_output(b)
     site = site_files(b, skill)
     pages = len(page_slugs(b)) + 1

@@ -5,11 +5,11 @@ from urllib.parse import urlparse
 
 import orgs
 import strength
-from card_fields import concerns, is_stable, lacks, page_name
+from card_fields import concerns, is_stable, lacks
 from config import REPO
 from markdown import inline, md, rule
 from models import CONCERNS, LEVELS, Card, NavLink, PageSpec
-from prose import DRAFT_NOTE, EXAMPLE_HTML, LACKS_LABEL, LEGEND, NONE_NOTE, VERDICT
+from prose import DRAFT_NOTE, EXAMPLE_HTML, LACKS_LABEL, LEGEND, NAME, NONE_NOTE, VERDICT
 from shell import page
 
 
@@ -68,9 +68,12 @@ def card_html(card: Card, ids: dict[str, str]) -> str:
             f'<p><strong>Applies when:</strong> {inline(fm["applies_when"], ids)}</p>{md(card.body, ids)}{lacks_html(card, ids)}{gate}{sources(card)}</article>')
 
 
-def row(card: Card, ids: dict[str, str], page_href: str = "") -> str:
+def row(card: Card, ids: dict[str, str], *, compact: bool = False) -> str:
+    """A checklist row. A compact row links to the page that holds the full card and carries the card id as its own, so `page#id` still lands on it."""
     fm = card.fm
-    return (f'<li data-tags="{html.escape(" ".join(fm["tags"]))}" data-level="{fm["level"]}"><a href="{page_href}#{html.escape(fm["id"])}">{html.escape(fm["id"])}</a> '
+    cid = html.escape(fm["id"])
+    href, anchor = (html.escape(ids[fm["id"]]), f' id="{cid}"') if compact else (f"#{cid}", "")
+    return (f'<li{anchor} data-tags="{html.escape(" ".join(fm["tags"]))}" data-level="{fm["level"]}"><a href="{href}">{cid}</a> '
             f'<span class="b {fm["severity"]}">{fm["severity"]}</span>{chips(card)}<span class="r">{inline(rule(card.body), ids)}</span></li>')
 
 
@@ -114,9 +117,9 @@ def listing(spec: PageSpec, ids: dict[str, str], links: Sequence[NavLink], *, em
     stable = [c for c in cards if is_stable(c)]
     draft = [c for c in cards if not is_stable(c)]
     flt = _filters(cards, stable, compact=compact)
-    share = f'<p id="share" class="note" data-md="{"concerns" if compact else ""}" hidden></p>'
+    share = f'<p id="share" class="note" data-md="{"concerns" if spec.file == "concerns.html" else ""}" hidden></p>'
     # compact: one row per draft, linked to the page that holds the full card
-    dbody = ('<div class="ckw"><ul class="ck">' + _TABLE_HEAD + "".join(row(c, ids, f"{page_name(c)}.html") for c in draft) + "</ul></div>"
+    dbody = ('<div class="ckw"><ul class="ck">' + _TABLE_HEAD + "".join(row(c, ids, compact=True) for c in draft) + "</ul></div>"
              if compact else "".join(card_html(c, ids) for c in draft))
     drafts = (f'<h2>Draft cards</h2>{"" if stable or empty else "<p>No stable cards yet.</p>"}<details><summary id="dsum" data-n="{len(draft)}">{len(draft)} draft cards</summary>'
               f"<p>{inline(DRAFT_NOTE, {})}{' Each row links to the full card.' if compact else ''} "
@@ -124,7 +127,9 @@ def listing(spec: PageSpec, ids: dict[str, str], links: Sequence[NavLink], *, em
     slug = spec.file[:-5]
 
     def render(body: str) -> str:
-        return page(spec.title, body, links=links, cur=spec.file, desc=spec.desc, slug=slug, script=True, updated=date, crumbs=(("Home", "index"), (spec.title, slug)))
+        parent = ((NAME[spec.parent], spec.parent),) if spec.parent else ()
+        return page(spec.title, body, links=links, cur=f"{spec.parent}.html" if spec.parent else spec.file, desc=spec.desc, slug=slug, script=True, updated=date,
+                    crumbs=(("Home", "index"), *parent, (spec.title, slug)))
 
     if empty:
         return render(NONE_NOTE + spec.intro + LEGEND + drafts)
@@ -132,7 +137,7 @@ def listing(spec: PageSpec, ids: dict[str, str], links: Sequence[NavLink], *, em
     if not stable:
         return render(intro + LEGEND + drafts)
     checklist = ('<button type="button" data-copy="ck" hidden>Copy checklist as markdown</button><div class="ckw" id="flat"><ul class="ck">' + _TABLE_HEAD
-                 + "".join(row(c, ids, f"{page_name(c)}.html" if compact else "") for c in stable) + '</ul></div><div id="grouped" hidden></div>'
+                 + "".join(row(c, ids, compact=compact) for c in stable) + '</ul></div><div id="grouped" hidden></div>'
                  '<p class="note"><a href="#filters">Back to filters</a></p>')
     nojs = ("<noscript><p>The filters need JavaScript. Without it, the page lists every card. "
             "Add <code>?concern=security</code> to the Markdown or JSON address for a filtered list.</p></noscript>") if compact else ""
