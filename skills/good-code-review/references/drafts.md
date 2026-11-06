@@ -87,15 +87,15 @@ lacks: failable, without "attach the plan" a change review has nothing to mark F
 
 Attach the query plan for each new or rewritten query on a growing table, taken on production-sized data.
 
-## chg-no-special-case-branches
+## chg-no-per-user-ide-files
 
 level: change  
 severity: should-fix  
-concerns: maintainability  
-applies_when: The change adds a conditional, flag or nullable mode to code that serves more than one feature.  
-lacks: orgs, one vendor's review skill backs it, with no data; needs two more orgs
+concerns: process, maintainability  
+applies_when: A change adds a tracked file under an editor or IDE project directory.  
+lacks: unreviewed, sources and examples are in place; no stable pass has checked rules 1 to 10
 
-Put a new case behind its own function or type; do not add a one-off branch to a shared flow.
+Do not commit a file that holds one developer's editor or IDE state; ignore those paths in the repository or a machine-wide exclude file, and keep the settings the team shares in the repository.
 
 ## chg-review-comment-format
 
@@ -175,9 +175,9 @@ level: function
 severity: should-fix  
 concerns: correctness  
 applies_when: A function takes or returns a dictionary whose keys are fixed and known.  
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+lacks: orgs, "record type for fixed keys" has PSF and attrs; mypy and PEP 589 share an author; needs one more org
 
-Give a fixed key set a record type (model, dataclass, or typed dict), and use a generic map only for open keys.
+Give a fixed key set a record type: a model, a dataclass or a typed dict.
 
 ## fn-no-anonymous-tuples
 
@@ -204,10 +204,10 @@ Delete a method that only forwards, and keep wrappers that validate, adapt, or n
 level: function  
 severity: should-fix  
 concerns: correctness, compatibility  
-applies_when: A function returns a status, kind or outcome, and callers branch on it.  
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+applies_when: A function returns a status, kind or outcome as a string, and callers branch on it.  
+lacks: orgs, "closed type for a returned status" has Microsoft and Apple; Rust covers arguments and Kotlin is a feature page; needs one more org
 
-Return an enum or a tagged type, never a bare string that the caller must compare.
+Return a closed type (an enum, a tagged union or a sealed hierarchy) for a closed set of values, not a bare string. For a boolean flag, see [[fn-bool-arg-at-callsite]].
 
 ## fn-propagate-dont-swallow
 
@@ -231,16 +231,6 @@ Give every task and handle an owner that waits for it or closes it, on the error
 
 # module drafts
 
-## mod-behaviour-lives-with-state
-
-level: module  
-severity: discuss  
-concerns: maintainability  
-applies_when: A service function computes something only from one object's own fields.  
-lacks: orgs, only the author's own Python review guide backs it; no independent org
-
-Put invariants and calculations over one object on that object, and move logic to a service only when it spans objects or needs an injected collaborator.
-
 ## mod-central-config
 
 level: module  
@@ -261,26 +251,6 @@ lacks: failable, "one cohesive concept" is hard to mark FAIL; the Ousterhout bac
 
 Keep one cohesive concept per module.
 
-## mod-deep-modules
-
-level: module  
-severity: discuss  
-concerns: maintainability  
-applies_when: A new class or module is introduced, or an existing interface grows.  
-lacks: orgs, Ousterhout is the only backer, and Martin disagrees; needs two more orgs
-
-Prefer a small interface that hides real work, and flag modules whose interface is nearly as complex as their implementation.
-
-## mod-fowler-smells
-
-level: module  
-severity: discuss  
-concerns: maintainability  
-applies_when: A reviewer sees long methods, feature envy, data clumps, primitive obsession, speculative generality, or divergent change.  
-lacks: evidence, no Fowler or Beck source; backers are an Ousterhout summary and Google's review guide, mapped by hand
-
-Name the smell, point to the line, and suggest the refactoring; do not file smells as taste.
-
 ## mod-mock-at-boundaries-only
 
 level: module  
@@ -291,6 +261,16 @@ lacks: evidence, Airbnb mocks services in load tests and Cabify runs a real gRPC
 
 Mock only at the process boundary (HTTP, DB, cloud, clock, I/O).
 
+## mod-no-repeated-switches
+
+level: module  
+severity: discuss  
+concerns: maintainability  
+applies_when: The same switch or if-chain on one type, status or kind appears in more than one place.  
+lacks: orgs, "repeated condition to polymorphism" has Refactoring.Guru and Google; needs one more org (the Shopify post does not mention switches)
+
+When the same switch or if-chain on one type appears in more than one place, replace the copies with polymorphism, unless each copy is an exhaustive switch over a closed type that fails the build when a case is missing.
+
 ## mod-no-wire-types-in-public-api
 
 level: module  
@@ -300,16 +280,6 @@ applies_when: A module exposes a public function, class or re-export.
 lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
 
 Expose domain types in a module's public interface, and keep transport, storage and framework types behind it.
-
-## mod-no-wrong-abstraction
-
-level: module  
-severity: should-fix  
-concerns: maintainability  
-applies_when: A shared helper or base class has gained flags or conditionals so different callers can bend it.  
-lacks: orgs, Metz and Dodds back inlining; the re-split remedy has no third org, and the Counterpoint still cites an unsourced count
-
-Inline an abstraction that has grown flags for its callers, then re-split it.
 
 ## mod-prefer-sync-api
 
@@ -340,6 +310,16 @@ applies_when: The code adds a subclass or an implementation of an interface.
 lacks: evidence, Liskov and Wing state the substitution rule; none says to run the parent's tests, which is the card's proxy
 
 Make a subtype pass its parent's tests: accept every input the parent accepts, promise at least what it promises, and keep its invariants.
+
+## mod-temporary-field
+
+level: module  
+severity: discuss  
+concerns: maintainability  
+applies_when: A private field is assigned and read inside one method, or every read of it follows an assignment.  
+lacks: unreviewed, sources and examples are in place; no stable pass has checked rules 1 to 10
+
+Make a field a local variable or a parameter when every method that uses it assigns it before reading it.
 
 ## mod-thin-entry-point
 
@@ -516,15 +496,15 @@ lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more org
 
 Keep the setup, build and run commands in the README or contribution guide accurate: they work as written on a clean checkout, and any drift is fixed or reported.
 
-## code-file-lines-ceiling
+## code-test-suite-time-budget
 
 level: codebase  
-severity: discuss  
-concerns: maintainability, process  
-applies_when: Auditing a repo for files that have grown past comprehension.  
-lacks: evidence, backers are a dev.to summary and a blog post; no org states a file-length ceiling or the 1,000-line figure
+severity: should-fix  
+concerns: testing, performance, process  
+applies_when: Auditing how a codebase keeps its own test suite fast.  
+lacks: orgs, "fail the build on a suite or per-test budget" has thoughtbot and SciPy; needs one more org
 
-Keep every hand-written source file under about 1,000 lines unless it has a listed exception, and split larger files by knowledge owned, not by execution order.
+Record the suite's total time and its slowest tests on every CI run, and fail the build when the total or a single test passes a written budget.
 
 # production drafts
 
