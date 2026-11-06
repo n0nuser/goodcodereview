@@ -1,0 +1,66 @@
+# Evidence for R cards
+
+Fetched on 2026-11-06. Each row: card id | URL | organisation | verbatim quote | clause it backs. No source here was taken from another model's research file without a fetch.
+
+## fn-length-budget
+
+fn-length-budget | https://eslint.org/docs/latest/rules/max-lines-per-function | ESLint | "Some people consider large functions a code smell. Large functions tend to do a lot of things and can make it hard following what's going on." | Rule clause 1: a size gate; Why
+fn-length-budget | https://eslint.org/docs/latest/rules/max-lines-per-function | ESLint | "\"max\" (default 50) enforces a maximum number of lines in a function." | tool_gate default 50
+fn-length-budget | https://pylint.readthedocs.io/en/stable/user_guide/configuration/all-options.html | Pylint | "Maximum number of statements in function / method body." | Rule clause 1; tool_gate default 50 (the message page's example config of 7 is not the default)
+fn-length-budget | https://pylint.readthedocs.io/en/stable/user_guide/messages/refactor/too-many-statements.html | Pylint | "Used when a function or method has too many statements. You should then split it in smaller functions / methods." | Rule clause 2: split into smaller functions
+fn-length-budget | https://checkstyle.sourceforge.io/checks/sizes/methodlength.html | Checkstyle | "If a method becomes very long it is hard to understand. Therefore, long methods should usually be refactored into several individual methods that focus on a specific task." | Rule clause 1 and clause 2; tool_gate default 150
+fn-length-budget | https://docs.rubocop.org/rubocop/latest/cops_metrics.html | RuboCop | "Checks if the length of a method exceeds some maximum value." | Rule clause 1; tool_gate default 10
+fn-length-budget | https://pmd.github.io/pmd/pmd_rules_java_design.html | PMD | "By default, this rule reports methods with a complexity of 15 or more. Reported methods should be broken down into less complex components." | Rule clause 1 and clause 2; CognitiveComplexity default 15
+fn-length-budget | https://pmd.github.io/pmd/pmd_rules_java_design.html | PMD | "This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines of code in a class, method or constructor." | Rule clause 1; NcssCount methodReportLevel default 60
+fn-length-budget | https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1505 | Microsoft | "To fix this violation, redesign the type or method and try to split it into smaller and more focused types or methods." | Rule clause 2
+fn-length-budget | https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1505 | Microsoft | "You can suppress this warning when the type or method cannot be split or is considered maintainable despite its large size." | Rule exception: a simple long body may stay
+fn-length-budget | https://google.github.io/styleguide/pyguide.html#318-function-length | Google | "We recognize that long functions are sometimes appropriate, so no hard limit is placed on function length. If a function exceeds about 40 lines, think about whether it can be broken up without harming the structure of the program." | Rule exception; the limit is a review trigger
+fn-length-budget | https://www.kernel.org/doc/html/latest/process/coding-style.html | Linux kernel | "Functions should be short and sweet, and do just one thing. They should fit on one or two screenfuls of text (the ISO/ANSI screen size is 80x24, as we all know), and do one thing and do that well." | Rule clause 1: a soft length limit
+fn-length-budget | https://www.kernel.org/doc/html/latest/process/coding-style.html | Linux kernel | "if you have a conceptually simple function that is just one long (but simple) case-statement, where you have to do lots of small things for a lot of different cases, it’s OK to have a longer function." | Rule exception: a simple dispatch may stay long
+
+## fn-parameter-limit
+
+fn-parameter-limit | https://eslint.org/docs/latest/rules/max-params | ESLint | "Functions that take numerous parameters can be difficult to read and write because it requires the memorization of what each parameter is, its type, and the order they should appear in. As a result, many coders adhere to a convention that caps the number of parameters a function can take." | Rule; Why
+fn-parameter-limit | https://eslint.org/docs/latest/rules/max-params | ESLint | "\"max\" (default 3) enforces a maximum number of parameters in function definitions" | tool_gate default 3
+fn-parameter-limit | https://checkstyle.sourceforge.io/checks/sizes/parameternumber.html | Checkstyle | "Checks the number of parameters of a method or constructor." | Rule; tool_gate default 7
+fn-parameter-limit | https://checkstyle.sourceforge.io/checks/sizes/parameternumber.html | Checkstyle | "developer may need to override method with many parameters from 3-rd party library. In this case developer has no control over number of parameters." | override exemption in Counterpoint
+fn-parameter-limit | https://pylint.readthedocs.io/en/stable/user_guide/configuration/all-options.html | Pylint | "Maximum number of arguments for function / method." | Rule; max-args default 5
+fn-parameter-limit | https://pylint.readthedocs.io/en/stable/user_guide/configuration/all-options.html | Pylint | "Maximum number of positional arguments for function / method." | Rule; max-positional-arguments default 5
+fn-parameter-limit | https://pylint.readthedocs.io/en/stable/user_guide/messages/refactor/too-many-arguments.html | Pylint | "Used when a function or method takes too many arguments." | Rule
+fn-parameter-limit | https://docs.rubocop.org/rubocop/latest/cops_metrics.html | RuboCop | "Checks for methods with too many parameters." | Rule; Metrics/ParameterLists Max default 5, MaxOptionalParameters default 3
+fn-parameter-limit | https://pmd.github.io/pmd/pmd_rules_java_design.html | PMD | "Methods with numerous parameters are a challenge to maintain and increase the risk of bugs." | Why
+fn-parameter-limit | https://pmd.github.io/pmd/pmd_rules_java_design.html | PMD | "long parameter lists violate the Single Responsibility Principle" | Why
+fn-parameter-limit | https://pmd.github.io/pmd/pmd_rules_java_design.html | PMD | "Multiple Parameter Objects (grouping related parameters into dedicated classes)" | remedy in Why and PASS; ExcessiveParameterList minimum default 10
+fn-parameter-limit | https://pmd.github.io/pmd/pmd_rules_java_design.html | PMD | "Builder Pattern (constructing objects fluently with named parameters)" | remedy in Why and PASS
+
+## mod-class-size-budget
+
+mod-class-size-budget | https://pylint.readthedocs.io/en/stable/user_guide/configuration/all-options.html | Pylint | "Maximum number of attributes for a class (see R0902)." | Rule; max-attributes default 7
+mod-class-size-budget | https://pylint.readthedocs.io/en/stable/user_guide/configuration/all-options.html | Pylint | "Maximum number of public methods for a class (see R0904)." | Rule; max-public-methods default 20
+mod-class-size-budget | https://pylint.readthedocs.io/en/stable/user_guide/messages/refactor/too-many-instance-attributes.html | Pylint | "Used when class has too many instance attributes, try to reduce this to get a simpler (and so easier to use) class." | Why and remedy
+mod-class-size-budget | https://pmd.github.io/pmd/pmd_rules_java_design.html | PMD | "God classes do too many things, are very big and overly complex. They should be split apart to be more object-oriented." | Why and remedy
+mod-class-size-budget | https://pmd.github.io/pmd/pmd_rules_java_design.html | PMD | "This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines of code in a class, method or constructor." | Rule; NcssCount classReportLevel default 1500
+mod-class-size-budget | https://docs.rubocop.org/rubocop/latest/cops_metrics.html | RuboCop | "Checks if the length of a class exceeds some maximum value." | Rule; Metrics/ClassLength Max default 100
+mod-class-size-budget | https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1505 | Microsoft | "The rule reports a violation when the maintainability index of a type, method, field, property, or event is less than 10. However, you can configure the threshold." | Rule; CA1505 default threshold 10
+mod-class-size-budget | https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1505 | Microsoft | "To fix this violation, redesign the type or method and try to split it into smaller and more focused types or methods." | remedy
+mod-class-size-budget | https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1505 | Microsoft | "You can suppress this warning when the type or method cannot be split or is considered maintainable despite its large size." | Counterpoint: a cohesive wide type may stay
+
+## fn-no-caller-mutation
+
+fn-no-caller-mutation | https://airbnb.io/javascript/#functions--mutate-params | Airbnb | "Never mutate parameters." | Rule clause 1: do not mutate a parameter
+fn-no-caller-mutation | https://airbnb.io/javascript/#functions--mutate-params | Airbnb | "Manipulating objects passed in as parameters can cause unwanted variable side effects in the original caller." | Why
+fn-no-caller-mutation | https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html | Rust project | "Just as variables are immutable by default, so are references. We’re not allowed to modify something we have a reference to." | Rule clause 1
+fn-no-caller-mutation | https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html | Rust project | "Mutable references have one big restriction: If you have a mutable reference to a value, you can have no other references to that value." | local and unique-borrow exception
+fn-no-caller-mutation | https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html | Rust project | "The solution here is to return the String directly" | Why and PASS: return a new value
+fn-no-caller-mutation | https://react.dev/learn/updating-objects-in-state | Meta | "you should treat any JavaScript object that you put into state as read-only." | Rule clause 1
+fn-no-caller-mutation | https://react.dev/learn/updating-objects-in-state | Meta | "Instead, when you want to update an object, you need to create a new one (or make a copy of an existing one), and then set the state to use that copy." | Why and PASS: return a new value
+fn-no-caller-mutation | https://react.dev/learn/updating-objects-in-state | Meta | "Mutation is only a problem when you change existing objects that are already in state. Mutating an object you've just created is okay because no other code references it yet." | local-mutation exception
+fn-no-caller-mutation | https://docs.python.org/3/faq/programming.html#why-are-default-values-shared-between-objects | Python Software Foundation | "Default values are created exactly once, when the function is defined. If that object is changed, like the dictionary in this example, subsequent calls to the function will refer to this changed object." | Rule clause 1: a shared default is caller-owned state
+fn-no-caller-mutation | https://docs.python.org/3/faq/programming.html#why-are-default-values-shared-between-objects | Python Software Foundation | "Because of this feature, it is good programming practice to not use mutable objects as default values." | Rule clause 1
+fn-no-caller-mutation | https://docs.python.org/3/faq/programming.html#why-are-default-values-shared-between-objects | Python Software Foundation | "Your best choice is to return a tuple containing the multiple results." | Why and PASS: return a new value
+fn-no-caller-mutation | https://eslint.org/docs/latest/rules/no-param-reassign | ESLint | "Assignment to variables declared as function parameters can be misleading and lead to confusing behavior" | Rule clause 1
+fn-no-caller-mutation | https://eslint.org/docs/latest/rules/no-param-reassign | ESLint | "This rule can be also configured to fail when function parameters are modified." | Rule clause 1; tool gate
+fn-no-caller-mutation | https://eslint.org/docs/latest/rules/no-param-reassign | ESLint | "\"props\" is false by default. If \"props\" is set to true, this rule warns against the modification of parameter properties" | tool_gate caveat: the default misses param.field = value
+fn-no-caller-mutation | https://google.github.io/styleguide/pyguide.html#212-default-argument-values | Google | "Do not use mutable objects as default values in the function or method definition." | Rule clause 1
+fn-no-caller-mutation | https://kotlinlang.org/docs/coding-conventions.html | JetBrains | "The name should also suggest if the method is mutating the object or returning a new one. For instance, sort is sorting a collection in place, while sorted is returning a sorted copy of the collection." | Why and PASS: return a new value; name the mutation
+fn-no-caller-mutation | https://kotlinlang.org/docs/coding-conventions.html | JetBrains | "Prefer using immutable data to mutable. Always declare local variables and properties as val rather than var if they are not modified after initialization." | Rule clause 1; local var only when modified
