@@ -139,11 +139,11 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | pocock-smells | Feature Envy | `mod-behaviour-lives-with-state` | draft |
 | pocock-smells | Data Clumps | `fn-no-anonymous-tuples`, `fn-known-keys-get-a-type` | draft |
 | pocock-smells | Primitive Obsession | `fn-no-stringly-typed-returns` | draft |
-| pocock-smells | Repeated Switches | `mod-fowler-smells` | draft |
-| pocock-smells | Shotgun Surgery | `mod-fowler-smells` | draft |
+| pocock-smells | Repeated Switches | `mod-no-repeated-switches` | draft |
+| pocock-smells | Shotgun Surgery | `mod-no-shotgun-surgery` | draft |
 | pocock-smells | Divergent Change | `mod-cohesive-unit` | draft |
 | pocock-smells | Speculative Generality | `mod-yagni` | stable |
-| pocock-smells | Message Chains | `mod-fowler-smells` | draft |
+| pocock-smells | Message Chains | `mod-law-of-demeter` | draft |
 | pocock-smells | Middle Man | `fn-no-pass-through-wrapper` | draft |
 | pocock-smells | Refused Bequest | `mod-subtype-passes-parent-tests` | draft |
 | pocock-smells | Smells are judgement calls; the repo's own standard overrides the baseline | `mod-fowler-smells` | draft |

@@ -14,6 +14,7 @@ borrowed_from:
   - https://engineering.atspotify.com/2018/01/11/testing-of-microservices
   - https://testdesiderata.com/
   - https://kentcdodds.com/blog/testing-implementation-details
+  - https://doc.rust-lang.org/book/ch11-03-test-organization.html
 ---
 
 **Rule.** Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.

@@ -18,6 +18,9 @@ borrowed_from:
   - https://martinfowler.com/bliki/Yagni.html
   - https://henrikwarne.com/2024/01/10/tidy-first/
   - https://github.com/NVIDIA/Model-Optimizer/blob/main/CONTRIBUTING.md
+  - https://learn.microsoft.com/en-us/dotnet/standard/design-guidelines/abstractions-abstract-types-and-interfaces
+  - https://go.dev/wiki/CodeReviewComments
+  - https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/hexagonal-architecture.html
 ---
 
 **Rule.** Do not build an abstraction or capability for a need that does not exist yet; add it when the need or a second use appears.

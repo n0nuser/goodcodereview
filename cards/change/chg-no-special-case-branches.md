@@ -3,13 +3,17 @@ id: chg-no-special-case-branches
 level: change
 tags: [maintainability, design, complexity]
 severity: should-fix
-status: draft
-lacks: orgs, one vendor's review skill backs it, with no data; needs two more orgs
+status: stable
 lang: core
 applies_when: The change adds a conditional, flag or nullable mode to code that serves more than one feature.
-tool_gate: none
-note: from one vendor's review skill (opinion, no data); keep as a judgement call
+tool_gate: Microsoft CA1502 (cyclomatic complexity, default 25) or PMD CognitiveComplexity (default 15) on the shared function.
+note: own function or type - Linux kernel (factor the conditional into a helper function), Effective Go (a type switch, a switch for an if-else chain), Shopify (move the branch onto the item); cap on branches - Microsoft CA1502, PMD CognitiveComplexity; Cursor review rubric is the origin
 borrowed_from:
+  - https://www.kernel.org/doc/html/latest/process/coding-style.html
+  - https://go.dev/doc/effective_go
+  - https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1502
+  - https://pmd.github.io/pmd/pmd_rules_java_design.html
+  - https://shopify.engineering/other-driven-developments
   - https://github.com/cursor/plugins/blob/main/thermos/skills/thermo-nuclear-code-quality-review/SKILL.md
 ---
 
@@ -33,4 +37,4 @@ def checkout(cart, user, pricing=standard_pricing):
     total = pricing(cart, user)       # acme's rule lives in its own pricing function
 ```
 
-**Counterpoint.** "It is one line; an abstraction is overkill." One is fine. The second and third special case are the signal. See [[mod-yagni]] for when not to extract yet. Temporary branches need an owner and a removal date ([[chg-flag-owner-retirement]]).
+**Counterpoint.** "It is one line; an abstraction is overkill." One is fine. The second and third special case are the signal. See [[mod-yagni]] for when not to extract yet..

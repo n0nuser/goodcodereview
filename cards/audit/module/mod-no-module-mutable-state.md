@@ -5,18 +5,18 @@ tags: [correctness, testing, state]
 severity: should-fix
 status: stable
 lang: core
-applies_when: A module defines a variable that changes after load: a list, dict, counter, cache, client or singleton.
+applies_when: A module defines a value that changes after load: a module-level variable, a list, dict, counter, cache, client or singleton.
 tool_gate: none
 borrowed_from:
   - https://google.github.io/styleguide/pyguide.html#25-mutable-global-state
   - https://github.com/uber-go/guide/blob/master/style.md#avoid-mutable-globals
   - https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2211
-note: Google Python guide 2.5, Uber Go guide, Microsoft CA2211; each says to avoid mutable global or static state and allow constants
+note: Google Python guide 2.5 allows a rare internal global behind functions; the Uber Go guide and Microsoft CA2211 (public static fields) say to avoid mutable global or static state. Only Google names class attributes, so that point sits in the Why
 ---
 
-**Rule.** Keep no mutable state at module level.
+**Rule.** Keep no mutable state at module level; hold it on an instance.
 
-**Why.** Hidden global state leaks between tests, between requests, and between threads, and its order of mutation is unreadable. A frozen, load-once constant such as settings is the exception. A singleton used to dodge injection is not.
+**Why.** Hidden global state leaks between tests, between requests, and between threads, and its order of mutation is unreadable. A mutable class or static field fails the same way, and the Google Python guide names class attributes as well. A frozen, load-once constant such as settings is the exception. A singleton used to dodge injection is not.
 
 **FAIL**
 
@@ -42,4 +42,4 @@ class Loader:
         return self._cache[key]
 ```
 
-**Counterpoint.** "A module global is the simplest cache." It is also unbounded and shared by everything. If you need one, bound it (LRU or TTL), inject it, and tie its lifetime to what it caches.
+**Counterpoint.** "A module global is the simplest cache." It is also unbounded and shared by everything. If you need one, bound it (LRU or TTL), inject it, and tie its lifetime to what it caches. A rare, documented internal global behind functions can stay; say why in a comment.
