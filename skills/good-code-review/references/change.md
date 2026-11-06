@@ -372,6 +372,36 @@ try: sync()
 
 **Counterpoint.** Sometimes a warning is a false positive. Then suppress narrowly with a reason and an expiry date, which keeps the gate useful. A suppression of a rule that guards correctness or safety should be removed, not documented. Palantir's list covers TODOs without issue references and merging with checks red. The Go list covers discarded errors. This card extends both to suppressions.
 
+## chg-no-special-case-branches
+
+severity: should-fix  
+concerns: maintainability  
+applies_when: The change adds a conditional, flag or nullable mode to code that serves more than one feature.  
+tool gate: Microsoft CA1502 (cyclomatic complexity, default 25) or PMD CognitiveComplexity (default 15) on the shared function.  
+Backed by: Linux kernel (unjudged), Google (unjudged), Microsoft (unjudged), PMD (unjudged), Shopify (unjudged), Cursor (unjudged). Backing: unjudged.
+
+**Rule.** Put a new case behind its own function or type; do not add a one-off branch to a shared flow.
+
+**Why.** Each special case in a shared path is a condition that every later reader and every other feature must reason about. The cases accumulate until nobody can say what the path does.
+
+**FAIL**
+
+```text
+def checkout(cart, user):
+    ...
+    if user.org == "acme":            # added for one customer
+        total = total * 0.9
+```
+
+**PASS**
+
+```text
+def checkout(cart, user, pricing=standard_pricing):
+    total = pricing(cart, user)       # acme's rule lives in its own pricing function
+```
+
+**Counterpoint.** "It is one line; an abstraction is overkill." One is fine. The second and third special case are the signal. See [mod-yagni](module.md#mod-yagni) for when not to extract yet..
+
 ## chg-one-concern
 
 severity: should-fix  

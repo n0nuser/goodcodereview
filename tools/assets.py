@@ -45,11 +45,17 @@ a{color:var(--acc);text-decoration-thickness:.07em;text-underline-offset:.2em}
 nav{display:flex;flex-wrap:wrap;align-items:center;gap:0 var(--space-m);padding-block:var(--space-s);border-block-end:1px solid var(--line);font:var(--step--1)/1.3 var(--ui)}
 nav a,nav summary{display:flex;align-items:center;min-block-size:44px;padding-block:0;color:var(--fg);text-decoration:none}
 nav a[aria-current]{font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.35em}
-nav details{border:0}nav details[open]{flex:1 0 100%}nav details[open]>summary{border:0}
+nav{position:relative}nav>a{position:relative;z-index:12}nav>a:last-child{margin-inline-start:auto}
+nav details{position:relative;border:0}nav details>summary{gap:.4em;list-style:none;cursor:pointer;border:0}nav summary::-webkit-details-marker{display:none}
+nav summary::after{content:"";inline-size:.38em;block-size:.38em;margin-block-start:-.2em;border:solid currentColor;border-width:0 1.5px 1.5px 0;transform:rotate(45deg);transition:transform .15s}
+nav details[open]>summary::after{margin-block-start:.2em;transform:rotate(225deg)}
+nav details[open]>summary::before{content:"";position:fixed;inset:0;z-index:10;cursor:default}
 nav details:has([aria-current])>summary{font-weight:700}
 nav{column-gap:var(--space-s)}@media(min-width:34em){nav{column-gap:var(--space-m)}}
 nav.crumbs{display:block;padding:0;border:0}.crumbs ol{display:flex;flex-wrap:wrap;gap:0 var(--space-s);margin:0;padding:0;list-style:none}.crumbs li{display:flex;align-items:center;min-block-size:44px}.crumbs li+li::before{content:"/";margin-inline-end:var(--space-s);color:var(--mut)}
-nav details>div{display:flex;flex-wrap:wrap;gap:0 var(--space-m);padding-inline-start:var(--space-s)}
+nav details>div{position:absolute;inset-block-start:calc(100% - .25rem);inset-inline-start:-.75rem;z-index:20;display:flex;flex-direction:column;min-inline-size:13rem;padding:.35rem;background:var(--bg);border:1px solid var(--line);border-radius:.5rem;box-shadow:0 .5rem 1.5rem light-dark(oklch(0 0 0/.12),oklch(0 0 0/.5))}
+nav details>div a{min-block-size:40px;padding-inline:.75rem;border-radius:.35rem;white-space:nowrap}
+@media(max-width:34em){nav details{position:static}nav details>div{inset-inline:0;min-inline-size:0}nav details>div a{white-space:normal}}
 .skip{position:absolute;inset-block-start:-100px;inset-inline-start:var(--space-s);z-index:1;display:flex;align-items:center;min-block-size:44px;padding-inline:var(--space-s);background:var(--bg);color:var(--fg);border:2px solid var(--acc);font:600 var(--step--1)/1.3 var(--ui)}
 .skip:focus{inset-block-start:var(--space-s)}
 .vh{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -111,7 +117,7 @@ article:target>.ch h3{text-decoration:underline;text-decoration-color:var(--acc)
 footer{margin-block-start:var(--space-l);padding-block:var(--space-s) var(--space-m);border-block-start:1px solid var(--line);color:var(--mut);font:var(--step--1)/1.5 var(--ui)}
 .fl{display:flex;flex-wrap:wrap;gap:0 var(--space-m);margin:0;padding:0;list-style:none}.fl a{display:flex;align-items:center;min-block-size:44px}
 @media(hover:hover) and (pointer:fine){
-a:hover{text-decoration-thickness:.16em}nav a:hover,summary:hover{color:var(--acc)}
+a:hover{text-decoration-thickness:.16em}nav a:hover,summary:hover{color:var(--acc)}nav details>div a:hover{background:color-mix(in oklch,var(--fg) 8%,transparent)}
 button:hover{border-color:var(--fg)}ul.ck li:not(.th):hover{background:color-mix(in oklch,var(--fg) 4%,transparent)}
 }
 @media(max-width:40rem){.lab{inline-size:100%}}
@@ -131,7 +137,7 @@ const mine=(a,v)=>k=='l'?a.dataset.level==v:tg(a).includes(v),other=rows.filter(
 Q.textContent='';
 [...vals.map(v=>[v,rows.filter(a=>mine(a,v))]),['no '+G,other]].forEach(([v,rs])=>{if(!rs.length)return;
 const w=document.createElement('div'),h=document.createElement('h3'),u=document.createElement('ul');w.className='ckw';h.className='gh';h.textContent=v+' ('+rs.length+')';u.className='ck';
-u.append(th.cloneNode(true),...rs.map(a=>a.cloneNode(true)));w.append(h,u);Q.append(w)})}
+u.append(th.cloneNode(true),...rs.map(a=>{const c=a.cloneNode(true);c.removeAttribute('id');return c}));w.append(h,u);Q.append(w)})}
 function go(sync){q('[data-tags]').forEach(a=>{const g=tg(a);
 a.hidden=(S.c.size>0&&![...S.c].some(x=>g.includes(x)))||(S.t.size>0&&![...S.t].some(x=>g.includes(x)))||(S.l.size>0&&!S.l.has(a.dataset.level))});
 const on=S.c.size+S.t.size+S.l.size>0,rows=q('#flat li[data-tags]:not([hidden])'),s=rows.length,d=q('details [data-tags]:not([hidden])').length;

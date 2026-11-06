@@ -128,6 +128,7 @@ class PageSpec:
     intro: str
     cards: tuple[Card, ...]
     desc: str
+    parent: str = ""  # the level whose context part this page is, if any
 
 
 @dataclass(frozen=True, slots=True)

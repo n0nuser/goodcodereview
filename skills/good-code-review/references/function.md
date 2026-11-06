@@ -130,17 +130,17 @@ a { color: #0a58ca; text-decoration: none; }   /* no underline, no hover or focu
 severity: should-fix  
 concerns: maintainability  
 applies_when: A comment sits next to code, or the code needs one to be understood.  
-Backed by: Google (unjudged), Mozilla (unjudged), Python Software Foundation (unjudged), Apache Software Foundation (unjudged). Backing: unjudged. People cited: Sébastien Portebois (unjudged), John Ousterhout (unjudged), Henrik Warne (unjudged).
+Backed by: Google (unjudged), Mozilla (unjudged), Python Software Foundation (unjudged), Apache Software Foundation (unjudged), Linux kernel (unjudged), Refactoring.Guru (unjudged). Backing: unjudged. People cited: Sébastien Portebois (unjudged), John Ousterhout (unjudged), Henrik Warne (unjudged).
 
 **Rule.** Write comments that give a reason, a constraint, or a trade-off, and never restate what the next line does.
 
-**Why.** A restating comment rots silently and adds nothing. A missing reason makes the next person delete the code that mattered. Rename before commenting: clearer code needs fewer comments.
+**Why.** A restating comment rots silently and adds nothing. A missing reason makes the next person delete the code that mattered. Rename or extract a step before you comment how the code works.
 
 **FAIL**
 
 ```text
 counter += 1  # increment the counter
-retry = False  # see the PR, currently disabled
+retry = False  # set retry to False
 ```
 
 **PASS**
@@ -613,6 +613,38 @@ button.addEventListener("click", async () => {
 
 **Counterpoint.** "A global `unhandledrejection` handler already logs everything." It logs after the fact and cannot tell the user what to do. Only the call site knows which message and which fallback fit. Keep the global handler as a net, not as the handling.
 
+## fn-header-value-encoding
+
+severity: block  
+concerns: security  
+applies_when: A handler puts a request-derived value into a response header, such as `Location` or `Set-Cookie`.  
+context: server  
+tool gate: A test that sends `%0d%0a` in the echoed parameter and asserts a 400 or an encoded value; Node and Django throw at runtime, which is a guard rather than a linter.  
+Backed by: IETF (unjudged), MITRE (unjudged), OpenJS Foundation (unjudged), Django Software Foundation (unjudged). Backing: unjudged.
+
+**Rule.** Set every response header through the framework's header API, never by writing to the connection, and reject or encode CR and LF in any request-derived value.
+
+**Why.** A header value is one line. Bytes that end the line start a new header, so a value the attacker controls can add a header or a second response. The browser follows the attacker's redirect, stores the attacker's cookie, or reads the attacker's body under your origin. Filtering `%0d%0a` at one decode step is not enough, because a second decode or a charset change puts the bytes back.
+
+**FAIL**
+
+```python
+u = request.query["u"]                    # %0d%0a arrives as CR LF
+conn.write(f"HTTP/1.1 302 Found\r\nLocation: /next?u={u}\r\n\r\n")
+```
+
+The CR and LF from the query end the `Location` line, so the browser reads the rest of the value as another header.
+
+**PASS**
+
+```python
+u = request.query["u"]
+resp = Response(status=302)
+resp.headers["Location"] = "/next?u=" + quote(u, safe="")   # quote() encodes CR and LF; the header API rejects any that remain
+```
+
+**Counterpoint.** "The framework rejects newlines, so this cannot happen." It does reject them, for headers set through its API. The failure sits in the code that writes the status line or the whole response itself, such as a proxy, a websocket handshake, or a hand-rolled error page. Keep those on the API path too.
+
 ## fn-heading-structure
 
 severity: should-fix  
@@ -830,6 +862,45 @@ Backed by: GOV.UK (unjudged), Atlassian (unjudged), Nielsen Norman Group (unjudg
 
 **Counterpoint.** "Labels to the left fit our long desktop admin form better." Labels beside the field are an accepted convention for very long desktop forms. Accept a left label on such a form if it stays next to its own field at every breakpoint. A wrapping label, as in the `fn-form-control-has-label` PASS, passes when CSS sets the label text to `display: block` so it sits above the field. A label below the field is still a `FAIL`. This card covers placement only. `fn-form-control-has-label` covers the code tie between label and field.
 
+## fn-length-budget
+
+severity: discuss  
+concerns: maintainability  
+applies_when: A function has grown past the length limit the project sets, or the project has no limit yet.  
+tool gate: ESLint max-lines-per-function (default 50), Pylint too-many-statements (R0915, max-statements default 50), Checkstyle MethodLength (default 150), RuboCop Metrics/MethodLength (default 10), PMD NcssCount (methodReportLevel default 60). PMD CognitiveComplexity (default 15) and Microsoft CA1505 (maintainability index threshold 10) measure complexity, not length.  
+Backed by: ESLint (unjudged), Pylint (unjudged), Checkstyle (unjudged), RuboCop (unjudged), PMD (unjudged), Microsoft (unjudged), Google (unjudged), Linux kernel (unjudged). Backing: unjudged.
+
+**Rule.** Split a function that passes the project's length limit (about 40 lines if it sets none) unless its body is one simple operation or one flat dispatch.
+
+**Why.** A long body hides its steps. Validation, pricing, a charge, the order write and the receipt become one block, and a reader cannot test, skip or reorder one of them. Linters ship a limit because a long method is hard to understand and does too many things, so set one in the project's linter. The number is where the inspection starts, not a verdict. A body that is one flat dispatch can stay long, because its reader follows one dispatch rule.
+
+**FAIL**
+
+```javascript
+// eslint max-lines-per-function: checkout has 140 lines (max 50)
+function checkout(cart, user) {
+  // 30 lines validating the cart
+  // 25 lines pricing it
+  // 35 lines charging the card
+  // 25 lines writing the order
+  // 25 lines emailing the receipt
+}
+```
+
+**PASS**
+
+```javascript
+function checkout(cart, user) {
+  const total = price(validateCart(cart), user);
+  charge(user, total);
+  saveOrder(user, cart);
+  emailReceipt(user);
+}
+// each helper is under the project's limit
+```
+
+**Counterpoint.** "A long function is one operation, and the split scatters the sequence." Length alone does not decide. A hard limit can force bad splits, which is why Google sets none, so treat the limit as a prompt to inspect. Keep the function when its body is one simple operation or one flat dispatch table. Split when the lines serve different jobs, and let each new function own one of them.
+
 ## fn-link-url-scheme-allowlist
 
 severity: should-fix  
@@ -981,6 +1052,41 @@ async def handler(req):
 ```
 
 **Counterpoint.** "This call is fast enough." A short read from a local SSD can be quicker synchronously. Measure it with asyncio debug mode or the runtime's equivalent. A call that crosses the network, or that waits on anything outside the process, is never in that class.
+
+## fn-no-caller-mutation
+
+severity: should-fix  
+concerns: correctness, testing  
+applies_when: A function writes to a parameter or to an object the caller still owns, such as a list, map, state object or shared configuration.  
+tool gate: ESLint no-param-reassign with props true (the default props false misses param.field = value); Pylint dangerous-default-value (W0102) for a mutable default.  
+Backed by: Airbnb (unjudged), Meta (unjudged), Python Software Foundation (unjudged), ESLint (unjudged), Google (unjudged), JetBrains (unjudged). Backing: unjudged.
+
+**Rule.** Do not mutate a parameter or an object the caller owns, unless the function is documented as mutating it.
+
+**Why.** The caller still holds the old reference, so the change lands at a distance. A list passed to one function changes under the next loop, a shared default collects values across calls, and a mutated state object never triggers a re-render. Return a new value or a copy: the change shows at the call site and the old value stays safe to compare. A fresh local object is different. Nothing else references it yet, so build it in place and return it.
+
+**FAIL**
+
+```python
+def apply_discount(order):
+    order.total *= 0.9      # the caller's order changes too
+    return order
+```
+
+**PASS**
+
+```python
+def apply_discount(order):
+    return dataclasses.replace(order, total=order.total * 0.9)
+
+def normalize(items):
+    out = []                # local mutation is fine
+    for item in items:
+        out.append(item.strip())
+    return out
+```
+
+**Counterpoint.** "Copying on every update is expensive, and an in-place reducer is simpler." Copy only the part you change and share the rest, which keeps the cost low for wide objects. An in-place API is honest when its name says it mutates and its caller owns the object, as with a builder or a buffer. The failure is a quiet change to something the caller still uses. A linter set to catch only reassignment will miss a field write, so turn on the property check too.
 
 ## fn-no-check-then-act-across-await
 
@@ -1307,6 +1413,36 @@ return order.to_json()
 
 **Counterpoint.** "The IDs are UUIDs, nobody can guess them." A UUID leaks through logs, links and shared screenshots, and it is not an access check. Keep it as a second layer. Scope the query itself (`WHERE owner_id = :me`) so the check cannot be forgotten on the next endpoint.
 
+## fn-parameter-limit
+
+severity: should-fix  
+concerns: maintainability  
+applies_when: A function or constructor signature takes more parameters than the project's limit allows, or the project has no limit yet.  
+tool gate: ESLint max-params (default 3), Pylint too-many-arguments (R0913, max-args default 5) and too-many-positional-arguments (R0917, default 5), Checkstyle ParameterNumber (default 7), RuboCop Metrics/ParameterLists (default 5), PMD ExcessiveParameterList (minimum default 10).  
+Backed by: ESLint (unjudged), Checkstyle (unjudged), Pylint (unjudged), RuboCop (unjudged), PMD (unjudged). Backing: unjudged.
+
+**Rule.** Set a parameter-count limit in the project's linter, and keep signatures within it.
+
+**Why.** Every positional value is a fact the caller must remember and a slot that can take the wrong one, especially when several share a type. `create_user(name, email, street, city, zip, country, plan, trial_days)` cannot be read at the call site and is easy to call in the wrong order. A named record or a builder gives the values names and lets the compiler and the reader check them. Group only values that already travel together, and keep required fields required.
+
+**FAIL**
+
+```python
+def create_user(name, email, street, city, zip, country, plan, trial_days):
+    ...
+```
+
+**PASS**
+
+```python
+def create_user(contact: Contact, subscription: Subscription):
+    ...
+
+# or: User.builder().name(...).email(...).plan(...).build()
+```
+
+**Counterpoint.** "A parameter object just moves the fields into another class and can hide required ones." A record that groups values with one owner is not hiding them, and a builder that names each required value at the call site is clearer than eight slots. The failure is a bag object with optional fields that may be missing. Do not introduce one. A signature the author cannot change, such as an override of a third-party method, is exempt, because the parameter count is not the author's decision. Keyword-only parameters fix the call-site order problem but still count toward the limit, so group the values that travel together.
+
 ## fn-password-slow-hash
 
 severity: block  
@@ -1627,7 +1763,7 @@ severity: should-fix
 concerns: testing, maintainability  
 applies_when: A test exercises a function, class, or module with callers.  
 tool gate: Refactor the code without changing what it does and run the tests; mutation testing shows whether they still catch real faults.  
-Backed by: Google (unjudged), Microsoft (unjudged), Spotify (unjudged). Backing: unjudged. People cited: Kent Beck (unjudged), Kent C. Dodds (unjudged).
+Backed by: Google (unjudged), Microsoft (unjudged), Spotify (unjudged), Rust project (unjudged). Backing: unjudged. People cited: Kent Beck (unjudged), Kent C. Dodds (unjudged).
 
 **Rule.** Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.
 

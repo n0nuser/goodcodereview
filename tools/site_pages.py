@@ -2,14 +2,15 @@
 import html
 import re
 
+from agent_ready_check import Page
 from card_fields import lacks
-from config import REPO, SITE_DESC
+from config import PAGE_MAX, REPO, SITE_DESC
 from context import BuildInput, pack_name
 from errors import BuildError
 from guides import GUIDES, guide_text, guides_index_text
 from listing import copy_pre, listing
 from markdown import inline, md
-from models import LEVELS, LacksReason, Level, PageSpec
+from models import LEVELS, Card, LacksReason, Level, PageSpec
 from prose import (
     ABOUT,
     ABOUT_DESC,
@@ -38,7 +39,7 @@ from prose import (
     PRIVACY_DESC,
     VERDICT,
 )
-from seo import home_ld
+from seo import MAX_DESC, MIN_DESC, home_ld
 from shell import page
 
 INSTALL_SKILL = "npx skills add n0nuser/goodcodereview"
@@ -49,6 +50,32 @@ CONCERNS_INTRO = ("<p>Every card's rule on one page, and each row links to the f
                   "Add <code>.md</code> or use <code>cards.json</code> for the same view as text or JSON.</p>")
 
 
+def part_spec(lv: Level, g: str, cards: list[Card]) -> PageSpec:
+    """The page for one context of a split level. Raises BuildError when its description breaks the search-snippet length."""
+    desc = f"The {g} context of the {lv} review: {len(cards)} cards, each with a FAIL and a PASS example and the organisations that back the rule."
+    if not MIN_DESC <= len(desc) <= MAX_DESC:
+        raise BuildError(f"{lv}-{g}.html: description is {len(desc)} characters, want {MIN_DESC} to {MAX_DESC}")
+    intro = f"<p>{LEVEL_DESC[lv]} This page holds the cards for the <code>{g}</code> context. The <a href=\"{lv}.html\">{NAME[lv]}</a> page lists every card. {VERDICT}</p>"
+    return PageSpec(f"{lv}-{g}.html", f"{NAME[lv]}, {g} cards", intro, tuple(cards), desc, parent=str(lv))
+
+
+def split_levels(b: BuildInput) -> BuildInput:
+    """Split every level whose one-page HTML would reach PAGE_MAX characters of text into a hub plus one page per `context`.
+
+    The measure is the one tools/agent_ready_check.py applies (`Page.chars()`). Raises BuildError when a part is still too big.
+    """
+    def size(spec: PageSpec) -> int:
+        return Page.parse(listing(spec, b.ids, b.links, empty=False, compact=False)).chars()
+
+    over = frozenset(lv for lv in LEVELS if lv not in b.no_stable and size(PageSpec(f"{lv}.html", NAME[lv], "", tuple(b.core_at(lv)), "")) >= PAGE_MAX)
+    split = b.with_split(over)
+    for lv in over:
+        for g, cs in split.parts(lv).items():
+            if size(part_spec(lv, g, cs)) >= PAGE_MAX:
+                raise BuildError(f"{lv}-{g}.html is over {PAGE_MAX:,} characters of text; add a context or split the level further")
+    return split
+
+
 def page_specs(b: BuildInput) -> list[PageSpec]:
     """Level pages, pack pages, then the concerns page."""
     specs = []
@@ -56,7 +83,13 @@ def page_specs(b: BuildInput) -> list[PageSpec]:
         intro = f"<p>{LEVEL_DESC[lv]} Use it for this input: {INPUT[lv]}.{'' if lv in b.no_stable else ' ' + VERDICT}</p>"
         if lv == Level.INCIDENT:
             intro += f"<p>{inline(INCIDENT_RULE, {})}</p><p>An example:</p><pre class=\"wrap\"><code>{html.escape(INCIDENT_EXAMPLE)}</code></pre>"
+        if lv in b.split:
+            parts = b.parts(lv)
+            intro += ("<p>This level is split by context so each page stays small. Every row links to its card on the page for its context: "
+                      + ", ".join(f'<a href="{lv}-{g}.html">{g}</a> ({len(cs)})' for g, cs in parts.items()) + ".</p>")
         specs.append(PageSpec(f"{lv}.html", NAME[lv], intro, tuple(b.core_at(lv)), LEVEL_DESC[lv]))
+        for g, cs in (b.parts(lv) if lv in b.split else {}).items():
+            specs.append(part_spec(lv, g, cs))
     for pk in b.packs:
         specs.append(PageSpec(
             f"pack-{pk}.html", f"{pack_name(pk)} pack",
@@ -70,7 +103,7 @@ def listing_pages(b: BuildInput) -> dict[str, str]:
     """The listing pages by file name. Raises BuildError when a card lost its FAIL or PASS block in rendering."""
     pages = {}
     for spec in page_specs(b):
-        compact = spec.file == "concerns.html"
+        compact = spec.file == "concerns.html" or spec.file[:-5] in b.split
         out = listing(spec, b.ids, b.links, empty=spec.file[:-5] in b.no_stable, compact=compact, date=b.date)
         if "<code></code>" in out or out.count("<strong>PASS</strong>") != (0 if compact else len(spec.cards)):
             raise BuildError(f"{spec.file}: a card lost its FAIL or PASS block in rendering")
@@ -136,7 +169,7 @@ def home_page(b: BuildInput) -> str:
         "<h2>Choose a review</h2>"
         "<p>To review by hand, pick the level that matches your input and work through its checklist. Only stable cards are vetted.</p>"
         f"<p>{b.tally}</p>{rows}"
-        "<h2>Where the rules come from</h2><p>" + BACKING + ' Open a stable card, such as <a href="service.html#svc-sqli-authn">svc-sqli-authn</a>, '
+        "<h2>Where the rules come from</h2><p>" + BACKING + ' Open a stable card, such as <a href="' + b.ids["svc-sqli-authn"] + '">svc-sqli-authn</a>, '
         "to see the organisations and the sources behind it.</p>"
         "<h2>Scope a review</h2><p>To review only some concerns, such as performance, use the <a href=\"concerns.html\">Concerns</a> page. "
         "Its filters live in the address, so <a href=\"concerns.html?concern=security,performance\">concerns.html?concern=security,performance</a> opens the security and performance cards.</p>"

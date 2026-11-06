@@ -1,10 +1,12 @@
 """Everything the writers share, derived once from the cards: the build input."""
+from __future__ import annotations
+
 import datetime
 import subprocess
-from dataclasses import dataclass
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
-from card_fields import href, is_core, is_stable, level_of
+from card_fields import context_group, group_by_context, href, is_core, is_stable, level_of, page_name
 from config import ROOT
 from errors import BuildError
 from markdown import check_md
@@ -42,6 +44,20 @@ class BuildInput:
     counts: dict[Level, LevelCount]  # core cards only
     no_stable: frozenset[Level]  # levels whose core cards include no stable one
     links: tuple[NavLink, ...]
+    split: frozenset[Level] = field(default_factory=frozenset)  # levels whose HTML page is one hub plus a page per `context`
+
+    def page_of(self, card: Card) -> str:
+        """The page slug that holds the card in full: its pack page, its level page, or its context part of a split level."""
+        return f"{level_of(card)}-{context_group(card)}" if is_core(card) and level_of(card) in self.split else page_name(card)
+
+    def parts(self, level: Level) -> dict[str, list[Card]]:
+        """The context parts of a split level, each with its cards (stable and draft), in card order."""
+        return group_by_context(self.core_at(level))
+
+    def with_split(self, split: frozenset[Level]) -> BuildInput:
+        """The same input with `split` levels set and every card link pointing at the page that holds the card."""
+        moved = replace(self, split=split)
+        return replace(moved, ids={**self.ids, **{c.fm["id"]: f"{moved.page_of(c)}.html#{c.fm['id']}" for c in self.cards}})
 
     @property
     def stable(self) -> list[Card]:

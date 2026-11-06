@@ -15,6 +15,10 @@ borrowed_from:
   - https://engineering.atspotify.com/2020/04/when-should-i-write-an-architecture-decision-record
   - https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions
   - https://github.com/matthiasn/talk-transcripts/blob/master/Hickey_Rich/HammockDrivenDev.md
+  - https://github.com/rust-lang/rfcs/blob/master/0000-template.md
+  - https://peps.python.org/pep-0012/
+  - https://github.com/kubernetes/enhancements/blob/master/keps/NNNN-kep-template/README.md
+  - https://rfd.shared.oxide.computer/rfd/0001
 ---
 
 **Rule.** Keep a short written record for each significant design choice (datastore, framework, deviation from a pattern) that states the context, the decision, and its consequences.

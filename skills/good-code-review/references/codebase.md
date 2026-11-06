@@ -36,7 +36,7 @@ expect(results.violations).toEqual([]);
 severity: discuss  
 concerns: maintainability, process  
 applies_when: Auditing whether the reasons behind significant design choices are recorded.  
-Backed by: AWS (unjudged), Microsoft (unjudged), Google (unjudged), GOV.UK (unjudged), Spotify (unjudged), Cognitect (unjudged). Backing: unjudged. People cited: Rich Hickey (unjudged).
+Backed by: AWS (unjudged), Microsoft (unjudged), Google (unjudged), GOV.UK (unjudged), Spotify (unjudged), Cognitect (unjudged), Rust project (unjudged), Python Software Foundation (unjudged), Kubernetes (unjudged), Oxide Computer Company (unjudged). Backing: unjudged. People cited: Rich Hickey (unjudged).
 
 **Rule.** Keep a short written record for each significant design choice (datastore, framework, deviation from a pattern) that states the context, the decision, and its consequences.
 
@@ -272,6 +272,34 @@ docs-links:
 
 **Counterpoint.** "External links flake, so the job will be red half the time." Check local paths and anchors on every change, where the result is stable. Run the external links on a schedule, so a dead site never blocks a merge.
 
+## code-file-lines-ceiling
+
+severity: discuss  
+concerns: maintainability, process  
+applies_when: Auditing a repo for files that have grown past comprehension.  
+tool gate: Pylint too-many-lines (C0302, max-module-lines default 1000), ESLint max-lines, or Checkstyle FileLength, with an allowlist for generated files.  
+Backed by: Pylint (unjudged), ESLint (weak), Checkstyle (weak), RuboCop (unjudged), PMD (unjudged). Backing: mixed. People cited: Sébastien Portebois (unjudged), tef (programmingisterrible) (unjudged).
+
+**Rule.** Set a file-length limit in the linter (Pylint and SonarSource default to 1,000 lines), keep hand-written files under it unless a listed exception says otherwise, and split larger files by knowledge owned, not by execution order.
+
+**Why.** Huge files hide unrelated decisions, attract merge conflicts, and cannot be understood in one read. Linters ship a default for this because a file that passes it is "hard to understand" (Checkstyle). The defaults differ from 300 to 2,000 lines, so pick one and enforce it.
+
+**FAIL**
+
+```text
+$ wc -l src/*.py | sort -n | tail -2
+  4,812 src/utils.py
+  3,105 src/app.py
+```
+
+**PASS**
+
+```text
+pylint: max-module-lines = 1000; no hand-written file over it; generated files listed in an allowlist.
+```
+
+**Counterpoint.** Ousterhout favours deep modules and a long file can be coherent. Splitting for its own sake adds shallow pieces. 1,000 lines is a trigger for a look, not a verdict. The fix is to separate decisions (his information-leakage and temporal-decomposition flags).
+
 ## code-flaky-test-quarantine
 
 severity: should-fix  
@@ -466,6 +494,89 @@ key revoked and reissued the same day; new value comes from the secret store
 
 **Counterpoint.** "Scanners give false positives." Tune with an allowlist of reviewed, non-secret strings. A missed live key costs far more than a triaged alert. [sys-secrets-and-errors](system.md#sys-secrets-and-errors) covers where secrets live at runtime.
 
+## code-test-fixtures-built-once
+
+severity: should-fix  
+concerns: testing, performance  
+applies_when: Auditing a test suite in which many tests share an expensive setup (a database schema and seed data, a container, a loaded application context).  
+tool gate: A CI job timeout plus a slowest-tests report in the build log (pytest or Django --durations, Gradle build scan).  
+Backed by: Django Software Foundation (unjudged), Ruby on Rails (unjudged), Spring (unjudged), Laravel (unjudged), Ecto (unjudged), SQLAlchemy (unjudged), Microsoft (unjudged), Alloy.ai (unjudged), GitLab (unjudged). Backing: unjudged.
+
+**Rule.** Build an expensive fixture once per test run, and reset state between tests with a rollback or a truncate, never a rebuild.
+
+**Why.** A fixture that takes 20 seconds costs 20 seconds times the number of tests that rebuild it, and adding tests adds that cost again. One team measured about 10 seconds to drop, recreate and migrate a database per test and a 14-minute suite for 78 integration tests; wrapping each test in a rolled-back transaction cut it to 8 minutes. A slow suite then gets skipped locally, and changes arrive in larger, riskier batches.
+
+**FAIL**
+
+```text
+before each test:
+    create database; run all migrations; load seed data     # 20-30 s
+after each test:
+    drop database
+```
+
+**PASS**
+
+```text
+once per run (session, test binary, or global setup):
+    create database; run all migrations; load seed data
+before each test:  begin a transaction (or savepoint)
+after each test:   roll it back
+tests that must commit: their own database, cleaned with DELETE or TRUNCATE after each test, run serially
+```
+
+**Counterpoint.** "A shared fixture breaks test isolation and blocks parallel runs." It does when the shared part is mutable or when tests commit. Keep the shared part read-only, undo each test's writes by rollback, give each parallel worker its own database, and give the few tests that must commit a separate database. A database kept between runs goes stale after a schema change, so rebuild it when the migrations change.
+
+## code-test-selection-on-pr
+
+severity: discuss  
+concerns: testing, performance, process  
+applies_when: A pull-request CI job runs a test suite that is slower than the team's feedback target for a pull request. Mark `N/A` when the full suite already fits the target.  
+tool gate: A PR job that runs the affected-tests command (`nx affected -t test`, Azure Test Impact Analysis, Develocity Predictive Test Selection), plus a full-suite job off the PR path.  
+Backed by: Meta (unjudged), Microsoft (unjudged), Shopify (unjudged), Google (unjudged), Nx (unjudged), Gradle (unjudged). Backing: unjudged.
+
+**Rule.** When the full suite is slower than the pull-request feedback target, run only the tests the change affects on the pull request, and run the full suite before deploy or on a schedule.
+
+**Why.** A full suite on every pull request makes the queue wait for tests the change cannot break. Meta runs a third of the affected tests and reports catching more than 99.9 percent of regressions. Shopify runs the tests related to the change. The full run still happens, outside the pull-request gate.
+
+**FAIL**
+
+```yaml
+# the only test job
+on: pull_request
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pytest          # 40-minute suite on every PR, no nightly or pre-deploy run
+```
+
+**PASS**
+
+```yaml
+# .github/workflows/pr.yml
+on: pull_request
+jobs:
+  affected:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: nx affected -t test
+
+# .github/workflows/nightly.yml
+on:
+  schedule: [{ cron: "0 3 * * *" }]
+jobs:
+  full:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pytest
+```
+
+**Counterpoint.** "Selection misses regressions." Shopify says a stale mapping let failing tests merge, about 0.06 percent of pull requests, and Microsoft falls back to all tests when it cannot classify a change. Keep the full run, fall back to all tests when the mapping cannot decide, and do not present the pull-request run as full coverage. The selected tests gate the merge, as [code-ci-gates](codebase.md#code-ci-gates) asks; the full run comes before deploy or on a schedule.
+
 ## code-vuln-remediation-window
 
 severity: should-fix  
@@ -499,32 +610,94 @@ Open alerts: all younger than their window.
 severity: block  
 concerns: security, process  
 applies_when: Auditing CI workflow files and release pipelines.  
-tool gate: OpenSSF Scorecard `Pinned-Dependencies` check; zizmor `unpinned-uses` audit.  
-Backed by: OpenSSF (unjudged), OWASP (unjudged), GitHub (unjudged), StepSecurity (unjudged). Backing: unjudged.
+tool gate: OpenSSF Scorecard `Pinned-Dependencies` and `Dangerous-Workflow` checks; zizmor `unpinned-uses` audit.  
+Backed by: OpenSSF (unjudged), OWASP (unjudged), GitHub (unjudged), StepSecurity (unjudged), GitLab (unjudged). Backing: unjudged.
 
-**Rule.** Pin every CI action to a full commit SHA.
+**Rule.** Pin every CI action to a full commit SHA, and keep code from an unreviewed change out of any job that holds secrets or can deploy.
 
-**Why.** The pipeline holds secrets and publish rights, so a compromised action or injected input owns the artifact. Also give workflows least-privilege tokens, keep untrusted event data out of `run:` and out of `pull_request_target` checkouts, and attach build provenance to releases. [code-dependency-pinning](codebase.md#code-dependency-pinning) covers dependency pins, and [code-dependency-licence-sbom](codebase.md#code-dependency-licence-sbom) covers the inventory.
+**Why.** The pipeline holds secrets and publish rights, so a compromised action or injected input owns the artifact. A privileged trigger that checks out a fork runs the fork's code with the base repository's token and secrets. Give workflows least-privilege tokens, keep untrusted event data out of `run:` and out of `pull_request_target` checkouts, and attach build provenance to releases. Review a change to the workflow file like any other code, because it can grant the next job anything. [code-dependency-pinning](codebase.md#code-dependency-pinning) covers dependency pins, and [code-dependency-licence-sbom](codebase.md#code-dependency-licence-sbom) covers the inventory.
 
 **FAIL**
 
 ```yaml
-steps:
-  - uses: actions/checkout@v4        # tag, can be moved to other code
-  - uses: some/action@main           # branch, changes on every push
+on: pull_request_target
+permissions: write-all
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4        # tag, can be moved to other code
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - run: ./build.sh                  # runs the PR author's code with the base repo's token
 ```
 
 **PASS**
 
 ```yaml
+on: pull_request
 permissions:
   contents: read
-steps:
-  - uses: actions/checkout@<40-char-sha>   # v4.2.2
-  - uses: some/action@<40-char-sha>        # v3.1.0
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@<40-char-sha>   # v4.2.2
+      - uses: some/action@<40-char-sha>        # v3.1.0
+  deploy:
+    if: github.ref == 'refs/heads/main'      # never runs for a fork or an unmerged change
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production                  # protected environment: required reviewers, scoped secrets
+    steps:
+      - run: ./deploy.sh
 ```
 
-**Counterpoint.** "SHA pinning blocks automatic fixes and adds update churn." Let an update bot propose SHA bumps, so fixes still arrive as reviewed changes. Where the platform offers a lockfile for workflow dependencies, that lockfile is stronger than SHA pins and meets this check.
+**Counterpoint.** "SHA pinning blocks automatic fixes and adds update churn." Let an update bot propose SHA bumps, so fixes still arrive as reviewed changes. Where the platform offers a lockfile for workflow dependencies, that lockfile is stronger than SHA pins and meets this check. A `pull_request_target` job can be safe when it never checks out or runs the fork's code, but splitting the privileged job from the untrusted one is easier to review than keeping them together.
+
+## code-workload-identity
+
+severity: should-fix  
+concerns: security  
+applies_when: A CI job or a service authenticates to a cloud provider.  
+Backed by: GitHub (unjudged), Google (unjudged), GitLab (unjudged), Microsoft (unjudged). Backing: unjudged.
+
+**Rule.** Exchange the platform's OIDC token for a short-lived cloud credential, and pin the trust policy to the workload.
+
+**Why.** A cloud key stored as a CI secret stays valid until someone rotates it, and every job that reads it can use it elsewhere. An OIDC token is minted for one job, expires with it, and names the repository, branch or environment. The cloud side has to check that name. A trust policy with no `sub` condition lets any repository assume the role.
+
+**FAIL**
+
+```yaml
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+```
+
+**PASS**
+
+```yaml
+on:
+  push:
+    branches: [main]
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aws-actions/configure-aws-credentials@<40-char-sha>
+        with:
+          role-to-assume: arn:aws:iam::123456789012:role/deploy
+          aws-region: eu-west-1
+# trust policy condition:
+# token.actions.githubusercontent.com:sub: repo:org/repo:ref:refs/heads/main
+# repositories created after 15 July 2026, or opted in, use immutable IDs:
+# repo:org@123456/repo@456789:ref:refs/heads/main
+```
+
+**Counterpoint.** "Static keys work with every provider and every runner." Some providers and self-hosted setups cannot issue an OIDC token, so a scoped key is the fallback. If a key is unavoidable, scope it to the one deploy action, keep it in the platform's secret store rather than in the repository, rotate it, and keep the deploy job away from pull request code. Where OIDC is available, use it and pin the claim.
 
 ## py-ruff-gate
 

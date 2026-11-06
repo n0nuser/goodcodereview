@@ -1,3 +1,4 @@
+import re
 import subprocess
 from pathlib import Path
 
@@ -10,6 +11,7 @@ import skill_files
 from build import Plan
 from errors import BuildError
 from markdown import check_md, inline, rule
+from models import LEVELS
 from site_meta import security_txt, sitemap
 
 
@@ -160,3 +162,17 @@ def test_internal_links_and_anchors_resolve_in_rendered_pages(site_text: dict[st
             elif frag and hit.endswith(".html") and f'id="{frag}"' not in site_text[hit] and f"id={frag}" not in site_text[hit]:
                 bad.append(f"{name}: {href} (no #{frag})")
     assert not bad, bad[:10]
+
+
+def test_a_split_level_hub_keeps_every_card_id_and_links_each_to_a_part_page(plan: Plan) -> None:
+    split = [lv for lv in LEVELS if f"{lv}-any.html" in plan.site]
+    assert split
+    for lv in split:
+        hub = plan.site[f"{lv}.html"].decode()
+        parts = {n: t.decode() for n, t in plan.site.items() if n.startswith(f"{lv}-") and n.endswith(".html")}
+        cards = {m for t in parts.values() for m in re.findall(r'<article id="([^"]+)"', t)}
+        assert cards
+        assert "<article" not in hub
+        for cid in cards:
+            assert f'<li id="{cid}"' in hub
+            assert re.search(rf'<a href="{lv}-[a-z]+\.html#{cid}">', hub)

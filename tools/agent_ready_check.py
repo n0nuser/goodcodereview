@@ -3,6 +3,8 @@
 
 No network: it reads files only. Prints one PASS or FAIL line per check, names the checklist item, and exits 1 on any FAIL.
 """
+from __future__ import annotations
+
 import hashlib
 import json
 import re
@@ -14,9 +16,8 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
 
-from config import BASE, LLMS_BUDGET, ROOT, SITE
+from config import BASE, LLMS_BUDGET, PAGE_MAX, ROOT, SITE
 
-PAGE_MAX = 120_000  # human pages only: agents read the .md twins and skill references
 MIN_INDEX_CHARS = 500
 MIN_TRUST_PAGE_CHARS = 500
 MIN_404_CHARS = 20

@@ -91,3 +91,13 @@ applies_when: Python code compares against string or number literals for a fixed
 lacks: held, cites the draft card(s) fn-no-magic-values, fn-no-stringly-typed-returns; stable once those are stable
 
 Use `StrEnum` for fixed string sets and `HTTPStatus` for HTTP codes.
+
+## py-test-collection-and-imports
+
+level: module  
+severity: discuss  
+concerns: testing, performance  
+applies_when: A pytest run spends seconds collecting tests or importing modules before the first test starts.  
+lacks: orgs, "set testpaths" has Trail of Bits; the pytest page only defines the option; needs two more orgs that recommend it
+
+Set `testpaths` in the pytest configuration.

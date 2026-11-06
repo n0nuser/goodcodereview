@@ -2,6 +2,7 @@
 import json
 import re
 
+from card_fields import is_stable
 from config import BASE, SITE_DESC
 from context import BuildInput, pack_name
 from guides import GUIDES, guide_text, guides_index_text
@@ -32,8 +33,8 @@ from prose import (
     PRIVACY_DESC,
 )
 from shell import page_url
-from site_pages import INSTALL_PLUGIN, INSTALL_SKILL, drafts_markdown
-from skill_files import SkillOutput, audit_twin, card_section
+from site_pages import INSTALL_PLUGIN, INSTALL_SKILL, drafts_markdown, part_spec
+from skill_files import SkillOutput, audit_twin, card_section, link_stable
 
 
 def front(title: str, desc: str, slug: str, date: str) -> str:
@@ -85,6 +86,11 @@ def markdown_twins(b: BuildInput, skill: SkillOutput) -> dict[str, str]:
         twins[f"guides/{g.slug}"] = Twin(g.title, g.desc, f"# {g.title}\n\n" + guide_text(b, g, html=False))
     twins["index"] = _index_page(b, skill.plain_verdict)
     twins["concerns"] = _concerns_page(b, skill.plain_verdict)
+    for lv in b.split:
+        for ctx, cs in b.parts(lv).items():
+            stable = [card_section(c) for c in cs if is_stable(c)] or ["No vetted cards for this context yet."]
+            text = link_stable(f"# {lv}, {ctx}\n\nThe stable {lv} cards for the `{ctx}` context. The whole level is at {BASE}/{lv}.md.\n\n" + "\n\n".join(stable) + "\n", skill.stable_home)
+            twins[f"{lv}-{ctx}"] = Twin(f"{NAME[lv]}, {ctx} cards", part_spec(lv, ctx, cs).desc, text)
     for pk in b.packs:
         text = (f"# {pack_name(pk)} pack\n\nEach card says whether it is stable or draft. Stable cards are vetted and also appear in their level file. {DRAFT_NOTE} {DRAFT_RULE}\n\n"
                 + "\n\n".join(card_section(c) for c in b.cards if c.fm["lang"] == pk) + "\n")

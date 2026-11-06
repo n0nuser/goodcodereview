@@ -1,34 +1,74 @@
 # service
 
+## svc-account-linking
+
+severity: block  
+concerns: security  
+applies_when: The service links a federated identity to an existing account, or looks up an account by an email or profile claim.  
+context: server  
+Backed by: Microsoft (unjudged), OWASP (unjudged), NIST (unjudged), Okta (Auth0) (unjudged), Google (unjudged), OpenID Foundation (unjudged). Backing: unjudged.
+
+**Rule.** Link a federated identity to an existing account only after proving control of both, and key the link on the pair `iss` and `sub`, never on an unverified email or another profile claim.
+
+**Why.** An attacker who registers a victim's address first can wait for the victim to press "Sign in with Google" and inherit the account through an automatic merge. The same bug appears when an IdP asserts an address it never verified, or one that changed owner since it did. An authenticated session on the existing account, plus a freshly authenticated federated identity, proves both sides. `iss` and `sub` together are the only stable key; email, `preferred_username` and name can be reused or reassigned, so they are a lookup hint at best.
+
+**FAIL**
+
+```python
+if user.email == claims["email"]:
+    user.identities.append(claims["sub"])     # merges on an unverified claim
+```
+
+**PASS**
+
+```python
+if session.user is None:                         # control of the existing account
+    raise PermissionDenied
+if not (claims["iss"] and claims["sub"]):        # a stable federated key
+    raise PermissionDenied
+link(session.user, key=(claims["iss"], claims["sub"]))
+# email stays a display field, never the lookup key
+```
+
+**Counterpoint.** "Users expect the Google button to find the account with their email." Find it by a verified address if you like, then stop and require the password or an authenticated session before linking. A verified flag is not always present, and an address verified at signup can belong to someone else today, so verify it yourself when the IdP does not. Treating the match as proof is what the attack needs. Google says that where it is authoritative for the address (a `@gmail.com` address, or `email_verified` with `hd` set) you may skip a password challenge. That settles who owns the address, not who controls the local account, so an IdP that is authoritative for the domain may be trusted for the lookup, and the merge still needs the authenticated local session when the local address was never verified.
+
+**See also.** [svc-auth-throttle-generic-errors](service.md#svc-auth-throttle-generic-errors) covers the enumeration that makes pre-registration cheap.
+
 ## svc-api-cache-control
 
 severity: should-fix  
-concerns: performance  
+concerns: performance, security  
 applies_when: A service returns responses that a browser, CDN, gateway or client library may cache.  
 context: server  
 tool gate: Integration test or header lint that rejects a 200 GET without `Cache-Control`.  
-Backed by: IETF (unjudged), Zalando (unjudged), OWASP (supports). Backing: mixed.
+Backed by: IETF (unjudged), Zalando (unjudged), OWASP (supports), PortSwigger (unjudged), Cloudflare (unjudged), AWS (unjudged), Google (unjudged), Microsoft (unjudged). Backing: mixed.
 
-**Rule.** Set an explicit `Cache-Control` on every response a cache may store, use `private` or `no-store` for user-specific data, and add `Vary` for any request header that changes the body.
+**Rule.** Set an explicit `Cache-Control` on every response a cache may store, use `private` or `no-store` for user-specific data, add `Vary` for any request header that changes the body, keep the origin's `Cache-Control` authoritative at the edge (no minimum TTL or force-cache override), and decide cacheability by the response `Content-Type`, not the URL extension.
 
-**Why.** With no directive, a cache may guess a lifetime from `Last-Modified`. A shared cache may then serve one user's response to another, or serve stale data for hours after a write.
+**Why.** With no directive, a cache may guess a lifetime from `Last-Modified`. A shared cache may then serve one user's response to another, or serve stale data for hours after a write. A dynamic page requested at `/account/x.css` is the same failure from the cache side: a rule that decides by extension stores a private page, and an edge rule that overrides `no-store` keeps it. The origin and the cache must also read the path the same way. When they do not, a path the origin treats as private can look like a static file to the cache.
 
 **FAIL**
 
 ```text
 GET /me/orders  -> 200
 (no Cache-Control, no Vary; body differs per Authorization)
+
+edge: GET /account/x.css -> stored for 1 hour
+edge: minimum TTL 3600 s, so origin Cache-Control: private, no-store is overridden
 ```
 
 **PASS**
 
 ```text
-GET /me/orders  -> 200  Cache-Control: private, no-cache
+GET /me/orders  -> 200  Cache-Control: private, no-store
 GET /plans      -> 200  Cache-Control: public, max-age=300
                          Vary: Accept-Language
+
+edge: minimum TTL 0, origin headers kept
+edge: /account/x.css not stored; Content-Type: text/html does not match .css
 ```
 
-**Counterpoint.** "Our CDN is configured to bypass the cache." That config is a second place to get wrong, and it does not cover browsers. The origin states the intent; the CDN may tighten it. `no-store` is not a privacy control against a cache that ignores it, so keep secrets out of cacheable URLs too.
+**Counterpoint.** "Our CDN bypasses the cache for logged-in users." That config is a second place to get wrong, and it does not cover the browser. A cache rule that sets a minimum TTL, or a force-cache mode, can still beat the origin header. Check the specific policy value, and keep secrets out of cacheable URLs even when the header is right.
 
 ## svc-api-conditional-writes
 
@@ -185,6 +225,37 @@ if response.json()["type"] == "https://api.example.com/problems/order-exists":  
 ```
 
 **Counterpoint.** "The HTTP status is enough." It is too coarse: two different 409 conflicts need different handling. Add a code only where callers act differently; do not mint one for every branch.
+
+## svc-api-key-scope
+
+severity: should-fix  
+concerns: security  
+applies_when: The service issues an API key or long-lived access token to a caller.  
+context: server  
+Backed by: Google (unjudged), GitHub (unjudged), Stripe (unjudged), AWS (unjudged), GitLab (unjudged). Backing: unjudged.
+
+**Rule.** Issue each API key with the narrowest scopes and a bounded lifetime, and rotate or revoke it after any exposure.
+
+**Why.** A key with account-wide scope turns one leaked string into the whole account, and a key with no end date is still valid years after the integration was forgotten. Scopes bound what a leak can do; an expiry or a rotation bounds how long it can do it. Rotating on a schedule, as Google and Stripe advise, also shows whether you can replace the key before an incident forces the question. Show the secret once, at creation, as AWS does.
+
+**FAIL**
+
+```text
+key = "sk_live_..."          # full account scope, no expiry
+db.insert(user_id, key)      # plaintext, returned by every read
+```
+
+**PASS**
+
+```python
+key = issue(user, scopes=["orders:read"], expires_in=90 * DAY)
+return key                   # shown once
+# rotate on a schedule; revoke at once on exposure
+```
+
+**Counterpoint.** "Short expiry and rotation break integrations that nobody watches." That is the cost, and it is smaller than a key that never dies. Prefer a temporary credential where the platform offers one, give each integration its own key so rotation is one at a time, and keep the overlap window long enough for a deploy. A shared key with no owner cannot be rotated safely, which is the real defect.
+
+**See also.** [svc-no-secrets-in-url](service.md#svc-no-secrets-in-url) covers the key in a query string; [code-secret-scan](codebase.md#code-secret-scan) catches one committed to the repository.
 
 ## svc-api-naming-consistent
 
@@ -564,6 +635,44 @@ async with asyncio.TaskGroup() as tg:
 
 **Counterpoint.** "Tasks are cheap." Creating them is, but what each one holds (a socket, a buffer, a database connection) is not. A semaphore around each handler also caps concurrency, though it still creates one task object per input. This card covers work that a service starts for itself. [sys-load-shedding-bounded-queues](system.md#sys-load-shedding-bounded-queues) covers refusing incoming requests under load.
 
+## svc-cache-key-completeness
+
+severity: block  
+concerns: security  
+applies_when: A shared cache (CDN, reverse proxy, gateway, or framework cache) stores responses the service generates.  
+context: server  
+tool gate: A test that sends an unkeyed header or a GET body and asserts the response body does not change.  
+Backed by: PortSwigger (unjudged), Cloudflare (unjudged), AWS (unjudged), Fastly (unjudged), Google (unjudged). Backing: unjudged.
+
+**Rule.** Key every request input that can change the response, and strip any other request value before it reaches a cached body.
+
+**Why.** A cache keeps one response per key. If the origin echoes a header, a cookie, or a GET body that the key ignores, the first request stores content that every later visitor receives. An attacker can then place content on your domain without touching the origin: a link or a form. A value that reaches the body belongs in the key, or it must not reach the body at all. Caching only static types by default narrows the surface, though CDN defaults differ.
+
+**FAIL**
+
+```text
+GET /home HTTP/1.1
+X-Forwarded-Host: attacker.example
+
+origin body: <a href="https://attacker.example/account">Account</a>
+cache key: path only
+```
+
+The next visitor to `/home` receives the cached copy, with the attacker's host in the link.
+
+**PASS**
+
+```text
+edge: strip X-Forwarded-Host, X-Original-URL and X-Rewrite-URL before the origin
+edge: return 400 to a GET with a body, or bypass the cache for it
+origin: echo a header only when it is in Vary or the cache key
+Cache-Control: public, max-age=60   Vary: Accept-Language
+```
+
+**Counterpoint.** "We leave that header out of the key to keep the hit rate up." It does raise the hit rate, by serving one requester's variant to everyone. Strip or rewrite the value when the response does not need it, and key it when it does.
+
+**See also.** [svc-api-cache-control](service.md#svc-api-cache-control) owns `Cache-Control` and `Vary`; an input that changes the body must appear in the key or in `Vary`.
+
 ## svc-circuit-breaker-bulkhead
 
 severity: should-fix  
@@ -808,6 +917,35 @@ Set-Cookie: sid=...; SameSite=Lax; Secure; HttpOnly
 
 **Counterpoint.** "Our API uses JSON, so browsers cannot forge it." A simple content type such as `text/plain` can carry a JSON body without a preflight. Reject it, or require a custom header such as `X-CSRF-Token`. Pure bearer-token APIs with no cookies are exempt.
 
+## svc-decompression-cap
+
+severity: should-fix  
+concerns: security, performance  
+applies_when: The code decompresses or decodes input whose size it does not control.  
+context: server  
+tool gate: Apache `DeflateInflateLimitRequestBody`; ASP.NET Core `MaxRequestBodySize`; a test that inflates a 1 MB gzip to about 1 GB and asserts the decoder stops at the cap.  
+Backed by: OpenJS Foundation (unjudged), Microsoft (unjudged), Apache Software Foundation (unjudged), Python Software Foundation (unjudged). Backing: unjudged.
+
+**Rule.** Cap the decompressed output of every decoder, and set the cap on the output rather than the compressed input.
+
+**Why.** A small gzip can expand a thousand-fold: DEFLATE tops out near 1030:1, so a 1 MB gzip can inflate to about 1 GB, and nested archives or other codecs can go further. A body limit on the compressed bytes does not bound that expansion, so the decoder needs its own ceiling. `Content-Length` counts the compressed stream, not the inflated body, and Apache's inflated-body directive is unset by default. In Node, the convenience methods take `maxOutputLength`, whose default is `buffer.kMaxLength`, so pass a real number. The zip entry iterator is a separate case: `zipEntry.contentIterator()` has no default `maxSize` and is not covered by the zip-wide ceiling, so pass `maxSize` on that call. Python's tar filters address paths and links, and its docs say they do not prevent every unsafe archive, so size still needs its own bound. See also [svc-bound-client-controlled-sizes](service.md#svc-bound-client-controlled-sizes) for the request-body cap and [svc-upload-validate-store](service.md#svc-upload-validate-store) for archives in uploads.
+
+**FAIL**
+
+```javascript
+const body = zlib.gunzipSync(req.body); // no maxOutputLength
+parse(body);
+```
+
+**PASS**
+
+```javascript
+const body = zlib.gunzipSync(req.body, { maxOutputLength: 1 << 20 });
+parse(body);
+```
+
+**Counterpoint.** "The proxy already caps the request body." It caps the compressed bytes, which is the wrong number. A 1 MB gzip can still inflate to about 1 GB, and `Content-Length` says nothing about the decompressed size. Set the inflated cap at the decoder and keep the body cap. Where the platform offers a decompression limit, check that it is on: Apache's directive falls back to the post-deflation `LimitRequestBody`, and a value of `0` removes the inflated-body limit.
+
 ## svc-dlq
 
 severity: should-fix  
@@ -815,29 +953,39 @@ concerns: reliability
 applies_when: The code consumes from a queue or stream.  
 context: server  
 tool gate: A config check that every consumed queue has a dead-letter target (for SQS in Terraform, a `redrive_policy` with `maxReceiveCount`), and an alarm on dead-letter queue depth.  
-Backed by: AWS (unjudged), Netflix (unjudged), Dropbox (unjudged), Notion (supports), Uber (supports). Backing: mixed.
+Backed by: AWS (unjudged), Netflix (unjudged), Notion (supports), Uber (supports), Microsoft (unjudged), Google (unjudged). Backing: mixed.
 
-**Rule.** Give every consumer queue a dead-letter queue and a way to replay its messages after the fix.
+**Rule.** Give every consumer queue a dead-letter queue and keep a way to replay it after the fix. On an ordered queue, key the group or session to the unit that must stay ordered, so a poison message holds only its own unit.
 
-**Why.** A poison message otherwise loops forever, uses the consumers' capacity and hides the real backlog. Cap the retries, so that a failing message moves to the dead-letter queue after a few attempts. Alarm on any message in the dead-letter queue, because each one is a bug to fix. Also keep the visibility timeout longer than the worst-case processing time (or extend it), or slow work is delivered twice.
+**Why.** A poison message otherwise loops forever, uses the consumers' capacity and hides the real backlog. On an ordered queue it also holds the messages behind it: in a FIFO queue no further messages from the same group are returned until the stuck message is deleted or becomes visible again, and an unacknowledged ordering key can delay the others. Give each independent stream its own group, session or queue, so one failure stays contained. Then cap the retries, so that a failing message moves to the dead-letter queue after a few attempts. Alarm on any message in the dead-letter queue, because each one is a bug to fix. Replay has a cost on these queues: a message put back after a dead-letter loses its place in the order, so replay only where order no longer matters, or reorder downstream.
 
 **FAIL**
 
 ```hcl
 resource "aws_sqs_queue" "orders" {
-  name = "orders"   # no redrive_policy: a message that always fails is retried forever
+  name       = "orders.fifo"
+  fifo_queue = true
+  # no redrive_policy: a message that always fails is retried forever
+  # and holds its whole message group
 }
+```
+
+```python
+# every producer uses one group, so one stuck message blocks all orders
+sqs.send_message(QueueUrl=url, MessageBody=body, MessageGroupId="orders")
 ```
 
 **PASS**
 
 ```hcl
 resource "aws_sqs_queue" "orders_dlq" {
-  name = "orders-dlq"
+  name       = "orders-dlq.fifo"
+  fifo_queue = true
 }
 
 resource "aws_sqs_queue" "orders" {
-  name = "orders"
+  name       = "orders.fifo"
+  fifo_queue = true
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.orders_dlq.arn
     maxReceiveCount     = 5
@@ -846,7 +994,41 @@ resource "aws_sqs_queue" "orders" {
 # replay after the fix: aws sqs start-message-move-task --source-arn <orders-dlq ARN>
 ```
 
-**Counterpoint.** "A dead-letter queue just hides failures." Only if nobody watches it. With an alarm on its depth it shows each failure once, instead of hiding it in retries, and the replay step means a fix does not lose the messages that failed before it.
+```python
+# one group per order, so one stuck order does not block the others
+sqs.send_message(QueueUrl=url, MessageBody=body, MessageGroupId=order_id)
+```
+
+**Counterpoint.** "A dead-letter queue already stops the poison message." It stops it after the retry cap. Until then the redelivery holds its group, and in a FIFO queue that means every message behind it. Grouping and the dead-letter queue do different jobs, so keep both. Choose the group key from the unit that must stay ordered. A single group restores the head-of-line block you were trying to remove. On a standard queue with no ordering, there is no group to key and the second sentence of the Rule does not apply.
+
+## svc-export-scope
+
+severity: block  
+concerns: security  
+applies_when: An endpoint or job produces a file, archive or stream of many records.  
+context: data  
+tool gate: A test that exports as a second tenant and asserts the other tenant's rows are absent.  
+Backed by: OWASP (unjudged), Atlassian (unjudged), Microsoft (unjudged), Google (unjudged). Backing: unjudged.
+
+**Rule.** Scope an export to what the requesting principal may read.
+
+**Why.** An export is a read that returns many rows at once. The per-object check on the detail page never runs, so a `SELECT *` with no tenant or access predicate hands the caller the table. Apply the same filter the list endpoint uses, including any role or ownership predicate and not only the tenant, and apply it inside the export query rather than on rows already fetched. OWASP's examples put the tenant scope in the query itself. Test it with two tenants. A restore asks the same question in reverse: a shared backup holds several tenants and old memberships, so restore one tenant into a separate resource and re-apply current access and retention before anyone can read it. A recovered environment also needs the production controls, not the ones it had when the backup was taken.
+
+**FAIL**
+
+```text
+GET /export  ->  SELECT * FROM orders; streamed to any authenticated caller
+```
+
+**PASS**
+
+```python
+def export(user):
+    rows = session.query(Order).filter(Order.tenant_id == user.tenant_id)
+    return csv_stream(rows)
+```
+
+**Counterpoint.** "Some exports deliberately include everything." Some products ship an admin XML export that includes pages the exporter cannot view. That path is an administrative backup, so gate it on an admin permission and audit it. The user-facing exports in the same products contain only what the exporter can view, which is the rule here. Check which export path the change touches before calling a missing filter a bug.
 
 ## svc-fail-closed-defaults
 
@@ -890,6 +1072,37 @@ def host_ok(host):
 ```
 
 **Counterpoint.** "Developers need to run it locally without setup." Give them a separate dev entry point or a dev-only flag that is named for what it does (`INSECURE_DEV_MODE=1`) and that production images never set. The default stays closed, and the open mode is a visible, greppable choice.
+
+## svc-host-header-trust
+
+severity: block  
+concerns: security  
+applies_when: The service builds an absolute URL from the request, or reads `Host` or `X-Forwarded-*` to decide what to serve or where to send a user.  
+context: server  
+tool gate: Framework host allowlist configured (`ALLOWED_HOSTS`, `AllowedHosts`, `config.hosts`, `trustHosts`), and a test that sends a hostile `Host` and expects 400.  
+Backed by: PortSwigger (unjudged), Fastly (unjudged), Django Software Foundation (unjudged), Microsoft (unjudged), Ruby on Rails (unjudged), Laravel (unjudged), IETF (unjudged). Backing: unjudged.
+
+**Rule.** Build absolute URLs from configured values, answer only for a `Host` on an allowlist, and take `X-Forwarded-*` values only from a trusted proxy.
+
+**Why.** A reset link built from the request `Host` carries whatever domain the attacker sent. The victim asks for a reset, the mail arrives with the attacker's host, and the token goes to the attacker when the link is opened. The same value drives routing, cache keys, and absolute redirects. A forwarded header is worse, because many stacks accept `X-Forwarded-Host` from any client and use it in place of `Host`. Two `Host` headers are a second route to the same disagreement: one component validates the first and another reads the last, so reject a request that carries more than one.
+
+**FAIL**
+
+```python
+reset = f"https://{request.headers['Host']}/reset?token={token}"
+# no allowlist, and X-Forwarded-Host is honoured from any client
+```
+
+**PASS**
+
+```python
+reset = f"{settings.PUBLIC_BASE_URL}/reset?token={token}"
+ALLOWED_HOSTS = ["app.example.com"]      # Django; any other Host: 400
+TRUSTED_PROXIES = {"10.0.0.10"}          # pseudo-config: your proxy middleware's setting
+                                         # (Django: USE_X_FORWARDED_HOST stays off unless a proxy sets it)
+```
+
+**Counterpoint.** "A reverse proxy sets `Host`, so the value can be trusted." It can only be trusted when the proxy overwrites any client-supplied value and the app accepts requests only from the proxy's address. An app that is reachable directly, or a proxy that passes the client header through, hands the value back to the attacker.
 
 ## svc-idempotency-key
 
@@ -999,6 +1212,40 @@ response: { "items": [...], "next_page_token": "def" }
 
 **Counterpoint.** "This list is always small." Say so with a bounded type or a documented limit, since data tends to outgrow its first estimate. Cursors cost more than offsets to build, but they stay stable while rows change.
 
+## svc-mfa-step-up
+
+severity: should-fix  
+concerns: security  
+applies_when: The service offers multi-factor authentication, or lets a signed-in user change a password, email address, or authentication factor.  
+context: server  
+Backed by: OWASP (unjudged), NIST (unjudged), Microsoft (unjudged), Okta (Auth0) (unjudged). Backing: unjudged.
+
+**Rule.** Require a fresh authentication with an already-bound factor before sensitive actions and before adding, replacing or removing an MFA factor; an existing session alone is not enough.
+
+**Why.** A session that passed a password check says nothing about who holds it now. Let that session enrol a new phone or replace an authenticator and an attacker with a stolen cookie keeps the account after the password is changed. The same gap covers password, email and admin-role changes. Step-up at the action asks for the factor only when it matters, and a short freshness window keeps the prompt rare. A session must not be treated as stronger than the authentication that created it. A user who lost the only factor needs a documented recovery path, such as single-use recovery codes or a temporary access pass. That path is part of the control, and it is judged as a separate recovery flow.
+
+**FAIL**
+
+```text
+@login_required
+def add_phone():
+    user.phone = request.form["phone"]      # any old session can replace the second factor
+```
+
+**PASS**
+
+```text
+@login_required
+@recent_auth(max_age=300, factor="existing")
+def add_phone():
+    user.phone = request.form["phone"]
+    notify(user, "phone changed")
+```
+
+**Counterpoint.** "Prompting on every sensitive action annoys users, and a user who lost the only factor gets locked out." Use risk and a recent-auth window so the prompt appears only when the session is stale or the action is high risk, and keep the recovery path described above; without it, step-up becomes a denial of service against the account's owner.
+
+**See also.** [svc-auth-throttle-generic-errors](service.md#svc-auth-throttle-generic-errors) covers guessing the factor; [svc-session-lifecycle](service.md#svc-session-lifecycle) covers the session that carries the result.
+
 ## svc-no-redundant-entry
 
 severity: should-fix  
@@ -1062,17 +1309,89 @@ Content-Type: application/json
 
 **Counterpoint.** "Email links have to carry the token in the URL." Make that token single-use and short-lived, have the landing page swap it for a session at once, and send `Referrer-Policy: no-referrer` on that page. A long-lived API key has no such excuse.
 
+## svc-oauth-code-flow-binding
+
+severity: block  
+concerns: security  
+applies_when: The service acts as an OAuth 2.0 or OpenID Connect client and exchanges an authorization code for tokens.  
+context: server  
+Backed by: IETF (unjudged), OWASP (unjudged), OpenID Foundation (unjudged), Microsoft (unjudged), Google (unjudged). Backing: unjudged.
+
+**Rule.** Finish the authorization-code flow with PKCE and a challenge method that keeps the verifier out of the authorization request (`S256`), send the exact registered `redirect_uri` (a native app on the loopback interface may vary the port), and reject the response unless this transaction's `state` or OIDC `nonce` matches and the ID token's signature, `iss`, `aud` and `exp` check out.
+
+**Why.** A code that is not bound to the browser in front of you can be injected into another session, and an ID token minted for a different client or issuer can be replayed at your login. PKCE makes an intercepted code useless without the verifier, and `S256` is the method that does not reveal the verifier in the request. An exact redirect URI stops the code reaching an attacker's host. `state` or `nonce` ties the response to the login the user started. The ID-token checks reject a token that another app, another issuer or an expired clock made.
+
+**FAIL**
+
+```text
+code = request.args["code"]
+token = exchange(code, redirect_uri=request.args["redirect_uri"])
+session["user"] = jwt.decode(token["id_token"], options={"verify_signature": False})["sub"]
+# no PKCE, no state check, no ID-token validation, and the redirect_uri is taken from the request
+```
+
+**PASS**
+
+```python
+# the authorization request carried code_challenge=...&code_challenge_method=S256
+if not secrets.compare_digest(request.args["state"], session.pop("oauth_state")):
+    raise PermissionDenied
+token = exchange(request.args["code"], redirect_uri=REDIRECT_URI,   # constant from config
+                 code_verifier=session.pop("code_verifier"))
+claims = verify_jwt(token["id_token"], jwks, iss=ISSUER, aud=CLIENT_ID,
+                    nonce=session.pop("oauth_nonce"))
+```
+
+**Counterpoint.** "The OAuth client library already handles this." It handles the protocol, not your configuration. Some libraries decode the ID token unless you pass the issuer, audience and nonce, and the state or nonce store belongs to your session code. Test with a token minted for another client and a response with no state. The loopback exception is narrow: the port may differ, the host and path may not. The card is stricter than RFC 9700, which recommends PKCE for confidential clients and lets a confidential OIDC client use `nonce` instead; a reviewer may accept that alternative when the authorization server is known to bind the code another way.
+
+**See also.** [fn-redirect-target-allowlist](function.md#fn-redirect-target-allowlist) covers redirect targets taken from a request; [svc-csrf-state-changing](service.md#svc-csrf-state-changing) covers the CSRF check on your own forms.
+
+## svc-password-reset
+
+severity: block  
+concerns: security  
+applies_when: The service emails or texts a password-reset link or code.  
+context: server  
+Backed by: OWASP (unjudged), NIST (unjudged), Okta (Auth0) (unjudged), Microsoft (unjudged), Django Software Foundation (unjudged). Backing: unjudged.
+
+**Rule.** Make the reset token single-use and short-lived, and on success revoke every session.
+
+**Why.** A reset link is a bearer password that arrives in a mailbox. If it works twice, a forwarded mail, a mail scanner or a backup keeps the access alive. If it lives for days, an attacker has days to use it. And a reset that leaves the old sessions open changes the password without evicting the intruder who already had a session. Two further habits cost little: store only a hash of the token, so a database read or a backup hands over no working links, and revoke the other outstanding reset links on success.
+
+**FAIL**
+
+```text
+token = f"{user.id}-{int(time.time())}"
+user.reset_token = token             # predictable, stored in clear, usable again
+send_email(link(token))
+```
+
+**PASS**
+
+```python
+raw = secrets.token_urlsafe(32)
+db.store(sha256(raw), user=user, expires=now + 15 * MINUTE)
+# the raw value exists only in the mail
+consume_once(raw)
+revoke_sessions(user)
+revoke_other_resets(user)
+```
+
+**Counterpoint.** "The token is random, so hashing it adds nothing." The mail, the link and every log between you and the user still carry the raw value; the hash protects the copy at rest, which is the copy an attacker reads. OWASP treats session invalidation as the user's choice in the normal flow and requires it after suspected compromise; this card asks for it every time because the reset may be the owner's answer to a stolen session. Pick the lifetime from a number the support flow can meet, not from the word "short", and send a notification after the reset so a change the owner did not make is visible.
+
+**See also.** [svc-auth-throttle-generic-errors](service.md#svc-auth-throttle-generic-errors) owns the identical reply and the rate limit on the request; [fn-csprng-for-secrets](function.md#fn-csprng-for-secrets) owns the token source, and [fn-password-slow-hash](function.md#fn-password-slow-hash) owns the new password.
+
 ## svc-rate-limit-quota
 
 severity: should-fix  
 concerns: security, reliability  
 applies_when: A shared API or queue serves several tenants or callers.  
 context: server  
-Backed by: AWS (unjudged), Google (unjudged), Microsoft (unjudged), NIST (unjudged). Backing: unjudged.
+Backed by: AWS (unjudged), Google (unjudged), Microsoft (unjudged), NIST (unjudged), GitHub (unjudged), Shopify (unjudged). Backing: unjudged.
 
 **Rule.** Enforce a per-tenant quota on shared APIs and queues.
 
-**Why.** Without a quota, one noisy tenant consumes shared capacity for everyone. Also add a per-tenant concurrency cap, and return 429 for over-quota but 503 for the service's own lack of capacity, so clients do not retry quota errors as capacity problems.
+**Why.** Without a quota, one noisy tenant consumes shared capacity for everyone. Key the count to the identity that owns the quota, such as the tenant, account or API key, and state the window and when capacity returns. Also add a per-tenant concurrency cap, and return 429 for over-quota but 503 for the service's own lack of capacity, so clients do not retry quota errors as capacity problems.
 
 **FAIL**
 
@@ -1088,7 +1407,7 @@ limiter.check(tenant_id) -> 429 + Retry-After
 per-tenant semaphore on workers
 ```
 
-**Counterpoint.** "One global rate limit is simpler." A global limit protects the service, but one tenant can use all of it, and then every other tenant gets errors. A per-tenant limit costs one key per tenant in the limiter. Some older services return 503 for quota errors, so the status code is a convention; what matters is that a client can tell a quota error from a capacity error. Shuffle sharding (per-tenant worker subsets) isolates tenants further, and this card does not require it.
+**Counterpoint.** "One global rate limit is simpler." A global limit protects the service, but one tenant can use all of it, and then every other tenant gets errors. A per-tenant limit costs one key per tenant in the limiter. Some older services return 503 for quota errors, so the status code is a convention. What matters is that a client can tell a quota error from a capacity error. Shuffle sharding (per-tenant worker subsets) isolates tenants further, and this card does not require it.
 
 ## svc-reflow-and-zoom
 
@@ -1127,6 +1446,49 @@ Backed by: W3C (unjudged), Deque (unjudged), The A11y Project (unjudged), WebAIM
 ```
 
 **Counterpoint.** "Maps and data tables need two-way scrolling." They are exempt, but only the part that needs it. Wrap the table in its own scroll box, and keep the headings and controls around it reflowing.
+
+## svc-request-framing
+
+severity: block  
+concerns: security  
+applies_when: The service parses HTTP requests itself, or receives them through a proxy, load balancer, or CDN.  
+context: server  
+tool gate: A test that sends one request with both Content-Length and Transfer-Encoding and expects 400 or a closed connection.  
+Backed by: IETF (unjudged), PortSwigger (unjudged), Microsoft (unjudged), Fastly (unjudged), Envoy (unjudged), Cloudflare (unjudged), OpenJS Foundation (unjudged). Backing: unjudged.
+
+**Rule.** Reject a request that carries both `Transfer-Encoding` and `Content-Length`, or remove one field at the first hop, and parse header framing strictly rather than with a leniency flag.
+
+**Why.** Two hops can disagree about where a request ends. The front end reads one body length and the back end reads another, so the leftover bytes become the start of the next request on the same connection. That request skips the front end's checks: it can reach an admin route, poison a cache, or splice one user's response into another user's connection. The ambiguity comes from a second framing field, a malformed header name, or a parser that accepts what the specification rejects. A front end that downgrades HTTP/2 to HTTP/1.1 reopens the gap, so validate the rewritten request as well.
+
+**FAIL**
+
+```text
+POST /login HTTP/1.1
+Host: app.example
+Content-Length: 15
+Transfer-Encoding: chunked
+
+0
+
+GET /admin
+```
+
+The proxy forwards this over a reused upstream connection. The front end reads fifteen bytes as the body. The back end finds the end of the chunked body and keeps `GET /admin` for the next request on the connection, so it reaches a route the front end never checked.
+
+**PASS**
+
+```text
+# front end
+if both framing fields are present:
+    return 400 and close the connection      # or drop Content-Length, forward, then close
+
+# parser
+insecureHTTPParser: false                    # Node
+allow_chunked_length: false                  # Envoy
+whitespace before a header colon: 400
+```
+
+**Counterpoint.** "We speak HTTP/2 end to end, so there is nothing to smuggle." HTTP/2 has one framing mechanism, but many deployments still downgrade at the last hop, and compatibility flags keep the old leniency in parsers. Check both ends of every connection and the rewrite between them, not the version the client negotiated.
 
 ## svc-retry-policy
 
@@ -1191,6 +1553,45 @@ compensate: release_stock(order) retried; on exhaustion -> alert + manual queue
 
 **Counterpoint.** "Use a distributed transaction." Often unavailable across services. A saga has no isolation, so also guard against reading half-done data (semantic locks, re-reading values before acting). [svc-idempotency-key](service.md#svc-idempotency-key) covers keys, and [svc-dlq](service.md#svc-dlq) covers failed messages.
 
+## svc-saml-assertion-binding
+
+severity: block  
+concerns: security  
+applies_when: The service is a SAML 2.0 service provider and accepts a response or assertion at an assertion consumer service endpoint.  
+context: server  
+Backed by: OASIS (unjudged), OWASP (unjudged), NIST (unjudged), Microsoft (unjudged), SAML-Toolkits project (unjudged). Backing: unjudged.
+
+**Rule.** Verify the XML signature over the assertion you read, with the IdP's configured key rather than a key carried in the response, then require the assertion's `Audience` and its bearer `SubjectConfirmationData` `Recipient` to name this SP, the response `Destination` to be this endpoint, `InResponseTo` to match your request (absent for an IdP-initiated response), `NotOnOrAfter` to be current, and the assertion ID to be unseen. These are one step, verify the assertion, and each check is cited.
+
+**Why.** A valid signature elsewhere in the document proves nothing about the `<NameID>` your code just read. That gap is the signature-wrapping attack, and it lets an attacker choose which identity your service trusts. A lookup such as `.//NameID` is how the signed element and the read element get separated. Pinning the key to the IdP stops the document choosing its own verification key. The audience and destination checks stop an assertion minted for another SP from being posted here. `InResponseTo` catches a response injected into a browser that never started the request, and the time window plus the used-ID set stop a captured assertion from being replayed.
+
+**FAIL**
+
+```text
+doc = etree.fromstring(base64.b64decode(form["SAMLResponse"]))
+name_id = doc.find(".//NameID").text
+login(name_id)      # no signature check, no audience, no replay set
+```
+
+**PASS**
+
+```python
+signed = verify_signature(response, key=IDP_CERT)     # returns the signed element
+assertion = signed.assertion
+if assertion.audience != SP_ENTITY_ID or response.destination != ACS_URL:
+    raise InvalidAssertion
+if assertion.subject_confirmation.recipient != ACS_URL:
+    raise InvalidAssertion
+if assertion.subject_confirmation.in_response_to != request_id:
+    raise InvalidAssertion
+if assertion.not_on_or_after <= now() or used_ids.seen(assertion.id, until=assertion.not_on_or_after):
+    raise InvalidAssertion
+```
+
+**Counterpoint.** "The library validates the signature, so the assertion is trustworthy." The signature vouches for the bytes it covers, not for the element your handler reads. A strict mode that validates the response but leaves an unsigned assertion in the tree still passes a wrapped `NameID`. Require the assertion to be inside the signed content, take the key from IdP metadata, and record the ID of the assertion you accepted, not the ID of its wrapper.
+
+**See also.** [fn-xml-no-external-entities](function.md#fn-xml-no-external-entities) covers the parser; [svc-session-lifecycle](service.md#svc-session-lifecycle) starts where this card ends.
+
 ## svc-session-lifecycle
 
 severity: block  
@@ -1202,7 +1603,7 @@ Backed by: OWASP (unjudged), Mozilla (unjudged), NIST (unjudged), Spring (unjudg
 
 **Rule.** Issue a new session ID at login, and set `Secure`, `HttpOnly` and `SameSite` on the session cookie.
 
-**Why.** A session ID that survives login can be planted by an attacker beforehand (fixation). A cookie without `HttpOnly` is readable by any injected script, and one without `Secure` travels over plain HTTP. Also end the session on the server at logout, because clearing only the browser cookie leaves a stolen copy valid, and enforce idle and absolute timeouts on the server.
+**Why.** A session ID that survives login can be planted by an attacker beforehand (fixation). A cookie without `HttpOnly` is readable by any injected script, and one without `Secure` travels over plain HTTP. Also end the session on the server at logout, because clearing only the browser cookie leaves a stolen copy valid, and enforce idle and absolute timeouts on the server. Scope the cookie to one host. With `Domain` omitted it is returned only to the host that set it, while a `Domain` set to the registrable domain sends it to every subdomain. Omitting `Domain` does not stop planting: a sibling subdomain that serves user content can still set a parent-domain cookie with the same name for the parent to accept. The `__Host-` prefix is what stops that, because the browser refuses a `__Host-` cookie that carries `Domain` or a path other than `/`. Use it on the session cookie.
 
 **FAIL**
 
@@ -1214,7 +1615,7 @@ login():  keep the pre-login session id
 **PASS**
 
 ```text
-Set-Cookie: __Host-sid=<new random>; Secure; HttpOnly; SameSite=Lax; Path=/
+Set-Cookie: __Host-sid=<new random>; Secure; HttpOnly; SameSite=Lax; Path=/   # the __Host- name is optional hardening, not a Rule clause
 login():  session.regenerate()
 ```
 
@@ -1250,6 +1651,37 @@ Backed by: Nielsen Norman Group (unjudged), Apple (unjudged), W3C (unjudged), Mi
 ```
 
 **Counterpoint.** "A spinner on a 200 ms call flickers." Right: below about a second, show nothing, or the placeholder just flashes. Skeleton screens suit page loads, and progress bars suit uploads and other long jobs.
+
+## svc-soft-delete-default
+
+severity: should-fix  
+concerns: security, correctness  
+applies_when: A table or model marks a row as deleted instead of removing it.  
+context: data  
+tool gate: A test per read path: soft-delete a row, then assert the endpoint returns 404 or leaves it out of the list.  
+Backed by: Microsoft (unjudged), Laravel (unjudged), Sequelize (unjudged), OWASP (unjudged). Backing: unjudged.
+
+**Rule.** Filter soft-deleted rows out of every read path by default, and make a read that includes them an explicit call.
+
+**Why.** A soft delete sets a column. It does not remove the row, so any query that forgets the filter still returns the record. One raw query or one new endpoint is enough to expose it. Put the filter in the model's default scope, so new queries inherit it, and keep the escape hatch visible. A deletion policy has to reach caches, exports, replicas and object versions too, or the record lives on in a copy.
+
+**FAIL**
+
+```csharp
+modelBuilder.Entity<Document>();                 // no HasQueryFilter
+var doc = await context.Documents.FindAsync(42); // returns the soft-deleted row
+```
+
+**PASS**
+
+```csharp
+modelBuilder.Entity<Document>().HasQueryFilter(d => d.DeletedAt == null);
+
+// The one admin report that needs deleted rows, behind an admin check:
+var all = await context.Documents.IgnoreQueryFilters().ToListAsync();
+```
+
+**Counterpoint.** "The admin console has to see deleted rows." Keep that one call explicit, name it for what it does, and check the caller is an admin. The default stays closed. Raw SQL and reporting replicas are the usual bypass, so route them through the same helper or audit them. A service that hard-deletes does not need the filter, but backups and object versions can still hold the old copy.
 
 ## svc-sqli-authn
 
@@ -1309,6 +1741,35 @@ return StreamingResponse(generate())
 ```
 
 **Counterpoint.** "Streaming complicates errors and retries." Yes: a failure mid-stream cannot change the status code. For small, bounded results, loading the whole result is simpler and fine; state the bound. [sys-load-shedding-bounded-queues](system.md#sys-load-shedding-bounded-queues) covers queue limits.
+
+## svc-tenant-id-in-telemetry
+
+severity: should-fix  
+concerns: security, observability  
+applies_when: A shared log, metric or audit store holds records from more than one tenant.  
+context: server  
+tool gate: A test that writes an event for each of two tenants, then queries one tenant and asserts the other is absent.  
+Backed by: OWASP (unjudged), AWS (unjudged), Microsoft (unjudged), Google (unjudged). Backing: unjudged.
+
+**Rule.** Put the verified tenant id on every tenant-scoped log, metric and audit record.
+
+**Why.** A shared store returns another tenant's activity to any query that does not filter. The id has to be written from the verified tenant context, not from a request header, and it has to be there when a batch job or a queue worker writes the record, since no request middleware runs in those paths. A centralized audit store is acceptable only when read access enforces tenant scope. Metric events need the field too, or a per-tenant dashboard shows another tenant's numbers. Platform events that belong to no tenant, such as a node restart, carry no tenant id and are outside the Rule.
+
+**FAIL**
+
+```python
+log.info("order %s paid", order_id)
+audit.write(action="order.paid", actor=user.id)
+```
+
+**PASS**
+
+```python
+log.info("order %s paid", order_id, extra={"tenant_id": tenant.id})
+audit.write(action="order.paid", tenant_id=tenant.id, actor=user.id)
+```
+
+**Counterpoint.** "The pipeline adds the tenant from the request context." That works only for code that runs inside a request. Workers, schedulers and sidecars write records too, and a query cannot recover a field that was never written. If a shared layer injects the field, verify it with a two-tenant query, because a layer that silently skips one producer looks the same as a correct one until the query runs. Splitting logs into a store per tenant is stronger still where the operational cost is justified.
 
 ## svc-timeouts
 
@@ -1479,6 +1940,40 @@ file.save(STORE / f"{uuid4()}.bin")   # outside web root; served by /files/<id>
 ```
 
 **Counterpoint.** "The extension check is enough." The extension is attacker text, and double extensions or parser quirks get past a check on it. The generated name and a storage place that never executes files are what make a file that slips through harmless.
+
+## svc-webhook-replay-window
+
+severity: should-fix  
+concerns: security  
+applies_when: The code accepts signed webhooks or signed messages from another system.  
+context: server  
+tool gate: A test that replays a captured request with the timestamp moved outside the tolerance and asserts a 4xx, and one that changes only the timestamp header and asserts a 4xx.  
+Backed by: Svix (unjudged), Slack (unjudged), IETF (unjudged), Stripe (unjudged). Backing: unjudged.
+
+**Rule.** Reject an inbound signed message whose creation time is outside a short tolerance, and sign that time with the body so it cannot be swapped.
+
+**Why.** A valid signature proves who sent the message, not when. A captured request keeps its signature and can be sent again. Put the timestamp inside the signed content, as Slack, Svix and Stripe do. A timestamp in a separate header that the signature does not cover can be replaced by the attacker. Compare the timestamp with local time before doing any work. Retries are normal, so also store the message id and skip an id already processed. Deduplication stops a replay inside the window. The window stops one outside it and bounds how long the id store must keep entries.
+
+**FAIL**
+
+```python
+if not verify_hmac(body, headers["X-Signature"], secret):
+    return 401
+apply_event(body)   # a captured request replays for as long as the secret lives
+```
+
+**PASS**
+
+```python
+ts = headers["X-Timestamp"]
+if abs(time.time() - int(ts)) > 300:
+    return 401
+if not verify_hmac(f"{ts}.".encode() + body, headers["X-Signature"], secret):
+    return 401
+apply_event(body)
+```
+
+**Counterpoint.** "A tight window drops delayed deliveries and retries." It does. RFC 9421 lets an application enforce a maximum signature age and leaves the number to it, and five minutes is the default of Slack and Stripe, not a standard. Pick a tolerance from the provider's retry schedule and your clock skew, log every reject with the offset, and keep deduplication by event id so a replay inside the window still does nothing. A signature with no timestamp at all cannot be bounded this way. The receiving endpoint has to rely on deduplication and on the sender's short-lived credential.
 
 ## py-cancellation
 

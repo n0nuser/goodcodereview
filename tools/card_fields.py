@@ -1,4 +1,6 @@
 """Readers for the front matter of a card, shared by the HTML, Markdown, and JSON writers."""
+from collections.abc import Iterable
+
 import orgs
 import strength
 from config import BASE
@@ -48,6 +50,19 @@ def href(card: Card) -> str:
 
 def context(card: Card) -> list[str]:
     return list(card.fm.get("context", []))
+
+
+def context_group(card: Card) -> str:
+    """The context group a card is filed under: its first `context`, or "any"."""
+    return (context(card) or ["any"])[0]
+
+
+def group_by_context(cards: Iterable[Card]) -> dict[str, list[Card]]:
+    """The cards by context group, in card order. The level index and the split level pages both use it."""
+    groups: dict[str, list[Card]] = {}
+    for c in cards:
+        groups.setdefault(context_group(c), []).append(c)
+    return groups
 
 
 def backers(card: Card) -> str:

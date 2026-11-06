@@ -19,7 +19,7 @@ borrowed_from:
 
 **Rule.** Issue a new session ID at login, and set `Secure`, `HttpOnly` and `SameSite` on the session cookie.
 
-**Why.** A session ID that survives login can be planted by an attacker beforehand (fixation). A cookie without `HttpOnly` is readable by any injected script, and one without `Secure` travels over plain HTTP. Also end the session on the server at logout, because clearing only the browser cookie leaves a stolen copy valid, and enforce idle and absolute timeouts on the server.
+**Why.** A session ID that survives login can be planted by an attacker beforehand (fixation). A cookie without `HttpOnly` is readable by any injected script, and one without `Secure` travels over plain HTTP. Also end the session on the server at logout, because clearing only the browser cookie leaves a stolen copy valid, and enforce idle and absolute timeouts on the server. Scope the cookie to one host. With `Domain` omitted it is returned only to the host that set it, while a `Domain` set to the registrable domain sends it to every subdomain. Omitting `Domain` does not stop planting: a sibling subdomain that serves user content can still set a parent-domain cookie with the same name for the parent to accept. The `__Host-` prefix is what stops that, because the browser refuses a `__Host-` cookie that carries `Domain` or a path other than `/`. Use it on the session cookie.
 
 **FAIL**
 
@@ -31,7 +31,7 @@ login():  keep the pre-login session id
 **PASS**
 
 ```text
-Set-Cookie: __Host-sid=<new random>; Secure; HttpOnly; SameSite=Lax; Path=/
+Set-Cookie: __Host-sid=<new random>; Secure; HttpOnly; SameSite=Lax; Path=/   # the __Host- name is optional hardening, not a Rule clause
 login():  session.regenerate()
 ```
 
