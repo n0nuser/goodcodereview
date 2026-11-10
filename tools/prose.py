@@ -138,11 +138,11 @@ CONCERNS_DESC = "Every card's rule on one page. Pick a concern, such as performa
 GLOSSARY_DESC = "Terms that the cards link to, with a note on why a reviewer cares."
 ABOUT_DESC = "Who makes Good Code Review, what stable and draft cards mean, and the licences."
 PRIVACY_DESC = "Good Code Review collects nothing: no cookies, no analytics, no accounts."
+LLMS_SUMMARY = "A checklist for reviewing code with vetted rules, for people and agents. Each check ends in PASS, FAIL, or N/A with file:line evidence."
 WHEN_TO_USE = ("Use this site when you are asked to review, audit, or check code: a diff or pull request, a file or function, a package, a service, "
                "a design document that spans services, a repository, a release, or an incident. Match the input to a level in the routing table, "
                "then check the stable cards for that level, and for a diff the levels its changed lines touch, and report each as `PASS`, `FAIL`, or `N/A` with evidence. "
-               "To review only some concerns, such as performance, check only the cards that list them, leave the rest out of the ledger, and name the concerns in the verdict line. "
-               "Do not use it to write code or to run tests. A draft card never changes the verdict. "
+               "Do not use it to write code or to run tests. "
                "Read the linked files as raw text, for example with `curl -sL <url>`: a fetch tool that summarises a page drops cards.")
 ABOUT = """Good Code Review is a checklist for reviewing code, for people and for agents. Each check is a card: one rule that a reviewer marks `PASS`, `FAIL`, or `N/A`, with a FAIL example and a PASS example. The cards are grouped into eight levels, from a single diff up to an incident, so a reviewer picks the level that matches the input.
 

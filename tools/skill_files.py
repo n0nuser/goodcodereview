@@ -15,6 +15,7 @@ from config import (
 )
 from context import BuildInput, pack_name
 from errors import BuildError
+from guides import GUIDES
 from markdown import rule
 from models import CONCERNS, LEVELS, Card, IndexPart, Level, Twin
 from prose import (
@@ -36,6 +37,7 @@ from prose import (
     INCIDENT_EXAMPLE,
     INCIDENT_RULE,
     LEVEL_DESC,
+    LLMS_SUMMARY,
     NAME,
     NOTES_RULE,
     OVERLAP_RULE,
@@ -215,7 +217,7 @@ def link_stable(text: str, home: dict[str, str]) -> str:
     return re.sub(r"\[\[([^\]]+)\]\]", lambda m: f"[{m[1]}]({home[m[1]]}.md#{m[1]})" if m[1] in home else m[1], text)
 
 
-def _llms(head: list[str], llms_scope: list[str], level_index: dict[Level, list[IndexPart]]) -> str:
+def _llms(head: list[str], llms_scope: list[str], level_index: dict[Level, list[IndexPart]], b: BuildInput) -> str:
     """Return llms.txt, which follows https://llmstxt.org/.
 
     H1, blockquote, headingless sections, then H2 file lists of `[name](url): notes` links, with secondary links under "Optional".
@@ -226,7 +228,7 @@ def _llms(head: list[str], llms_scope: list[str], level_index: dict[Level, list[
     def bold(line: str) -> str:
         return f"**{line[3:]}**" if line.startswith("## ") else line
 
-    out = [body[0], "", "> " + SKILL_DESC, "", WHEN_TO_USE, ""]
+    out = [body[0], "", "> " + LLMS_SUMMARY, "", WHEN_TO_USE, ""]
     for line in body[2:]:
         out.append(bold(line).replace("`references/audit.md`", f"[audit.md]({BASE}/audit.md)"))
     out += [bold(x) for x in SEVERITY]
@@ -235,17 +237,23 @@ def _llms(head: list[str], llms_scope: list[str], level_index: dict[Level, list[
             continue
         out += [f"## {lv}", ""]
         part = level_index[lv][0]  # the whole index, or the hub that links its context parts
-        split = len(level_index[lv]) > 1
-        out.append(f"- [{part.title}]({BASE}/{part.slug}.md): {part.count} stable card{'s' if part.count != 1 else ''}, "
-                   + ("split by context; the page links each part." if split else "one line each: id, severity, concerns, context, rule."))
-        out += [f"- [{NAME[lv]}, full text]({BASE}/{lv}.md): every stable {lv} card with its FAIL and PASS examples and who backs it.", ""]
+        n = f"{part.count} stable card{'s' if part.count != 1 else ''}"
+        out.append(f"- [{NAME[lv]}]({BASE}/{lv}.md): {n} with FAIL and PASS examples and who backs them; [one-line index]({BASE}/{part.slug}.md)"
+                   + (", split by context." if len(level_index[lv]) > 1 else "."))
+        if lv in b.split:
+            first, *rest = b.parts(lv)
+            out.append(f"- [{NAME[lv]}, {first} cards]({BASE}/{lv}-{first}.md): one context part; the others are " + ", ".join(f"[{c}]({BASE}/{lv}-{c}.md)" for c in rest) + ".")
+        out.append("")
     out += ["## Audit", "", f"- [Audit a repo, service, or release]({BASE}/audit.md): scope, read order, missing controls, accepted risk, and the report shape.", ""]
     out += ["## Glossary", "", f"- [Glossary]({BASE}/glossary.md): terms the cards link to.", "",
             "## Optional", "",
-            f"- [Guides]({BASE}/guides.md): how to review a pull request, a security checklist, and what to check in a database migration.",
+            f"- [Guides]({BASE}/guides.md): " + ", ".join(f"[{g.title.lower()}]({BASE}/guides/{g.slug}.md)" for g in GUIDES) + ".",
+            f"- [Concerns]({BASE}/concerns.md): stable cards grouped by concern. [Home]({BASE}/): choose a review level.",
+            "- [Language packs](" + f"{BASE}/pack-{b.packs[0]}.md): " + ", ".join(f"[{pk}]({BASE}/pack-{pk}.md)" for pk in b.packs) + ".",
+            f"- [llms-full.txt]({BASE}/llms-full.txt): levels, audit, glossary, guides in one file.",
             f"- [Draft cards]({BASE}/llms-drafts.txt): not vetted. {DRAFT_RULE}",
-            f"- [About]({BASE}/about.html): who makes this and under which licence.",
-            f"- [Privacy]({BASE}/privacy.html): the site collects nothing.",
+            f"- [About]({BASE}/about.md): who makes this and under which licence.",
+            f"- [Privacy]({BASE}/privacy.md): the site collects nothing.",
             f"- [Drafts by what they lack]({BASE}/drafts.md): every draft grouped by what keeps it from stable.",
             f"- [Sitemap]({BASE}/sitemap.xml): every page.",
             f"- [cards.json]({BASE}/cards.json): every stable card as JSON; the shape is in [cards.schema.json]({BASE}/cards.schema.json).",
@@ -254,9 +262,9 @@ def _llms(head: list[str], llms_scope: list[str], level_index: dict[Level, list[
             f"- [concerns/security.md]({BASE}/concerns/security.md): one concern's cards as a Markdown list; `concerns/level-function.md` does the same for a level.",
             f"- [cards-index.json]({BASE}/cards-index.json): every stable card in slim form (id, level, severity, concerns, topics, rule, url); "
             f"schema in [cards-index.schema.json]({BASE}/cards-index.schema.json).",
-            f"- [Agent Skills index]({BASE}/.well-known/agent-skills/index.json): the skill and two focused ones (security, accessibility), with sha256 digests.",
+            f"- [Agent Skills index]({BASE}/.well-known/agent-skills/index.json): the skill and two focused ones, with sha256 digests.",
             f"- [agent.json]({BASE}/agent.json): endpoints, capabilities, and authentication (none) as JSON; the same file answers `/?mode=agent`.",
-            f"- [ARD manifest]({BASE}/.well-known/ard.json): Agentic Resource Discovery entries for the cards, the manifest, and the skills.",
+            f"- [ARD manifest]({BASE}/.well-known/ard.json): Agentic Resource Discovery entries.",
             f"- [AGENTS.md]({REPO}/blob/main/AGENTS.md): how to review code with this repo and how to contribute a card.",
             f"- [Skill folder]({REPO}/tree/main/skills/good-code-review): `SKILL.md` and `references/` in the repository.",
             f"- [Contact]({REPO}/issues): GitHub Issues.", ""]
@@ -327,7 +335,7 @@ def skill_output(b: BuildInput) -> SkillOutput:
         raise BuildError(f"SKILL.md body is {body_chars} characters, budget {SKILL_BODY_BUDGET}: move detail into references/")
     files["SKILL.md"] = skill_text
     files["references/audit.md"] = "# Audit a repo, service, or release\n\n" + AUDIT_MD.replace(DRAFT_LINK, "`drafts.md`")
-    llms = _llms(skill_md.head, skill_md.llms_scope, level_index)
+    llms = _llms(skill_md.head, skill_md.llms_scope, level_index, b)
     llms_drafts = _llms_drafts(b)
     _check_indexes(b, level_index, home, llms, llms_drafts)
     files.update(_draft_files(b))

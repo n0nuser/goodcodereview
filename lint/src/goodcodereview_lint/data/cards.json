@@ -1,5 +1,5 @@
 {
-"generated": "2026-11-06",
+"generated": "2026-11-10",
 "schema_version": 5,
 "cards": {
 "code-a11y-check-in-ci": {
@@ -175,7 +175,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "When a native element cannot do the job, give the custom widget the state attribute and the keys its role promises.",
-"url": "https://goodcodereview.com/function#fn-aria-role-has-state-and-keys",
+"url": "https://goodcodereview.com/function-ui#fn-aria-role-has-state-and-keys",
 "tool_gate": "ESLint `jsx-a11y/role-has-required-aria-props`; axe `aria-required-attr`. Neither checks that the keys work."
 },
 "fn-bool-arg-at-callsite": {
@@ -183,7 +183,7 @@
 "severity": "discuss",
 "backing": "strong",
 "rule": "Replace a boolean flag argument with an enum, keyword-only argument or two functions.",
-"url": "https://goodcodereview.com/function#fn-bool-arg-at-callsite",
+"url": "https://goodcodereview.com/function-any#fn-bool-arg-at-callsite",
 "tool_gate": "ruff FBT"
 },
 "fn-bounded-read-fails-at-cap": {
@@ -191,7 +191,7 @@
 "severity": "should-fix",
 "backing": "mixed",
 "rule": "When a size cap is reached, return an error; never hand back the first N bytes as if they were the whole input.",
-"url": "https://goodcodereview.com/function#fn-bounded-read-fails-at-cap",
+"url": "https://goodcodereview.com/function-any#fn-bounded-read-fails-at-cap",
 "tool_gate": "Go lint rule against `io.LimitReader` on untrusted input; a test that feeds one byte more than the cap and expects an error."
 },
 "fn-colour-not-sole-cue": {
@@ -199,7 +199,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Pair every colour that carries meaning with a second cue: text, an icon, a shape, or an underline.",
-"url": "https://goodcodereview.com/function#fn-colour-not-sole-cue",
+"url": "https://goodcodereview.com/function-ui#fn-colour-not-sole-cue",
 "tool_gate": "none; view the page in greyscale, or run a browser colour-vision emulation."
 },
 "fn-comments-explain-why": {
@@ -207,7 +207,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Write comments that give a reason, a constraint, or a trade-off, and never restate what the next line does.",
-"url": "https://goodcodereview.com/function#fn-comments-explain-why",
+"url": "https://goodcodereview.com/function-any#fn-comments-explain-why",
 "tool_gate": null
 },
 "fn-comments-survive-context": {
@@ -215,7 +215,7 @@
 "severity": "should-fix",
 "backing": "mixed",
 "rule": "Write comments that remain true without outside context: no \"currently\", \"for now\" or \"see the PR\", and give a TODO the date or event that ends it.",
-"url": "https://goodcodereview.com/function#fn-comments-survive-context",
+"url": "https://goodcodereview.com/function-any#fn-comments-survive-context",
 "tool_gate": null
 },
 "fn-confine-file-path": {
@@ -223,7 +223,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Resolve the final path and check that it stays inside the intended base directory before using it.",
-"url": "https://goodcodereview.com/function#fn-confine-file-path",
+"url": "https://goodcodereview.com/function-any#fn-confine-file-path",
 "tool_gate": "CodeQL `py/path-injection` (CWE-22) or the equivalent query for your language."
 },
 "fn-constant-time-secret-compare": {
@@ -231,7 +231,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Compare a secret, token or MAC with the platform's constant-time function, never with `==` or `!=`.",
-"url": "https://goodcodereview.com/function#fn-constant-time-secret-compare",
+"url": "https://goodcodereview.com/function-any#fn-constant-time-secret-compare",
 "tool_gate": "Semgrep or CodeQL rules for `==` on secrets; Bandit has no rule for this, so grep for `==` next to names such as `token`, `signature`, `api_key`, `digest`."
 },
 "fn-csprng-for-secrets": {
@@ -239,7 +239,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Draw every security-relevant random value from the platform CSPRNG.",
-"url": "https://goodcodereview.com/function#fn-csprng-for-secrets",
+"url": "https://goodcodereview.com/function-any#fn-csprng-for-secrets",
 "tool_gate": "Bandit B311 (`random`) for Python; elsewhere a grep for `Math.random` and `rand()` in code that builds tokens or keys."
 },
 "fn-destructive-confirm-or-undo": {
@@ -247,7 +247,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Make a destructive action reversible with undo, or ask the user to confirm it before it runs.",
-"url": "https://goodcodereview.com/function#fn-destructive-confirm-or-undo",
+"url": "https://goodcodereview.com/function-ui#fn-destructive-confirm-or-undo",
 "tool_gate": "none; a test that triggers the action and asserts a confirm step or an undo path exists."
 },
 "fn-dialog-focus-managed": {
@@ -255,7 +255,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "When a modal opens, move focus into it and keep Tab inside it. Make Escape close it.",
-"url": "https://goodcodereview.com/function#fn-dialog-focus-managed",
+"url": "https://goodcodereview.com/function-ui#fn-dialog-focus-managed",
 "tool_gate": "none; a component test that opens the dialog, presses Tab and Escape, and asserts `document.activeElement`."
 },
 "fn-disclosure-hides-only-secondary": {
@@ -263,7 +263,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Do not hide a required field or information most users need behind a disclosure that starts closed.",
-"url": "https://goodcodereview.com/function#fn-disclosure-hides-only-secondary",
+"url": "https://goodcodereview.com/function-ui#fn-disclosure-hides-only-secondary",
 "tool_gate": null
 },
 "fn-distinct-types-for-ids": {
@@ -271,7 +271,7 @@
 "severity": "should-fix",
 "backing": "mixed",
 "rule": "Give arguments with different meanings distinct types, so a call that swaps them fails to type-check.",
-"url": "https://goodcodereview.com/function#fn-distinct-types-for-ids",
+"url": "https://goodcodereview.com/function-any#fn-distinct-types-for-ids",
 "tool_gate": "Type checker with a newtype or branded-type pattern."
 },
 "fn-english-identifiers": {
@@ -279,7 +279,7 @@
 "severity": "discuss",
 "backing": "strong",
 "rule": "Write identifiers and comments in English, unless the project policy names another language.",
-"url": "https://goodcodereview.com/function#fn-english-identifiers",
+"url": "https://goodcodereview.com/function-any#fn-english-identifiers",
 "tool_gate": "Spell-check or non-ASCII identifier lint."
 },
 "fn-error-says-what-and-how": {
@@ -287,7 +287,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Show each validation error next to its field, in plain words that name what is wrong and how to fix it.",
-"url": "https://goodcodereview.com/function#fn-error-says-what-and-how",
+"url": "https://goodcodereview.com/function-ui#fn-error-says-what-and-how",
 "tool_gate": "none; a rendered check that submits each invalid field."
 },
 "fn-fetch-only-needed-data": {
@@ -295,7 +295,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Filter, count, and aggregate in the query, and select only the columns the code uses.",
-"url": "https://goodcodereview.com/function#fn-fetch-only-needed-data",
+"url": "https://goodcodereview.com/function-data#fn-fetch-only-needed-data",
 "tool_gate": null
 },
 "fn-focus-indicator-visible": {
@@ -303,7 +303,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Keep a visible focus indicator on every focusable element. Never set `outline: none` without a replacement.",
-"url": "https://goodcodereview.com/function#fn-focus-indicator-visible",
+"url": "https://goodcodereview.com/function-ui#fn-focus-indicator-visible",
 "tool_gate": "Stylelint `declaration-property-value-disallowed-list` with `outline: [\"none\", \"0\"]`."
 },
 "fn-form-control-has-label": {
@@ -311,7 +311,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.",
-"url": "https://goodcodereview.com/function#fn-form-control-has-label",
+"url": "https://goodcodereview.com/function-ui#fn-form-control-has-label",
 "tool_gate": "ESLint `jsx-a11y/label-has-associated-control` and axe `label`."
 },
 "fn-guard-uri-decoding": {
@@ -319,7 +319,7 @@
 "severity": "should-fix",
 "backing": "mixed",
 "rule": "Wrap `decodeURIComponent` on user input in a `try`/`catch`, or parse with `URLSearchParams`, so that a malformed `%` sequence cannot throw.",
-"url": "https://goodcodereview.com/function#fn-guard-uri-decoding",
+"url": "https://goodcodereview.com/function-ui#fn-guard-uri-decoding",
 "tool_gate": null
 },
 "fn-handle-rejected-promises": {
@@ -327,7 +327,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Handle the rejection of every promise you start: `await` it inside `try`/`catch`, end the chain with `.catch()`, or return it to a caller that does.",
-"url": "https://goodcodereview.com/function#fn-handle-rejected-promises",
+"url": "https://goodcodereview.com/function-any#fn-handle-rejected-promises",
 "tool_gate": "typescript-eslint `no-floating-promises`."
 },
 "fn-header-value-encoding": {
@@ -335,7 +335,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Set every response header through the framework's header API, never by writing to the connection, and reject or encode CR and LF in any request-derived value.",
-"url": "https://goodcodereview.com/function#fn-header-value-encoding",
+"url": "https://goodcodereview.com/function-server#fn-header-value-encoding",
 "tool_gate": "A test that sends `%0d%0a` in the echoed parameter and asserts a 400 or an encoded value; Node and Django throw at runtime, which is a guard rather than a linter."
 },
 "fn-heading-structure": {
@@ -343,7 +343,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Mark every heading with a real `<h1>` to `<h6>` element, not a styled `div`, `span`, or `p`.",
-"url": "https://goodcodereview.com/function#fn-heading-structure",
+"url": "https://goodcodereview.com/function-ui#fn-heading-structure",
 "tool_gate": "axe `p-as-heading` (experimental) flags a bold paragraph styled as a heading; axe `heading-order` flags skipped levels."
 },
 "fn-img-alt-text": {
@@ -351,7 +351,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Give every `<img>` an `alt` attribute: text that serves the image's purpose, or `alt=\"\"` when the image is decorative.",
-"url": "https://goodcodereview.com/function#fn-img-alt-text",
+"url": "https://goodcodereview.com/function-ui#fn-img-alt-text",
 "tool_gate": "ESLint `jsx-a11y/alt-text` and axe `image-alt` catch a missing `alt`. Only a person can judge whether the text is accurate."
 },
 "fn-independent-work-concurrent": {
@@ -359,7 +359,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.",
-"url": "https://goodcodereview.com/function#fn-independent-work-concurrent",
+"url": "https://goodcodereview.com/function-any#fn-independent-work-concurrent",
 "tool_gate": null
 },
 "fn-join-dont-concat-in-loop": {
@@ -367,7 +367,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Build a string from a loop with a builder or a join, never with repeated `+=`.",
-"url": "https://goodcodereview.com/function#fn-join-dont-concat-in-loop",
+"url": "https://goodcodereview.com/function-any#fn-join-dont-concat-in-loop",
 "tool_gate": "Linter rule for string concatenation in a loop (for example pylint `consider-using-join`)."
 },
 "fn-jwt-verify-pinned": {
@@ -375,7 +375,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Verify the signature against a fixed list of accepted algorithms, and check `iss` and `aud`, before reading any claim.",
-"url": "https://goodcodereview.com/function#fn-jwt-verify-pinned",
+"url": "https://goodcodereview.com/function-server#fn-jwt-verify-pinned",
 "tool_gate": "CodeQL `js/jwt-missing-verification`; a grep for `verify_signature\": False` and for `jwt.decode(` calls with no `algorithms=`."
 },
 "fn-keep-input-on-error": {
@@ -383,7 +383,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "After a failed validation or submit, show the form again with every value the user entered, correct or not.",
-"url": "https://goodcodereview.com/function#fn-keep-input-on-error",
+"url": "https://goodcodereview.com/function-ui#fn-keep-input-on-error",
 "tool_gate": "none; a test that submits an invalid form and asserts the entered values are still there."
 },
 "fn-label-above-field": {
@@ -391,7 +391,7 @@
 "severity": "discuss",
 "backing": "unjudged",
 "rule": "Put the visible label of a text input, select, or textarea directly above it.",
-"url": "https://goodcodereview.com/function#fn-label-above-field",
+"url": "https://goodcodereview.com/function-ui#fn-label-above-field",
 "tool_gate": null
 },
 "fn-length-budget": {
@@ -399,7 +399,7 @@
 "severity": "discuss",
 "backing": "unjudged",
 "rule": "Split a function that passes the project's length limit (about 40 lines if it sets none) unless its body is one simple operation or one flat dispatch.",
-"url": "https://goodcodereview.com/function#fn-length-budget",
+"url": "https://goodcodereview.com/function-any#fn-length-budget",
 "tool_gate": "ESLint max-lines-per-function (default 50), Pylint too-many-statements (R0915, max-statements default 50), Checkstyle MethodLength (default 150), RuboCop Metrics/MethodLength (default 10), PMD NcssCount (methodReportLevel default 60). PMD CognitiveComplexity (default 15) and Microsoft CA1505 (maintainability index threshold 10) measure complexity, not length."
 },
 "fn-link-url-scheme-allowlist": {
@@ -407,7 +407,7 @@
 "severity": "should-fix",
 "backing": "mixed",
 "rule": "Parse a URL that comes from data and allow only `https:` (and `http:` or `mailto:` where needed) before you set it as a link target.",
-"url": "https://goodcodereview.com/function#fn-link-url-scheme-allowlist",
+"url": "https://goodcodereview.com/function-ui#fn-link-url-scheme-allowlist",
 "tool_gate": null
 },
 "fn-mask-credentials-in-output": {
@@ -415,7 +415,7 @@
 "severity": "should-fix",
 "backing": "strong",
 "rule": "Mask credentials in list, show and debug output (keep only the last four characters), and print a full value only behind an explicit flag.",
-"url": "https://goodcodereview.com/function#fn-mask-credentials-in-output",
+"url": "https://goodcodereview.com/function-cli#fn-mask-credentials-in-output",
 "tool_gate": "A test that seeds a fake token, runs the list/show/debug command, and asserts the full value is absent from stdout and stderr."
 },
 "fn-name-intermediate-conditions": {
@@ -423,7 +423,7 @@
 "severity": "discuss",
 "backing": "strong",
 "rule": "Name each compound condition by assigning its sub-conditions to booleans that say what they mean.",
-"url": "https://goodcodereview.com/function#fn-name-intermediate-conditions",
+"url": "https://goodcodereview.com/function-any#fn-name-intermediate-conditions",
 "tool_gate": null
 },
 "fn-native-button-or-link": {
@@ -431,7 +431,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Use `<button>` for an action and `<a href>` for navigation. Do not attach a click handler to a `div`, `span`, or `a` with no `href`.",
-"url": "https://goodcodereview.com/function#fn-native-button-or-link",
+"url": "https://goodcodereview.com/function-ui#fn-native-button-or-link",
 "tool_gate": "ESLint `jsx-a11y/click-events-have-key-events` and `jsx-a11y/no-static-element-interactions`; `jsx-a11y/anchor-is-valid` for `href=\"#\"`."
 },
 "fn-no-blocking-call-in-async-code": {
@@ -439,7 +439,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Never make a blocking I/O call or run long CPU work directly in async code; use the async API or hand the work to a thread or worker.",
-"url": "https://goodcodereview.com/function#fn-no-blocking-call-in-async-code",
+"url": "https://goodcodereview.com/function-any#fn-no-blocking-call-in-async-code",
 "tool_gate": "Linter rule for blocking calls in async functions (for example ruff ASYNC); asyncio debug mode flags slow callbacks."
 },
 "fn-no-caller-mutation": {
@@ -447,7 +447,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Do not mutate a parameter or an object the caller owns, unless the function is documented as mutating it.",
-"url": "https://goodcodereview.com/function#fn-no-caller-mutation",
+"url": "https://goodcodereview.com/function-any#fn-no-caller-mutation",
 "tool_gate": "ESLint no-param-reassign with props true (the default props false misses param.field = value); Pylint dangerous-default-value (W0102) for a mutable default."
 },
 "fn-no-check-then-act-across-await": {
@@ -455,7 +455,7 @@
 "severity": "should-fix",
 "backing": "strong",
 "rule": "Make check-and-write one atomic operation where the state lives, and never split it across a suspension point.",
-"url": "https://goodcodereview.com/function#fn-no-check-then-act-across-await",
+"url": "https://goodcodereview.com/function-any#fn-no-check-then-act-across-await",
 "tool_gate": null
 },
 "fn-no-eval-untrusted": {
@@ -463,7 +463,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Never pass untrusted text to `eval`, `exec`, `new Function`, or a template compiler. Pass it to a fixed template or a parser as data.",
-"url": "https://goodcodereview.com/function#fn-no-eval-untrusted",
+"url": "https://goodcodereview.com/function-any#fn-no-eval-untrusted",
 "tool_gate": "Bandit B307 (`eval`) and B102 (`exec_used`); CodeQL `py/code-injection` and `py/template-injection`; ESLint `no-eval` and `no-implied-eval`."
 },
 "fn-no-getattr-for-known-names": {
@@ -471,7 +471,7 @@
 "severity": "discuss",
 "backing": "strong",
 "rule": "Use plain field access, and reserve dynamic access for genuinely dynamic names.",
-"url": "https://goodcodereview.com/function#fn-no-getattr-for-known-names",
+"url": "https://goodcodereview.com/function-any#fn-no-getattr-for-known-names",
 "tool_gate": "ruff B009 / B010"
 },
 "fn-no-magic-values": {
@@ -479,7 +479,7 @@
 "severity": "should-fix",
 "backing": "mixed",
 "rule": "Give every meaningful literal a name: an enum member or a constant.",
-"url": "https://goodcodereview.com/function#fn-no-magic-values",
+"url": "https://goodcodereview.com/function-any#fn-no-magic-values",
 "tool_gate": "none (partial: ruff PLR2004)"
 },
 "fn-no-mass-assignment": {
@@ -487,7 +487,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Bind request data to a DTO or an explicit field allowlist, never straight onto the model.",
-"url": "https://goodcodereview.com/function#fn-no-mass-assignment",
+"url": "https://goodcodereview.com/function-server#fn-no-mass-assignment",
 "tool_gate": "A custom Semgrep rule for `Model(**request.json)`; tests that post extra fields such as `is_admin` and assert they are ignored or rejected."
 },
 "fn-no-native-deserialise-untrusted": {
@@ -495,7 +495,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Parse untrusted input with a data-only format, never with a native object deserialiser.",
-"url": "https://goodcodereview.com/function#fn-no-native-deserialise-untrusted",
+"url": "https://goodcodereview.com/function-any#fn-no-native-deserialise-untrusted",
 "tool_gate": "Bandit B301 (`pickle`) and B506 (`yaml_load`), CodeQL `py/unsafe-deserialization`; a grep for `ObjectInputStream`, `BinaryFormatter` and `unserialize` elsewhere."
 },
 "fn-no-positive-tabindex": {
@@ -503,7 +503,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Write the DOM in reading order and never set `tabindex` above 0.",
-"url": "https://goodcodereview.com/function#fn-no-positive-tabindex",
+"url": "https://goodcodereview.com/function-ui#fn-no-positive-tabindex",
 "tool_gate": "ESLint `jsx-a11y/tabindex-no-positive`; axe `tabindex`."
 },
 "fn-no-prototype-pollution": {
@@ -511,7 +511,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys.",
-"url": "https://goodcodereview.com/function#fn-no-prototype-pollution",
+"url": "https://goodcodereview.com/function-any#fn-no-prototype-pollution",
 "tool_gate": "CodeQL `js/prototype-pollution-utility` and `js/prototype-polluting-assignment`."
 },
 "fn-no-raw-html-sink": {
@@ -519,7 +519,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.",
-"url": "https://goodcodereview.com/function#fn-no-raw-html-sink",
+"url": "https://goodcodereview.com/function-ui#fn-no-raw-html-sink",
 "tool_gate": "ESLint (`no-unsanitized/property`, `no-unsanitized/method`, `react/no-danger`) and template-engine autoescape checks."
 },
 "fn-no-shell-with-input": {
@@ -527,7 +527,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Start processes with the program and each argument as separate list items, and never through a shell string.",
-"url": "https://goodcodereview.com/function#fn-no-shell-with-input",
+"url": "https://goodcodereview.com/function-any#fn-no-shell-with-input",
 "tool_gate": "Bandit B602 (`subprocess_popen_with_shell_equals_true`) and B605 (`start_process_with_a_shell`) for Python."
 },
 "fn-object-level-authz": {
@@ -535,7 +535,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Check that the caller may act on the specific record before returning or changing it.",
-"url": "https://goodcodereview.com/function#fn-object-level-authz",
+"url": "https://goodcodereview.com/function-server#fn-object-level-authz",
 "tool_gate": "Authorization tests that call each endpoint as a second user; no static gate catches a missing check."
 },
 "fn-parameter-limit": {
@@ -543,7 +543,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Set a parameter-count limit in the project's linter, and keep signatures within it.",
-"url": "https://goodcodereview.com/function#fn-parameter-limit",
+"url": "https://goodcodereview.com/function-any#fn-parameter-limit",
 "tool_gate": "ESLint max-params (default 3), Pylint too-many-arguments (R0913, max-args default 5) and too-many-positional-arguments (R0917, default 5), Checkstyle ParameterNumber (default 7), RuboCop Metrics/ParameterLists (default 5), PMD ExcessiveParameterList (minimum default 10)."
 },
 "fn-password-slow-hash": {
@@ -551,7 +551,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.",
-"url": "https://goodcodereview.com/function#fn-password-slow-hash",
+"url": "https://goodcodereview.com/function-server#fn-password-slow-hash",
 "tool_gate": "Grep or SAST rule for `md5`, `sha1`, `sha256` near a `password` identifier."
 },
 "fn-redirect-target-allowlist": {
@@ -559,7 +559,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Redirect only to a local path or to a host on a server-side allowlist, never to a URL taken from the request as is.",
-"url": "https://goodcodereview.com/function#fn-redirect-target-allowlist",
+"url": "https://goodcodereview.com/function-server#fn-redirect-target-allowlist",
 "tool_gate": "CodeQL `py/url-redirection`; ASP.NET Core `LocalRedirect` or `Url.IsLocalUrl`."
 },
 "fn-reduced-motion-respected": {
@@ -567,7 +567,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Switch off or replace large, repeating, or interaction-triggered motion when `prefers-reduced-motion: reduce` is set.",
-"url": "https://goodcodereview.com/function#fn-reduced-motion-respected",
+"url": "https://goodcodereview.com/function-ui#fn-reduced-motion-respected",
 "tool_gate": "Stylelint `a11y/media-prefers-reduced-motion` from the `stylelint-a11y` plugin. A browser run with reduced motion emulated."
 },
 "fn-regex-compiled-once": {
@@ -575,7 +575,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Compile a regular expression once, at module or startup level, and reuse it.",
-"url": "https://goodcodereview.com/function#fn-regex-compiled-once",
+"url": "https://goodcodereview.com/function-any#fn-regex-compiled-once",
 "tool_gate": "Linter rule for a regex constructor in a loop, where the language has one."
 },
 "fn-related-controls-in-fieldset": {
@@ -583,7 +583,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Wrap each radio group, checkbox group, and multi-part value, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.",
-"url": "https://goodcodereview.com/function#fn-related-controls-in-fieldset",
+"url": "https://goodcodereview.com/function-ui#fn-related-controls-in-fieldset",
 "tool_gate": null
 },
 "fn-rerun-safe-after-crash": {
@@ -591,7 +591,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.",
-"url": "https://goodcodereview.com/function#fn-rerun-safe-after-crash",
+"url": "https://goodcodereview.com/function-any#fn-rerun-safe-after-crash",
 "tool_gate": null
 },
 "fn-response-fields-explicit": {
@@ -599,7 +599,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Return a response type that lists each field, never the stored model or a generic dump of it.",
-"url": "https://goodcodereview.com/function#fn-response-fields-explicit",
+"url": "https://goodcodereview.com/function-server#fn-response-fields-explicit",
 "tool_gate": "Response-schema tests that fail on unlisted fields."
 },
 "fn-specific-exceptions-only": {
@@ -607,7 +607,7 @@
 "severity": "should-fix",
 "backing": "mixed",
 "rule": "Catch only the specific exception you can handle in business code.",
-"url": "https://goodcodereview.com/function#fn-specific-exceptions-only",
+"url": "https://goodcodereview.com/function-any#fn-specific-exceptions-only",
 "tool_gate": "ruff BLE001 / E722 (Python)"
 },
 "fn-status-announced-live-region": {
@@ -615,7 +615,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Announce an async status message through a live region (`role=\"status\"` or `role=\"alert\"`), and put a `role=\"status\"` or `aria-live` region in the markup before its text changes.",
-"url": "https://goodcodereview.com/function#fn-status-announced-live-region",
+"url": "https://goodcodereview.com/function-ui#fn-status-announced-live-region",
 "tool_gate": "none; a screen-reader pass, or a test that the region exists with a role before the text changes."
 },
 "fn-target-size": {
@@ -623,7 +623,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.",
-"url": "https://goodcodereview.com/function#fn-target-size",
+"url": "https://goodcodereview.com/function-ui#fn-target-size",
 "tool_gate": "axe `target-size` (WCAG 2.2); a rendered check for the spacing exception."
 },
 "fn-test-behaviour-not-implementation": {
@@ -631,7 +631,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.",
-"url": "https://goodcodereview.com/function#fn-test-behaviour-not-implementation",
+"url": "https://goodcodereview.com/function-any#fn-test-behaviour-not-implementation",
 "tool_gate": "Refactor the code without changing what it does and run the tests; mutation testing shows whether they still catch real faults."
 },
 "fn-test-oracle-independent": {
@@ -639,7 +639,7 @@
 "severity": "should-fix",
 "backing": "mixed",
 "rule": "Take a test's expected value from the requirement, not from the code under test.",
-"url": "https://goodcodereview.com/function#fn-test-oracle-independent",
+"url": "https://goodcodereview.com/function-any#fn-test-oracle-independent",
 "tool_gate": "Mutation testing."
 },
 "fn-tls-verify-on": {
@@ -647,7 +647,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Leave certificate and hostname verification on in every environment that ships.",
-"url": "https://goodcodereview.com/function#fn-tls-verify-on",
+"url": "https://goodcodereview.com/function-any#fn-tls-verify-on",
 "tool_gate": "Bandit B501 (`request_with_no_cert_validation`), CodeQL `py/request-without-cert-validation`; a grep for `rejectUnauthorized: false` and `InsecureSkipVerify: true`."
 },
 "fn-variants-as-tagged-union": {
@@ -655,7 +655,7 @@
 "severity": "should-fix",
 "backing": "mixed",
 "rule": "Model variants as a tagged union, and make every switch over it fail the build when a variant is unhandled.",
-"url": "https://goodcodereview.com/function#fn-variants-as-tagged-union",
+"url": "https://goodcodereview.com/function-any#fn-variants-as-tagged-union",
 "tool_gate": "A type checker with exhaustiveness checking (`never` in TypeScript, `assert_never` in Python)."
 },
 "fn-xml-no-external-entities": {
@@ -663,7 +663,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Parse untrusted XML with external entity resolution turned off, for example through a hardened parser such as `defusedxml`.",
-"url": "https://goodcodereview.com/function#fn-xml-no-external-entities",
+"url": "https://goodcodereview.com/function-any#fn-xml-no-external-entities",
 "tool_gate": "CodeQL `py/xxe`; Bandit B313 to B319 (stdlib XML parse calls) and B405 to B409 (XML imports)."
 },
 "inc-perf-fix-has-profile-evidence": {

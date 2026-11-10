@@ -43,6 +43,17 @@ def front(title: str, desc: str, slug: str, date: str) -> str:
     return "---\n" + "\n".join(f"{k}: {json.dumps(v, ensure_ascii=False)}" for k, v in fields.items()) + "\n---\n\n"
 
 
+LLMS_NOTE = f"> For the complete documentation index, see [llms.txt]({BASE}/llms.txt).\n\n"
+
+
+def _absolute(text: str) -> str:
+    """Make site-relative links (`service.md#id`, `/x.md`) absolute, so a twin read off-site still resolves. Code fences stay as written."""
+    link = re.compile(r"\]\((?!https?:|mailto:|#)/?([^)\s]+)\)")
+    # re.split with a capturing group keeps the fences at the odd indexes.
+    chunks = re.split(r"(?ms)(^```.*?^```)", text)
+    return "".join(c if i % 2 else link.sub(lambda m: f"]({BASE}/{m[1]})", c) for i, c in enumerate(chunks))
+
+
 def _xlink(text: str, home: dict[str, str], ids: dict[str, str]) -> str:
     """Turn [[card-id]] into an absolute link: a stable card to its level file, any other known id to its page."""
     def link(m: re.Match[str]) -> str:
@@ -73,6 +84,16 @@ def _concerns_page(b: BuildInput, plain: str) -> Twin:
                 f"Draft cards are not vetted and are not listed here. See {BASE}/llms-drafts.txt.\n")
 
 
+FULL_SLUGS = (*LEVELS, "audit", "glossary", "guides", "about")
+
+
+def llms_full(texts: dict[str, str], b: BuildInput) -> str:
+    """llms-full.txt: the full-text pages in one file. Each is its served .md without the frontmatter; the context parts and packs repeat or extend them, so they stay out."""
+    guides = [f"guides/{g.slug}" for g in GUIDES]
+    parts = [texts[f"{s}.md"].split("\n---\n\n", 1)[1].replace(LLMS_NOTE, "", 1) for s in (*FULL_SLUGS, *guides) if f"{s}.md" in texts]
+    return f"# Good Code Review: full text\n\n> {SITE_DESC}\n\nThe index is {BASE}/llms.txt. Each section below is one page, as served at its .md URL.\n\n" + "\n\n".join(parts)
+
+
 def markdown_twins(b: BuildInput, skill: SkillOutput) -> dict[str, str]:
     """Every site/<slug>.md file: the level files and indexes, then the pages that have no level file."""
     twins = dict(skill.level_twins)
@@ -101,4 +122,4 @@ def markdown_twins(b: BuildInput, skill: SkillOutput) -> dict[str, str]:
     twins["privacy"] = Twin("Privacy", PRIVACY_DESC, "# Privacy\n\n" + PRIVACY)
     drafts = _xlink(re.sub(r"^# ", "## ", drafts_markdown(b), flags=re.M), skill.stable_home, b.ids)
     twins["drafts"] = Twin("Drafts by what they lack", DRAFTS_DESC, "# Drafts by what they lack\n\n" + drafts + "\n")
-    return {f"{slug}.md": front(t.title, t.description, slug, b.date) + t.markdown for slug, t in twins.items()}
+    return {f"{slug}.md": front(t.title, t.description, slug, b.date) + LLMS_NOTE + _absolute(t.markdown) for slug, t in twins.items()}

@@ -36,6 +36,17 @@ GUIDES = (
            "svc-csrf-state-changing", "svc-session-lifecycle", "svc-auth-throttle-generic-errors", "fn-confine-file-path", "svc-upload-validate-store",
            "sys-ssrf", "sys-secrets-and-errors", "code-secret-scan", "code-dependency-pinning"),
           "Every stable security card, including the should-fix ones, is on the [security concern page](concern:security)."),
+    Guide("good-code-review-vs-ai-code-reviewers", "Good Code Review vs AI code reviewers",
+          "How a free, open checklist differs from automated AI code review tools such as CodeRabbit, Greptile and Qodo, and how to run both on one pull request.",
+          "Good Code Review is a free, open checklist, not a hosted reviewer. Automated AI code review tools, such as [CodeRabbit](https://www.coderabbit.ai), "
+          "[Greptile](https://www.greptile.com) and [Qodo](https://www.qodo.ai), read your pull request and comment on it. This checklist does something else: "
+          "each rule is backed by at least three independent organisations, and every check ends in PASS, FAIL, or N/A with file:line evidence you can verify. "
+          "The content is CC BY 4.0 and the code is MIT, so you can read it, run it with your own agent, and keep it in your repository. "
+          "The two fit together. An agent can run the checklist as its self-check before it opens a pull request, and a reviewer can use it to judge what an automated reviewer reports. "
+          "These are the stable checks about agent-written code and about trusting review output.",
+          ("chg-agent-grounded-code", "chg-verify-before-claim", "chg-review-signal"),
+          "To give your coding agent this standard, run `npx skills add n0nuser/goodcodereview` and ask it to review its own diff, or paste the one-line prompt above. "
+          "Nothing is sent to us: the skill reads static files. See the [change level](html:change) for every check on a diff."),
     Guide("what-to-check-in-a-database-migration", "What to check in a database migration",
           "What to check in a database migration: expand and contract, breaking changes, staged rollout, and a tested rollback.",
           "A database migration review asks whether old and new code can both run against the schema while the change rolls out, and whether you can undo it. "

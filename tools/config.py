@@ -20,7 +20,7 @@ SBOM_FILE = ROOT / "sbom.cdx.json"
 SKILL_BUDGET = 400  # max lines in SKILL.md
 LLMS_BUDGET = 12_000  # characters in llms.txt (llmstxt.org asks for a concise summary)
 SKILL_BODY_BUDGET = 16_000  # characters in SKILL.md after the frontmatter, about 4,000 tokens (the Agent Skills spec recommends under 5,000)
-PAGE_MAX = 120_000  # characters of text in one human page (agents read the .md twins); past it a level page splits by `context`
+PAGE_MAX = 105_000  # characters of text in one human page (agents read the .md twins); past it a level page splits by `context`
 INDEX_BUDGET = 12_000  # characters in one level index; past it the index splits by `context`
 
 SECURITY_TXT_DAYS = 180  # RFC 9116 Expires, counted from the build date so each rebuild renews it
