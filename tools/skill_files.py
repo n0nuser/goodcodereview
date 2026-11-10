@@ -69,6 +69,7 @@ class SkillOutput:
     llms_drafts: str
     plain_verdict: str
     stable_home: dict[str, str]
+    level_chars: dict[str, int]  # characters in each level's whole-file Markdown
 
 
 def plain_verdict() -> str:
@@ -217,7 +218,7 @@ def link_stable(text: str, home: dict[str, str]) -> str:
     return re.sub(r"\[\[([^\]]+)\]\]", lambda m: f"[{m[1]}]({home[m[1]]}.md#{m[1]})" if m[1] in home else m[1], text)
 
 
-def _llms(head: list[str], llms_scope: list[str], level_index: dict[Level, list[IndexPart]], b: BuildInput) -> str:
+def _llms(head: list[str], llms_scope: list[str], level_index: dict[Level, list[IndexPart]], b: BuildInput, chars: dict[str, int]) -> str:
     """Return llms.txt, which follows https://llmstxt.org/.
 
     H1, blockquote, headingless sections, then H2 file lists of `[name](url): notes` links, with secondary links under "Optional".
@@ -238,11 +239,16 @@ def _llms(head: list[str], llms_scope: list[str], level_index: dict[Level, list[
         out += [f"## {lv}", ""]
         part = level_index[lv][0]  # the whole index, or the hub that links its context parts
         n = f"{part.count} stable card{'s' if part.count != 1 else ''}"
-        out.append(f"- [{NAME[lv]}]({BASE}/{lv}.md): {n} with FAIL and PASS examples and who backs them; [one-line index]({BASE}/{part.slug}.md)"
-                   + (", split by context." if len(level_index[lv]) > 1 else "."))
-        if lv in b.split:
+        if lv in b.split:  # read the parts; the whole file is the fallback for a reader that can download it (docs/research/context-splitting.md)
             first, *rest = b.parts(lv)
-            out.append(f"- [{NAME[lv]}, {first} cards]({BASE}/{lv}-{first}.md): one context part; the others are " + ", ".join(f"[{c}]({BASE}/{lv}-{c}.md)" for c in rest) + ".")
+            core = sum(is_stable(c) for cs in b.parts(lv).values() for c in cs)
+            extra = f" ({part.count - core} language-pack cards are on the pack pages)" if part.count > core else ""
+            out.append(f"- [{NAME[lv]}, part 1 of {1 + len(rest)}: {first}]({BASE}/{lv}-{first}.md): {core} stable cards with examples{extra}, in {1 + len(rest)} parts; read every part. The others: "
+                       + ", ".join(f"[{c}]({BASE}/{lv}-{c}.md)" for c in rest) + ".")
+            out.append(f"- [{NAME[lv]}, whole file]({BASE}/{lv}.md): all {n} in one file of about {chars[lv] // 1000}K characters; a fetch tool may truncate it; use it only if you can download it.")
+            out.append(f"- [{NAME[lv]} index]({BASE}/{part.slug}.md): one line per card, with a link to each part.")
+        else:
+            out.append(f"- [{NAME[lv]}]({BASE}/{lv}.md): {n} with FAIL and PASS examples and who backs them; [one-line index]({BASE}/{part.slug}.md).")
         out.append("")
     out += ["## Audit", "", f"- [Audit a repo, service, or release]({BASE}/audit.md): scope, read order, missing controls, accepted risk, and the report shape.", ""]
     out += ["## Glossary", "", f"- [Glossary]({BASE}/glossary.md): terms the cards link to.", "",
@@ -335,11 +341,12 @@ def skill_output(b: BuildInput) -> SkillOutput:
         raise BuildError(f"SKILL.md body is {body_chars} characters, budget {SKILL_BODY_BUDGET}: move detail into references/")
     files["SKILL.md"] = skill_text
     files["references/audit.md"] = "# Audit a repo, service, or release\n\n" + AUDIT_MD.replace(DRAFT_LINK, "`drafts.md`")
-    llms = _llms(skill_md.head, skill_md.llms_scope, level_index, b)
+    level_chars = {lv: len(t.markdown) for lv, t in twins.items()}
+    llms = _llms(skill_md.head, skill_md.llms_scope, level_index, b, level_chars)
     llms_drafts = _llms_drafts(b)
     _check_indexes(b, level_index, home, llms, llms_drafts)
     files.update(_draft_files(b))
-    return SkillOutput(files, level_index, twins, llms, llms_drafts, plain, home)
+    return SkillOutput(files, level_index, twins, llms, llms_drafts, plain, home, level_chars)
 
 
 def _check_indexes(b: BuildInput, level_index: dict[Level, list[IndexPart]], home: dict[str, str], llms: str, llms_drafts: str) -> None:

@@ -2,7 +2,7 @@
 import json
 import re
 
-from card_fields import is_stable
+from card_fields import is_core, is_stable, level_of
 from config import BASE, SITE_DESC
 from context import BuildInput, pack_name
 from guides import GUIDES, guide_text, guides_index_text
@@ -108,9 +108,19 @@ def markdown_twins(b: BuildInput, skill: SkillOutput) -> dict[str, str]:
     twins["index"] = _index_page(b, skill.plain_verdict)
     twins["concerns"] = _concerns_page(b, skill.plain_verdict)
     for lv in b.split:
-        for ctx, cs in b.parts(lv).items():
+        by_ctx = b.parts(lv)
+        total = sum(sum(is_stable(c) for c in cs) for cs in by_ctx.values())
+        done = 0
+        packs = sum(1 for c in b.stable if level_of(c) == lv and not is_core(c))
+        pack_note = f" The {packs} stable language-pack cards at this level are on the pack pages ({', '.join(f'[{pk}]({BASE}/pack-{pk}.md)' for pk in b.packs)})." if packs else ""
+        for n, (ctx, cs) in enumerate(by_ctx.items(), 1):
             stable = [card_section(c) for c in cs if is_stable(c)] or ["No vetted cards for this context yet."]
-            text = link_stable(f"# {lv}, {ctx}\n\nThe stable {lv} cards for the `{ctx}` context. The whole level is at {BASE}/{lv}.md.\n\n" + "\n\n".join(stable) + "\n", skill.stable_home)
+            first, done = done + 1, done + sum(is_stable(c) for c in cs)
+            others = ", ".join(f"[{o}]({BASE}/{lv}-{o}.md)" for o in by_ctx if o != ctx)
+            head = (f"# {lv}, {ctx}\n\nPart {n} of {len(by_ctx)} of the {lv} level: stable cards {first} to {done} of {total}, the `{ctx}` context. "
+                    f"A review of this level needs every part: read the others ({others}) too, and name the parts you read in your report.{pack_note} "
+                    f"The whole level is one file at {BASE}/{lv}.md, about {skill.level_chars[lv] // 1000}K characters; a fetch tool may truncate it, so use it only if you can download it.\n\n")
+            text = link_stable(head + "\n\n".join(stable) + "\n", skill.stable_home)
             twins[f"{lv}-{ctx}"] = Twin(f"{NAME[lv]}, {ctx} cards", part_spec(lv, ctx, cs).desc, text)
     for pk in b.packs:
         text = (f"# {pack_name(pk)} pack\n\nEach card says whether it is stable or draft. Stable cards are vetted and also appear in their level file. {DRAFT_NOTE} {DRAFT_RULE}\n\n"

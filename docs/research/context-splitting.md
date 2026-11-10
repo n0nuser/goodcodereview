@@ -101,3 +101,7 @@ What would change this:
 - ChatGPT browsing, Cursor page limits: no verified data.
 - Claude Code truncation figure and Haiku model are from third-party analysis; the 15-minute cache and the small-model description match the tool's own description.
 - HALT, Stop-RAG, PAR2-RAG: seen in search results only.
+
+## Implemented 2026-11-11
+
+Parts say "part N of M" with their card range and total, name the other parts, and point to the whole file with its size (`tools/site_twins.py`). `llms.txt` lists the parts first, then the whole file with a truncation warning (`tools/skill_files.py`). `agent_ready_check.py` item 54 checks it. Not done: asking agents to list checked card ids in the verdict (changes skill text, so it needs eval runs), and the A/B experiment.

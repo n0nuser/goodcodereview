@@ -409,8 +409,8 @@ MD_MAX = 100_000  # afdocs fails a Markdown page past this many characters
 MD_OVER = {"service.md": "the whole level in one file keeps every card in one fetch; its context parts are the split form"}  # file -> why it is allowed over MD_MAX
 
 
-def _items_49_53(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
-    """49 llms.txt directive, 50 absolute links, 51 llms.txt coverage, 52 llms.txt links use .md, 53 Markdown size."""
+def _items_49_54(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """49 llms.txt directive, 50 absolute links, 51 llms.txt coverage, 52 llms.txt links use .md, 53 Markdown size, 54 split levels."""
     html = [f for f in [*SITE.glob("*.html"), *SITE.glob("guides/*.html")] if f.name != "404.html"]
     mds = [f for f in [*SITE.glob("*.md"), *SITE.glob("guides/*.md")]]
     no_html = [f.name for f in html if 'href="/llms.txt" tabindex=-1>llms.txt</a>' not in f.read_text()[:20000]]
@@ -433,6 +433,17 @@ def _items_49_53(r: Report, pages: dict[str, Page], content: dict[str, Page]) ->
     big = {f.name: len(f.read_text()) for f in mds if len(f.read_text()) > MD_MAX and f.name not in MD_OVER}
     r.check(53, not big, f"afdocs page-size-markdown: every .md is under {MD_MAX:,} characters except {', '.join(MD_OVER)}" + (f": over {big}" if big else ""))
 
+    # A split level (docs/research/context-splitting.md): every part says "part n of N", llms.txt links all N and the whole file, and no part is silently left out.
+    split = re.findall(r"\]\(https://goodcodereview\.com/(\w+)-\w+\.md\): \d+ stable cards .*? in (\d+) parts", llms)
+    broken = []
+    for lv, n in split:
+        files = [f for f in SITE.glob(f"{lv}-*.md") if "-index" not in f.name]
+        said = all(f"of {n} of the {lv} level" in f.read_text() for f in files)
+        linked_all = all(f"/{f.name})" in llms for f in files)
+        if len(files) != int(n) or not said or not linked_all or f"[{lv.capitalize()}" not in llms or f"/{lv}.md)" not in llms:
+            broken.append(lv)
+    r.check(54, split and not broken, f"split levels ({', '.join(lv for lv, _ in split)}): each part says its place in N, llms.txt links every part and the whole file"
+            + (f": broken {broken}" if broken else ""))
 
 def main() -> int:
     """Run every check against site/ and return the exit code."""
@@ -456,7 +467,7 @@ def main() -> int:
     _items_36(r, pages, content)
     _items_39(r, pages, content)
     _items_43_46(r, pages, content)
-    _items_49_53(r, pages, content)
+    _items_49_54(r, pages, content)
     print(f"\n{len(r.failures)} failing check(s)" if r.failures else "\nall checks pass")
     return 1 if r.failures else 0
 
