@@ -106,12 +106,13 @@ def test_page_shows_last_updated(site_text: dict[str, str], name: str) -> None:
 
 
 def test_guides_have_page_twin_sitemap_entry_and_one_llms_link(site_text: dict[str, str]) -> None:
+    from config import BASE
     from guides import GUIDES
     for g in GUIDES:
         assert f"guides/{g.slug}.html" in site_text and f"guides/{g.slug}.md" in site_text
         assert f"<loc>https://goodcodereview.com/guides/{g.slug}</loc>" in site_text["sitemap.xml"]
         assert "chg-" in site_text[f"guides/{g.slug}.md"] or "sys-" in site_text[f"guides/{g.slug}.md"]
-    assert site_text["llms.txt"].count("/guides") == 1
+    assert all(f"{BASE}/guides/{g.slug}.md" in site_text["llms.txt"] for g in GUIDES)
 
 
 def test_listing_and_guide_pages_have_breadcrumbs(site_text: dict[str, str]) -> None:

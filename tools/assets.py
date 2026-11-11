@@ -169,13 +169,15 @@ addEventListener('hashchange',op);op()"""
 # WebMCP (https://webmachinelearning.github.io/webmcp/): read-only tools over the page's own content. No network call, storage, or form (tools/agent_ready_check.py item 34).
 JS += """
 {const m=document.modelContext||navigator.modelContext;
-if(m&&m.registerTool){const o=location.origin,t=(name,description,properties,run)=>m.registerTool({name,description,inputSchema:{type:'object',properties},annotations:{readOnlyHint:true},
-execute:async a=>JSON.stringify(run(a||{}))}).catch?.(()=>0);
-t('start_review','The prompt and the entry file for reviewing code with Good Code Review.',{},()=>({prompt:'Read '+o+'/llms.txt and use it to review my code.',llms_txt:o+'/llms.txt',agent_manifest:o+'/agent.json'}));
-t('list_levels','The review levels. Pick the one that matches the input: a diff, file, package, service, design, repo, release, or incident.',{},()=>__LEVELS__.map(l=>({level:l,page:o+'/'+l,markdown:o+'/'+l+'.md',cards:o+'/cards/'+l+'.json'})));
-if(q('[data-tags]').length)t('list_cards','The stable cards on this page, optionally filtered by concern, topic, or level.',
-{concern:{type:'string'},topic:{type:'string'},level:{type:'string'}},a=>q('#flat li[data-tags]').filter(r=>[a.concern,a.topic].every(v=>!v||r.dataset.tags.split(' ').includes(v))&&(!a.level||r.dataset.level==a.level))
-.map(r=>({id:r.querySelector('a').textContent,severity:r.querySelector('.b').textContent,rule:r.querySelector('.r').textContent,url:r.querySelector('a').href})))}}
+if(m&&m.registerTool){const o=location.origin,r=f=>async a=>JSON.stringify(f(a||{})),ro={readOnlyHint:true},none={type:'object',properties:{}};
+m.registerTool({name:'start_review',description:'The prompt and the entry file for reviewing code with Good Code Review.',inputSchema:none,annotations:ro,
+execute:r(()=>({prompt:'Read '+o+'/llms.txt and use it to review my code.',llms_txt:o+'/llms.txt',agent_manifest:o+'/agent.json'}))}).catch?.(()=>0);
+m.registerTool({name:'list_levels',description:'The review levels. Pick the one that matches the input: a diff, file, package, service, design, repo, release, or incident.',inputSchema:none,annotations:ro,
+execute:r(()=>__LEVELS__.map(l=>({level:l,page:o+'/'+l,markdown:o+'/'+l+'.md',cards:o+'/cards/'+l+'.json'})))}).catch?.(()=>0);
+if(q('[data-tags]').length)m.registerTool({name:'list_cards',description:'The stable cards on this page, optionally filtered by concern, topic, or level.',
+inputSchema:{type:'object',properties:{concern:{type:'string'},topic:{type:'string'},level:{type:'string'}}},annotations:ro,
+execute:r(a=>q('#flat li[data-tags]').filter(r=>[a.concern,a.topic].every(v=>!v||r.dataset.tags.split(' ').includes(v))&&(!a.level||r.dataset.level==a.level))
+.map(r=>({id:r.querySelector('a').textContent,severity:r.querySelector('.b').textContent,rule:r.querySelector('.r').textContent,url:r.querySelector('a').href})))}).catch?.(()=>0)}}
 """.replace("__LEVELS__", json.dumps([str(lv) for lv in LEVELS]))
 # The site icon: served as /favicon.svg, with tools/favicon.ico (32x32, rendered from this art with rsvg-convert and magick) as /favicon.ico.
 FAVICON_SVG = ("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='#006469'/>"

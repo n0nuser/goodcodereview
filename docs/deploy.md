@@ -52,6 +52,11 @@ Two rules serve `index.md` for `Accept: text/markdown` on the homepage without a
    - Then: rewrite the path to the static value `/agent.json`, and keep the query string out of the cache key.
    - Why a rule and not the Worker: matching `/` in `run_worker_first` would bill a Worker call on every homepage view. The rule runs at the edge and serves the static file. `agent.json` is also reachable directly and linked from every page head.
 
+4. Rewrite URL rule, named "Markdown for agents, all pages" (live since 2026-11-11; AR-READ-09 and afdocs `content-negotiation`).
+   - When: `(http.host in {"goodcodereview.com" "www.goodcodereview.com"} and any(http.request.headers["accept"][*] contains "text/markdown") and not http.request.uri.path contains "." and http.request.uri.path ne "/")`
+   - Then: rewrite the path dynamically to `concat(http.request.uri.path, ".md")`. Keep rule 1 for `/`.
+   - Rule 2 (`Vary: Accept`) matches `(http.host in {...} and (not http.request.uri.path contains "." or ends_with(http.request.uri.path, ".md")))`, because the response phase sees the rewritten path. Every page has a twin at its URL plus `.md`, so no Worker call is billed.
+
 Verify the first two:
 
 ```

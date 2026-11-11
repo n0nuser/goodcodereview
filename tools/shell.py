@@ -46,7 +46,9 @@ def head_tags(title: str, desc: str, slug: str) -> str:
             + "".join(f'<meta name="twitter:{k}" content="{quote(v)}">' for k, v in tw.items())
             + f'<link rel="alternate" type="text/markdown" href="/{slug}.md"><link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">'
             '<link rel="sitemap" type="application/xml" href="/sitemap.xml">'
-            '<link rel="ard" href="/.well-known/ard.json"><link rel="alternate" type="application/json" href="/agent.json" title="Agent manifest"><meta name="is-agentic-site-type" content="content">')
+            '<link rel="ard" href="/.well-known/ard.json">'
+            '<link rel="ai-catalog" href="/.well-known/ai-catalog.json"><link rel="alternate" type="application/json" href="/agent.json" title="Agent manifest">'
+            '<meta name="is-agentic-site-type" content="content">')
 
 
 def sprite(body: str) -> str:
@@ -110,6 +112,8 @@ def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "",
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">'
             '<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32">'
             f"<title>{html.escape(full)}</title>{head_tags(full, desc, slug)}<style>{CSS}</style>{jsonld}</head>"
-            f"<body><a class=skip href=#main>Skip to content</a>{_nav(links, cur)}<main id=main tabindex=-1>{trail}"
+            f'<body><a class=skip href=#main>Skip to content</a>'
+            f"{_nav(links, cur)}<main id=main tabindex=-1>"
+            f'<div class=vh>For the complete documentation index, see <a href="/llms.txt" tabindex=-1>llms.txt</a>. Each page is also served as Markdown at its URL with .md added.</div>{trail}'
             f"<h1>{html.escape(title)}</h1>{stamp}{body}</main>{sprite(body)}"
             f"{FOOTER}{tail}</body></html>")

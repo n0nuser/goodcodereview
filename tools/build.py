@@ -20,7 +20,7 @@ from errors import ToolError
 from site_cards import cards_files
 from site_meta import agent_files, headers_file, page_slugs, robots, security_txt, sitemap, skill_discovery
 from site_pages import html_pages, split_levels
-from site_twins import markdown_twins
+from site_twins import llms_full, markdown_twins
 from skill_files import SkillOutput, skill_output
 from skills_extra import extra_files
 
@@ -49,6 +49,7 @@ def site_files(b: BuildInput, skill: SkillOutput) -> Files:
     texts.update(markdown_twins(b, skill))
     texts["llms.txt"] = skill.llms
     texts["llms-drafts.txt"] = skill.llms_drafts
+    texts["llms-full.txt"] = llms_full(texts, b)
     texts["sitemap.xml"] = sitemap(slugs, b.date)
     texts["robots.txt"] = robots()
     texts["_headers"] = headers_file(slugs)

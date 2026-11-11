@@ -223,7 +223,7 @@ def _items_15_16_17_19(r: Report, pages: dict[str, Page], content: dict[str, Pag
     r.check(17, own and not dead, f"{len(own)} own-site links in llms.txt resolve to files in site/{': dead ' + ', '.join(dead) if dead else ''}")
     r.check(19, "Use this site when you are asked to review" in llms, "llms.txt opens with a `When to use` paragraph")
     unbalanced = [f.name for f in [*SITE.glob("*.md"), SITE / "llms.txt", SITE / "llms-drafts.txt"] if len(re.findall(r"(?m)^```", f.read_text())) % 2]
-    r.check(15, not unbalanced and all('<code class="language-' in (SITE / f"{lv}.html").read_text() for lv in ("change", "function")),
+    r.check(15, not unbalanced and all(any('<code class="language-' in f.read_text() for f in SITE.glob(f"{lv}*.html")) for lv in ("change", "function")),
           f"code fences are balanced in served Markdown and tagged with a language class in HTML{': ' + ', '.join(unbalanced) if unbalanced else ''}")
 
 
@@ -374,6 +374,11 @@ def _items_43_46(r: Report, pages: dict[str, Page], content: dict[str, Page]) ->
     rel = all(any(ln.get("href") == "/.well-known/ard.json" for ln in p.link("ard")) for p in content.values())
     agentmap = f"Agentmap: {BASE}/.well-known/ard.json" in robots
     r.check(43, ok and rel and agentmap, "ARD spec v0.91 (agenticresourcediscovery.org/spec): entries valid, urls resolve, rel=ard on each page, Agentmap in robots.txt")
+    # AR-FIND-04 (agentready.org spec v2.0): ai-catalog.json, rel="ai-catalog" on each page, and the Link header.
+    alias = (SITE / ".well-known/ai-catalog.json").read_bytes() == (SITE / ".well-known/ard.json").read_bytes()
+    rel2 = all(any(ln.get("href") == "/.well-known/ai-catalog.json" for ln in p.link("ai-catalog")) for p in content.values())
+    hdr = 'rel="ai-catalog"' in (SITE / "_headers").read_text()
+    r.check(48, alias and rel2 and hdr, "AR-FIND-04: /.well-known/ai-catalog.json matches ard.json, rel=ai-catalog on each page, Link header")
     try:
         am = json.loads((SITE / "agent.json").read_text())
         ok = (am["authentication"]["type"] == "none" and am["capabilities"] and am["endpoints"]["llms_txt"].startswith(BASE)
@@ -399,6 +404,47 @@ def _items_43_46(r: Report, pages: dict[str, Page], content: dict[str, Page]) ->
     r.check(46, not snippet, f"titles are 40 to 62 characters and descriptions 110 to 160, and every page has twitter:card{': ' + ', '.join(snippet) if snippet else ''}")
 
 
+# Findings from the AgentReady (agentready.org v2.0), Mintlify and afdocs scanners, kept as offline checks so a change cannot bring them back.
+MD_MAX = 100_000  # afdocs fails a Markdown page past this many characters
+MD_OVER = {"service.md": "the whole level in one file keeps every card in one fetch; its context parts are the split form"}  # file -> why it is allowed over MD_MAX
+
+
+def _items_49_54(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
+    """49 llms.txt directive, 50 absolute links, 51 llms.txt coverage, 52 llms.txt links use .md, 53 Markdown size, 54 split levels."""
+    html = [f for f in [*SITE.glob("*.html"), *SITE.glob("guides/*.html")] if f.name != "404.html"]
+    mds = [f for f in [*SITE.glob("*.md"), *SITE.glob("guides/*.md")]]
+    no_html = [f.name for f in html if 'href="/llms.txt" tabindex=-1>llms.txt</a>' not in f.read_text()[:20000]]
+    no_md = [f.name for f in mds if "[llms.txt](" not in f.read_text().split("\n---\n", 1)[1][:400]]
+    r.check(49, not no_html and not no_md, "afdocs llms-txt-directive: a hidden llms.txt link near the top of every HTML page and a blockquote near the top of every .md"
+            + (f": missing in {', '.join((no_html + no_md)[:3])}" if no_html or no_md else ""))
+    rel = re.compile(r"\]\((?!https?:|mailto:|#)/?[^)\s]+\)")
+    bad = [f.name for f in mds if rel.search(re.sub(r"(?ms)^```.*?^```", "", f.read_text()))]
+    r.check(50, not bad, "afdocs markdown-link-portability: served Markdown has no relative links outside code fences" + (f": {', '.join(bad[:3])}" if bad else ""))
+
+    def norm(u: str) -> str:
+        return u.rstrip("/").removesuffix(".md").removesuffix(".html")
+
+    llms = (SITE / "llms.txt").read_text()
+    linked = {norm(u) for u in re.findall(r"\]\((https://goodcodereview\.com[^)#\s]*)", llms)}
+    missing = [u for u in re.findall(r"<loc>([^<]+)</loc>", (SITE / "sitemap.xml").read_text()) if norm(u) not in linked]
+    r.check(51, not missing, "afdocs llms-txt-coverage: llms.txt links every sitemap page" + (f": missing {', '.join(missing[:3])}" if missing else ""))
+    html_links = [u for u in re.findall(r"\]\((https://goodcodereview\.com/[^)#\s]*\.html)\)", llms) if (SITE / (u.split("goodcodereview.com/")[1][:-5] + ".md")).exists()]
+    r.check(52, not html_links, "afdocs llms-txt-links-markdown: llms.txt links the .md twin wherever one exists" + (f": {html_links[0]}" if html_links else ""))
+    big = {f.name: len(f.read_text()) for f in mds if len(f.read_text()) > MD_MAX and f.name not in MD_OVER}
+    r.check(53, not big, f"afdocs page-size-markdown: every .md is under {MD_MAX:,} characters except {', '.join(MD_OVER)}" + (f": over {big}" if big else ""))
+
+    # A split level (docs/research/context-splitting.md): every part says "part n of N", llms.txt links all N and the whole file, and no part is silently left out.
+    split = re.findall(r"\]\(https://goodcodereview\.com/(\w+)-\w+\.md\): \d+ stable cards .*? in (\d+) parts", llms)
+    broken = []
+    for lv, n in split:
+        files = [f for f in SITE.glob(f"{lv}-*.md") if "-index" not in f.name]
+        said = all(f"of {n} of the {lv} level" in f.read_text() for f in files)
+        linked_all = all(f"/{f.name})" in llms for f in files)
+        if len(files) != int(n) or not said or not linked_all or f"[{lv.capitalize()}" not in llms or f"/{lv}.md)" not in llms:
+            broken.append(lv)
+    r.check(54, split and not broken, f"split levels ({', '.join(lv for lv, _ in split)}): each part says its place in N, llms.txt links every part and the whole file"
+            + (f": broken {broken}" if broken else ""))
+
 def main() -> int:
     """Run every check against site/ and return the exit code."""
     if not (SITE / "index.html").is_file():
@@ -421,6 +467,7 @@ def main() -> int:
     _items_36(r, pages, content)
     _items_39(r, pages, content)
     _items_43_46(r, pages, content)
+    _items_49_54(r, pages, content)
     print(f"\n{len(r.failures)} failing check(s)" if r.failures else "\nall checks pass")
     return 1 if r.failures else 0
 
