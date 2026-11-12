@@ -431,6 +431,17 @@ lacks: held, kept draft by Pablo's call
 
 Send `Strict-Transport-Security` on every HTTPS response.
 
+## svc-token-revocation
+
+level: service  
+severity: should-fix  
+concerns: security  
+applies_when: The service issues refresh tokens, or self-contained access tokens such as JWTs, that outlive one request.  
+context: server  
+lacks: unreviewed, sources are listed but no stable pass has checked them against rules 1 to 10
+
+Revoke the user's refresh tokens on the server at logout, credential change and account disable, and give access tokens a short lifetime or a revocation check.
+
 # system drafts
 
 ## sys-append-only-stores-have-retention
