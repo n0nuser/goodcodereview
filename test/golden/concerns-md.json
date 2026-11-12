@@ -1,92 +1,92 @@
 {
-  "note": "sha256 and length of the /concerns.md body for each query, captured from src/worker.js at 9626d09 against the built site/cards.json, before the Worker read cards-index.json; hashes taken with the `updated:` date masked, recaptured 2026-11-06 after the security, smell and test-speed cards",
+  "note": "sha256 and length of the /concerns.md body for each query, captured from src/worker.js at 9626d09 against the built site/cards.json, before the Worker read cards-index.json; hashes taken with the `updated:` date masked, recaptured 2026-11-12 after the svc-token-revocation card, smell and test-speed cards",
   "queries": {
     "": {
-      "sha256": "7b7a1f59c1b9d0109399845d0c300ed007121daacc28c67dc18b793314d7c1ef",
-      "length": 76358
+      "sha256": "a99f4e9895e5d7e543b70e10439acdf331a561b3b76a18c52800369fd9da2589",
+      "length": 76631
     },
     "concern=security": {
-      "sha256": "d33a883286577dd915de7645325b1f157628c0e7431fe4145df8c77c2acedc87",
-      "length": 16013
+      "sha256": "8035bf903d52ad168841cc3598dc4d61b06455ef5341ff7635a2f8f39a33d411",
+      "length": 16301
     },
     "concern=security,performance": {
-      "sha256": "69d75cc952d89b9c33ee839aa7621346b991eb62f2f4a9e1ea3dfa1dddf5fa41",
-      "length": 21349
+      "sha256": "6984a67e83059edb260c5b15791150e77b443030d1a75e782880acb576935569",
+      "length": 21637
     },
     "concern=security&concern=testing": {
-      "sha256": "de1ef6f147c20cbbbe8acc2a54b9b4efa7035755908cfcd0d27bdb761c5c6247",
-      "length": 21788
+      "sha256": "67b423ea5d76405f1ff3364042b9ad7802f1d3d5287b867aec663a2ecaf45e94",
+      "length": 22076
     },
     "topic=forms": {
-      "sha256": "dca17f20d102e290bfb3a7b2d69fbaa3cb1da37b4da9fd458ce152944dd1f217",
+      "sha256": "9c1f386b6d7e66bfc5d17916e81f34b029718ce5b8fe0133c065c7b862c6ff01",
       "length": 2006
     },
     "level=function": {
-      "sha256": "e9f2f19ef0316d7ee832adaf843c15246d4e7a72b415e13058c17e84ebc9b539",
+      "sha256": "216ace2ef114b776c47f9b6ec64ea18d3b2d48b8e3c4f32533f04813175760e8",
       "length": 16090
     },
     "level=function,service": {
-      "sha256": "4a6acce1bd8056c5eebf6311fb9233e0ca0d52aabd4f0809018d6e59a83f8b70",
-      "length": 31781
+      "sha256": "a454f89237ad44a759b63fcb282d11b53652accf61f30073157225c5df71be73",
+      "length": 32069
     },
     "concern=security&level=service": {
-      "sha256": "393fab6b950a5310720509c953eb3d01e3c5264465d083557ce15764fd7ac29a",
-      "length": 8333
+      "sha256": "2580147d56a80941886cd47d74ec31132a670dc459a462a978c7ae2846668f14",
+      "length": 8621
     },
     "concern=accessibility&topic=forms": {
-      "sha256": "639461f8c1f845e94cc2d16236ab36a6b76ebee93d935f747d5fd4aadde7c0ee",
+      "sha256": "c980bbab7b117b8676539bf848d32fc16a3219e6ed3fc6b0736493db9ecd5890",
       "length": 1576
     },
     "group=concern": {
-      "sha256": "6ea5fe193df82fd69291e3f45ba0547ca062bf25481e87bef5d5916c614993c3",
-      "length": 82700
+      "sha256": "8a9dc5f5f0da2cc02bda9c0dc3f77a0f5229c3e7f26afc46fdf849f0428cd662",
+      "length": 82988
     },
     "group=level": {
-      "sha256": "9e7cda3d198bcf64466eb1df3f8253422e2cba49bd971134ad7d03df45248a4e",
-      "length": 57571
+      "sha256": "5765e43ceb0555cddfe181fd5065a7a8f56dad17fafc41ec7600fadb47f917e1",
+      "length": 57859
     },
     "group=topic": {
-      "sha256": "79ce5fa05c44575ef0dd1990c633f733a44fb24e2e991bd41cc759e5f9ffb564",
-      "length": 107416
+      "sha256": "495475a8a22d181be697b3c0c6b24252cd840875b4a1035de291b84af2f48201",
+      "length": 108004
     },
     "concern=security&group=level": {
-      "sha256": "96052e2b9fa23b05756445c8eb07f65233c602ae76b9ce0ee283a6643755a816",
-      "length": 16089
+      "sha256": "29ee6373a1e368ee82520ba8a58f61c6df5d12dc03dedc2095e5793f607721a3",
+      "length": 16377
     },
     "concern=securty": {
-      "sha256": "e23118b9ed58e46ef78929f9c228f375c98c22e53eef753dd2f7ca7b1f25da39",
+      "sha256": "27e20de509dc7cb02108ce0f4f94152b35eb67b41133141373438dbde4b4e39a",
       "length": 492
     },
     "level=nope": {
-      "sha256": "0c40985451aa3012033b773846e1d70be2bb94a85dae9982969c344d7ce55ae2",
+      "sha256": "25b1f1e9aee123d4448f6706eb9ef35e873f0001d934f96e99d78a52c2c88ca3",
       "length": 487
     },
     "concern=security,nope": {
-      "sha256": "67c4b42c33e6b91e74f0d1860096a6f6547ac8c6256a8ba1036b674cd6cc5fa6",
-      "length": 16301
+      "sha256": "f7333d57d9b83bac372bf4865bd4ae31c247a9fa77a3cbb240b2032ab4e43d3e",
+      "length": 16589
     },
     "topic=forms&group=topic": {
-      "sha256": "b8f7d0a297f6b6772078117a7fc88bdf2a83210254bf8c95097ded819080c006",
+      "sha256": "e13c2d71c0f5ed570a97aff2b93239495b4f3ee20964187a547443277ef642d0",
       "length": 2016
     },
     "concern=Security": {
-      "sha256": "d33a883286577dd915de7645325b1f157628c0e7431fe4145df8c77c2acedc87",
-      "length": 16013
+      "sha256": "8035bf903d52ad168841cc3598dc4d61b06455ef5341ff7635a2f8f39a33d411",
+      "length": 16301
     },
     "group=concern&level=change": {
-      "sha256": "c48bae5287ec28180187c2f7819e45bdfdca5cdebaebbf3cc24cec6202b6fb33",
+      "sha256": "b3753940ef918be8afda22d67ccb92b6820762ada35c843e424dc07cf251c835",
       "length": 10515
     },
     "concern=performance&group=concern": {
-      "sha256": "f9088fa4c967ef8fec943518bd1e15bd7cebe4a8216ca0f9e4744bdbc549685d",
+      "sha256": "cf0be9f67133ae5b5f389dee26a6aead90bec4c0e2bd5ee36626ba0a643c2628",
       "length": 6362
     },
     "level=incident": {
-      "sha256": "8bc53da90a8952ea3c79d3998c5fb78fa91a3482d1ccaaf7d15c3a6c38cfbfe1",
+      "sha256": "b0c72248a28a18767562d0be5d86767618ba1d9372951d7f1b19ee6bc2d46042",
       "length": 754
     },
     "concern=process&level=codebase&group=topic": {
-      "sha256": "a27c87b2121d81afb3c773e73767d981fb40d5958acca1547b8620389c5af744",
+      "sha256": "19cdd1d3f6f81a4d0e93ba6bad92b849c7939b66a3ca9368000cfd3be3125c5f",
       "length": 6174
     }
   }

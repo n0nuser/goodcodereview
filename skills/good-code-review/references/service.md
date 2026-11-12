@@ -1831,6 +1831,38 @@ ctx.minimum_version = ssl.TLSVersion.TLSv1_2
 
 **Counterpoint.** "Some of our users have old clients." Measure first: log the negotiated version, and if old clients are a real share, serve them from a separate endpoint with an end date instead of weakening every endpoint.
 
+## svc-token-revocation
+
+severity: should-fix  
+concerns: security  
+applies_when: The service issues refresh tokens, or self-contained access tokens such as JWTs, that outlive one request.  
+context: server  
+Backed by: AWS (unjudged), Okta (Auth0) (unjudged), Microsoft (unjudged), Google (unjudged), IETF (unjudged), OWASP (unjudged). Backing: unjudged.
+
+**Rule.** Revoke the user's refresh tokens on the server at logout and when the account is disabled, and make access tokens expire quickly or check them against a revocation record.
+
+**Why.** A refresh token is a long-lived credential. If logout only deletes it from the browser, a stolen copy keeps minting access tokens, and a disabled account whose refresh token still works keeps its access. The same holds after a password change, which [svc-password-reset](service.md#svc-password-reset) covers for a reset. A self-contained access token is valid until its `exp` unless the resource server checks something else, so revoking the refresh token alone leaves a window as long as the access lifetime. Close it with a lifetime of minutes, or with a denylist by `jti`, a per-user "not before" cutoff, or a per-user signing key.
+
+**FAIL**
+
+```text
+POST /logout        -> delete the cookie, 204
+disable account     -> user.active = false; refresh tokens untouched
+access token exp = 24h; resource server checks signature and exp only
+```
+
+**PASS**
+
+```text
+POST /logout        -> mark the refresh token (and its grant) revoked in the store
+disable account     -> revoke every refresh token of the user; set user.tokens_valid_after = now
+access token exp = 5-15 min; resource server rejects iat < user.tokens_valid_after
+```
+
+**Counterpoint.** "Stateless tokens exist to avoid a lookup." Refresh already hits the store, so revoking there is free; only the access-token window needs a decision. A short lifetime accepts that window; a per-user cutoff costs one cached read per request. Name which one you chose, and do not claim revocation is immediate if it is not.
+
+**See also.** [svc-session-lifecycle](service.md#svc-session-lifecycle) owns server-side logout for cookie sessions; [svc-password-reset](service.md#svc-password-reset) owns revocation on a reset; [svc-api-key-scope](service.md#svc-api-key-scope) owns revocation of API keys.
+
 ## svc-update-rollback-on-failure
 
 severity: should-fix  

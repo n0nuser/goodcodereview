@@ -1,5 +1,5 @@
 {
-"generated": "2026-11-10",
+"generated": "2026-11-12",
 "schema_version": 5,
 "cards": {
 "code-a11y-check-in-ci": {
@@ -1385,6 +1385,14 @@
 "rule": "Accept only TLS 1.2 and TLS 1.3 on servers.",
 "url": "https://goodcodereview.com/service-server#svc-tls-modern-only",
 "tool_gate": "testssl.sh or a similar scan against the public endpoint in CI; the load balancer's named security policy checked in config review."
+},
+"svc-token-revocation": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Revoke the user's refresh tokens on the server at logout and when the account is disabled, and make access tokens expire quickly or check them against a revocation record.",
+"url": "https://goodcodereview.com/service-server#svc-token-revocation",
+"tool_gate": null
 },
 "svc-update-rollback-on-failure": {
 "level": "service",
