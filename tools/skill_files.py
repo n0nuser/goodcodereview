@@ -24,7 +24,6 @@ from prose import (
     AUDIT_SECTION,
     DATA_RULE,
     DEPTH_RULE,
-    DEPTH_SHORT,
     DEPTH_TABLE,
     DESIGN_NOTE,
     DIFF_RULE,
@@ -37,7 +36,9 @@ from prose import (
     INCIDENT_EXAMPLE,
     INCIDENT_RULE,
     LEVEL_DESC,
-    LLMS_SUMMARY,
+    LLMS_HEAD,
+    LLMS_HEAD_MAX,
+    LLMS_IMPERATIVE,
     NAME,
     NOTES_RULE,
     OVERLAP_RULE,
@@ -45,11 +46,9 @@ from prose import (
     REPORT_RULE,
     ROUTES,
     SCOPE_GREP,
-    SEVERITY,
     SKILL_DESC,
     TRIAGE,
     VERDICT,
-    WHEN_TO_USE,
 )
 
 DRAFT_LINK = "[the draft cards](https://goodcodereview.com/.well-known/agent-skills/good-code-review/references/drafts.md)"
@@ -91,6 +90,25 @@ def index_line(card: Card) -> str:
     return f"- `{card.fm['id']}` [{card.fm['severity']}] {{{', '.join(concerns(card))}}}{ctx}: {rule(card.body)}"
 
 
+def card_ranges(text: str, ids: list[str]) -> dict[str, tuple[int, int]]:
+    """Map each card id to (first line, line count) of its `## <id>` section in a reference file. Lines count from 1, so a reader can pass them as offset and limit."""
+    lines = text.split("\n")
+    starts: list[int] = []
+    at = 0
+    for i in ids:
+        at = lines.index(f"## {i}", at)
+        starts.append(at)
+        at += 1
+    ends = starts[1:] + [len(lines)]
+    return {i: (a + 1, len("\n".join(lines[a:b]).rstrip("\n").split("\n"))) for i, a, b in zip(ids, starts, ends, strict=True)}
+
+
+def ranged_line(card: Card, where: tuple[int, int], file: str = "") -> str:
+    """An index line that carries the card's place in its reference file, as `<file>:L<first>+<count>`."""
+    ctx = f" <{','.join(context(card))}>" if context(card) else ""
+    return f"- `{card.fm['id']}` [{card.fm['severity']}] {{{', '.join(concerns(card))}}}{ctx} {file}L{where[0]}+{where[1]}: {rule(card.body)}"
+
+
 def draft_line(card: Card) -> str:
     draft_lack = lacks(card)
     return index_line(card) + f" {backers(card)}" + (f" Lacks ({draft_lack.reason}): {draft_lack.note}" if draft_lack else "")
@@ -130,11 +148,10 @@ def _head(empty: list[Level]) -> list[str]:
 
 @dataclass(frozen=True, slots=True)
 class SkillMd:
-    """SKILL.md as lines, with the head and the scope section that llms.txt reuses."""
+    """SKILL.md as lines and its head."""
 
     lines: list[str]
     head: list[str]
-    llms_scope: list[str]
 
 
 _SCOPE = ["## Scope by concern", "",
@@ -147,21 +164,19 @@ def _skill_scope() -> list[str]:
     return ["## Depth", "", *DEPTH_TABLE, "", DEPTH_RULE, "", *_SCOPE, SCOPE_GREP, ""]
 
 
-def _llms_scope() -> list[str]:
-    """The Depth line and Scope by concern section of llms.txt, which says "in braces" because its index lines show concerns in braces."""
-    return [DEPTH_SHORT, "", _SCOPE[0], _SCOPE[1], _SCOPE[2].replace("lists its concerns:", "lists its concerns in braces:"), _SCOPE[3], ""]
-
-
 def _skill_md(b: BuildInput, empty: list[Level]) -> SkillMd:
-    """SKILL.md as lines, with the head and the llms scope that llms.txt reuses."""
+    """SKILL.md as lines and its head."""
     head = _head(empty)
-    pointers = ["The full text for each level is in `references/<level>.md`.",
+    pointers = ["The card text is in `references/<level>.md`, and each level has an index, `references/index-<level>.md`, with one line per card and its place `L<first>+<count>` in that file. "
+                "Read the lines of the cards that apply, with offset `<first>` and limit `<count>`, and not the whole file. "
+                "A review of some concerns starts from `references/concern-<concern>.md`, which lists that concern's cards across levels as `<level>.md:L<first>+<count>`. "
+                "For Python code, the stable `py-` cards sit in the level indexes, and `references/pack-<lang>.md` holds the drafts of a language pack.",
                 TRIAGE,
                 "Draft cards (not vetted; findings go under Draft findings) are in `references/drafts.md`" + "".join(f", and the {pack_name(pk)} pack in `references/pack-{pk}.md`" for pk in b.packs)
                 + ". Triage them with the same `grep`. Read the linked files as raw text: a fetch tool that summarises a page drops cards.",
                 f"Glossary: {BASE}/glossary.md", ""]
     lines = _frontmatter() + [""] + head + pointers + ["## Gotchas", ""] + GOTCHAS + [""] + _skill_scope()
-    return SkillMd(lines, head, _llms_scope())
+    return SkillMd(lines, head)
 
 
 def _check_routes(by_level: dict[Level, list[Card]], ref_files: set[str], skill_text: str, stable_ids: set[str]) -> list[str]:
@@ -218,21 +233,13 @@ def link_stable(text: str, home: dict[str, str]) -> str:
     return re.sub(r"\[\[([^\]]+)\]\]", lambda m: f"[{m[1]}]({home[m[1]]}.md#{m[1]})" if m[1] in home else m[1], text)
 
 
-def _llms(head: list[str], llms_scope: list[str], level_index: dict[Level, list[IndexPart]], b: BuildInput, chars: dict[str, int]) -> str:
+def _llms(level_index: dict[Level, list[IndexPart]], b: BuildInput, chars: dict[str, int]) -> str:
     """Return llms.txt, which follows https://llmstxt.org/.
 
-    H1, blockquote, headingless sections, then H2 file lists of `[name](url): notes` links, with secondary links under "Optional".
+    A hand-written head (LLMS_HEAD, nothing copied from SKILL.md), then H2 file lists of `[name](url): notes` links, with secondary links under "Optional".
     tools/agent_ready_check.py checks the shape. Drafts live in llms-drafts.txt, never mixed in.
     """
-    body = head + llms_scope  # SKILL.md's pointer lines, Gotchas, and grep scoping are left out
-
-    def bold(line: str) -> str:
-        return f"**{line[3:]}**" if line.startswith("## ") else line
-
-    out = [body[0], "", "> " + LLMS_SUMMARY, "", WHEN_TO_USE, ""]
-    for line in body[2:]:
-        out.append(bold(line).replace("`references/audit.md`", f"[audit.md]({BASE}/audit.md)"))
-    out += [bold(x) for x in SEVERITY]
+    out = [LLMS_HEAD]
     for lv in LEVELS:
         if lv not in level_index:
             continue
@@ -263,13 +270,9 @@ def _llms(head: list[str], llms_scope: list[str], level_index: dict[Level, list[
             f"- [Drafts by what they lack]({BASE}/drafts.md): every draft grouped by what keeps it from stable.",
             f"- [Sitemap]({BASE}/sitemap.xml): every page.",
             f"- [cards.json]({BASE}/cards.json): every stable card as JSON; the shape is in [cards.schema.json]({BASE}/cards.schema.json).",
-            f"- [cards/function.json]({BASE}/cards/function.json): one level's stable cards as JSON, same shape; replace `function` with any level that has cards.",
-            f"- [cards/concern-security.json]({BASE}/cards/concern-security.json): one concern's stable cards as JSON, same shape; replace `security` with any concern.",
-            f"- [concerns/security.md]({BASE}/concerns/security.md): one concern's cards as a Markdown list; `concerns/level-function.md` does the same for a level.",
-            f"- [cards-index.json]({BASE}/cards-index.json): every stable card in slim form (id, level, severity, concerns, topics, rule, url); "
-            f"schema in [cards-index.schema.json]({BASE}/cards-index.schema.json).",
-            f"- [Agent Skills index]({BASE}/.well-known/agent-skills/index.json): the skill and two focused ones, with sha256 digests.",
-            f"- [agent.json]({BASE}/agent.json): endpoints, capabilities, and authentication (none) as JSON; the same file answers `/?mode=agent`.",
+            f"- [cards-index.json]({BASE}/cards-index.json): every stable card in slim form; schema in [cards-index.schema.json]({BASE}/cards-index.schema.json).",
+            f"- [Agent Skills index]({BASE}/.well-known/agent-skills/index.json): the skill, with its sha256 digest.",
+            f"- [agent.json]({BASE}/agent.json): every endpoint, including the per-level and per-concern card JSON and Markdown, and authentication (none); the same file answers `/?mode=agent`.",
             f"- [ARD manifest]({BASE}/.well-known/ard.json): Agentic Resource Discovery entries.",
             f"- [AGENTS.md]({REPO}/blob/main/AGENTS.md): how to review code with this repo and how to contribute a card.",
             f"- [Skill folder]({REPO}/tree/main/skills/good-code-review): `SKILL.md` and `references/` in the repository.",
@@ -316,6 +319,7 @@ def skill_output(b: BuildInput) -> SkillOutput:
     files: dict[str, str] = {}
     level_index: dict[Level, list[IndexPart]] = {}
     twins: dict[str, Twin] = {}
+    ranges: dict[Level, dict[str, tuple[int, int]]] = {}
     for lv in LEVELS:
         cards = by_level[lv]
         if not cards:
@@ -324,6 +328,10 @@ def skill_output(b: BuildInput) -> SkillOutput:
         level_index[lv] = _level_index(lv, cards)
         ref = link_stable(f"# {lv}\n\n" + "\n\n".join(card_section(c) for c in cards) + "\n", home)
         files[f"references/{lv}.md"] = ref
+        ranges[lv] = card_ranges(ref, [c.fm["id"] for c in cards])
+        files[f"references/index-{lv}.md"] = (f"# {NAME[lv]} index\n\nOne line per stable {lv} card: id, severity, concerns, context, place, rule. The place `L<first>+<count>` is the card's "
+                                              f"lines in `{lv}.md`: read them with offset `<first>` and limit `<count>`.\n\n"
+                                              + "\n".join(ranged_line(c, ranges[lv][c.fm["id"]]) for c in cards) + "\n")
         twins[lv] = Twin(NAME[lv], LEVEL_DESC[lv], ref)
     if "incident" in twins:
         t = twins["incident"]
@@ -342,11 +350,44 @@ def skill_output(b: BuildInput) -> SkillOutput:
     files["SKILL.md"] = skill_text
     files["references/audit.md"] = "# Audit a repo, service, or release\n\n" + AUDIT_MD.replace(DRAFT_LINK, "`drafts.md`")
     level_chars = {lv: len(t.markdown) for lv, t in twins.items()}
-    llms = _llms(skill_md.head, skill_md.llms_scope, level_index, b, level_chars)
+    llms = _llms(level_index, b, level_chars)
     llms_drafts = _llms_drafts(b)
     _check_indexes(b, level_index, home, llms, llms_drafts)
     files.update(_draft_files(b))
+    files.update(_concern_indexes(by_level, ranges))
+    files["references/index-drafts.md"] = _drafts_index(b, files["references/drafts.md"])
     return SkillOutput(files, level_index, twins, llms, llms_drafts, plain, home, level_chars)
+
+
+def _concern_indexes(by_level: dict[Level, list[Card]], ranges: dict[Level, dict[str, tuple[int, int]]]) -> dict[str, str]:
+    """One index per concern, across levels: a concern-only review reads this and then only the cards it lists. The card text stays in the level files."""
+    out = {}
+    for concern in CONCERNS:
+        body = []
+        for lv in LEVELS:
+            cs = [c for c in by_level[lv] if concern in concerns(c)]
+            if cs:
+                body += [f"## {lv}", ""] + [ranged_line(c, ranges[lv][c.fm["id"]], f"{lv}.md:") for c in cs] + [""]
+        if body:
+            out[f"references/concern-{concern}.md"] = (f"# {concern} cards\n\nEvery stable card that lists the `{concern}` concern, by level. The place `<level>.md:L<first>+<count>` is the card's "
+                                                      f"lines: read them with offset `<first>` and limit `<count>`.\n\n" + "\n".join(body))
+    return out
+
+
+def _drafts_index(b: BuildInput, drafts_text: str) -> str:
+    """The draft cards that sit in drafts.md, with their lines there. The language packs are short, so they have no index."""
+    core = [c for c in b.draft if is_core(c)]
+    where = {}
+    for lv in LEVELS:
+        ids = [c.fm["id"] for c in core if level_of(c) == lv]
+        sect = drafts_text.split(f"# {lv} drafts\n", 1)
+        if ids and len(sect) == 2:
+            offset = sect[0].count("\n") + 1  # lines before this level's section
+            local = card_ranges("\n" * 0 + sect[1].split("\n# ", 1)[0], ids)
+            where.update({i: (a + offset, n) for i, (a, n) in local.items()})
+    lines = [f"- `{c.fm['id']}` [{c.fm['severity']}] {{{', '.join(concerns(c))}}} L{where[c.fm['id']][0]}+{where[c.fm['id']][1]}: {rule(c.body)}" for c in core]
+    return ("# Draft index\n\nOne line per draft card in `drafts.md`: id, severity, concerns, place, rule. Draft cards are not vetted. The place `L<first>+<count>` is the card's lines "
+            "in `drafts.md`.\n\n" + "\n".join(lines) + "\n")
 
 
 def _check_indexes(b: BuildInput, level_index: dict[Level, list[IndexPart]], home: dict[str, str], llms: str, llms_drafts: str) -> None:
@@ -357,6 +398,9 @@ def _check_indexes(b: BuildInput, level_index: dict[Level, list[IndexPart]], hom
     draft_ids = {c.fm["id"] for c in b.draft}
     if sorted(indexed) != sorted(home) or draft_ids & set(indexed):
         raise BuildError("level indexes: stable ids differ from the stable cards, or a draft id sits in one")
+    head = llms.split("\n## ", 1)[0]
+    if len(head) > LLMS_HEAD_MAX or re.search(LLMS_IMPERATIVE, head):
+        raise BuildError(f"llms.txt head is {len(head)} characters (max {LLMS_HEAD_MAX}) or holds a directive; it describes the site and shares nothing with SKILL.md")
     if len(llms) > LLMS_BUDGET:
         raise BuildError(f"llms.txt is {len(llms)} characters, budget {LLMS_BUDGET}: it holds routing and links; move detail behind a link")
     if sorted(ids_in(llms_drafts)) != sorted(draft_ids):

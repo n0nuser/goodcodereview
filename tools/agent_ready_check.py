@@ -221,7 +221,7 @@ def _items_15_16_17_19(r: Report, pages: dict[str, Page], content: dict[str, Pag
     own = [u.rstrip(".,)") for u in re.findall(r"\]\((https?://[^)\s]+)\)", llms) if urlparse(u).netloc == "goodcodereview.com"]
     dead = [u for u in own if resolve(u) is None]
     r.check(17, own and not dead, f"{len(own)} own-site links in llms.txt resolve to files in site/{': dead ' + ', '.join(dead) if dead else ''}")
-    r.check(19, "Use this site when you are asked to review" in llms, "llms.txt opens with a `When to use` paragraph")
+    r.check(19, "A review picks the level that matches the input" in llms, "llms.txt opens with a paragraph on what the site is and how a review uses it")
     unbalanced = [f.name for f in [*SITE.glob("*.md"), SITE / "llms.txt", SITE / "llms-drafts.txt"] if len(re.findall(r"(?m)^```", f.read_text())) % 2]
     r.check(15, not unbalanced and all(any('<code class="language-' in f.read_text() for f in SITE.glob(f"{lv}*.html")) for lv in ("change", "function")),
           f"code fences are balanced in served Markdown and tagged with a language class in HTML{': ' + ', '.join(unbalanced) if unbalanced else ''}")
@@ -345,7 +345,7 @@ def _items_39(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> No
     try:
         idx_json = json.loads((SITE / ".well-known/agent-skills/index.json").read_text())
         sk = idx_json["skills"]
-        if not idx_json["$schema"].endswith("/0.2.0/schema.json") or sk[0]["name"] != "good-code-review" or len(sk) != 3:
+        if not idx_json["$schema"].endswith("/0.2.0/schema.json") or sk[0]["name"] != "good-code-review" or len(sk) != 1:
             bad.append("index shape")
         for e in sk:
             src = ROOT / "skills" / e["name"] / "SKILL.md"

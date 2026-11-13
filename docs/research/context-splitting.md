@@ -105,3 +105,17 @@ What would change this:
 ## Implemented 2026-11-11
 
 Parts say "part N of M" with their card range and total, name the other parts, and point to the whole file with its size (`tools/site_twins.py`). `llms.txt` lists the parts first, then the whole file with a truncation warning (`tools/skill_files.py`). `agent_ready_check.py` item 54 checks it. Not done: asking agents to list checked card ids in the verdict (changes skill text, so it needs eval runs), and the A/B experiment.
+
+## Experiment, 2026-11-12 (tools/eval_layout.py)
+
+Same `service` review of the `audit_repo` files, Sonnet 5.5 through `claude -p` with Read, Grep and Glob, 3 runs per layout, checklist as local files. Score: card ids reported, of the 59 core stable ids.
+
+| Layout | Run 1 | Run 2 | Run 3 |
+|---|---|---|---|
+| whole file only | 59 | 59 | 59 |
+| five parts only | 59 | 59 | 59 |
+| `llms.txt` with both | 59 | 59 | 59 |
+
+A first parts-only run scored 42 of 59 three times. It was a staging error: the part headers link to https://goodcodereview.com/..., which does not exist beside the files, so the agent said the other parts "were not given". After the links were made local, coverage was complete. The lesson stands for real use: a part header that tells an agent to read the others only helps if those links resolve, and the headers already use absolute URLs.
+
+What it does not show: truncation or summarising by a fetch tool (the Read tool returned the 105K-character file), other models, harnesses without a Read tool, and larger repos. N is 3. The result says parts with "part N of M" headers lose no cards for an agent that can open the links, not that fetch tools will not truncate the whole file. Keep both files and the warning.

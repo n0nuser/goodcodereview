@@ -1,0 +1,66 @@
+# Service audit index
+
+One line per stable service card: id, severity, concerns, context, place, rule. The place `L<first>+<count>` is the card's lines in `service.md`: read them with offset `<first>` and limit `<count>`.
+
+- `svc-account-linking` [block] {security} <server> L3+33: Link a federated identity to an existing account only after proving control of both, and key the link on the pair `iss` and `sub`, never on an unverified email or another profile claim.
+- `svc-api-cache-control` [should-fix] {performance, security} <server> L37+35: Set an explicit `Cache-Control` on every response a cache may store, use `private` or `no-store` for user-specific data, add `Vary` for any request header that changes the body, keep the origin's `Cache-Control` authoritative at the edge (no minimum TTL or force-cache override), and decide cacheability by the response `Content-Type`, not the URL extension.
+- `svc-api-conditional-writes` [should-fix] {correctness} <server> L73+29: Return an `ETag` on reads and honour `If-Match` on writes, answering 412 when the entity tag is stale.
+- `svc-api-contract-tests` [should-fix] {compatibility, testing} <server> L103+28: Run a contract test for each cross-service call, derived from the consumer's real requests, and fail the provider's build when it breaks one.
+- `svc-api-deprecation-sunset` [should-fix] {compatibility} <server> L132+31: Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers.
+- `svc-api-documented-errors` [should-fix] {correctness, compatibility} <server> L164+34: Document every error status each operation can return, with a schema and one example.
+- `svc-api-error-code-stable` [should-fix] {compatibility} <server> L199+29: Give each error a stable machine-readable code that callers branch on, and never make them parse the message text.
+- `svc-api-key-scope` [should-fix] {security} <server> L229+30: Issue each API key with the narrowest scopes and a bounded lifetime, and rotate or revoke it after any exposure.
+- `svc-api-naming-consistent` [discuss] {maintainability} <server> L260+27: Use one casing convention per location (fields, query parameters, headers, paths) across the whole API, and state it in the API guide.
+- `svc-api-problem-json` [should-fix] {compatibility} <server> L288+34: Return errors as `application/problem+json` with a `status` that equals the HTTP status, and leave stack traces and internal detail out.
+- `svc-api-retry-after` [should-fix] {reliability} <server> L323+30: Send `Retry-After` on every 429 and 503, and set it no earlier than the time capacity returns.
+- `svc-api-specific-status-codes` [should-fix] {compatibility} <server> L354+29: Return the most specific status code that fits: 201 with `Location` for a create, 405 with `Allow` for a wrong method, and a 4xx or 5xx for any failure.
+- `svc-api-versioning-policy` [should-fix] {compatibility} <server> L384+29: Write down one versioning scheme for the API, and ship no breaking change inside a version it has published.
+- `svc-async-content-reserves-space` [should-fix] {usability, performance} <ui> L414+28: Reserve the space for late-loading content with set dimensions or an aspect ratio, so nothing already on screen moves.
+- `svc-auth-throttle-generic-errors` [block] {security} <server> L443+29: Limit failed attempts per account, and return the same message and status code whether or not the account exists.
+- `svc-authn-by-default` [should-fix] {security} <server> L473+32: Require authentication on every route by default, and mark each public route by name.
+- `svc-authz-central-deny-default` [block] {security} <server> L506+29: Route every request through one authorization layer that denies when no rule allows it.
+- `svc-best-effort-optional-deps` [should-fix] {reliability, observability} L536+34: Give each call to a non-critical dependency a short budget and a default, so its failure degrades the result instead of failing the critical path, and count every fallback.
+- `svc-bound-client-controlled-sizes` [should-fix] {security} <server> L571+29: Cap every client-controlled size and count on the server: body bytes, string length, array items, page size and batch size.
+- `svc-bounded-background-tasks` [block] {reliability, correctness} L601+36: Cap how many background tasks run at once, and never spawn one per input with no limit.
+- `svc-cache-key-completeness` [block] {security} <server> L638+37: Key every request input that can change the response, and strip any other request value before it reaches a cached body.
+- `svc-circuit-breaker-bulkhead` [should-fix] {reliability} L676+26: Give each critical dependency its own concurrency limit.
+- `svc-cli-destructive-dry-run` [should-fix] {reliability, maintainability} <cli> L703+52: Give a destructive command a preview flag that changes nothing and a flag that skips the confirmation prompt.
+- `svc-cli-exit-codes-and-streams` [should-fix] {correctness, maintainability} <cli> L756+32: Exit non-zero when a command fails, and write results to stdout and errors and progress to stderr.
+- `svc-cli-non-interactive` [should-fix] {maintainability, process} <cli> L789+41: Let the caller turn every prompt off with a flag or an environment variable, so the command never waits on a terminal.
+- `svc-cors-allowlist` [should-fix] {security} <server> L831+30: Allow cross-origin access only to a fixed list of named origins, and never echo the request `Origin` header back unchecked.
+- `svc-csp-strict-script-src` [should-fix] {security} <server> L862+27: Send a `Content-Security-Policy` whose `script-src` uses a per-response nonce or script hashes, with `object-src 'none'` and `base-uri 'none'`.
+- `svc-csrf-state-changing` [block] {security} <server> L890+29: Require a CSRF token (or an equivalent header check) on every cookie-authenticated request that changes state, and never change state on GET.
+- `svc-decompression-cap` [should-fix] {security, performance} <server> L920+28: Cap the decompressed output of every decoder, and set the cap on the output rather than the compressed input.
+- `svc-dlq` [should-fix] {reliability} <server> L949+54: Give every consumer queue a dead-letter queue and keep a way to replay it after the fix. On an ordered queue, key the group or session to the unit that must stay ordered, so a poison message holds only its own unit.
+- `svc-export-scope` [block] {security} <data> L1004+28: Scope an export to what the requesting principal may read.
+- `svc-fail-closed-defaults` [should-fix] {security} <server> L1033+42: Ship every security control switched on, with an empty allow-list denying everything.
+- `svc-host-header-trust` [block] {security} <server> L1076+30: Build absolute URLs from configured values, answer only for a `Host` on an allowlist, and take `X-Forwarded-*` values only from a trusted proxy.
+- `svc-idempotency-key` [block] {reliability, correctness} <server> L1107+29: Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.
+- `svc-invalid-input-is-4xx` [should-fix] {correctness, reliability} <server> L1137+48: Check each caller-supplied value against its allowed domain (range, allowed set, an id that must exist, an encoding the code can handle) at the boundary, and answer a failed check with a 4xx, never a 5xx.
+- `svc-list-endpoint-paginates` [should-fix] {performance} <server> L1186+28: Paginate every list endpoint, with a default page size and a server-side maximum.
+- `svc-mfa-step-up` [should-fix] {security} <server> L1215+33: Require a fresh authentication with an already-bound factor before sensitive actions and before adding, replacing or removing an MFA factor; an existing session alone is not enough.
+- `svc-no-redundant-entry` [should-fix] {usability, accessibility} <ui> L1249+29: Do not ask for information the user already gave in the same flow. Fill it in, or let the user pick it.
+- `svc-no-secrets-in-url` [should-fix] {security} <server> L1279+32: Send tokens, keys, passwords, and personal data in a header or the request body, never in the path or query string.
+- `svc-oauth-code-flow-binding` [block] {security} <server> L1312+36: Finish the authorization-code flow with PKCE and a challenge method that keeps the verifier out of the authorization request (`S256`), send the exact registered `redirect_uri` (a native app on the loopback interface may vary the port), and reject the response unless this transaction's `state` or OIDC `nonce` matches and the ID token's signature, `iss`, `aud` and `exp` check out.
+- `svc-password-reset` [block] {security} <server> L1349+34: Make the reset token single-use and short-lived, and on success revoke every session.
+- `svc-rate-limit-quota` [should-fix] {security, reliability} <server> L1384+27: Enforce a per-tenant quota on shared APIs and queues.
+- `svc-reflow-and-zoom` [should-fix] {accessibility, usability} <ui> L1412+37: Make the page usable at 320 CSS pixels wide and at 200% text zoom, with no sideways scrolling, no clipped content, and no blocked pinch-zoom.
+- `svc-request-framing` [block] {security} <server> L1450+42: Reject a request that carries both `Transfer-Encoding` and `Content-Length`, or remove one field at the first hop, and parse header framing strictly rather than with a leniency flag.
+- `svc-retry-policy` [block] {reliability} L1493+34: Retry only transient errors, with capped attempts and jittered exponential backoff.
+- `svc-saga-steps` [should-fix] {reliability, correctness} <server> L1528+27: Make steps after the pivot idempotent and retryable, and make every compensation idempotent with a failure path.
+- `svc-saml-assertion-binding` [block] {security} <server> L1556+38: Verify the XML signature over the assertion you read, with the IdP's configured key rather than a key carried in the response, then require the assertion's `Audience` and its bearer `SubjectConfirmationData` `Recipient` to name this SP, the response `Destination` to be this endpoint, `InResponseTo` to match your request (absent for an IdP-initiated response), `NotOnOrAfter` to be current, and the assertion ID to be unseen. These are one step, verify the assertion, and each check is cited.
+- `svc-session-lifecycle` [block] {security} <server> L1595+28: Issue a new session ID at login, and set `Secure`, `HttpOnly` and `SameSite` on the session cookie.
+- `svc-slow-operation-shows-progress` [should-fix] {usability, accessibility} <ui> L1624+30: Show that a slow action is under way, and show its progress when it runs long.
+- `svc-soft-delete-default` [should-fix] {security, correctness} <data> L1655+30: Filter soft-deleted rows out of every read path by default, and make a read that includes them an explicit call.
+- `svc-sqli-authn` [block] {security} <server,data> L1686+28: Pass untrusted data to queries as bound parameters, never by string concatenation or formatting.
+- `svc-stream-dont-materialise` [should-fix] {performance} L1715+29: Process large results as a stream with backpressure; do not load them whole into memory.
+- `svc-tenant-id-in-telemetry` [should-fix] {security, observability} <server> L1745+28: Put the verified tenant id on every tenant-scoped log, metric and audit record.
+- `svc-timeouts` [block] {performance, reliability} L1774+30: Set an explicit timeout on every remote call.
+- `svc-tls-modern-only` [should-fix] {security} <server> L1805+28: Accept only TLS 1.2 and TLS 1.3 on servers.
+- `svc-token-revocation` [should-fix] {security} <server> L1834+31: Revoke the user's refresh tokens on the server at logout and when the account is disabled, and make access tokens expire quickly or check them against a revocation record.
+- `svc-update-rollback-on-failure` [should-fix] {reliability} L1866+42: When an update fails, restore the previous version instead of leaving a missing or half-written one.
+- `svc-update-verify-provenance` [should-fix] {security} L1909+37: Verify a downloaded update against a signature, an attestation or a pinned key, or against a checksum that reached you by another route than the file; a checksum fetched from the same host as the file does not count.
+- `svc-upload-validate-store` [block] {security} <server> L1947+28: Allowlist the file type, cap the size, and store each upload under a generated name where the server will not execute it.
+- `svc-webhook-replay-window` [should-fix] {security} <server> L1976+33: Reject an inbound signed message whose creation time is outside a short tolerance, and sign that time with the body so it cannot be swapped.
+- `py-cancellation` [should-fix] {reliability, correctness} L2010+32: Re-raise `CancelledError` (do not catch it via bare `except` or `BaseException`), and catch `TimeoutError` outside the `asyncio.timeout()` block.
+- `py-task-reference` [should-fix] {correctness} L2043+29: Never discard the result of `create_task`; keep a reference and surface its exceptions, preferably through a `TaskGroup`.

@@ -1,11 +1,11 @@
 import json
 import re
-from pathlib import Path
 
 import pytest
 
 from config import ROOT, SKILL
 from models import CONTEXTS
+from prose import LLMS_HEAD_MAX, LLMS_IMPERATIVE
 from validate import load_cards
 
 SKILL_MD = SKILL / "SKILL.md"
@@ -96,14 +96,6 @@ def test_llms_txt_lists_files_and_no_card_lines(site_text: dict[str, str]) -> No
 
 
 
-@pytest.mark.parametrize("path", sorted(p for p in SKILL.parent.glob("*/SKILL.md") if p.parent != SKILL), ids=lambda p: p.parent.name)
-def test_focused_skills_meet_the_spec(path: Path) -> None:
-    text = path.read_text()
-    front = text.split("---\n")[1]
-    assert re.search(rf"(?m)^name: {re.escape(path.parent.name)}$", front)
-    assert 0 < len(json.loads(re.search(r'(?m)^description: (".*")$', front)[1])) <= DESCRIPTION_MAX
-    assert len(text.splitlines()) < SKILL_LINES_MAX
-
 
 def test_skill_names_every_depth_and_llms_points_to_them(site_text: dict[str, str]) -> None:
     skill = SKILL_MD.read_text()
@@ -116,3 +108,25 @@ def test_skill_names_every_depth_and_llms_points_to_them(site_text: dict[str, st
 def test_references_show_the_tool_gate_of_a_gated_card() -> None:
     text = (SKILL / "references" / "function.md").read_text()
     assert "\ntool gate: " in text
+
+
+def test_llms_head_is_short_descriptive_and_not_copied_from_skill(site_text: dict[str, str]) -> None:
+    head = site_text["llms.txt"].split("\n## ", 1)[0]
+    assert len(head) <= LLMS_HEAD_MAX
+    assert not re.search(LLMS_IMPERATIVE, head)
+    skill_paragraphs = {p for p in SKILL_MD.read_text().split("\n\n") if len(p) > 80}
+    assert not [p for p in head.split("\n\n") if p in skill_paragraphs]
+
+
+def test_index_places_point_at_the_card_sections() -> None:
+    refs = SKILL / "references"
+    checked = 0
+    for index in [*refs.glob("index-*.md"), *refs.glob("concern-*.md")]:
+        for m in re.finditer(r"^- `([^`]+)` .*?(?:(\w+)\.md:)?L(\d+)\+(\d+): ", index.read_text(), re.M):
+            card, name, first, count = m[1], m[2], int(m[3]), int(m[4])
+            target = refs / (f"{name}.md" if name else "drafts.md" if index.name == "index-drafts.md" else index.name.replace("index-", ""))
+            lines = target.read_text().split("\n")
+            assert lines[first - 1] == f"## {card}", (index.name, card)
+            assert count > 1 and lines[first - 1 + count - 1].strip(), (index.name, card)
+            checked += 1
+    assert checked > 237  # every stable card is in its level index and in at least one concern index

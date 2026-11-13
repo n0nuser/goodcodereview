@@ -5,7 +5,7 @@
     {"id": "svc-cli-exit-codes-and-streams", "alt": "(?i)exit(s)? 0|exit code|stderr"}
   ],
   "must_contain": [
-    "(?i)N/A:"
+    "(?i)N/A\\b"
   ],
   "must_not_contain": [
     "(?i)(FAIL|PASS)[^\\n]*(fn-aria|fn-dialog|fn-focus-indicator|fn-heading|fn-form-control|fn-img-alt|svc-csrf|svc-cors|fn-jwt)"

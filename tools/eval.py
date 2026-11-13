@@ -20,7 +20,6 @@ A case.json holds:
 copied to `.opencode/skills/`. In forced mode, which has no slash command there, the prompt starts with an instruction to load the
 skill. That adapter has not been run against a real opencode install; start with one case and `--runs 1`.
 
-`triggers --focused` also installs the other skills under `skills/`, so a drop in the main skill's rate shows the focused skills taking its queries.
 `triggers --isolate` adds `--setting-sources project`, so only the skill under test is loaded: it measures the description without the user's other skills competing.
 `triggers` runs the queries in test/evals/triggers.json with the skill installed and reports how often the agent loaded it
 (`claude -p --output-format stream-json`; the skill counts as loaded on a `Skill` call for it or a read of its SKILL.md). A query passes when
@@ -160,15 +159,11 @@ def _run_cli(cmd: list[str], cwd: Path, label: str) -> str:
     return out.stdout
 
 
-def trigger_run(query: str, model: str | None, *, isolate: bool = False, focused: bool = False) -> bool:
+def trigger_run(query: str, model: str | None, *, isolate: bool = False) -> bool:
     """Run one query with the skill installed and say whether the agent loaded it."""
     with tempfile.TemporaryDirectory() as tmp:
         work = Path(tmp)
         shutil.copytree(SKILL, work / ".claude/skills/good-code-review")
-        if focused:  # also install the focused skills, to see whether they take the main skill's queries
-            for other in sorted(SKILL.parent.iterdir()):
-                if other != SKILL and (other / "SKILL.md").is_file():
-                    shutil.copytree(other, work / ".claude/skills" / other.name)
         cmd = ["claude", "-p", query, "--allowedTools", ALLOWED_TOOLS, "--output-format", "stream-json", "--verbose"]
         if isolate:  # no user-level skills or plugins compete with the skill under test
             cmd += ["--setting-sources", "project"]
@@ -226,19 +221,18 @@ def _parser() -> argparse.ArgumentParser:
     t.add_argument("--split", type=Split, choices=list(Split), default=Split.ALL)
     t.add_argument("--runs", type=int, default=3)
     t.add_argument("--model")
-    t.add_argument("--focused", action="store_true", help="also install the focused skills under skills/, to measure whether they take the main skill's queries")
     t.add_argument("--isolate", action="store_true", help="load only the project's skills, so the description is measured without the user's other skills competing")
     return ap
 
 
-def _triggers(split: Split, runs: int, model: str | None, *, isolate: bool, focused: bool = False) -> int:
+def _triggers(split: Split, runs: int, model: str | None, *, isolate: bool) -> int:
     queries = json.loads(TRIGGERS.read_text())["queries"]
     passed = {"train": [0, 0], "validation": [0, 0]}
     for q in queries:
         if split not in (Split.ALL, q["split"]):
             continue
         try:
-            hits = sum(trigger_run(q["query"], model, isolate=isolate, focused=focused) for _ in range(runs))
+            hits = sum(trigger_run(q["query"], model, isolate=isolate) for _ in range(runs))
         except HarnessError as e:
             print(f"harness error: {e}")
             return 1
@@ -283,7 +277,7 @@ def _run_cases(names: Sequence[str], modes: Sequence[Mode], runs: int, model: st
 def main(argv: Sequence[str]) -> int:
     a = _parser().parse_args(argv)
     if a.cmd == "triggers":
-        return _triggers(a.split, a.runs, a.model, isolate=a.isolate, focused=a.focused)
+        return _triggers(a.split, a.runs, a.model, isolate=a.isolate)
     if a.cmd == "grade":
         res = grade(load(a.case), Path(a.output).read_text(), a.mode)
         print(json.dumps(res, indent=2))

@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import pytest
 
@@ -119,3 +120,22 @@ def test_query_file_is_balanced_and_split(split: str) -> None:
     assert qs
     assert any(q["should_trigger"] for q in qs)
     assert any(not q["should_trigger"] for q in qs)
+
+
+def test_layout_coverage_counts_ids_as_whole_words() -> None:
+    import eval_layout as el
+    reply = "FAIL [block] svc-a - x:1\nN/A (applies_when does not hold): svc-b, svc-c-long"
+    assert el.coverage(reply, ["svc-a", "svc-b", "svc-c", "svc-c-long"]) == ["svc-c"]  # svc-c is not a hit inside svc-c-long
+
+
+def test_layout_staging_gives_each_layout_only_its_files(tmp_path: Path) -> None:
+    import eval_layout as el
+    ids = el.expected_ids()
+    assert len(ids) > 40 and len(ids) == len(set(ids))
+    for layout, has_whole, has_parts in (("whole", True, False), ("parts", False, True), ("llms", True, True)):
+        work = tmp_path / layout
+        work.mkdir()
+        el.stage(layout, work)
+        assert (work / "repo" / "app.py").is_file() and not (work / "repo" / "case.json").exists()
+        assert (work / "service.md").exists() == has_whole and (work / "service-server.md").exists() == has_parts
+    assert "https://goodcodereview.com/" not in (tmp_path / "llms" / "llms.txt").read_text()

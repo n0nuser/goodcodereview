@@ -13,7 +13,6 @@ from models import LEVELS
 from prose import SKILL_DESC
 from seo import agent_manifest, ard_manifest
 from shell import page_url
-from skills_extra import EXTRAS, extra_files
 
 JSON_CT = "application/json; charset=utf-8"
 
@@ -71,10 +70,6 @@ def skill_discovery(skill_files: dict[str, str]) -> dict[str, str]:
     root = f".well-known/agent-skills/{SKILL_NAME}"
     files = {f"{root}/{rel}": text for rel, text in skill_files.items()}
     skills = [(SKILL_NAME, SKILL_DESC, skill_files["SKILL.md"])]
-    extra = extra_files()
-    for e in EXTRAS:
-        files[f".well-known/agent-skills/{e.name}/SKILL.md"] = extra[f"{e.name}/SKILL.md"]
-        skills.append((e.name, e.description, extra[f"{e.name}/SKILL.md"]))
     index = {"$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
              "skills": [{"name": n, "type": "skill-md", "description": d, "url": f"{BASE}/.well-known/agent-skills/{n}/SKILL.md",
                          "digest": "sha256:" + hashlib.sha256(t.encode()).hexdigest()} for n, d, t in skills]}
@@ -85,9 +80,8 @@ def skill_discovery(skill_files: dict[str, str]) -> dict[str, str]:
 def agent_files(b: BuildInput) -> dict[str, str]:
     """agent.json (the machine-readable view of the home page) and /.well-known/ard.json."""
     counts = {str(lv): n for lv, c in b.counts.items() if (n := c.stable)}
-    queries = [(SKILL_NAME, SKILL_DESC, ["review this pull request", "audit this repo for what we would regret in prod", "is this safe to merge"]),
-               *((e.name, e.description, list(e.queries)) for e in EXTRAS)]
+    queries = [(SKILL_NAME, SKILL_DESC, ["review this pull request", "audit this repo for what we would regret in prod", "is this safe to merge"])]
     ard = json.dumps(ard_manifest(queries), indent=2, ensure_ascii=False) + "\n"
     # AR-FIND-04 (agentready.org spec v2.0) names ai-catalog.json, the predecessor of ard.json; one catalog, two paths.
-    return {"agent.json": json.dumps(agent_manifest(b.date, counts, [SKILL_NAME, *(e.name for e in EXTRAS)]), indent=2, ensure_ascii=False) + "\n",
+    return {"agent.json": json.dumps(agent_manifest(b.date, counts, [SKILL_NAME]), indent=2, ensure_ascii=False) + "\n",
             ".well-known/ard.json": ard, ".well-known/ai-catalog.json": ard}
