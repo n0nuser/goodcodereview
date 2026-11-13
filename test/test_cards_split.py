@@ -51,8 +51,9 @@ def test_every_emitted_file_passes_the_schema(site_text: dict[str, str]) -> None
         assert schema.check(sch, json.loads(site_text[name])) == [], name
 
 
-def test_llms_txt_advertises_a_level_file(site_text: dict[str, str]) -> None:
-    assert f"{BASE}/cards/function.json" in site_text["llms.txt"]
+def test_agent_json_advertises_a_level_file(site_text: dict[str, str]) -> None:
+    assert f"{BASE}/agent.json" in site_text["llms.txt"]  # llms.txt links agent.json; the per-level and per-concern routes live there
+    assert "cards/{level}.json" in site_text["agent.json"]
     assert "cards/function.json" in site_text
 
 
@@ -161,7 +162,9 @@ def test_markdown_files_exist_for_each_concern_and_level(site_text: dict[str, st
 
 
 def test_llms_txt_advertises_the_static_routes(site_text: dict[str, str]) -> None:
-    for path in ("cards/concern-security.json", "concerns/security.md", "cards-index.json", "cards-index.schema.json"):
+    for path in ("cards-index.json", "cards-index.schema.json"):
         assert f"{BASE}/{path}" in site_text["llms.txt"]
         assert path in site_text
+    for path, template in (("cards/concern-security.json", "cards/concern-{concern}.json"), ("concerns/security.md", "concerns/{concern}.md")):  # listed once, in agent.json
+        assert path in site_text and template in site_text["agent.json"]
     assert len(site_text["llms.txt"]) <= LLMS_BUDGET

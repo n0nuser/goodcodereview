@@ -26,7 +26,7 @@ Progressive disclosure keeps the first read small however many cards exist. The 
 
 | Layer | Holds | Budget |
 |---|---|---|
-| `llms.txt` | routing, a compact verdict format, and links to everything else | 12,000 characters |
+| `llms.txt` | a hand-written head (`LLMS_HEAD` in `tools/prose.py`: what the site is, routing table, one verdict example) and one link line per page; nothing is copied from `SKILL.md` | head 1,500 characters, no directives (the build checks both); 12,000 in all |
 | `SKILL.md` body | routing, verdict format, an audit pointer, gotchas | 16,000 characters (about 4,000 tokens) |
 | `<level>-index.md` | one line per stable card: id, severity, concerns, context, rule | past 12,000 characters the build splits by `context` |
 | `references/<level>.md`, `references/audit.md` | full card text and the audit procedure | none |

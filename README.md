@@ -13,12 +13,12 @@ Good Code Review is a set of Markdown files. An AI coding agent loads them as a 
 That is a real run on a pull request of mine (how it was made: [docs/demo](docs/demo/README.md)). A shorter sample, with made-up paths and lines:
 
 ```text
-Verdict: request changes - change, function - 2 block, 1 should-fix FAIL, 1 PASS, 14 N/A
+Verdict: request changes - change, function - 2 block, 1 should-fix FAIL, 1 PASS, 3 N/A
 FAIL [block] chg-expand-contract - src/a.py:42 - renames the column and drops the old one in one migration
 FAIL [block] svc-sqli-authn - src/db.py:88 - proven: builds the WHERE clause with an f-string from request.args
 FAIL [should-fix] chg-one-concern - src/b.py:7 - a logging rewrite rides along with the bug fix
 PASS chg-breaking-change-taxonomy - src/c.py:15 - no signature or return shape changes
-N/A: 14 cards, applies_when does not hold
+N/A (applies_when does not hold): chg-chestertons-fence, chg-matches-spec, chg-reuse-before-write
 ```
 
 Pick what you are reviewing (a diff, a function, a service, a whole codebase, a production setup, or an incident) and you get the checks for that level. Each check has a `FAIL` example and a `PASS` example, so a reviewer, human or agent, knows what each verdict means. Anyone can check the review afterwards, because every verdict names a card and a line.
@@ -48,8 +48,6 @@ npx skills add n0nuser/goodcodereview
 ```
 
 After you install the skill, name it in your request, such as `/good-code-review review this PR`. An agent that is not told may review without it.
-
-The skill folder also holds two focused skills, `review-code-security` and `review-code-accessibility`. Each reads its card list from goodcodereview.com, so it needs network access. In a sandbox without network access, use `good-code-review`, which carries the cards with it.
 
 To install it as a Claude Code plugin, run:
 
