@@ -11,7 +11,7 @@ from context import BuildInput
 from guides import GUIDES
 from models import LEVELS
 from prose import SKILL_DESC
-from seo import agent_manifest, ard_manifest
+from seo import agent_manifest, ai_catalog, ard_manifest
 from shell import page_url
 
 JSON_CT = "application/json; charset=utf-8"
@@ -81,7 +81,8 @@ def agent_files(b: BuildInput) -> dict[str, str]:
     """agent.json (the machine-readable view of the home page) and /.well-known/ard.json."""
     counts = {str(lv): n for lv, c in b.counts.items() if (n := c.stable)}
     queries = [(SKILL_NAME, SKILL_DESC, ["review this pull request", "audit this repo for what we would regret in prod", "is this safe to merge"])]
-    ard = json.dumps(ard_manifest(queries), indent=2, ensure_ascii=False) + "\n"
-    # AR-FIND-04 (agentready.org spec v2.0) names ai-catalog.json, the predecessor of ard.json; one catalog, two paths.
+    ard_data = ard_manifest(queries)
+    ard = json.dumps(ard_data, indent=2, ensure_ascii=False) + "\n"
+    # AR-FIND-04 (agentready.org spec v2.0) names ai-catalog.json: the AI Catalog format, which differs from ARD's (it needs specVersion).
     return {"agent.json": json.dumps(agent_manifest(b.date, counts, [SKILL_NAME]), indent=2, ensure_ascii=False) + "\n",
-            ".well-known/ard.json": ard, ".well-known/ai-catalog.json": ard}
+            ".well-known/ard.json": ard, ".well-known/ai-catalog.json": json.dumps(ai_catalog(ard_data), indent=2, ensure_ascii=False) + "\n"}
