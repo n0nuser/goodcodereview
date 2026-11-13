@@ -139,7 +139,7 @@ ABOUT_DESC = "Who makes Good Code Review, what stable and draft cards mean, and 
 PRIVACY_DESC = "Good Code Review collects nothing: no cookies, no analytics, no accounts."
 LLMS_IMPERATIVE = r"(?i)\\b(you must|must|always|never|ignore|do not|don't|should)\\b"  # the head describes the site; directives to the reader belong in SKILL.md
 LLMS_HEAD_MAX = 1_500  # characters before the first H2 of llms.txt; the head is hand-written and shares nothing with SKILL.md
-LLMS_HEAD = f"""# Good Code Review
+LLMS_HEAD = """# Good Code Review
 
 > Vetted code-review rules for people and agents. Each check ends in PASS, FAIL, or N/A with file:line evidence.
 

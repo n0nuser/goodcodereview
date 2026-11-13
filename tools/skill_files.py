@@ -46,7 +46,6 @@ from prose import (
     REPORT_RULE,
     ROUTES,
     SCOPE_GREP,
-    SEVERITY,
     SKILL_DESC,
     TRIAGE,
     VERDICT,
@@ -101,7 +100,7 @@ def card_ranges(text: str, ids: list[str]) -> dict[str, tuple[int, int]]:
         starts.append(at)
         at += 1
     ends = starts[1:] + [len(lines)]
-    return {i: (a + 1, len("\n".join(lines[a:b]).rstrip("\n").split("\n"))) for i, a, b in zip(ids, starts, ends)}
+    return {i: (a + 1, len("\n".join(lines[a:b]).rstrip("\n").split("\n"))) for i, a, b in zip(ids, starts, ends, strict=True)}
 
 
 def ranged_line(card: Card, where: tuple[int, int], file: str = "") -> str:

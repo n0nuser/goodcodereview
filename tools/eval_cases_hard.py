@@ -6,12 +6,13 @@ import json
 import re
 import shutil
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "evals"
 FILE_LINE = ("evidence", r"\b[\w./-]+\.(?:py|diff|md|js|ts|go):\d+", "i")  # scored in both arms: a finding cites file:line
 
-CASES = {
+CASES: dict[str, dict[str, Any]] = {
     "webhook_replay": {
         "prompt": "Review handler.py before we ship it.",
         "files": {"handler.py": '''import hmac, hashlib, json, logging, os
@@ -119,12 +120,12 @@ def set_password(user, pw): ...
 }
 
 
-def regex_grader(name, pattern, flags="", arm=None):
+def regex_grader(name: str, pattern: str, flags: str = "", arm: str | None = None) -> tuple[str, str]:
     fm = ["type: regex", f"pattern: {json.dumps(pattern)}"] + ([f"flags: {flags}"] if flags else []) + ([f"arm: {arm}"] if arm else [])
     return name, "---\n" + "\n".join(fm) + "\n---\n"
 
 
-def write(name, prompt, files, graders):
+def write(name: str, prompt: str, files: dict[str, str], graders: list[tuple[str, str]]) -> None:
     o = OUT / name
     shutil.rmtree(o, ignore_errors=True)
     (o / "graders").mkdir(parents=True)
