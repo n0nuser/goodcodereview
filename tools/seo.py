@@ -149,3 +149,17 @@ def ard_manifest(skills: list[tuple[str, str, list[str]]]) -> dict[str, Any]:
          "description": d, "capabilities": ["CodeReview"], "representativeQueries": q}
         for n, d, q in skills]
     return {"entries": entries}
+
+
+def ai_catalog(ard: dict[str, Any]) -> dict[str, Any]:
+    """/.well-known/ai-catalog.json, AI Catalog 1.0 (https://github.com/Agent-Card/ai-catalog).
+
+    `specVersion` and `entries` are required; each entry needs `identifier`, `type`, and one of `url` or `data`.
+
+    The entries are ARD's, without the ARD-only `capabilities` and `representativeQueries`, plus llms.txt (AR-FIND-04 lists docs and llms.txt).
+    """
+    keep = ("identifier", "displayName", "type", "url", "description")
+    entries = [{k: e[k] for k in keep if k in e} for e in ard["entries"]]
+    entries.append({"identifier": "urn:air:goodcodereview.com:docs:llms-txt", "displayName": "llms.txt", "type": "text/plain", "url": f"{BASE}/llms.txt",
+                    "description": "An index of every page, with the routing table, the verdict format, and one link per page."})
+    return {"specVersion": "1.0", "host": {"displayName": "Good Code Review", "identifier": "did:web:goodcodereview.com"}, "entries": entries}

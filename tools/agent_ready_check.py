@@ -375,10 +375,12 @@ def _items_43_46(r: Report, pages: dict[str, Page], content: dict[str, Page]) ->
     agentmap = f"Agentmap: {BASE}/.well-known/ard.json" in robots
     r.check(43, ok and rel and agentmap, "ARD spec v0.91 (agenticresourcediscovery.org/spec): entries valid, urls resolve, rel=ard on each page, Agentmap in robots.txt")
     # AR-FIND-04 (agentready.org spec v2.0): ai-catalog.json, rel="ai-catalog" on each page, and the Link header.
-    alias = (SITE / ".well-known/ai-catalog.json").read_bytes() == (SITE / ".well-known/ard.json").read_bytes()
+    cat = json.loads((SITE / ".well-known/ai-catalog.json").read_text())  # AI Catalog 1.0: specVersion and entries; each entry has identifier, type, and one of url or data
+    alias = (cat.get("specVersion") == "1.0" and bool(cat.get("entries"))
+             and all({"identifier", "type"} <= e.keys() and ("url" in e) != ("data" in e) and (resolve(e["url"]) is not None if "url" in e else True) for e in cat["entries"]))
     rel2 = all(any(ln.get("href") == "/.well-known/ai-catalog.json" for ln in p.link("ai-catalog")) for p in content.values())
     hdr = 'rel="ai-catalog"' in (SITE / "_headers").read_text()
-    r.check(48, alias and rel2 and hdr, "AR-FIND-04: /.well-known/ai-catalog.json matches ard.json, rel=ai-catalog on each page, Link header")
+    r.check(48, alias and rel2 and hdr, "AR-FIND-04: ai-catalog.json is a valid AI Catalog 1.0 (specVersion; entries with identifier, type, url or data), rel=ai-catalog on each page, Link header")
     try:
         am = json.loads((SITE / "agent.json").read_text())
         ok = (am["authentication"]["type"] == "none" and am["capabilities"] and am["endpoints"]["llms_txt"].startswith(BASE)
