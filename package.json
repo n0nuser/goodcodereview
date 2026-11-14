@@ -4,6 +4,6 @@
   "description": "Dev tooling for the accessibility check. The site itself ships no JavaScript dependency.",
   "devDependencies": {
     "axe-core": "^4.14.0",
-    "jsdom": "^30.1.3"
+    "jsdom": "^31.0.0"
   }
 }
