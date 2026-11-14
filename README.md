@@ -23,7 +23,7 @@ N/A (applies_when does not hold): chg-chestertons-fence, chg-matches-spec, chg-r
 
 Pick what you are reviewing (a diff, a function, a service, a whole codebase, a production setup, or an incident) and you get the checks for that level. Each check has a `FAIL` example and a `PASS` example, so a reviewer, human or agent, knows what each verdict means. Anyone can check the review afterwards, because every verdict names a card and a line.
 
-There are 202 stable checks: 188 across the eight levels and 14 in the language packs. The site prints the live count on its home page.
+The checks cover eight levels and the language packs. The home page prints the live count of stable checks.
 
 ## How it differs
 

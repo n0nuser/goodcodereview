@@ -492,7 +492,7 @@ scanner runs on every push and covers history
 key revoked and reissued the same day; new value comes from the secret store
 ```
 
-**Counterpoint.** "Scanners give false positives." Tune with an allowlist of reviewed, non-secret strings. A missed live key costs far more than a triaged alert. [sys-secrets-and-errors](system.md#sys-secrets-and-errors) covers where secrets live at runtime.
+**Counterpoint.** "Scanners give false positives." Tune with an allowlist of reviewed, non-secret strings. A missed live key costs far more than a triaged alert. When you run a scanner as part of a review, run it with live verification off: checking a hit against the issuing service sends the secret to a third party and shows up in the reviewer's network logs. Treat the hit as leaked without the check. [sys-secrets-and-errors](system.md#sys-secrets-and-errors) covers where secrets live at runtime.
 
 ## code-test-fixtures-built-once
 
