@@ -47,7 +47,7 @@ GUIDES = (
           ("chg-agent-grounded-code", "chg-verify-before-claim", "chg-review-signal"),
           "To give your coding agent this standard, run `npx skills add n0nuser/goodcodereview` and ask it to review its own diff, or paste the one-line prompt above. "
           "Nothing is sent to us: the skill reads static files. See the [change level](html:change) for every check on a diff."),
-    Guide("good-code-review-vs-asking-your-agent", "Good Code Review vs asking your agent to review",
+    Guide("good-code-review-vs-asking-your-agent", "Good Code Review vs asking your agent",
           "Where a fixed code review rule set helped an agent in our own tests, where it made no difference, and when to skip it. The numbers are included.",
           "You can ask your agent to review code with no checklist. Often that works well. This page shows where a fixed rule set helped in our own "
           "tests, where it made no difference, and when not to bother.\n\n"
