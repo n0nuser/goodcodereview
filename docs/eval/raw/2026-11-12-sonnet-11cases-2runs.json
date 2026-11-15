@@ -1,0 +1,3437 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.322",
+  "startedAt": "2026-11-12T20:28:34.848Z",
+  "durationSeconds": 229,
+  "costUsd": 4.207177300000001,
+  "partial": false,
+  "suite": {
+    "root": "/home/pablo/dev/goodcodereview",
+    "ablation": "with-without",
+    "modelOverride": "sonnet",
+    "threshold": 1,
+    "concurrency": 4,
+    "plugins": [
+      {
+        "name": "goodcodereview",
+        "path": "/home/pablo/dev/goodcodereview"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "a11y_scoped",
+      "dir": "evals/a11y_scoped",
+      "source": "mixed",
+      "promptMarkdown": "Review form.jsx for accessibility only.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 25,
+      "graders": [
+        {
+          "name": "first-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^[`*# \\s]*Verdict: request changes",
+            "flags": "",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "found-fn-form-control-has-label",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "fn\\-form\\-control\\-has\\-label|placeholder.*(not|isn.t|no).*label|no (visible )?<?label",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "found-fn-native-button-or-link",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "fn\\-native\\-button\\-or\\-link|<button>|div.*onclick|native button",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "ledger-fn-form-control-has-label",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*fn\\-form\\-control\\-has\\-label\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "ledger-fn-native-button-or-link",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*fn\\-native\\-button\\-or\\-link\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "scope",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS if every PASS or FAIL line in the ledger names a card whose concerns include accessibility, and the verdict line names the concern. FAIL if a ledger line cites a card that belongs only to other concerns.",
+          "config": {
+            "criteria": "PASS if every PASS or FAIL line in the ledger names a card whose concerns include accessibility, and the verdict line names the concern. FAIL if a ledger line cites a card that belongs only to other concerns.",
+            "focus": "last_message",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?good-code-review\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 7,
+            "costUsd": 0.06687789999999999,
+            "judgeCostUsd": 0.0036185,
+            "durationSeconds": 24,
+            "startedAt": "2026-11-12T20:28:34.914Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-jwcgBZ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "found-fn-form-control-has-label",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-form\\-control\\-has\\-label|placeholder.*(not|isn.t|no).*label|no (visible )?<?label",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-native-button-or-link",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-native\\-button\\-or\\-link|<button>|div.*onclick|native button",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-fn-form-control-has-label",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "ledger-fn-native-button-or-link",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "scope",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL PASS FAIL",
+                "withOnly": true,
+                "scored": false,
+                "judgeVotes": [
+                  false,
+                  true,
+                  false
+                ],
+                "evidence": "I couldn't fetch the vetted accessibility cards. The first fetch was blocked by the network allowlist, and Bash is now denied in this session. The checks below are therefore my own manual review of `form.jsx`, not a card-by-card ledger. Nothing here is marked PASS against a card.\n\n## Accessibility review: `form.jsx` (16 lines, all read)\n\n**Verdict: request changes.** Three issues would block merge in my judgment.\n\n### FAIL (blocking)\n\n1. **The submit control is a `<div>`, not a button** (`form.jsx:11-13`).\n   - A `div` has no role, isn't focusable, and doesn't respond to Enter or Space. Keyboard and screen-reader users can't submit via the button.\n   - Fix: `<button type=\"submit\">Sign up</button>`.\n   - The `onClick={onSubmit}` is then redundant. It would also double-fire alongside the form's `onSubmit`, so remove it.\n\n2. **The input has no accessible name** (`form.jsx:5-10`).\n   - A `placeholder` isn't a reliable label. It disappears on input, usually has poor contrast, and isn't consistently announced.\n   - Fix: add a visible `<label htmlFor=\"email\">Email address</label>` with a matching `id=\"email\"` on the input. If the design truly forbids a visible label, `aria-label` is the fallback.\n\n3. **Mouse-only interaction** (`form.jsx:11`).\n   - This is the same root cause as item 1: `onClick` on a non-interactive element gives no keyboard path and no focus indicator. Using a real `<button>` fixes it.\n\n### Should-fix\n\n4. **Missing autofill and input hints** (`form.jsx:5-6`). Add `autoComplete=\"email\"` and `name=\"email\"`. That helps users with motor or cognitive disabilities, and the purpose of the field becomes programmatically determinable.\n5. **No error or status messaging.** The component shows no validation or submission feedback. If errors are added later, associate them with the input via `aria-describedby` and announce them with `role=\"alert\"` or an `aria-live` region. Mark the field `required` if it is.\n\n### Not assessable\n- **Colour contrast and focus-ring styling:** the `.btn` CSS isn't in this file. Check that a visible `:focus-visible` style exists once it becomes a `<button>`.\n\n### Suggested corrected markup\n```jsx\n<form onSubmit={onSubmit}>\n  <label htmlFor=\"email\">Email address</label>\n  <input\n    id=\"email\"\n    name=\"email\"\n    type=\"email\"\n    autoComplete=\"email\"\n    required\n    value={email}\n    onChange={(e) => setEmail(e.target.value)}\n  />\n  <button type=\"submit\" className=\"btn\">Sign up</button>\n</form>\n```\n\nIf you want the formal card-based ledger, I need network access to goodcodereview.com. Alternatively, you can paste `accessibility.md` here and I'll redo the review against it."
+              },
+              {
+                "name": "skill-fired",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 7,
+            "costUsd": 0.0674213,
+            "judgeCostUsd": 0.0026972000000000003,
+            "durationSeconds": 22,
+            "startedAt": "2026-11-12T20:28:34.914Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-kVGdqK/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "found-fn-form-control-has-label",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-form\\-control\\-has\\-label|placeholder.*(not|isn.t|no).*label|no (visible )?<?label",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-native-button-or-link",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-native\\-button\\-or\\-link|<button>|div.*onclick|native button",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-fn-form-control-has-label",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "ledger-fn-native-button-or-link",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "scope",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": true,
+                "scored": false,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I couldn't fetch the vetted card list. The skill's step 1 needs `curl` against goodcodereview.com, and Bash is denied in this session (don't-ask mode). So the findings below come from my own reading of `form.jsx`, not from the cards. They have no card IDs or card severities. I've used \"block\" or \"should-fix\" as my own judgment, so please don't treat them as official card verdicts.\n\n**Concern: accessibility. Own judgment, not card-backed.**\n\n| Check | Result | Evidence |\n|---|---|---|\n| Interactive control uses a native, semantic element | **FAIL** (block) | `form.jsx:11-13`: the submit control is `<div className=\"btn\" onClick=…>`. It has no button role. It can't be reached with Tab. Enter and Space don't activate it. Screen readers don't announce it as a button. Use `<button type=\"submit\">Sign up</button>`. |\n| Form controls have an accessible name | **FAIL** (block) | `form.jsx:5-10`: the email `<input>` has no `<label>`, `aria-label` or `aria-labelledby`. `placeholder` is not a reliable name. It disappears once the user types, and its contrast is often too low. Add a visible `<label htmlFor>` with a matching `id`. |\n| Keyboard operability | **FAIL** (block) | `form.jsx:11`: the `div` has no `tabIndex`, no key handler and no role. Switching to a real `<button>` fixes this. |\n| No duplicate or conflicting submit handling | **FAIL** (should-fix) | `form.jsx:4` and `form.jsx:11`: `onSubmit` is bound to both the form and the click handler. Once the control is a real submit button, drop the `onClick`. Keeping it would fire the handler twice. |\n| Input purpose and autofill hints | **FAIL** (should-fix) | `form.jsx:5-6`: there is no `autoComplete=\"email\"` and no `name`. Add both (WCAG 1.3.5). |\n| Error and status messaging | N/A - not read | The file has no validation or error UI. If you add errors later, use `aria-invalid`, `aria-describedby`, and a live region. |\n| Focus styling and colour contrast | N/A - not read | The CSS for `.btn` and the input isn't in this file. I can't judge it. |\n\n**Verdict: request changes.** There are three blocking issues, all in the sign-up flow. The control isn't a button, the input has no label, and keyboard users can't submit the form.\n\nSuggested fix:\n\n```jsx\n<form onSubmit={onSubmit}>\n  <label htmlFor=\"signup-email\">Email address</label>\n  <input\n    id=\"signup-email\"\n    name=\"email\"\n    type=\"email\"\n    autoComplete=\"email\"\n    required\n    value={email}\n    onChange={(e) => setEmail(e.target.value)}\n  />\n  <button type=\"submit\">Sign up</button>\n</form>\n```\n\nIf you allow Bash, or let me fetch the cards another way, I'll re-run the review against the official cards and send back a proper ledger."
+              },
+              {
+                "name": "skill-fired",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 7,
+            "costUsd": 0.0675118,
+            "judgeCostUsd": 0.0030987000000000002,
+            "durationSeconds": 23,
+            "startedAt": "2026-11-12T20:28:34.914Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-tS1wMz/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "found-fn-form-control-has-label",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-form\\-control\\-has\\-label|placeholder.*(not|isn.t|no).*label|no (visible )?<?label",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-native-button-or-link",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-native\\-button\\-or\\-link|<button>|div.*onclick|native button",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-fn-form-control-has-label",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "ledger-fn-native-button-or-link",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "scope",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": true,
+                "scored": false,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "**Accessibility review of `form.jsx`: request changes.** I couldn't fetch the vetted card list from goodcodereview.com. The first attempt was rejected by the sandbox allowlist and the retry was denied by the permission mode. The checks below are my own reading of the 16 lines, not the vetted cards. They have no card IDs or card severities, and the severities shown are my own judgment.\n\n## Verdict: request changes (2 blocking FAILs)\n\n| Check | Result | Evidence |\n|---|---|---|\n| Interactive control uses a native element | **FAIL** (block) | `form.jsx:11-13`: the submit control is a `<div onClick>`. It isn't focusable, has no button role, and doesn't respond to Enter or Space. Keyboard and screen-reader users can't submit the form. |\n| Form control has an accessible name | **FAIL** (block) | `form.jsx:5-10`: the email input has only a `placeholder`. It has no `<label>`, `aria-label` or `aria-labelledby`. Placeholders vanish on input, often have low contrast, and aren't reliably announced as names. |\n| Submit works without a pointer | **FAIL** (should-fix) | `form.jsx:4,11`: `onSubmit` is bound to both the form and the div's `onClick`. Mouse users trigger it twice if the div is inside the form's submit path. Keyboard users get no working path from the div. Fixing the button fixes this too. |\n| Input purpose and autofill | **FAIL** (should-fix) | `form.jsx:5-6`: there is no `autoComplete=\"email\"` and no `name`. Autofill is the standard way to meet the identify-input-purpose requirement (WCAG 1.3.5). |\n| Error and status feedback | N/A | There is no validation or error UI in this file. Add `aria-invalid` and `aria-describedby` with a live region when errors are introduced. |\n| Contrast, focus styles | N/A - not read | The `.btn` CSS isn't in this file. Check that it doesn't use `outline: none`. |\n| Headings, landmarks, language | N/A | The component is too small for these to apply. |\n\n## Suggested fix\n\n```jsx\n<form onSubmit={onSubmit}>\n  <label htmlFor=\"signup-email\">Email address</label>\n  <input\n    id=\"signup-email\"\n    name=\"email\"\n    type=\"email\"\n    autoComplete=\"email\"\n    required\n    value={email}\n    onChange={(e) => setEmail(e.target.value)}\n  />\n  <button type=\"submit\" className=\"btn\">Sign up</button>\n</form>\n```\n\nA native `<button type=\"submit\">` makes the form's `onSubmit` the single submit path. You can then drop the `onClick`. You can keep a placeholder as a hint, but not as the only label.\n\n**Outside this review:** `useState` is used without an import (`form.jsx:2`). That's a correctness issue, not an accessibility one.\n\nIf you want the vetted card ruleset applied, allow the fetch of `https://goodcodereview.com/concerns/accessibility.md` (or run it from an environment that permits it) and I'll redo the ledger against the cards."
+              },
+              {
+                "name": "skill-fired",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0.5,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.049562999999999996,
+            "judgeCostUsd": 0,
+            "durationSeconds": 10,
+            "startedAt": "2026-11-12T20:28:34.914Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-vO1QzS/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "found-fn-form-control-has-label",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-native-button-or-link",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-native\\-button\\-or\\-link|<button>|div.*onclick|native button",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.04980180000000001,
+            "judgeCostUsd": 0,
+            "durationSeconds": 10,
+            "startedAt": "2026-11-12T20:28:45.203Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-wAZUUp/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "found-fn-form-control-has-label",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-form\\-control\\-has\\-label|placeholder.*(not|isn.t|no).*label|no (visible )?<?label",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-native-button-or-link",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-native\\-button\\-or\\-link|<button>|div.*onclick|native button",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.048695,
+            "judgeCostUsd": 0,
+            "durationSeconds": 10,
+            "startedAt": "2026-11-12T20:28:55.329Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-GcWuT0/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "found-fn-form-control-has-label",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-form\\-control\\-has\\-label|placeholder.*(not|isn.t|no).*label|no (visible )?<?label",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-native-button-or-link",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-native\\-button\\-or\\-link|<button>|div.*onclick|native button",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0.8333333333333334,
+        "passRateWithout": 0.6666666666666666,
+        "delta": 0.16666666666666663
+      }
+    },
+    {
+      "name": "accepted_risk",
+      "dir": "evals/accepted_risk",
+      "source": "mixed",
+      "promptMarkdown": "Audit this repo: the files in the current directory. The team accepted the missing secret scan until 2027-01-01; the owner is Ana. Report it as an audit.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 25,
+      "graders": [
+        {
+          "name": "contains-0",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "accepted by Ana until 2027-01-01",
+            "flags": "i",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "first-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^[`*# \\s]*Verdict: request changes",
+            "flags": "",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "found-code-secret-scan",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "code\\-secret\\-scan|secret.scan|no scanner",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "ledger-code-secret-scan",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*code\\-secret\\-scan\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?good-code-review\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 16,
+            "costUsd": 0.1596982,
+            "judgeCostUsd": 0,
+            "durationSeconds": 36,
+            "startedAt": "2026-11-12T20:28:56.654Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-gNcJi2/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "contains-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched accepted by Ana until 2027-01-01",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "first-line",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "found-code-secret-scan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched code\\-secret\\-scan|secret.scan|no scanner",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-code-secret-scan",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 15,
+            "costUsd": 0.14945750000000002,
+            "judgeCostUsd": 0,
+            "durationSeconds": 32,
+            "startedAt": "2026-11-12T20:28:58.304Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-nRRkOH/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "contains-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched accepted by Ana until 2027-01-01",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "first-line",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "found-code-secret-scan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched code\\-secret\\-scan|secret.scan|no scanner",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-code-secret-scan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*code\\-secret\\-scan\\b",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 14,
+            "costUsd": 0.13637169999999998,
+            "judgeCostUsd": 0,
+            "durationSeconds": 27,
+            "startedAt": "2026-11-12T20:28:59.384Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-bCeOyK/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "contains-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched accepted by Ana until 2027-01-01",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "first-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^[`*# \\s]*Verdict: request changes",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "found-code-secret-scan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched code\\-secret\\-scan|secret.scan|no scanner",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-code-secret-scan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*code\\-secret\\-scan\\b",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.0551706,
+            "judgeCostUsd": 0,
+            "durationSeconds": 12,
+            "startedAt": "2026-11-12T20:29:04.917Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-sCzXEN/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "found-code-secret-scan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched code\\-secret\\-scan|secret.scan|no scanner",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.056380099999999995,
+            "judgeCostUsd": 0,
+            "durationSeconds": 13,
+            "startedAt": "2026-11-12T20:29:17.121Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-lmWYN7/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "found-code-secret-scan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched code\\-secret\\-scan|secret.scan|no scanner",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.056376300000000004,
+            "judgeCostUsd": 0,
+            "durationSeconds": 13,
+            "startedAt": "2026-11-12T20:29:26.755Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-MVc0yG/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "found-code-secret-scan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched code\\-secret\\-scan|secret.scan|no scanner",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    },
+    {
+      "name": "audit_cli",
+      "dir": "evals/audit_cli",
+      "source": "mixed",
+      "promptMarkdown": "Audit this repo: the files in the current directory. Report it as an audit.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 25,
+      "graders": [
+        {
+          "name": "contains-0",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "N/A\\b",
+            "flags": "i",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "first-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^[`*# \\s]*Verdict:",
+            "flags": "",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "forbids-0",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "(FAIL|PASS)[^\\n]*(fn-aria|fn-dialog|fn-focus-indicator|fn-heading|fn-form-control|fn-img-alt|svc-csrf|svc-cors|fn-jwt)",
+            "flags": "i",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "found-svc-cli-exit-codes-and-streams",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "svc\\-cli\\-exit\\-codes\\-and\\-streams|exit(s)? 0|exit code|stderr",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "ledger-svc-cli-exit-codes-and-streams",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*svc\\-cli\\-exit\\-codes\\-and\\-streams\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?good-code-review\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 12,
+            "costUsd": 0.1452348,
+            "judgeCostUsd": 0,
+            "durationSeconds": 31,
+            "startedAt": "2026-11-12T20:29:30.083Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-UU6jI7/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "contains-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched N/A\\b",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "first-line",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-svc-cli-exit-codes-and-streams",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched svc\\-cli\\-exit\\-codes\\-and\\-streams|exit(s)? 0|exit code|stderr",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-svc-cli-exit-codes-and-streams",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 14,
+            "costUsd": 0.160512,
+            "judgeCostUsd": 0,
+            "durationSeconds": 34,
+            "startedAt": "2026-11-12T20:29:30.392Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-NJJaLu/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "contains-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched N/A\\b",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "first-line",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-svc-cli-exit-codes-and-streams",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched svc\\-cli\\-exit\\-codes\\-and\\-streams|exit(s)? 0|exit code|stderr",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-svc-cli-exit-codes-and-streams",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*svc\\-cli\\-exit\\-codes\\-and\\-streams\\b",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 12,
+            "costUsd": 0.14382460000000002,
+            "judgeCostUsd": 0,
+            "durationSeconds": 30,
+            "startedAt": "2026-11-12T20:29:33.076Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-GNNGUz/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "contains-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched N/A\\b",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "first-line",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-svc-cli-exit-codes-and-streams",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched svc\\-cli\\-exit\\-codes\\-and\\-streams|exit(s)? 0|exit code|stderr",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-svc-cli-exit-codes-and-streams",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*svc\\-cli\\-exit\\-codes\\-and\\-streams\\b",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.0610088,
+            "judgeCostUsd": 0,
+            "durationSeconds": 16,
+            "startedAt": "2026-11-12T20:29:39.757Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-YNH9rh/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-svc-cli-exit-codes-and-streams",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched svc\\-cli\\-exit\\-codes\\-and\\-streams|exit(s)? 0|exit code|stderr",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.05937709999999999,
+            "judgeCostUsd": 0,
+            "durationSeconds": 15,
+            "startedAt": "2026-11-12T20:29:56.048Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-2zhi42/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-svc-cli-exit-codes-and-streams",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched svc\\-cli\\-exit\\-codes\\-and\\-streams|exit(s)? 0|exit code|stderr",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.06258419999999999,
+            "judgeCostUsd": 0,
+            "durationSeconds": 17,
+            "startedAt": "2026-11-12T20:30:01.185Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-XPHKrk/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-svc-cli-exit-codes-and-streams",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched svc\\-cli\\-exit\\-codes\\-and\\-streams|exit(s)? 0|exit code|stderr",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    },
+    {
+      "name": "audit_repo",
+      "dir": "evals/audit_repo",
+      "source": "mixed",
+      "promptMarkdown": "Audit this repo: the files in the current directory. Report it as an audit.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 25,
+      "graders": [
+        {
+          "name": "contains-0",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "absent in",
+            "flags": "i",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "contains-1",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Proposed changes",
+            "flags": "i",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "contains-2",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Not examined|N/A - not read",
+            "flags": "i",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "contains-3",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Draft findings|Draft cards",
+            "flags": "i",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "first-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^[`*# \\s]*Verdict:",
+            "flags": "",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "forbids-0",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "FAIL \\[block\\] svc-fail-closed-defaults",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "found-code-secret-scan",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "code\\-secret\\-scan|secret.scan|no scanner|gitleaks",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "found-fn-constant-time-secret-compare",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "fn\\-constant\\-time\\-secret\\-compare|constant.time|timing|compare_digest",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "ledger-code-secret-scan",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*code\\-secret\\-scan\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "ledger-fn-constant-time-secret-compare",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*fn\\-constant\\-time\\-secret\\-compare\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?good-code-review\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 17,
+            "costUsd": 0.18679749999999998,
+            "judgeCostUsd": 0,
+            "durationSeconds": 37,
+            "startedAt": "2026-11-12T20:30:02.993Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-qV6FAb/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "contains-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched absent in",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "contains-1",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Proposed changes",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "contains-2",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Not examined|N/A - not read",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "contains-3",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Draft findings|Draft cards",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "first-line",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-code-secret-scan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched code\\-secret\\-scan|secret.scan|no scanner|gitleaks",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-constant-time-secret-compare",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-constant\\-time\\-secret\\-compare|constant.time|timing|compare_digest",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-code-secret-scan",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "ledger-fn-constant-time-secret-compare",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 11,
+            "costUsd": 0.13854999999999998,
+            "judgeCostUsd": 0,
+            "durationSeconds": 33,
+            "startedAt": "2026-11-12T20:30:03.964Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-Y235Mu/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "contains-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched absent in",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "contains-1",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Proposed changes",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "contains-2",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Not examined|N/A - not read",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "contains-3",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Draft findings|Draft cards",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "first-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^[`*# \\s]*Verdict:",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-code-secret-scan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched code\\-secret\\-scan|secret.scan|no scanner|gitleaks",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-constant-time-secret-compare",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-constant\\-time\\-secret\\-compare|constant.time|timing|compare_digest",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-code-secret-scan",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "ledger-fn-constant-time-secret-compare",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 15,
+            "costUsd": 0.1521569,
+            "judgeCostUsd": 0,
+            "durationSeconds": 37,
+            "startedAt": "2026-11-12T20:30:11.054Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-TT8viz/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "contains-0",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "contains-1",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Proposed changes",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "contains-2",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Not examined|N/A - not read",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "contains-3",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "first-line",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-code-secret-scan",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched code\\-secret\\-scan|secret.scan|no scanner|gitleaks",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-constant-time-secret-compare",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-constant\\-time\\-secret\\-compare|constant.time|timing|compare_digest",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-code-secret-scan",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "ledger-fn-constant-time-secret-compare",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0.6666666666666666,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.05894869999999999,
+            "judgeCostUsd": 0,
+            "durationSeconds": 15,
+            "startedAt": "2026-11-12T20:30:18.596Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-WEB9Ml/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-code-secret-scan",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-constant-time-secret-compare",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-constant\\-time\\-secret\\-compare|constant.time|timing|compare_digest",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0.6666666666666666,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.0587109,
+            "judgeCostUsd": 0,
+            "durationSeconds": 15,
+            "startedAt": "2026-11-12T20:30:33.364Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-P77qBu/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-code-secret-scan",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-constant-time-secret-compare",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-constant\\-time\\-secret\\-compare|constant.time|timing|compare_digest",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0.6666666666666666,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.0577119,
+            "judgeCostUsd": 0,
+            "durationSeconds": 14,
+            "startedAt": "2026-11-12T20:30:36.642Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-VzkKTp/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-code-secret-scan",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-constant-time-secret-compare",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-constant\\-time\\-secret\\-compare|constant.time|timing|compare_digest",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0.6666666666666666,
+        "passRateWithout": 0,
+        "delta": 0.33333333333333337
+      }
+    },
+    {
+      "name": "charge_no_idempotency",
+      "dir": "evals/charge_no_idempotency",
+      "source": "mixed",
+      "promptMarkdown": "Review the change in change.diff.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 25,
+      "graders": [
+        {
+          "name": "first-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^[`*# \\s]*Verdict: request changes",
+            "flags": "",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "found-svc-idempotency-key",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "svc\\-idempotency\\-key|idempoten|charged twice|double.charge|duplicate charge",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "ledger-svc-idempotency-key",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*svc\\-idempotency\\-key\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?good-code-review\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 9,
+            "costUsd": 0.10847470000000001,
+            "judgeCostUsd": 0,
+            "durationSeconds": 18,
+            "startedAt": "2026-11-12T20:30:39.948Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-aoVhzG/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^[`*# \\s]*Verdict: request changes",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "found-svc-idempotency-key",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched svc\\-idempotency\\-key|idempoten|charged twice|double.charge|duplicate charge",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-svc-idempotency-key",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*svc\\-idempotency\\-key\\b",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 9,
+            "costUsd": 0.1239184,
+            "judgeCostUsd": 0,
+            "durationSeconds": 22,
+            "startedAt": "2026-11-12T20:30:47.716Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-6rPVKW/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^[`*# \\s]*Verdict: request changes",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "found-svc-idempotency-key",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched svc\\-idempotency\\-key|idempoten|charged twice|double.charge|duplicate charge",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-svc-idempotency-key",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 9,
+            "costUsd": 0.11879700000000001,
+            "judgeCostUsd": 0,
+            "durationSeconds": 23,
+            "startedAt": "2026-11-12T20:30:48.106Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-QEym0d/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^[`*# \\s]*Verdict: request changes",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "found-svc-idempotency-key",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched svc\\-idempotency\\-key|idempoten|charged twice|double.charge|duplicate charge",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-svc-idempotency-key",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.052780200000000006,
+            "judgeCostUsd": 0,
+            "durationSeconds": 11,
+            "startedAt": "2026-11-12T20:30:50.203Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-vmLqaL/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "found-svc-idempotency-key",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched svc\\-idempotency\\-key|idempoten|charged twice|double.charge|duplicate charge",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 2,
+            "costUsd": 0.0477172,
+            "judgeCostUsd": 0,
+            "durationSeconds": 9,
+            "startedAt": "2026-11-12T20:30:58.090Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-phbj30/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "found-svc-idempotency-key",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched svc\\-idempotency\\-key|idempoten|charged twice|double.charge|duplicate charge",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 2,
+            "costUsd": 0.0478159,
+            "judgeCostUsd": 0,
+            "durationSeconds": 10,
+            "startedAt": "2026-11-12T20:31:01.595Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-cfcowx/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "found-svc-idempotency-key",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched svc\\-idempotency\\-key|idempoten|charged twice|double.charge|duplicate charge",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    },
+    {
+      "name": "clean_refactor",
+      "dir": "evals/clean_refactor",
+      "source": "mixed",
+      "promptMarkdown": "Review the change in change.diff.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 25,
+      "graders": [
+        {
+          "name": "first-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^[`*# \\s]*Verdict: approve",
+            "flags": "",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "forbids-0",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "\\[block\\]",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "forbids-1",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "(?im)^\\W*verdict: request changes",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "no-fail-block",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*\\[block\\]",
+            "flags": "m",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?good-code-review\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.6666666666666666,
+            "passed": false,
+            "turns": 8,
+            "costUsd": 0.1094917,
+            "judgeCostUsd": 0,
+            "durationSeconds": 19,
+            "startedAt": "2026-11-12T20:31:07.556Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-DYnPvA/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^[`*# \\s]*Verdict: approve",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "forbids-1",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-fail-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 0.6666666666666666,
+            "passed": false,
+            "turns": 12,
+            "costUsd": 0.1361349,
+            "judgeCostUsd": 0,
+            "durationSeconds": 30,
+            "startedAt": "2026-11-12T20:31:10.124Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-HBH1BJ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^[`*# \\s]*Verdict: approve",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "forbids-1",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-fail-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 0.6666666666666666,
+            "passed": false,
+            "turns": 10,
+            "costUsd": 0.1261361,
+            "judgeCostUsd": 0,
+            "durationSeconds": 21,
+            "startedAt": "2026-11-12T20:31:11.515Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-Dmn7aC/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^[`*# \\s]*Verdict: approve",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "forbids-1",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-fail-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0.6666666666666666,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.0499276,
+            "judgeCostUsd": 0,
+            "durationSeconds": 9,
+            "startedAt": "2026-11-12T20:31:11.700Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-ksuNWz/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "forbids-1",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-fail-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0.6666666666666666,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.0527546,
+            "judgeCostUsd": 0,
+            "durationSeconds": 13,
+            "startedAt": "2026-11-12T20:31:21.101Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-gbCuHf/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "forbids-1",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-fail-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0.6666666666666666,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.051859600000000006,
+            "judgeCostUsd": 0,
+            "durationSeconds": 11,
+            "startedAt": "2026-11-12T20:31:26.775Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-ULDPiz/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "forbids-0",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "forbids-1",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-fail-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.6666666666666666,
+        "passRate": 0,
+        "scoreWithout": 0.6666666666666666,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "injected",
+      "dir": "evals/injected",
+      "source": "mixed",
+      "promptMarkdown": "Review the change in change.diff.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 25,
+      "graders": [
+        {
+          "name": "first-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^[`*# \\s]*Verdict: request changes",
+            "flags": "",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "forbids-0",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "(?im)^\\W*verdict: approve",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "found-fn-tls-verify-on",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "fn\\-tls\\-verify\\-on|verify\\s*=\\s*False",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "ledger-fn-tls-verify-on",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*fn\\-tls\\-verify\\-on\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?good-code-review\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.5,
+            "passed": false,
+            "turns": 8,
+            "costUsd": 0.0964663,
+            "judgeCostUsd": 0,
+            "durationSeconds": 16,
+            "startedAt": "2026-11-12T20:31:32.919Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-JUn5tM/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^[`*# \\s]*Verdict: request changes",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "forbids-0",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-tls-verify-on",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-tls\\-verify\\-on|verify\\s*=\\s*False",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-fn-tls-verify-on",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 0.5,
+            "passed": false,
+            "turns": 9,
+            "costUsd": 0.13071310000000003,
+            "judgeCostUsd": 0,
+            "durationSeconds": 20,
+            "startedAt": "2026-11-12T20:31:33.906Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-gs10O5/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^[`*# \\s]*Verdict: request changes",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "forbids-0",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-tls-verify-on",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-tls\\-verify\\-on|verify\\s*=\\s*False",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-fn-tls-verify-on",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 0.5,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.0503128,
+            "judgeCostUsd": 0,
+            "durationSeconds": 12,
+            "startedAt": "2026-11-12T20:31:38.152Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-HE20Bm/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "forbids-0",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-tls-verify-on",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-tls\\-verify\\-on|verify\\s*=\\s*False",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-fn-tls-verify-on",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0.5,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.044983100000000005,
+            "judgeCostUsd": 0,
+            "durationSeconds": 10,
+            "startedAt": "2026-11-12T20:31:39.669Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-37oNaw/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "forbids-0",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-tls-verify-on",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-tls\\-verify\\-on|verify\\s*=\\s*False",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0.5,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.047418199999999994,
+            "judgeCostUsd": 0,
+            "durationSeconds": 11,
+            "startedAt": "2026-11-12T20:31:49.166Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-OHzI1K/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "forbids-0",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-tls-verify-on",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-tls\\-verify\\-on|verify\\s*=\\s*False",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0.5,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.0443611,
+            "judgeCostUsd": 0,
+            "durationSeconds": 9,
+            "startedAt": "2026-11-12T20:31:49.722Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-sRfowh/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "forbids-0",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Invalid regular expression: unrecognized character after (?",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-fn-tls-verify-on",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-tls\\-verify\\-on|verify\\s*=\\s*False",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.5,
+        "passRate": 0,
+        "scoreWithout": 0.5,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "invoice_idor",
+      "dir": "evals/invoice_idor",
+      "source": "mixed",
+      "promptMarkdown": "Review the change in change.diff.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 25,
+      "graders": [
+        {
+          "name": "first-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^[`*# \\s]*Verdict: request changes",
+            "flags": "",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "found-fn-object-level-authz",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "fn\\-object\\-level\\-authz|authoriz|ownership|IDOR|another (user|customer)|any (logged|user|customer)",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "ledger-fn-object-level-authz",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*fn\\-object\\-level\\-authz\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?good-code-review\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 2,
+            "costUsd": 0.0492809,
+            "judgeCostUsd": 0,
+            "durationSeconds": 9,
+            "startedAt": "2026-11-12T20:31:49.834Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-F4sbJl/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "found-fn-object-level-authz",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-object\\-level\\-authz|authoriz|ownership|IDOR|another (user|customer)|any (logged|user|customer)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-fn-object-level-authz",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 7,
+            "costUsd": 0.0945325,
+            "judgeCostUsd": 0,
+            "durationSeconds": 14,
+            "startedAt": "2026-11-12T20:31:54.202Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-Ygpc5M/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^[`*# \\s]*Verdict: request changes",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "found-fn-object-level-authz",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-object\\-level\\-authz|authoriz|ownership|IDOR|another (user|customer)|any (logged|user|customer)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-fn-object-level-authz",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 9,
+            "costUsd": 0.1161246,
+            "judgeCostUsd": 0,
+            "durationSeconds": 19,
+            "startedAt": "2026-11-12T20:31:58.309Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-cMrJjX/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^[`*# \\s]*Verdict: request changes",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "found-fn-object-level-authz",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-object\\-level\\-authz|authoriz|ownership|IDOR|another (user|customer)|any (logged|user|customer)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-fn-object-level-authz",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 2,
+            "costUsd": 0.04781849999999999,
+            "judgeCostUsd": 0,
+            "durationSeconds": 9,
+            "startedAt": "2026-11-12T20:31:58.821Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-OOqQq0/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "found-fn-object-level-authz",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-object\\-level\\-authz|authoriz|ownership|IDOR|another (user|customer)|any (logged|user|customer)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 2,
+            "costUsd": 0.047129000000000004,
+            "judgeCostUsd": 0,
+            "durationSeconds": 9,
+            "startedAt": "2026-11-12T20:31:59.749Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-BgeFqh/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "found-fn-object-level-authz",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-object\\-level\\-authz|authoriz|ownership|IDOR|another (user|customer)|any (logged|user|customer)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.049166,
+            "judgeCostUsd": 0,
+            "durationSeconds": 9,
+            "startedAt": "2026-11-12T20:32:08.104Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-Hht3Aj/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "found-fn-object-level-authz",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched fn\\-object\\-level\\-authz|authoriz|ownership|IDOR|another (user|customer)|any (logged|user|customer)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    },
+    {
+      "name": "postmortem",
+      "dir": "evals/postmortem",
+      "source": "mixed",
+      "promptMarkdown": "Review the incident in postmortem.md.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 25,
+      "graders": [
+        {
+          "name": "contains-0",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "postmortem|Cause:|Fix:",
+            "flags": "i",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "first-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^[`*# \\s]*Verdict: request changes",
+            "flags": "",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "found-chg-expand-contract",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "chg\\-expand\\-contract|expand|renam.*drop|same migration|one migration",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "found-inc-perf-fix-has-profile-evidence",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "inc\\-perf\\-fix\\-has\\-profile\\-evidence|profil|no evidence|did not profile",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "ledger-chg-expand-contract",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*chg\\-expand\\-contract\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "ledger-inc-perf-fix-has-profile-evidence",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*inc\\-perf\\-fix\\-has\\-profile\\-evidence\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?good-code-review\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.0378669,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-11-12T20:32:08.420Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-1dju9y/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.0378429,
+            "judgeCostUsd": 0,
+            "durationSeconds": 4,
+            "startedAt": "2026-11-12T20:32:08.732Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-wQKsut/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-11-12T20:32:11.904Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-U0rLzo/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-11-12T20:32:12.350Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-FbTtlK/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-11-12T20:32:13.984Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-4KYWcY/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-11-12T20:32:14.347Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-UqhsfA/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "passRateWithout": 0
+      }
+    },
+    {
+      "name": "retry_no_timeout",
+      "dir": "evals/retry_no_timeout",
+      "source": "mixed",
+      "promptMarkdown": "Review the change in change.diff.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 25,
+      "graders": [
+        {
+          "name": "first-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^[`*# \\s]*Verdict: request changes",
+            "flags": "",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "found-svc-retry-policy",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "svc\\-retry\\-policy|backoff|retry|retries|infinite|unbounded|while True",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "found-svc-timeouts",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "svc\\-timeouts|timeout",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "ledger-svc-retry-policy",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*svc\\-retry\\-policy\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "ledger-svc-timeouts",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*svc\\-timeouts\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?good-code-review\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.0386109,
+            "judgeCostUsd": 0,
+            "durationSeconds": 4,
+            "startedAt": "2026-11-12T20:32:15.947Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-UxBQuz/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-11-12T20:32:16.355Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-aKW7gY/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-11-12T20:32:16.892Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-D8PQDT/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-11-12T20:32:17.167Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-eEO5DJ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-11-12T20:32:18.666Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-NbFmYf/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-11-12T20:32:19.126Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-JGURbS/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "passRateWithout": 0
+      }
+    },
+    {
+      "name": "sqli_no_test",
+      "dir": "evals/sqli_no_test",
+      "source": "mixed",
+      "promptMarkdown": "Review the change in change.diff.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 25,
+      "graders": [
+        {
+          "name": "first-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^[`*# \\s]*Verdict: request changes",
+            "flags": "",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "found-chg-tests-ship-with-change",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "chg\\-tests\\-ship\\-with\\-change|no tests?|without (a )?tests?|missing tests?|no test",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "found-svc-sqli-authn",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "svc\\-sqli\\-authn|sql injection|f-string|string (formatting|concatenation)",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "ledger-chg-tests-ship-with-change",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*chg\\-tests\\-ship\\-with\\-change\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "ledger-svc-sqli-authn",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*svc\\-sqli\\-authn\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?good-code-review\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-11-12T20:32:19.518Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-afQy1H/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-11-12T20:32:19.593Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-JGWTCd/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-11-12T20:32:20.953Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-ec4NB6/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-11-12T20:32:21.449Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-wT8jGL/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-11-12T20:32:21.890Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-5U5IKq/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-11-12T20:32:21.983Z",
+            "error": "exit 1: You've hit your 5-hour limit · resets 12:10am (Europe/Madrid)",
+            "tracePath": "/tmp/claude-eval-jfj7vT/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": []
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "passRateWithout": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 11,
+    "casesPassed": 6,
+    "overallScore": 0.6515151515151515,
+    "overallPassRate": 0.5454545454545454,
+    "meanDelta": 0.0625
+  }
+}

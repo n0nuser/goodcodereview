@@ -1,0 +1,17 @@
+Verdict: request changes. Depth: default. Levels: change and function, plus service for the new endpoint. 1 block FAIL, 0 should-fix, 0 PASS. I did not mark the other cards, because I couldn't load the card files (see the note at the end).
+
+FAIL [block] svc-sqli-authn - app/orders.py:19 - proven: `/orders/search` builds its SQL with an f-string from the `status` and `customer` query parameters (lines 15-16). A request like `?status=' OR '1'='1` returns every order. A `UNION SELECT` payload can read other tables. The old `get_order` at line 26 binds its parameter with `?`, so the codebase already uses the safe pattern. The fix is:
+```python
+db.execute("SELECT id, total FROM orders WHERE status = ? AND customer = ?", (status, customer))
+```
+This also breaks the function-level injection card.
+
+FAIL [block] svc-sqli-authn - app/orders.py:13-21 - inferred: the endpoint has no authentication or authorisation check. It lets any caller filter orders by customer. The diff doesn't show whether auth is applied app-wide (for example a `before_request` hook), so please confirm. `get_order` shows no check either.
+
+Notes, not verdicts:
+- I saw no tests for the new route in the diff.
+- `status` and `customer` are never validated, so an unknown status just returns an empty list. The endpoint also has no pagination or limit.
+
+Dropped findings: 0. Could-not-check findings: the app-wide auth question above.
+
+Note: the Glob for the skill's card files was denied in this mode, so I couldn't read the `references/` cards or run the full ledger. The card id `svc-sqli-authn` comes from the skill's own example and I haven't checked it against the card text. The SQL injection is a real defect whatever the card id.

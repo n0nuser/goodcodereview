@@ -1,0 +1,44 @@
+model	case	with_runs	without_runs	with_mean	without_mean	delta
+haiku	a11y_scoped	1,1,1,1,1	1,1,1,0.5,1	1	0.9	0.1
+haiku	accepted_risk	1,1,1,1,1	1,1,1,1,1	1	1	0
+haiku	audit_cli	0.5,1,1,0.5,1	1,1,1,1,1	0.8	1	-0.2
+haiku	audit_repo	1,1,1,1,1	0.6666666666666666,0.6666666666666666,0.6666666666666666,0.6666666666666666,0.6666666666666666	1	0.6666666666666666	0.33
+haiku	charge_no_idempotency	1,1,1,1,1	1,1,1,1,1	1	1	0
+haiku	clean_refactor	1,1,1,0,1	1,1,1,1,1	0.8	1	-0.2
+haiku	coverage_codebase	1,1,1,1,1	0,0,0,0,0	1	0	1
+haiku	host_header_reset	1,1,1,1,1	1,0.6666666666666666,0.6666666666666666,1,0.6666666666666666	1	0.7999999999999999	0.2
+haiku	injected	1,1,1,1,1	1,1,1,1,1	1	1	0
+haiku	invoice_idor	1,1,1,1,1	1,1,1,1,1	1	1	0
+haiku	list_unbounded	1,1,1,1,1	0.75,0.75,0.75,0.75,0.75	1	0.75	0.25
+haiku	migration_rename	1,1,1,1,1	0.5,0.5,0.5,0.5,0.5	1	0.5	0.5
+haiku	postmortem	1,1,1,1,1	1,1,1,1,1	1	1	0
+haiku	retry_no_timeout	1,1,1,1,1	1,1,1,1,1	1	1	0
+haiku	sqli_no_test	1,1,1,1,1	0.5,0.5,0.5,0.5,1	1	0.6	0.4
+haiku	webhook_replay	0.75,0.75,0.75,0.5,1	0.5,0.75,0.5,0.5,0.75	0.75	0.6	0.15
+sonnet2	a11y_scoped	1,1,1,1,1	0.5,0,0.5,1,0.5	1	0.5	0.5
+sonnet2	accepted_risk	1,1,1,1,1	1,1,1,1,1	1	1	0
+sonnet2	audit_cli	1,1,1,1,1	1,1,1,1,1	1	1	0
+sonnet2	audit_repo	1,0.6666666666666666,1,1,0.6666666666666666	0.6666666666666666,0.6666666666666666,0.6666666666666666,0.6666666666666666,0.6666666666666666	0.8666666666666666	0.6666666666666666	0.2
+sonnet2	charge_no_idempotency	1,1,1,1,1	1,1,1,1,1	1	1	0
+sonnet2	clean_refactor	1,1,1,1,1	1,1,1,1,1	1	1	0
+sonnet2	coverage_codebase	1,1,1,1,1	0,0,0,0,0	1	0	1
+sonnet2	host_header_reset	1,1,1,1,1	1,1,1,1,1	1	1	0
+sonnet2	injected	1,1,1,1,1	1,1,1,1,1	1	1	0
+sonnet2	invoice_idor	1,1,1,1,1	1,1,1,1,1	1	1	0
+sonnet2	list_unbounded	1,1,1,1,1	0.75,0.75,0.75,0.75,0.75	1	0.75	0.25
+sonnet2	migration_rename	1,1,1,1,1	0.5,0.5,0.5,0.5,0.5	1	0.5	0.5
+sonnet2	postmortem	1,1,1,1,1	1,1,1,1,1	1	1	0
+sonnet2	retry_no_timeout	1,1,1,1,1	1,1,1,1,1	1	1	0
+sonnet2	sqli_no_test	1,1,1,1,1	0.5,1,1,1,1	1	0.9	0.1
+sonnet2	webhook_replay	0.75,0.75,0.75,0.75,0.75	0.75,0.5,0.5,0.75,0.5	0.75	0.6	0.15
+old11-sonnet	a11y_scoped	1,1,1	0.5,1,1	1	0.8333333333333334	
+old11-sonnet	accepted_risk	1,1,1	1,1,1	1	1	
+old11-sonnet	audit_cli	1,1,1	1,1,1	1	1	
+old11-sonnet	audit_repo	1,1,1	0.6666666666666666,0.6666666666666666,0.6666666666666666	1	0.6666666666666666	
+old11-sonnet	charge_no_idempotency	1,1,1	1,1,1	1	1	
+old11-sonnet	clean_refactor	0.6666666666666666,0.6666666666666666,0.6666666666666666	0.6666666666666666,0.6666666666666666,0.6666666666666666	0.6666666666666666	0.6666666666666666	
+old11-sonnet	injected	0.5,0.5,0.5	0.5,0.5,0.5	0.5	0.5	
+old11-sonnet	invoice_idor	1,1,1	1,1,1	1	1	
+old11-sonnet	postmortem	0,0,0	0,0,0	0		
+old11-sonnet	retry_no_timeout	0,0,0	0,0,0	0		
+old11-sonnet	sqli_no_test	0,0,0	0,0,0	0		

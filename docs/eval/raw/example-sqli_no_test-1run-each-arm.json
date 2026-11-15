@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.325",
+  "startedAt": "2026-11-15T17:01:53.005Z",
+  "durationSeconds": 17,
+  "costUsd": 0.1021115,
+  "partial": false,
+  "suite": {
+    "root": "/tmp/claude-1000/-home-pablo-dev-goodcodereview/b01aa60a-7dee-4ae0-9203-7ae8e64d707c/scratchpad/evalwt",
+    "ablation": "with-without",
+    "modelOverride": "sonnet",
+    "caseFilter": "sqli_no_test",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "evalwt",
+        "path": "/tmp/claude-1000/-home-pablo-dev-goodcodereview/b01aa60a-7dee-4ae0-9203-7ae8e64d707c/scratchpad/evalwt"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "sqli_no_test",
+      "dir": "evals/sqli_no_test",
+      "source": "mixed",
+      "promptMarkdown": "Review the change in change.diff.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 25,
+      "graders": [
+        {
+          "name": "first-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^[`*# \\s]*Verdict: request changes",
+            "flags": "",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "found-chg-tests-ship-with-change",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "chg\\-tests\\-ship\\-with\\-change|no tests?|without (a )?tests?|missing tests?|no test",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "found-svc-sqli-authn",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "svc\\-sqli\\-authn|sql injection|f-string|string (formatting|concatenation)",
+            "flags": "i",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "ledger-chg-tests-ship-with-change",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*chg\\-tests\\-ship\\-with\\-change\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "ledger-svc-sqli-authn",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*svc\\-sqli\\-authn\\b",
+            "flags": "m",
+            "match": "contains",
+            "arm": "with-only"
+          }
+        },
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?good-code-review\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 6,
+            "costUsd": 0.0716673,
+            "judgeCostUsd": 0,
+            "durationSeconds": 10,
+            "startedAt": "2026-11-15T17:01:53.058Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-K0ecx8/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "first-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^[`*# \\s]*Verdict: request changes",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "found-chg-tests-ship-with-change",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched chg\\-tests\\-ship\\-with\\-change|no tests?|without (a )?tests?|missing tests?|no test",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-svc-sqli-authn",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched svc\\-sqli\\-authn|sql injection|f-string|string (formatting|concatenation)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "ledger-chg-tests-ship-with-change",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "ledger-svc-sqli-authn",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^\\s*(?:[-*]\\s*)?`?FAIL\\s*(?:\\[[a-z-]+\\])?\\s*`?\\s*svc\\-sqli\\-authn\\b",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.030444199999999998,
+            "judgeCostUsd": 0,
+            "durationSeconds": 7,
+            "startedAt": "2026-11-15T17:02:03.429Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-RJbYp4/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "found-chg-tests-ship-with-change",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched chg\\-tests\\-ship\\-with\\-change|no tests?|without (a )?tests?|missing tests?|no test",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "found-svc-sqli-authn",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched svc\\-sqli\\-authn|sql injection|f-string|string (formatting|concatenation)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 0
+  }
+}
