@@ -156,7 +156,7 @@ def home_page(b: BuildInput) -> str:
     agent = ("<h2>Start a review</h2>"
              "<p>Paste this to your agent:</p>"
              + copy_pre("Read https://goodcodereview.com/llms.txt and use it to review my code.", "Copy prompt") +
-             f'<p>Free and open source. <a href="{REPO}">Star it on GitHub</a> to follow new cards.</p>'
+             '<p>Free and open source: code under MIT, content under CC BY 4.0.</p>'
              "<details><summary>Install it as a skill or a Claude Code plugin</summary>"
              "<p>To install it as a skill (Claude Code, Codex, Cursor, and other tools that read <code>skills/&lt;name&gt;/SKILL.md</code>), run:</p>"
              + copy_pre(INSTALL_SKILL, "Copy install command") +

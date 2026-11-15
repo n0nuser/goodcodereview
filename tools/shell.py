@@ -2,6 +2,7 @@
 import functools
 import html
 import json
+import os
 import re
 from collections.abc import Sequence
 from typing import Any
@@ -83,7 +84,13 @@ def _nav(links: Sequence[NavLink], cur: str) -> str:
                 break
         else:
             items.append(anchor(link))
-    items.append(f'<a href="{REPO}">GitHub</a>')
+    items.append('<a class="em" href="guides">Guides</a>')
+    items.append(f'<a class="em" href="{REPO}/issues/new/choose">Feedback</a>')
+    stars = os.environ.get("GCR_STARS", "")
+    label = f"GitHub, {stars} stars" if stars else "GitHub"
+    badge = f'<span class="st">{html.escape(stars)}</span>' if stars else ""
+    icon = f'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="{orgs.ICONS["github"]}"/></svg>'
+    items.append(f'<a class="gh" href="{REPO}" aria-label="{label}">{icon}<span>GitHub</span>{badge}</a>')
     return '<header><nav aria-label="Site">' + "".join(items) + "</nav></header>"
 
 
@@ -121,8 +128,9 @@ def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "",
             '<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32">'
             f"<title>{html.escape(full)}</title>{head_tags(full, desc, slug)}<style>{CSS}</style>{jsonld}</head>"
             f'<body><a class=skip href=#main>Skip to content</a>'
+            f'<div class=vh>For the complete documentation index, see <a href="/llms.txt" tabindex=-1>llms.txt</a>. Each page is also served as Markdown at its URL with .md added.</div>'
             f"{_nav(links, cur)}<main id=main tabindex=-1>"
-            f'<div class=vh>For the complete documentation index, see <a href="/llms.txt" tabindex=-1>llms.txt</a>. Each page is also served as Markdown at its URL with .md added.</div>{trail}'
+            f'{trail}'
             f"<h1>{html.escape(title)}</h1>{stamp}{body}</main>{sprite(body)}"
             f"{FOOTER}{tail}</body></html>")
     return extensionless(markup)
