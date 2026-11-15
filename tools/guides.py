@@ -47,6 +47,31 @@ GUIDES = (
           ("chg-agent-grounded-code", "chg-verify-before-claim", "chg-review-signal"),
           "To give your coding agent this standard, run `npx skills add n0nuser/goodcodereview` and ask it to review its own diff, or paste the one-line prompt above. "
           "Nothing is sent to us: the skill reads static files. See the [change level](html:change) for every check on a diff."),
+    Guide("good-code-review-vs-asking-your-agent", "Good Code Review vs asking your agent to review",
+          "Where a fixed code review rule set helped an agent in our own tests, where it made no difference, and when to skip it. The numbers are included.",
+          "You can ask your agent to review code with no checklist. Often that works well. This page shows where a fixed rule set helped in our own "
+          "tests, where it made no difference, and when not to bother.\n\n"
+          "How we measured: 16 small review tasks, each with a planted flaw, such as a column rename that breaks old code during a rollout. Sonnet "
+          "reviewed each task twice with the skill and twice without it. "
+          "A grader checked each reply for the planted flaw and for the verdict line. The tasks are ours, the set is small, and one model ran them. "
+          "Read the numbers as a first look, not a benchmark.\n\n"
+          "Scores run from 0 to 1, with the skill first and without it second.\n\n"
+          "- Whole-codebase audit: 1.0 and 0.0.\n"
+          "- Column rename in a migration: 1.0 and 0.5.\n"
+          "- Webhook replay: 0.88 and 0.5.\n"
+          "- List endpoint with no page limit: 1.0 and 0.75.\n"
+          "- SQL built from request input, with no test: 1.0 and 0.75.\n"
+          "- Audit of a small web service: 1.0 and 0.67.\n\n"
+          "Both scored 1.0 on the other 10 tasks. These included a missing retry timeout, a postmortem, a login-only invoice lookup, a duplicate "
+          "charge, a clean refactor, and a comment that told the reviewer to approve. "
+          "The skill passed 15 of 16 tasks, and the average gain was 0.17. Earlier runs on a smaller set gave a gain of 0.06, so expect the numbers to move.\n\n"
+          "What the rules add is a fixed list, a verdict per rule with a file and line, and sources you can check. What they do not add is much, when your agent already knows the problem. "
+          "Skip the checklist for a tiny change, for a rule your linter already enforces, and for a question of taste. "
+          "Left alone, an agent sometimes reviews without loading the skill, so name it in your request.\n\n"
+          "These are the stable checks behind four of those tasks.",
+          ("chg-expand-contract", "svc-webhook-replay-window", "svc-list-endpoint-paginates", "svc-sqli-authn"),
+          "The tasks and graders are in the [evals folder](https://github.com/n0nuser/goodcodereview/tree/main/evals). If you find a case where the rules add nothing, "
+          "[open an issue](https://github.com/n0nuser/goodcodereview/issues/new). We want those cases."),
     Guide("what-to-check-in-a-database-migration", "What to check in a database migration",
           "What to check in a database migration: expand and contract, breaking changes, staged rollout, and a tested rollback.",
           "A database migration review asks whether old and new code can both run against the schema while the change rolls out, and whether you can undo it. "
