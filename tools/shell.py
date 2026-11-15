@@ -2,7 +2,6 @@
 import functools
 import html
 import json
-import os
 import re
 from collections.abc import Sequence
 from typing import Any
@@ -87,11 +86,8 @@ def _nav(links: Sequence[NavLink], cur: str) -> str:
             items.append(anchor(link))
     items.append(f'<a class="em" href="guides"{" aria-current=page" if cur == "guides.html" else ""}>Guides</a>')
     items.append(f'<a class="em" href="{REPO}/issues/new/choose">Feedback</a>')
-    stars = os.environ.get("GCR_STARS", "")
-    label = f"GitHub, {stars} star{'' if stars == '1' else 's'}" if stars else "GitHub"
-    badge = f'<span class="st">{html.escape(stars)}</span>' if stars else ""
     icon = f'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="{orgs.ICONS["github"]}"/></svg>'
-    items.append(f'<a class="gh" href="{REPO}" aria-label="{label}">{icon}<span>GitHub</span>{badge}</a>')
+    items.append(f'<a class="gh" href="{REPO}" aria-label="GitHub">{icon}<span>GitHub</span></a>')
     return '<header><nav aria-label="Site">' + "".join(items) + "</nav></header>"
 
 
