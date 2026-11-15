@@ -143,7 +143,7 @@ LLMS_HEAD = """# Good Code Review
 
 > Vetted code-review rules for people and agents. Each check ends in PASS, FAIL, or N/A with file:line evidence.
 
-Each rule is a card, grouped into eight levels from one diff up to an incident. A review picks the level that matches the input and reports a verdict for each card of that level. A summarising fetch tool drops cards, so raw text keeps them whole.
+Each rule is a card, in eight levels from one diff up to an incident. A review picks the level that matches the input (one file is a file, even in a repo) and reports a verdict for each card of that level. A summarising fetch tool drops cards; raw text keeps them whole.
 
 | Input | Level |
 |---|---|
@@ -151,6 +151,8 @@ Each rule is a card, grouped into eight levels from one diff up to an incident. 
 
 Depth: `quick` (block cards only), `default` (block and should-fix), `deep` (every severity), `audit` (a whole repo, service, or release; see audit.md).
 Concerns, listed on each card: """ + ", ".join(CONCERNS) + """. A review can cover only some, and concerns.md groups the cards by concern.
+
+The first line of a review is its verdict, `Verdict: approve` or `Verdict: request changes`. Card ids come from the files below:
 
 ```
 Verdict: request changes - change - 1 block, 1 PASS
