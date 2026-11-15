@@ -86,7 +86,7 @@ def buttons(label: str, key: str, values: Iterable[str], count: dict[str, int], 
 
 
 def copy_pre(text: str, label: str) -> str:
-    return f"<pre class='wrap'><code>{text}</code></pre>" + f'<button type="button" data-copy="pre" hidden>{label}</button>'
+    return f"<div class='cb'><pre class='wrap'><code>{text}</code></pre>" + f'<button type="button" class="cp" data-copy="pre" aria-label="{label}" hidden>Copy</button></div>'
 
 
 _TABLE_HEAD = '<li class="th" aria-hidden="true"><span>Card</span><span>Severity</span><span>Concerns</span><span>Rule</span></li>'

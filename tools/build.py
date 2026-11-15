@@ -8,13 +8,16 @@ A real run writes the new site and skill into temporary folders first and swaps 
 so a failed budget never leaves skills/ half regenerated.
 """
 import argparse
+import json
+import os
 import shutil
 import sys
+import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 
 from assets import FAVICON_SVG
-from config import ROOT, SITE, SKILL, TOOLS
+from config import REPO, ROOT, SITE, SKILL, TOOLS
 from context import BuildInput, build_date, read_input
 from errors import ToolError
 from site_cards import cards_files
@@ -115,10 +118,22 @@ def describe(plan: Plan, site: Path = SITE, skill: Path = SKILL) -> str:
     return "\n".join(lines)
 
 
+def fetch_stars() -> str:
+    """The repo's star count for the nav badge, read once at build time so the page makes no request. Empty when GitHub does not answer."""
+    try:
+        req = urllib.request.Request(REPO.replace("github.com/", "api.github.com/repos/"), headers={"User-Agent": "goodcodereview-build"})
+        with urllib.request.urlopen(req, timeout=4) as r:  # noqa: S310 (a fixed https URL)
+            n = int(json.load(r)["stargazers_count"])
+    except (OSError, ValueError, KeyError):
+        return ""
+    return f"{n / 1000:.1f}k".replace(".0k", "k") if n >= 1000 else str(n)
+
+
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--dry-run", action="store_true", help="run every check and print what would change; write nothing")
     args = parser.parse_args(argv)
+    os.environ.setdefault("GCR_STARS", fetch_stars())
     try:
         plan = plan_build(ROOT)
     except ToolError as e:
