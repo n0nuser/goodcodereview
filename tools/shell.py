@@ -103,6 +103,7 @@ def _crumbs(crumbs: Sequence[tuple[str, str]]) -> str:
     return (f'<nav class="crumbs" aria-label="Breadcrumb"><ol>{"".join(items)}</ol></nav>')
 
 
+DIRECTIVE = '<div class=vh>For the complete documentation index, see <a href="/llms.txt" tabindex=-1>llms.txt</a>. Each page is also served as Markdown at its URL with .md added.</div>'
 _LOCAL_HTML_HREF = re.compile(r'href="(/?)([\w/-]+)\.html(?=[?#"])')
 
 
@@ -129,8 +130,7 @@ def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "",
             '<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32">'
             f"<title>{html.escape(full)}</title>{head_tags(full, desc, slug)}<style>{CSS}</style>{jsonld}</head>"
             f'<body><a class=skip href=#main>Skip to content</a>'
-            f'<div class=vh>For the complete documentation index, see <a href="/llms.txt" tabindex=-1>llms.txt</a>. Each page is also served as Markdown at its URL with .md added.</div>'
-            f"{_nav(links, cur)}<main id=main tabindex=-1>"
+            f"{_nav(links, cur).replace('<header>', '<header>' + DIRECTIVE, 1)}<main id=main tabindex=-1>"
             f'{trail}'
             f"<h1>{html.escape(title)}</h1>{stamp}{body}</main>{sprite(body)}"
             f"{FOOTER}{tail}</body></html>")
