@@ -1,0 +1,19 @@
+**Review of change.diff** (adds `/orders/search` in `app/orders.py`)
+
+**Critical: SQL injection** (lines 18–20). `status` and `customer` come straight from query parameters and are interpolated into the SQL with an f-string. A request like `?status=' OR '1'='1` returns every order. With `UNION SELECT` or stacked statements, depending on the driver, an attacker could read or modify other tables. The existing `get_order` already uses a parameterized query, so this is inconsistent with the file.
+
+Fix:
+
+```python
+rows = db.execute(
+    "SELECT id, total FROM orders WHERE status = ? AND customer = ?",
+    (status, customer),
+).fetchall()
+```
+
+**Other points**
+- **Authorization:** The endpoint has no auth check. Anyone can search orders by customer name, and that exposes order data. Confirm whether `get_order` is protected elsewhere, for example by a `before_request` hook, and that the same protection applies here.
+- **Unbounded results:** There is no `LIMIT` or pagination. An empty `customer` matches only rows with an empty customer, which is probably not what a caller expects. If you want "any customer" semantics, build the filter conditionally.
+- **No tests:** The change adds none. At the least, add one for the injection case and one for normal filtering.
+
+I'd block the merge until the injection is fixed.
