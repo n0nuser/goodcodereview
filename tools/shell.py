@@ -95,6 +95,14 @@ def _crumbs(crumbs: Sequence[tuple[str, str]]) -> str:
     return (f'<nav class="crumbs" aria-label="Breadcrumb"><ol>{"".join(items)}</ol></nav>')
 
 
+_LOCAL_HTML_HREF = re.compile(r'href="(/?)([\w/-]+)\.html(?=[?#"])')
+
+
+def extensionless(markup: str) -> str:
+    """Point every internal link at the URL Cloudflare serves, so a link never costs a 301 (`x.html` -> `x`, `index.html` -> `/`)."""
+    return _LOCAL_HTML_HREF.sub(lambda m: 'href="/' if m[2] == "index" else f'href="{m[1]}{m[2]}', markup)
+
+
 def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "", desc: str = "", slug: str = "",
          ld: dict[str, Any] | None = None, script: bool = False, updated: str = "",
          crumbs: Sequence[tuple[str, str]] = ()) -> str:
@@ -109,7 +117,7 @@ def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "",
     ld = ld or (page_ld(slug, full, desc, functools.cache(build_date)(), crumbs) if slug else None)
     jsonld = '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + "</script>" if ld else ""
     tail = '<p id=said class=vh role=status></p><script>' + JS + '</script>' if script else ""
-    return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">'
+    markup = (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">'
             '<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32">'
             f"<title>{html.escape(full)}</title>{head_tags(full, desc, slug)}<style>{CSS}</style>{jsonld}</head>"
             f'<body><a class=skip href=#main>Skip to content</a>'
@@ -117,3 +125,4 @@ def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "",
             f'<div class=vh>For the complete documentation index, see <a href="/llms.txt" tabindex=-1>llms.txt</a>. Each page is also served as Markdown at its URL with .md added.</div>{trail}'
             f"<h1>{html.escape(title)}</h1>{stamp}{body}</main>{sprite(body)}"
             f"{FOOTER}{tail}</body></html>")
+    return extensionless(markup)
