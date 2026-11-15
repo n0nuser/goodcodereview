@@ -19,6 +19,8 @@ from prose import (
     DRAFTS_DESC,
     EMPTY_MARK,
     EXAMPLE,
+    FAQ,
+    FAQ_DESC,
     FEEDBACK,
     GLOSSARY_DESC,
     GUIDES_DESC,
@@ -129,6 +131,7 @@ def markdown_twins(b: BuildInput, skill: SkillOutput) -> dict[str, str]:
     glossary = "\n\n".join(_xlink(re.sub(r"^# ", "## ", p.read_text(), count=1).strip(), skill.stable_home, b.ids) for p in b.glossary)
     twins["glossary"] = Twin("Glossary", GLOSSARY_DESC, "# Glossary\n\n" + glossary + "\n")
     twins["about"] = Twin("About", ABOUT_DESC, "# About\n\n" + ABOUT)
+    twins["faq"] = Twin("FAQ", FAQ_DESC, "# FAQ\n\n" + FAQ.replace("TALLY", b.tally))
     twins["privacy"] = Twin("Privacy", PRIVACY_DESC, "# Privacy\n\n" + PRIVACY)
     drafts = _xlink(re.sub(r"^# ", "## ", drafts_markdown(b), flags=re.M), skill.stable_home, b.ids)
     twins["drafts"] = Twin("Drafts by what they lack", DRAFTS_DESC, "# Drafts by what they lack\n\n" + drafts + "\n")
