@@ -118,7 +118,7 @@ def test_guides_have_page_twin_sitemap_entry_and_one_llms_link(site_text: dict[s
 def test_listing_and_guide_pages_have_breadcrumbs(site_text: dict[str, str]) -> None:
     assert '<li><span aria-current="page">Service audit</span></li>' in site_text["service.html"]
     guide = site_text["guides/how-to-review-a-pull-request.html"]
-    assert '<a href="/guides.html">Guides</a>' in guide and '"@type":"BreadcrumbList"' in guide.replace(" ", "")
+    assert '<a href="/guides">Guides</a>' in guide and '"@type":"BreadcrumbList"' in guide.replace(" ", "")
 
 
 def _visible_text(page: str) -> str:
@@ -176,4 +176,4 @@ def test_a_split_level_hub_keeps_every_card_id_and_links_each_to_a_part_page(pla
         assert "<article" not in hub
         for cid in cards:
             assert f'<li id="{cid}"' in hub
-            assert re.search(rf'<a href="{lv}-[a-z]+\.html#{cid}">', hub)
+            assert re.search(rf'<a href="{lv}-[a-z]+#{cid}">', hub)

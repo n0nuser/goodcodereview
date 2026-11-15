@@ -27,7 +27,7 @@ HEADERS_MAX_LINE = 2_000
 LLMS_MIN = 100  # characters; a shorter llms.txt is empty in practice
 PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
 FEATURE_TAGS = ("img", "iframe", "form", "input", "video", "audio")
-FOOTER_LINKS = ["llms.txt", "sitemap.xml", "about.html", "privacy.html", "/AGENTS.md", "/skills/good-code-review", "/issues"]
+FOOTER_LINKS = ["llms.txt", "sitemap.xml", "about", "privacy", "/AGENTS.md", "/skills/good-code-review", "/issues"]
 Attrs = dict[str, str | None]
 
 
@@ -255,7 +255,7 @@ def _items_14_29_37_42(r: Report, pages: dict[str, Page], content: dict[str, Pag
 
 def _items_20_38(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
     """20, 38: discovery links in footer and head."""
-    foot = ["llms.txt", "sitemap.xml", "about.html", "privacy.html", "/AGENTS.md", "/skills/good-code-review", "/issues"]
+    foot = ["llms.txt", "sitemap.xml", "about", "privacy", "/AGENTS.md", "/skills/good-code-review", "/issues"]
     gaps = [n for n, p in pages.items() if not all(any(h.endswith(f) for h in p.hrefs) for f in foot)]
     r.check(20, not gaps, f"footer links About, Privacy, Contact, llms.txt, sitemap, AGENTS.md, and the skill folder on every page{': ' + ', '.join(gaps) if gaps else ''}")
     head_gaps = [n for n, p in content.items() if not (p.link("sitemap") and any(ln.get("href") == "/llms.txt" for ln in p.link("alternate")))]

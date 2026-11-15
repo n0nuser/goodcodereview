@@ -45,7 +45,7 @@ def page_name(card: Card) -> str:
 
 def href(card: Card) -> str:
     """Site-relative link to the card on its page."""
-    return f"{page_name(card)}.html#{card.fm['id']}"
+    return f"{page_name(card)}#{card.fm['id']}"
 
 
 def context(card: Card) -> list[str]:
