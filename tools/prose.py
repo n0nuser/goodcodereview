@@ -187,6 +187,54 @@ The site and the cards are free to read and use. The content is under [CC BY 4.0
 # Contact
 
 To report a wrong card, propose a card, or ask a question, open an issue on [GitHub Issues](https://github.com/n0nuser/goodcodereview/issues)."""
+FAQ_DESC = "Answers about Good Code Review: where the rules come from, who decides what is stable, whether it runs code or sends data, and how to help."
+FAQ = """# What is it?
+
+A free set of code review rules. A person or an AI agent picks a level, such as one diff or a whole service, and checks the code against each rule. Every check ends in PASS, FAIL or N/A, with a file and line. TALLY
+
+# Where do the rules come from?
+
+Each stable rule cites at least three independent organisations that publish the same practice. The card links every source, so you can read them and judge. Rules with less backing stay as drafts and never change a verdict. The bar is written down in [the promotion guide](https://github.com/n0nuser/goodcodereview/blob/main/docs/PROMOTION.md).
+
+# Who decides what is stable?
+
+One maintainer applies the bar, and every change is in the public history. A blog or a book by one author counts as a reference, not as one of the three. The one exception is the maintainer's own guide, which an [ADR](https://github.com/n0nuser/goodcodereview/blob/main/docs/adr/0001-creator-sources-satisfy-the-stable-floor.md) records.
+
+# Is it a linter?
+
+No. A linter checks syntax and style. These rules cover what a reviewer decides: scope, compatibility, failure handling and rollout. Many cards also name a linter or test that could enforce the rule. For those, the advice is to add the check.
+
+# Is it an AI reviewer?
+
+No. The rules and the verdict format are plain Markdown. An agent or a person reviews against them.
+
+# Why not just ask my agent to review?
+
+Often you can. [This guide](https://goodcodereview.com/guides/good-code-review-vs-asking-your-agent) shows where the rules helped in our own tests, where they made no difference, and when to skip them.
+
+# Does it run code or send my code anywhere?
+
+The skill is Markdown and runs nothing by itself. In audit mode the agent may run read-only commands. It must never send a value from your code to a network service. The site sets no cookies and loads nothing from other sites. See the [privacy page](https://goodcodereview.com/privacy).
+
+# Will it be noisy?
+
+Each card says when it applies. Cards that do not apply collapse into one N/A count. The default depth shows only `block` and `should-fix` findings, at most 20, and says how many it hid.
+
+# Why are some levels thin?
+
+Fewer than three organisations back most of the rest, so they stay drafts. The [drafts page](https://goodcodereview.com/drafts) lists what each one lacks.
+
+# Can someone copy the cards?
+
+Yes, with credit. The content is CC BY 4.0 and the code is MIT.
+
+# Who made it? Is it linked to the organisations you cite?
+
+Pablo Jesús González Rubio, as a personal project. None of the organisations cited wrote it or endorse it.
+
+# How do I help?
+
+Open a [good first card issue](https://github.com/n0nuser/goodcodereview/labels/good%20first%20card). Add one source to a draft, or show with a source that the draft is wrong. Both help. To report a wrong card, use the [correction form](https://github.com/n0nuser/goodcodereview/issues/new?template=card-correction.yml)."""
 PRIVACY = """This site collects nothing about you. It sets no cookies, runs no analytics or tracking scripts, has no accounts or forms, and stores nothing in your browser.
 
 # What runs in your browser

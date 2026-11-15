@@ -11,7 +11,7 @@ from config import ROOT
 from errors import BuildError
 from markdown import check_md
 from models import LEVELS, Card, Level, LevelCount, NavLink
-from prose import ABOUT, AUDIT_MD, EMPTY_MARK, NAME, PRIVACY
+from prose import ABOUT, AUDIT_MD, EMPTY_MARK, FAQ, NAME, PRIVACY
 from validate import load_cards, validate
 
 
@@ -82,7 +82,7 @@ def source_errors(cards: list[Card], glossary: list[Path], root: Path) -> list[s
     """Markdown the renderer cannot draw, in the cards, the glossary, and the page texts."""
     errors = [e for c in cards for e in check_md(c.path.relative_to(root), c.body)]
     errors += [e for g in glossary for e in check_md(g.relative_to(root), g.read_text())]
-    errors += [e for name, text in (("ABOUT", ABOUT), ("PRIVACY", PRIVACY), ("AUDIT", AUDIT_MD)) for e in check_md(name, text)]
+    errors += [e for name, text in (("ABOUT", ABOUT), ("FAQ", FAQ), ("PRIVACY", PRIVACY), ("AUDIT", AUDIT_MD)) for e in check_md(name, text)]
     return errors
 
 

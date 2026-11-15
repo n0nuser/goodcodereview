@@ -23,6 +23,8 @@ from prose import (
     DRAFTS_DESC,
     EMPTY_MARK,
     EXAMPLE,
+    FAQ,
+    FAQ_DESC,
     FEEDBACK,
     GLOSSARY_DESC,
     GUIDES_DESC,
@@ -128,7 +130,7 @@ def drafts_markdown(b: BuildInput) -> str:
 
 def text_pages(b: BuildInput, drafts_md: str) -> dict[str, str]:
     """About, Privacy, Audit, Drafts, and the glossary."""
-    specs = (("about", "About", ABOUT, ABOUT_DESC), ("privacy", "Privacy", PRIVACY, PRIVACY_DESC),
+    specs = (("about", "About", ABOUT, ABOUT_DESC), ("faq", "FAQ", FAQ.replace("TALLY", b.tally), FAQ_DESC), ("privacy", "Privacy", PRIVACY, PRIVACY_DESC),
              ("audit", "Audit", AUDIT_INTRO + "\n\n" + "\n".join(AUDIT_STEPS), AUDIT_DESC),
              ("drafts", "Drafts by what they lack", drafts_md, DRAFTS_DESC))
     pages = {f"{slug}.html": page(title, md(text, b.ids), links=b.links, desc=desc, slug=slug) for slug, title, text, desc in specs}

@@ -55,6 +55,8 @@ META: dict[str, tuple[str, str]] = {
                "Short guides to common review questions, such as how to review a pull request and what to check in a migration. Each lists vetted checks."),
     "about": ("About Good Code Review: Authorship, Method, Licences",
               "Who makes Good Code Review, how a rule becomes stable, what stable and draft cards mean, and the licences for the content and the code."),
+    "faq": ("Good Code Review FAQ: Sources, Method, Privacy",
+            "Answers about Good Code Review: where the rules come from, who decides what is stable, whether it runs code or sends data, and how to help."),
     "privacy": ("Privacy: Good Code Review Collects Nothing",
                 "Good Code Review sets no cookies, runs no analytics, asks for no accounts, and loads nothing from other sites. Here is what the host logs."),
     "audit": ("Audit a Repo or Release | Good Code Review",

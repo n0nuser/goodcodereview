@@ -265,6 +265,7 @@ def _llms(level_index: dict[Level, list[IndexPart]], b: BuildInput, chars: dict[
             "- [Language packs](" + f"{BASE}/pack-{b.packs[0]}.md): " + ", ".join(f"[{pk}]({BASE}/pack-{pk}.md)" for pk in b.packs) + ".",
             f"- [llms-full.txt]({BASE}/llms-full.txt): levels, audit, glossary, guides in one file.",
             f"- [Draft cards]({BASE}/llms-drafts.txt): not vetted. {DRAFT_RULE}",
+            f"- [FAQ]({BASE}/faq.md): where the rules come from, what runs, and how to help.",
             f"- [About]({BASE}/about.md): who makes this and under which licence.",
             f"- [Privacy]({BASE}/privacy.md): the site collects nothing.",
             f"- [Drafts by what they lack]({BASE}/drafts.md): every draft grouped by what keeps it from stable.",
