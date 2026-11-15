@@ -43,7 +43,7 @@ Recommendation: do not add a lens as a new axis next to level, concern and depth
 
 Not recommended: more named lenses (security-minded, performance-minded). That is what the `concern` filter already does. I could not find the poteto tweet; if you paste it I will check these two against it.
 
-## E. From Fran's two reviews
+## E. From two outside reviews
 
 | # | Item | Recommendation |
 |---|---|---|
