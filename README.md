@@ -97,7 +97,7 @@ Each check gets `PASS`, `FAIL`, or `N/A`, with `file:line` evidence. A `FAIL` ca
 
 Send one card per pull request. See [CONTRIBUTING.md](CONTRIBUTING.md). Agents: see [AGENTS.md](AGENTS.md).
 
-See also [docs/COVERAGE.md](docs/COVERAGE.md), which maps sources to cards, and [docs/deploy.md](docs/deploy.md).
+Eval results (16 tasks, with and without the skill, two models) are in [docs/eval](docs/eval). See also [docs/COVERAGE.md](docs/COVERAGE.md), which maps sources to cards, and [docs/deploy.md](docs/deploy.md).
 
 ## Find what you need
 
