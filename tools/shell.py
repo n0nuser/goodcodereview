@@ -15,7 +15,8 @@ from models import LEVELS, NavLink
 from seo import KEYWORDS, meta, page_ld
 
 FOOTER = (f'<footer><p>Created and edited by <a href="https://pablogonzalez.me">Pablo Jesús González Rubio</a> · Content CC BY 4.0 · Code MIT · <a href="{REPO}">Source</a></p>'
-          '<ul class="fl"><li><a href="guides.html">Guides</a></li><li><a href="glossary.html">Glossary</a></li><li><a href="drafts.html">Drafts by what they lack</a></li><li><a href="about.html">About</a></li>'
+          '<ul class="fl"><li><a href="guides.html">Guides</a></li><li><a href="glossary.html">Glossary</a></li>'
+          '<li><a href="drafts.html">Drafts by what they lack</a></li><li><a href="about.html">About</a></li>'
           '<li><a href="privacy.html">Privacy</a></li>'
           f'<li><a href="{REPO}/issues">Contact (GitHub Issues)</a></li><li><a href="llms.txt">llms.txt</a></li><li><a href="sitemap.xml">Sitemap</a></li>'
           f'<li><a href="{REPO}/blob/main/AGENTS.md">AGENTS.md</a></li><li><a href="{REPO}/tree/main/skills/good-code-review">Skill folder</a></li></ul></footer>')
