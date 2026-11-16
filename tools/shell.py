@@ -11,7 +11,7 @@ from assets import CSS, JS
 from config import BASE, MONOGRAM_FONT_SIZES, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH, REPO, SITE_DESC, SITE_NAME
 from context import build_date
 from models import LEVELS, NavLink
-from seo import KEYWORDS, meta, page_ld
+from seo import meta, page_ld
 
 FOOTER = (f'<footer><p>Created and edited by <a href="https://pablogonzalez.me">Pablo Jesús González Rubio</a> · Content CC BY 4.0 · Code MIT · <a href="{REPO}">Source</a></p>'
           '<ul class="fl"><li><a href="guides.html">Guides</a></li><li><a href="glossary.html">Glossary</a></li><li><a href="faq.html">FAQ</a></li>'
@@ -40,9 +40,7 @@ def head_tags(title: str, desc: str, slug: str) -> str:
     url = page_url(slug)
     return (f'<meta name="description" content="{quote(desc)}"><link rel="canonical" href="{url}">'
             '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">'
-            '<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f7"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#2b2b2b">'
-            + (f'<meta name="keywords" content="{quote(KEYWORDS)}">' if slug == "index" else "")
-            + f'<link rel="alternate" hreflang="en" href="{url}"><link rel="alternate" hreflang="x-default" href="{url}">'
+            '<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fafafa"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121212">'
             + "".join(f'<meta property="og:{k}" content="{quote(v)}">' for k, v in og.items())
             + "".join(f'<meta name="twitter:{k}" content="{quote(v)}">' for k, v in tw.items())
             + f'<link rel="alternate" type="text/markdown" href="/{slug}.md"><link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">'
@@ -99,7 +97,8 @@ def _crumbs(crumbs: Sequence[tuple[str, str]]) -> str:
     return (f'<nav class="crumbs" aria-label="Breadcrumb"><ol>{"".join(items)}</ol></nav>')
 
 
-DIRECTIVE = '<div class=vh>For the complete documentation index, see <a href="/llms.txt" tabindex=-1>llms.txt</a>. Each page is also served as Markdown at its URL with .md added.</div>'
+DIRECTIVE = ('<div class=vh aria-hidden=true>For the complete documentation index, see <a href="/llms.txt" tabindex=-1>llms.txt</a>. '
+             'Each page is also served as Markdown at its URL with .md added.</div>')
 _LOCAL_HTML_HREF = re.compile(r'href="(/?)([\w/-]+)\.html(?=[?#"])')
 
 
@@ -123,6 +122,7 @@ def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "",
     jsonld = '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + "</script>" if ld else ""
     tail = '<p id=said class=vh role=status></p><script>' + JS + '</script>' if script else ""
     markup = (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">'
+            '<meta name="text-scale" content="scale">'
             '<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32">'
             f"<title>{html.escape(full)}</title>{head_tags(full, desc, slug)}<style>{CSS}</style>{jsonld}</head>"
             f'<body><a class=skip href=#main>Skip to content</a>'
