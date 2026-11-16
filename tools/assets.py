@@ -34,7 +34,8 @@ background:var(--bg);color:var(--fg);font:var(--step-0)/1.55 var(--text)}
 body>*{grid-column:2}
 :where(h1,h2,h3,p,ul,pre,figure){margin:0}
 :is(main,article)>*+*{margin-block-start:var(--space-s)}
-p{max-inline-size:none}ul:not([class]){padding-inline-start:1.25em}
+ul:not([class]){padding-inline-start:1.25em}
+:is(main,article)>:is(p,ul:not([class])){max-inline-size:68ch}
 h1,h2,h3{font-family:var(--ui);line-height:1.2}
 main>h1{margin-block-start:var(--space-l);font-size:var(--step-3);font-weight:700;letter-spacing:-.01em}
 main>h2{margin-block-start:var(--space-l);padding-block-start:var(--space-s);border-block-start:2px solid var(--fg);font-size:var(--step-1)}

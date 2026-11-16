@@ -174,7 +174,7 @@ def home_page(b: BuildInput) -> str:
         "<h2>Where the rules come from</h2><p>" + BACKING + ' Open a stable card, such as <a href="' + b.ids["svc-sqli-authn"] + '">svc-sqli-authn</a>, '
         "to see the organisations and the sources behind it.</p>"
         "<h2>Scope a review</h2><p>To review only some concerns, such as performance, use the <a href=\"concerns.html\">Concerns</a> page. "
-        "Its filters live in the address, so <a href=\"concerns.html?concern=security,performance\">concerns.html?concern=security,performance</a> opens the security and performance cards.</p>"
+        "Its filters live in the address, so <a href=\"concerns.html?concern=security,performance\">/concerns?concern=security,performance</a> opens the security and performance cards.</p>"
         "<h2>Report format</h2><p>" + VERDICT + "</p>"
         "<h2>Audit a repo, service, or release</h2><p>" + inline(AUDIT_NOTE, {}) + "</p>"
         "<h2>Feedback</h2><p>" + inline(FEEDBACK, {}) + "</p>"
