@@ -39,7 +39,9 @@ ul:not([class]){padding-inline-start:1.25em}
 h1,h2,h3{font-family:var(--ui);line-height:1.2}
 main>h1{margin-block-start:var(--space-l);font-size:var(--step-3);font-weight:700;letter-spacing:-.01em}
 main>h2{margin-block-start:var(--space-l);padding-block-start:var(--space-s);border-block-start:2px solid var(--fg);font-size:var(--step-1)}
+main>h2.s{border-block-start:1px solid var(--line)}
 article>h2{font-size:var(--step-1)}
+h3.lane{margin-block-start:var(--space-m);font:700 var(--step-0)/1.2 var(--ui)}
 h3{font:600 var(--step-0)/1.2 var(--mono)}
 a{color:var(--acc);text-decoration-thickness:.07em;text-underline-offset:.2em}
 :focus-visible{outline:max(2px,.08em) solid var(--acc);outline-offset:.2em}
