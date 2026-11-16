@@ -78,7 +78,9 @@ def _nav(links: Sequence[NavLink], cur: str) -> str:
                 if title not in seen:
                     seen.add(title)
                     menu = "".join(anchor(x) for x in links if test(x.href))
-                    items.append(f"<details><summary>{title}</summary><div>{menu}</div></details>")
+                    key = f"nav-{title.lower()}"
+                    items.append(f'<span class="dd"><button type="button" class="nb" popovertarget="{key}" aria-controls="{key}">{title}</button>'
+                                 f'<div id="{key}" popover>{menu}</div></span>')
                 break
         else:
             items.append(anchor(link))

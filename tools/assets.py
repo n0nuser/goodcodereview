@@ -46,22 +46,24 @@ h3{font:600 var(--step-0)/1.2 var(--mono)}
 a{color:var(--acc);text-decoration-thickness:.07em;text-underline-offset:.2em}
 :focus-visible{outline:max(2px,.08em) solid var(--acc);outline-offset:.2em}
 nav{display:flex;flex-wrap:wrap;align-items:center;gap:0 var(--space-m);padding-block:var(--space-s);border-block-end:1px solid var(--line);font:var(--step--1)/1.3 var(--ui)}
-nav a,nav summary{display:flex;align-items:center;min-block-size:44px;padding-block:0;color:var(--fg);text-decoration:none}
+nav a,nav .nb{display:flex;align-items:center;min-block-size:44px;padding-block:0;color:var(--fg);text-decoration:none}
 nav a[aria-current]{font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.35em}
-nav{position:relative}nav>a{position:relative;z-index:12}nav>a:last-child{margin-inline-start:auto}
+nav{position:relative}nav>a:last-child{margin-inline-start:auto}
 nav a.em{font-weight:700;color:var(--acc)}
 nav a.gh{gap:.45em;padding-inline:.7rem;border:1px solid var(--edge);border-radius:2rem;min-block-size:36px;font-weight:600}nav a.gh svg{inline-size:1.15em;block-size:1.15em;fill:currentColor}nav a.gh:hover{border-color:var(--fg)}
 
-nav details{position:relative;border:0}nav details>summary{gap:.4em;list-style:none;cursor:pointer;border:0}nav summary::-webkit-details-marker{display:none}
-nav summary::after{content:"";inline-size:.38em;block-size:.38em;margin-block-start:-.2em;border:solid currentColor;border-width:0 1.5px 1.5px 0;transform:rotate(45deg);transition:transform .15s}
-nav details[open]>summary::after{margin-block-start:.2em;transform:rotate(225deg)}
-nav details[open]>summary::before{content:"";position:fixed;inset:0;z-index:10;cursor:default}
-nav details:has([aria-current])>summary{font-weight:700}
+nav .nb{gap:.4em;padding-inline:0;background:none;border:0;border-radius:0;font:inherit;cursor:pointer}
+nav .nb::before{content:"";order:1;inline-size:.38em;block-size:.38em;margin-block-start:-.2em;border:solid currentColor;border-width:0 1.5px 1.5px 0;transform:rotate(45deg);transition:transform .15s}
+nav .nb:has(+:popover-open)::before{margin-block-start:.2em;transform:rotate(225deg)}
+nav .dd:has([aria-current])>.nb{font-weight:700}
 nav{column-gap:var(--space-s)}@media(min-width:34em){nav{column-gap:var(--space-m)}}
 nav.crumbs{display:block;padding:0;border:0}.crumbs ol{display:flex;flex-wrap:wrap;gap:0 var(--space-s);margin:0;padding:0;list-style:none}.crumbs li{display:flex;align-items:center;min-block-size:44px}.crumbs li+li::before{content:"/";margin-inline-end:var(--space-s);color:var(--mut)}
-nav details>div{position:absolute;inset-block-start:calc(100% - .25rem);inset-inline-start:-.75rem;z-index:20;display:flex;flex-direction:column;min-inline-size:13rem;padding:.35rem;background:var(--bg);border:1px solid var(--line);border-radius:.5rem;box-shadow:0 .5rem 1.5rem light-dark(oklch(0 0 0/.12),oklch(0 0 0/.5))}
-nav details>div a{min-block-size:40px;padding-inline:.75rem;border-radius:.35rem;white-space:nowrap}
-@media(max-width:34em){nav{column-gap:.5rem}nav a[href$=glossary],nav>a:first-child:not(.em):not(.gh),nav a.gh span{display:none}nav a.gh{padding-inline:.5rem}nav details{position:static}nav details>div{inset-inline:0;min-inline-size:0}nav details>div a{white-space:normal}}
+nav [popover]{position:absolute;position-area:block-end span-inline-end;position-try-fallbacks:flip-inline;inset:auto;margin:.25rem 0 0;block-size:fit-content;inline-size:max-content;min-inline-size:13rem;max-inline-size:calc(100dvw - 2*var(--gutter));padding:.35rem;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:.5rem;box-shadow:0 .5rem 1.5rem light-dark(oklch(0 0 0/.12),oklch(0 0 0/.5))}
+nav [popover]:popover-open{display:flex;flex-direction:column}
+nav [popover] a{min-block-size:40px;padding-inline:.75rem;border-radius:.35rem;white-space:nowrap}
+@supports not (position-area:block-end){nav [popover]{position:fixed;inset-block-start:5rem;inset-inline-start:var(--gutter);margin:0}}
+@supports not selector(:popover-open){nav .nb{display:none}nav [popover]{display:flex;flex-wrap:wrap;gap:0 var(--space-m);position:static;inline-size:auto;min-inline-size:0;padding:0;background:none;border:0;box-shadow:none}}
+@media(max-width:34em){nav{column-gap:.5rem}nav a[href$=glossary],nav a.gh span{display:none}nav a.gh{padding-inline:.5rem}nav [popover] a{white-space:normal}}
 .skip{position:absolute;inset-block-start:-100px;inset-inline-start:var(--space-s);z-index:1;display:flex;align-items:center;min-block-size:44px;padding-inline:var(--space-s);background:var(--bg);color:var(--fg);border:2px solid var(--acc);font:600 var(--step--1)/1.3 var(--ui)}
 .skip:focus{inset-block-start:var(--space-s)}
 .vh{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -126,7 +128,7 @@ article:target>.ch h3{text-decoration:underline;text-decoration-color:var(--acc)
 footer{margin-block-start:var(--space-l);padding-block:var(--space-s) var(--space-m);border-block-start:1px solid var(--line);color:var(--mut);font:var(--step--1)/1.5 var(--ui)}
 .fl{display:flex;flex-wrap:wrap;gap:0 var(--space-m);margin:0;padding:0;list-style:none}.fl a{display:flex;align-items:center;min-block-size:44px}
 @media(hover:hover) and (pointer:fine){
-a:hover{text-decoration-thickness:.16em}nav a:hover,summary:hover{color:var(--acc)}nav details>div a:hover{background:color-mix(in oklch,var(--fg) 8%,transparent)}
+a:hover{text-decoration-thickness:.16em}nav a:hover,nav .nb:hover,summary:hover{color:var(--acc)}nav [popover] a:hover{background:color-mix(in oklch,var(--fg) 8%,transparent)}
 button:hover{border-color:var(--fg)}ul.ck li:not(.th):hover{background:color-mix(in oklch,var(--fg) 4%,transparent)}
 }
 @media(max-width:40rem){.lab{inline-size:100%}}
