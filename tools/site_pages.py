@@ -155,7 +155,7 @@ def home_page(b: BuildInput) -> str:
         f'<li><a href="{lv}.html">{NAME[lv]}</a><span>{LEVEL_DESC[lv]} Input: {INPUT[lv]}.</span>'
         f'<span class="n">{b.counts[lv].stable} stable, {b.counts[lv].draft} draft{f" · {EMPTY_MARK}" if lv in b.no_stable else ""}</span></li>' for lv in LEVELS) + "</ul>"
     ld = home_ld(b.date)
-    agent = ("<h2>Start a review</h2>"
+    agent = ("<h3 class=lane>With an agent</h3>"
              "<p>Paste this to your agent:</p>"
              + copy_pre("Read https://goodcodereview.com/llms.txt and use it to review my code.", "Copy prompt") +
              '<p>Free and open source: code under MIT, content under CC BY 4.0.</p>'
@@ -165,24 +165,26 @@ def home_page(b: BuildInput) -> str:
              f"<p>{inline(INVOKE, {})}</p>"
              "<p>To install it as a Claude Code plugin, run:</p>"
              + copy_pre(INSTALL_PLUGIN, "Copy plugin commands") + "</details>")
+    by_hand = ("<h3 class=lane>By hand</h3>"
+               "<p>Pick the level that matches your input and work through its checklist. Only stable cards are vetted.</p>"
+               f"<p>{b.tally}</p>{rows}")
     body = (
         f"<p>{HERO}</p>"
-        "<h2>What a review looks like</h2>" + sample_verdict() + '<p class="note">The card ids are real. The paths and line numbers are made up.</p>' + agent +
-        "<h2>Choose a review</h2>"
-        "<p>To review by hand, pick the level that matches your input and work through its checklist. Only stable cards are vetted.</p>"
-        f"<p>{b.tally}</p>{rows}"
+        "<h2>What a review looks like</h2>" + sample_verdict() + '<p class="note">The card ids are real. The paths and line numbers are made up.</p>'
+        "<p>" + VERDICT + "</p>"
+        "<h2>Start a review</h2>" + agent + by_hand +
         "<h2>Where the rules come from</h2><p>" + BACKING + ' Open a stable card, such as <a href="' + b.ids["svc-sqli-authn"] + '">svc-sqli-authn</a>, '
         "to see the organisations and the sources behind it.</p>"
-        "<h2>Scope a review</h2><p>To review only some concerns, such as performance, use the <a href=\"concerns.html\">Concerns</a> page. "
+        "<h2 class=s>Scope a review</h2><p>To review only some concerns, such as performance, use the <a href=\"concerns.html\">Concerns</a> page. "
         "Its filters live in the address, so <a href=\"concerns.html?concern=security,performance\">/concerns?concern=security,performance</a> opens the security and performance cards.</p>"
-        "<h2>Report format</h2><p>" + VERDICT + "</p>"
-        "<h2>Audit a repo, service, or release</h2><p>" + inline(AUDIT_NOTE, {}) + "</p>"
-        "<h2>Feedback</h2><p>" + inline(FEEDBACK, {}) + "</p>"
-        "<h2>Guides</h2><p>Short explainers: " + ", ".join(f'<a href="guides/{g.slug}.html">{g.title.lower()}</a>' for g in GUIDES) + ".</p>"
-        "<h2>Packs</h2><p>A pack adds language-specific cards on top of the levels. Use one with the level that matches your input.</p>"
-        "<p>" + (", ".join(f'<a href="pack-{p}.html">{pack_name(p)} pack</a>' for p in b.packs) or "No packs yet.") + "</p>"
+        "<h2 class=s>Audit a repo, service, or release</h2><p>" + inline(AUDIT_NOTE, {}) + "</p>"
+        "<h2 class=s>Guides, packs, and feedback</h2>"
+        "<p>Short explainers: " + ", ".join(f'<a href="guides/{g.slug}.html">{g.title.lower()}</a>' for g in GUIDES) + ".</p>"
+        "<p>A pack adds language-specific cards on top of the levels. Use one with the level that matches your input: "
+        + (", ".join(f'<a href="pack-{p}.html">{pack_name(p)} pack</a>' for p in b.packs) or "no packs yet") + ".</p>"
+        "<p>" + inline(FEEDBACK, {}) + "</p>"
         '<p class="note">Writing CSS? <a href="https://good-css.com">good-css.com</a> has rules for reviewing CSS.</p>')
-    return page("Good Code Review", body, links=b.links, cur="index.html", desc=SITE_DESC, slug="index", ld=ld, script=True, updated=b.date)
+    return page("Good Code Review", body, links=b.links, cur="index.html", desc=SITE_DESC, slug="index", ld=ld, script=True, updated=b.date, stamp_in_footer=True)
 
 
 def not_found_page(b: BuildInput) -> str:

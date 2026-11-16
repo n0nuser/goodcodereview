@@ -108,15 +108,18 @@ def extensionless(markup: str) -> str:
 
 
 def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "", desc: str = "", slug: str = "",
-         ld: dict[str, Any] | None = None, script: bool = False, updated: str = "",
+         ld: dict[str, Any] | None = None, script: bool = False, updated: str = "", stamp_in_footer: bool = False,
          crumbs: Sequence[tuple[str, str]] = ()) -> str:
     """One complete HTML page.
 
-    `script` adds the inline filter script; `slug` turns on the head tags; `ld` is JSON-LD; `updated` shows a date under the heading;
+    `script` adds the inline filter script; `slug` turns on the head tags; `ld` is JSON-LD; `updated` shows a date under the heading, or at the top of the footer with `stamp_in_footer`;
     `crumbs` are (label, slug) pairs from Home to this page.
     """
     trail = _crumbs(crumbs)
     stamp = f'<p class="note">Last updated <time datetime="{updated}">{updated}</time></p>' if updated else ""
+    footer = FOOTER.replace("<footer>", "<footer>" + stamp, 1) if stamp_in_footer else FOOTER
+    if stamp_in_footer:
+        stamp = ""
     full, desc = meta(slug, title, desc)
     ld = ld or (page_ld(slug, full, desc, functools.cache(build_date)(), crumbs) if slug else None)
     jsonld = '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + "</script>" if ld else ""
@@ -129,5 +132,5 @@ def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "",
             f"{_nav(links, cur).replace('<header>', '<header>' + DIRECTIVE, 1)}<main id=main tabindex=-1>"
             f'{trail}'
             f"<h1>{html.escape(title)}</h1>{stamp}{body}</main>{sprite(body)}"
-            f"{FOOTER}{tail}</body></html>")
+            f"{footer}{tail}</body></html>")
     return extensionless(markup)
