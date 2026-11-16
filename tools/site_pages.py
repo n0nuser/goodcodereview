@@ -147,7 +147,7 @@ def sample_verdict() -> str:
                 return f'<span class="{cls}">{tag}</span>' + html.escape(line[len(tag):])
         return html.escape(line)
 
-    return '<pre class="wrap"><code>' + "\n".join(tint(x) for x in EXAMPLE.splitlines()) + "</code></pre>"
+    return '<pre class="wrap v"><code>' + "\n".join(tint(x) for x in EXAMPLE.splitlines()) + "</code></pre>"
 
 
 def home_page(b: BuildInput) -> str:
@@ -169,7 +169,7 @@ def home_page(b: BuildInput) -> str:
                "<p>Pick the level that matches your input and work through its checklist. Only stable cards are vetted.</p>"
                f"<p>{b.tally}</p>{rows}")
     body = (
-        f"<p>{HERO}</p>"
+        f"<p class=lede>{HERO}</p>"
         "<h2>What a review looks like</h2>" + sample_verdict() + '<p class="note">The card ids are real. The paths and line numbers are made up.</p>'
         "<p>" + VERDICT + "</p>"
         "<h2>Start a review</h2>" + agent + by_hand +

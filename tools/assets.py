@@ -22,10 +22,11 @@ CSS = """*,*::before,*::after{box-sizing:border-box;min-width:0}
 --step-3:calc(var(--at-narrow)*pow(var(--ratio-narrow),3) + var(--at-wide)*pow(var(--ratio-wide),3));
 --space-s:var(--step-0);--space-m:calc(1.5*var(--step-0));--space-l:calc(2*var(--step-0));--gutter:clamp(1rem,4vw,2rem);
 --ease-out:cubic-bezier(.23,1,.32,1);
-scrollbar-gutter:stable;scroll-padding-block-start:var(--space-m);text-wrap:pretty;overflow-wrap:break-word;font-synthesis:none;
+scrollbar-gutter:stable;scroll-padding-block-start:var(--space-m);overflow-wrap:break-word;font-synthesis:none;
 -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
 h1,h2,h3,h4{text-wrap:balance}
+:where(p,li,dd,blockquote){text-wrap:pretty}
 input,textarea,select{font-size:max(16px,1rem)}
 button,a,summary{touch-action:manipulation}button{user-select:none;-webkit-user-select:none}
 body{margin:0;min-block-size:100svh;display:grid;grid-template-rows:auto 1fr auto;align-content:start;
@@ -74,6 +75,8 @@ pre code{padding:0;background:none;font:inherit;overflow-wrap:normal}
 details>*+*{margin-block-start:var(--space-s)}details>summary+*{margin-block-start:var(--space-s)}
 .cb{position:relative;margin-block:var(--space-m)}.cb pre{padding-inline-end:5rem;border:1px solid var(--line);border-radius:4px}
 .cb .cp{position:absolute;inset-block-start:.5rem;inset-inline-end:.5rem;padding:.25rem .6rem;background:var(--bg);font-size:.8rem}
+p.lede{font-size:var(--step-1);line-height:1.45}
+pre.v{padding:var(--space-m);font-size:var(--step-0);border-inline-start:.35rem solid var(--bad)}
 pre.wrap{max-inline-size:none;white-space:pre-wrap;overflow-wrap:anywhere}pre.wrap code{overflow-wrap:anywhere}
 .b{display:inline-block;padding:.05em .45em;border:1px solid currentColor;border-radius:2px;color:var(--mut);font:600 var(--step--1)/1.3 var(--ui);white-space:nowrap}
 .block{color:var(--bad)}.should-fix{color:var(--warn)}.ok{color:var(--good)}pre .block,pre .should-fix,pre .ok{font-weight:700}.stable{color:var(--fg)}.draft{border-style:dashed}
