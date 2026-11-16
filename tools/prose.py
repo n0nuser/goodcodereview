@@ -254,6 +254,7 @@ Cloudflare hosts the site. Like any web host, it handles each request and may ke
 # Contact
 
 Questions about this page go through [GitHub Issues](https://github.com/n0nuser/goodcodereview/issues)."""
+AGENTIC_NOTE = "This site scores 100/100 on [is-agentic](https://is-agentic.com/scan/goodcodereview.com), so the prompt above is all an agent needs."
 INDEX_MD = """# Good Code Review
 
 {hero}
@@ -273,6 +274,8 @@ Paste this to your agent:
 ```text
 Read https://goodcodereview.com/llms.txt and use it to review my code.
 ```
+
+{agentic}
 
 To install it as a skill, run:
 
