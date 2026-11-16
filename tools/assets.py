@@ -171,10 +171,17 @@ if(X)X.onclick=()=>{Object.values(S).forEach(s=>s.clear());G='';q('button[data-k
 q('details.fg').forEach(d=>{if(S[d.dataset.k].size)d.open=true});
 if(matchMedia('(max-width:40rem)').matches)q('details.fg').forEach(d=>{if(!S[d.dataset.k].size)d.open=false});
 go();
-const V=document.getElementById('said'),say=(b,m)=>{b.textContent=m;V.textContent=m+'.'};
-q('button[data-copy]').forEach(b=>{const l=b.textContent;b.hidden=false;b.onclick=()=>{
-const t=b.dataset.copy=='ck'?q('#flat li[data-tags]:not([hidden])').map(r=>'- `'+r.querySelector('a').textContent+'` ['+r.querySelector('.b').textContent+'] '+r.querySelector('.r').textContent+' PASS/FAIL/N/A: ').join('\\n'):b.previousElementSibling.textContent;
-(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>say(b,'Copied'),()=>say(b,'Copy failed'));setTimeout(()=>{b.textContent=l;V.textContent=''},1500)}});
+const V=$('said'),T=new WeakMap();let last='';
+const say=(b,m)=>{clearTimeout(T.get(b));const l=b.dataset.l??=b.textContent,n=b.dataset.n??=b.getAttribute('aria-label')??'';
+b.textContent=m;b.setAttribute('aria-label',m);if(m==last)m+='\\u00a0';last=m;V.textContent='';requestAnimationFrame(()=>V.textContent=m);
+T.set(b,setTimeout(()=>{b.textContent=l;n?b.setAttribute('aria-label',n):b.removeAttribute('aria-label');V.textContent=''},1500))};
+const legacy=t=>{const f=Object.assign(document.createElement('textarea'),{value:t});f.readOnly=true;f.style.cssText='position:fixed;inset-block-start:0;opacity:0';document.body.append(f);f.select();
+try{return document.execCommand('copy')}finally{f.remove()}};
+async function copy(b,t,c){const x=c=='--copy-checklist'?q('#flat li[data-tags]:not([hidden])').map(r=>'- `'+r.querySelector('a').textContent+'` ['+r.querySelector('.b').textContent+'] '+r.querySelector('.r').textContent+' PASS/FAIL/N/A: ').join('\\n'):t.innerText.trim();
+let ok=false;try{await navigator.clipboard.writeText(x);ok=true}catch{try{ok=legacy(x)}catch{}}say(b,ok?'Copied':'Copy failed')}
+q('button[command^="--copy"]').forEach(b=>b.hidden=false);
+document.addEventListener('command',e=>{if(e.command.startsWith('--copy'))copy(e.source,e.target,e.command)},true);
+if(!('CommandEvent' in window))document.addEventListener('click',e=>{const b=e.target.closest('button[command^="--copy"]'),t=b&&document.getElementById(b.getAttribute('commandfor'));t&&copy(b,t,b.getAttribute('command'))});
 const op=()=>{const e=document.getElementById(location.hash.slice(1)),d=e&&e.closest('details');if(d){d.open=true;e.scrollIntoView()}};
 addEventListener('hashchange',op);op()"""
 # WebMCP (https://webmachinelearning.github.io/webmcp/): read-only tools over the page's own content. No network call, storage, or form (tools/agent_ready_check.py item 34).

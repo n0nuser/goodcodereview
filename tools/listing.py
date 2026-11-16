@@ -1,5 +1,6 @@
 """HTML for cards: the full card, a checklist row, the filter buttons, and the listing pages built from them."""
 import html
+import re
 from collections.abc import Iterable, Sequence
 from urllib.parse import urlparse
 
@@ -86,7 +87,10 @@ def buttons(label: str, key: str, values: Iterable[str], count: dict[str, int], 
 
 
 def copy_pre(text: str, label: str) -> str:
-    return f"<div class='cb'><pre class='wrap'><code>{text}</code></pre>" + f'<button type="button" class="cp" data-copy="pre" aria-label="{label}" hidden>Copy</button></div>'
+    """A code block with a Copy button. The button names its target with `commandfor`; the script copies that element's text."""
+    key = "cp-" + re.sub(r"\W+", "-", label.lower()).strip("-")
+    return (f"<div class='cb'><pre class='wrap'><code id='{key}'>{text}</code></pre>"
+            f'<button type="button" class="cp" command="--copy" commandfor="{key}" aria-label="{label}" hidden>Copy</button></div>')
 
 
 _TABLE_HEAD = '<li class="th" aria-hidden="true"><span>Card</span><span>Severity</span><span>Concerns</span><span>Rule</span></li>'
@@ -136,7 +140,7 @@ def listing(spec: PageSpec, ids: dict[str, str], links: Sequence[NavLink], *, em
     intro = spec.intro + (f"<details><summary>How to report each check</summary><p>{VERDICT}</p>{EXAMPLE_HTML}</details>" if compact else EXAMPLE_HTML)
     if not stable:
         return render(intro + LEGEND + drafts)
-    checklist = ('<button type="button" data-copy="ck" hidden>Copy checklist as markdown</button><div class="ckw" id="flat"><ul class="ck">' + _TABLE_HEAD
+    checklist = ('<button type="button" command="--copy-checklist" commandfor="flat" hidden>Copy checklist as markdown</button><div class="ckw" id="flat"><ul class="ck">' + _TABLE_HEAD
                  + "".join(row(c, ids, compact=compact) for c in stable) + '</ul></div><div id="grouped" hidden></div>'
                  '<p class="note"><a href="#filters">Back to filters</a></p>')
     nojs = ("<noscript><p>The filters need JavaScript. Without it, the page lists every card. "
