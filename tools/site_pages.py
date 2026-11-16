@@ -14,6 +14,7 @@ from models import LEVELS, Card, LacksReason, Level, PageSpec
 from prose import (
     ABOUT,
     ABOUT_DESC,
+    AGENTIC_NOTE,
     AUDIT_DESC,
     AUDIT_INTRO,
     AUDIT_NOTE,
@@ -158,6 +159,7 @@ def home_page(b: BuildInput) -> str:
     agent = ("<h3 class=lane>With an agent</h3>"
              "<p>Paste this to your agent:</p>"
              + copy_pre("Read https://goodcodereview.com/llms.txt and use it to review my code.", "Copy prompt") +
+             f'<p class="note">{inline(AGENTIC_NOTE, {})}</p>'
              '<p>Free and open source: code under MIT, content under CC BY 4.0.</p>'
              "<details><summary>Install it as a skill or a Claude Code plugin</summary>"
              "<p>To install it as a skill (Claude Code, Codex, Cursor, and other tools that read <code>skills/&lt;name&gt;/SKILL.md</code>), run:</p>"

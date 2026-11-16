@@ -11,6 +11,7 @@ from models import CONCERNS, LEVELS, Twin
 from prose import (
     ABOUT,
     ABOUT_DESC,
+    AGENTIC_NOTE,
     AUDIT_NOTE,
     BACKING,
     CONCERNS_DESC,
@@ -72,7 +73,7 @@ def _index_page(b: BuildInput, plain: str) -> Twin:
                        for lv in LEVELS if lv not in b.no_stable)
     levels += "".join(f"\n- {NAME[lv]}: {LEVEL_DESC[lv]} Input: {INPUT[lv]}. {EMPTY_MARK.capitalize()}." for lv in LEVELS if lv in b.no_stable)
     packs = "\n".join(f"- [{pack_name(pk)} pack]({BASE}/pack-{pk}.md)" for pk in b.packs) or "No packs yet."
-    text = INDEX_MD.format(hero=HERO, verdict=plain, example=EXAMPLE, audit=AUDIT_NOTE, backing=BACKING, invoke=INVOKE, feedback=FEEDBACK,
+    text = INDEX_MD.format(agentic=AGENTIC_NOTE, hero=HERO, verdict=plain, example=EXAMPLE, audit=AUDIT_NOTE, backing=BACKING, invoke=INVOKE, feedback=FEEDBACK,
                            npx=INSTALL_SKILL, plugin=INSTALL_PLUGIN, levels=levels, packs=packs, tally=b.tally,
                            guides="Short explainers: " + ", ".join(f"[{g.title.lower()}]({BASE}/guides/{g.slug}.md)" for g in GUIDES) + ".")
     return Twin("Good Code Review", SITE_DESC, text)
