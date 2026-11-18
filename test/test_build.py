@@ -186,3 +186,12 @@ def test_every_font_face_and_preload_points_at_a_built_file(plan: Plan) -> None:
     urls = set(re.findall(r"url\((/fonts/[\w.-]+)\)", CSS)) | set(re.findall(r'href="(/fonts/[\w.-]+)"', FONT_PRELOAD))
     assert urls and all(u.lstrip("/") in plan.site for u in urls)
     assert "fonts/LICENSE.txt" in plan.site
+
+
+def test_sample_verdict_keeps_the_example_text() -> None:
+    import html
+
+    from prose import EXAMPLE
+    from site_pages import sample_verdict
+
+    assert html.unescape(re.sub(r"<[^>]+>", "", sample_verdict())) == EXAMPLE + "\n"

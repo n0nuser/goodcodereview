@@ -319,6 +319,11 @@ def _items_25_28(r: Report, pages: dict[str, Page], content: dict[str, Page]) ->
     r.check(28, not bad, f"every inner page has a page node and a BreadcrumbList in JSON-LD{': ' + ', '.join(bad) if bad else ''}")
 
 
+def _own_font(link: Attrs) -> bool:
+    """A preload of one of the site's own font files. It is same-origin, so the privacy claim still holds."""
+    return link.get("rel") == "preload" and link.get("as") == "font" and str(link.get("href", "")).startswith("/fonts/")
+
+
 def _items_34(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
     """34: trust pages, and the privacy claim."""
     for n in ("about.html", "privacy.html"):
@@ -327,8 +332,7 @@ def _items_34(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> No
     css = "".join(x for p in pages.values() for x in p.css)
     leaks = [t for t in ("document.cookie", "localStorage", "sessionStorage", "fetch(", "XMLHttpRequest", "sendBeacon", "WebSocket") if t in code]
     leaks += [t for t in ("@import", "http") if t in css] + [f"<{t}>" for p in pages.values() for t in ("img", "iframe", "form", "input", "video", "audio") if t in p.tags]
-    ext = [x for p in pages.values() for x in p.scripts] + [ln for p in pages.values() for ln in p.links
-                                                      if ln.get("rel") in ("stylesheet", "preload", "preconnect") and not str(ln.get("href", "")).startswith("/fonts/")]
+    ext = [x for p in pages.values() for x in p.scripts] + [ln for p in pages.values() for ln in p.links if ln.get("rel") in ("stylesheet", "preload", "preconnect") and not _own_font(ln)]
     r.check(34, not leaks and not ext, "page scripts and styles use no cookie, storage, or network call, and no page loads external or form content, as privacy.html says"
             + (f": found {', '.join(leaks)}" if leaks else ""))
 
