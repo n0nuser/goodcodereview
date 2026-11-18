@@ -413,7 +413,8 @@ def _items_43_46(r: Report, pages: dict[str, Page], content: dict[str, Page]) ->
 
 # Findings from the AgentReady (agentready.org v2.0), Mintlify and afdocs scanners, kept as offline checks so a change cannot bring them back.
 MD_MAX = 100_000  # afdocs fails a Markdown page past this many characters
-MD_OVER = {"service.md": "the whole level in one file keeps every card in one fetch; its context parts are the split form"}  # file -> why it is allowed over MD_MAX
+_WHOLE_LEVEL = "the whole level in one file keeps every card in one fetch; its context parts are the split form"
+MD_OVER = {"service.md": _WHOLE_LEVEL, "function.md": _WHOLE_LEVEL}  # file -> why it is allowed over MD_MAX
 
 
 def _items_49_54(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
