@@ -479,7 +479,7 @@ severity: should-fix
 concerns: accessibility, usability  
 applies_when: An app serves several pages or client-side routes under one HTML shell.  
 context: ui  
-lacks: held, kept draft by Pablo's call; W3C, Mozilla and A11y Project back the Rule
+lacks: held, kept draft by the maintainer; W3C, Mozilla and A11y Project back the Rule
 
 Give every page and every client-side view its own `<title>` that says what it is.
 
@@ -534,7 +534,7 @@ severity: should-fix
 concerns: security, observability  
 applies_when: The service authenticates users.  
 context: server  
-lacks: held, kept draft by Pablo's call
+lacks: held, kept draft by the maintainer
 
 Log every failed authentication with the account name and a timestamp.
 
@@ -545,7 +545,7 @@ severity: should-fix
 concerns: security  
 applies_when: The service serves HTML pages or sets cookies for browsers over HTTPS.  
 context: server  
-lacks: held, kept draft by Pablo's call
+lacks: held, kept draft by the maintainer
 
 Send `Strict-Transport-Security` on every HTTPS response.
 
