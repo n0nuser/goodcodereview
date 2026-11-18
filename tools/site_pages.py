@@ -141,14 +141,17 @@ def text_pages(b: BuildInput, drafts_md: str) -> dict[str, str]:
 
 
 def sample_verdict() -> str:
-    """The sample verdict with each FAIL and PASS tag coloured. The words stay, so colour is never the only signal."""
+    """The sample verdict with each FAIL and PASS tag coloured. The words stay, so colour is never the only signal.
+
+    Each line is a block with a hanging indent, so a wrapped line reads as a continuation.
+    """
     def tint(line: str) -> str:
         for tag, cls in (("FAIL [block]", "block"), ("FAIL [should-fix]", "should-fix"), ("PASS", "ok")):
             if line.startswith(tag):
                 return f'<span class="{cls}">{tag}</span>' + html.escape(line[len(tag):])
         return html.escape(line)
 
-    return '<pre class="wrap v"><code>' + "\n".join(tint(x) for x in EXAMPLE.splitlines()) + "</code></pre>"
+    return '<pre class="wrap v"><code>' + "".join(f'<span class="l">{tint(x)}\n</span>' for x in EXAMPLE.splitlines()) + "</code></pre>"
 
 
 def home_page(b: BuildInput) -> str:
