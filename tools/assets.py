@@ -85,6 +85,7 @@ details>*+*{margin-block-start:var(--space-s)}details>summary+*{margin-block-sta
 .cb .cp{position:absolute;inset-block-start:.5rem;inset-inline-end:.5rem;padding:.25rem .6rem;background:var(--bg);font-size:.875rem}
 p.lede{font-size:var(--step-1);line-height:1.45}
 pre.v{padding:var(--space-m);border-inline-start:.35rem solid var(--bad)}
+pre.v .l{display:block;padding-inline-start:2ch;text-indent:-2ch}
 pre.wrap{max-inline-size:none;white-space:pre-wrap;overflow-wrap:anywhere}pre.wrap code{overflow-wrap:anywhere}
 .b{display:inline-block;padding:.05em .45em;border:1px solid currentColor;border-radius:2px;color:var(--mut);font:600 var(--step--1)/1.3 var(--ui);white-space:nowrap}
 .block{color:var(--bad)}.should-fix{color:var(--warn)}.ok{color:var(--good)}pre .block,pre .should-fix,pre .ok{font-weight:600}.stable{color:var(--fg)}.draft{border-style:dashed}
