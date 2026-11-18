@@ -17,7 +17,7 @@ borrowed_from:
 
 **Rule.** Exchange the platform's OIDC token for a short-lived cloud credential, and pin the trust policy to the workload.
 
-**Why.** A cloud key stored as a CI secret stays valid until someone rotates it, and every job that reads it can use it elsewhere. An OIDC token is minted for one job, expires with it, and names the repository, branch or environment. The cloud side has to check that name. A trust policy with no `sub` condition lets any repository assume the role.
+**Why.** A cloud key stored as a CI secret stays valid until someone rotates it, and every job that reads it can use it elsewhere. An OIDC token is minted for one job, expires with it, and names the repository, branch or environment. The cloud side has to check that name. A trust policy with no `sub` condition lets any repository assume the role. Match on stable IDs, not names that can change, and check the audience too, so a token minted for another service or platform is refused.
 
 **FAIL**
 

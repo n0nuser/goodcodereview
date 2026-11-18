@@ -21,7 +21,7 @@ borrowed_from:
 
 **Rule.** Exercise each mitigation that a runbook names (rollback, failover, flag off) on a regular schedule.
 
-**Why.** Rollbacks fail on schema changes or removed artifacts, backups stop running without anyone noticing, and untested failover paths rot. People who rarely use a rollback tool hesitate to use it in an incident. The runbook should also say who may trigger each mitigation, so nobody waits for permission during the outage.
+**Why.** Rollbacks fail on schema changes or removed artifacts, backups stop running without anyone noticing, and untested failover paths rot. After a drill finds a gap and you fix it, run the drill again to confirm the fix. People who rarely use a rollback tool hesitate to use it in an incident. The runbook should also say who may trigger each mitigation, so nobody waits for permission during the outage.
 
 **FAIL**
 

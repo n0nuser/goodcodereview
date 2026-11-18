@@ -15,11 +15,13 @@ borrowed_from:
   - https://www.uber.com/blog/efficient-software-factory/
   - https://dropbox.tech/culture/beyond-code-generation-rethinking-engineering-productivity-in-the-age-of-ai-agents
   - https://www.anthropic.com/engineering/claude-code-best-practices
+  - https://docs.gitlab.com/user/project/merge_requests/approvals/settings/
+  - https://docs.prow.k8s.io/docs/components/plugins/approve/approvers/
 ---
 
 **Rule.** Get sign-off from a person or a fresh-context reviewer who has the spec but not the author's reasoning; self-review by the writing session does not count.
 
-**Why.** The same context repeats the same blind spots and assumptions. An approval without real reading is a rubber stamp. The person who submits the change must also be able to explain each hunk.
+**Why.** The same context repeats the same blind spots and assumptions. An approval without real reading is a rubber stamp. The person who submits the change must also be able to explain each hunk. A human author's own approval does not count either: most review tools can bar it.
 
 **FAIL**
 

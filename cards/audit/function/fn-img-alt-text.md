@@ -19,7 +19,7 @@ borrowed_from:
 
 **Rule.** Give every `<img>` an `alt` attribute: text that serves the image's purpose, or `alt=""` when the image is decorative.
 
-**Why.** A screen reader has nothing to say about an image with no `alt`, and often reads the file name instead. An informative image with an empty `alt` hides its content. A decorative image with a long `alt` adds noise to every page view.
+**Why.** A screen reader has nothing to say about an image with no `alt`, and often reads the file name instead. An informative image with an empty `alt` hides its content. A decorative image with a long `alt` adds noise to every page view. Words such as "image" or "chart", and file names, say nothing about what the image is for.
 
 **FAIL**
 

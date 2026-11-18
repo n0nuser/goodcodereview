@@ -16,11 +16,13 @@ borrowed_from:
   - https://spec.openapis.org/oas/v3.1.0.html
   - https://docs.github.com/en/rest/about-the-rest-api/api-versions
   - https://google.aip.dev/185
+  - https://kubernetes.io/docs/reference/using-api/deprecation-policy/
+  - https://peps.python.org/pep-0387/
 ---
 
 **Rule.** Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers.
 
-**Why.** The `Sunset` date must not be earlier than the `Deprecation` date (RFC 9745). Callers cannot read your roadmap. A removal with no signal in the responses is an outage for whoever has not read the changelog. Counting calls that carry the headers also tells you when removal is safe.
+**Why.** The `Sunset` date must not be earlier than the `Deprecation` date (RFC 9745). Callers cannot read your roadmap. A removal with no signal in the responses is an outage for whoever has not read the changelog. Set the `Sunset` date well after the announcement: projects that publish a minimum keep deprecated behaviour for one to two years. Counting calls that carry the headers also tells you when removal is safe.
 
 **FAIL**
 
@@ -33,9 +35,10 @@ responses before removal: no header, spec not marked deprecated
 
 ```text
 GET /v1/orders/9/summary -> 200
-  Deprecation: @1767225600
-  Sunset: Wed, 01 Jul 2026 00:00:00 GMT
+  Deprecation: @1798761600
+  Sunset: Sat, 01 Jan 2028 00:00:00 GMT
   Link: <https://api.example.com/docs/summary-removal>; rel="deprecation"
+  Link: <https://api.example.com/docs/summary-removal>; rel="sunset"
 spec: deprecated: true
 ```
 

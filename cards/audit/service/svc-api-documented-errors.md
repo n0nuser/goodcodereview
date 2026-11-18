@@ -13,11 +13,12 @@ borrowed_from:
   - https://spec.openapis.org/oas/v3.1.0.html
   - https://opensource.zalando.com/restful-api-guidelines/
   - https://developer.siemens.com/guidelines/api-guidelines/rest/error.html
+  - https://www.rfc-editor.org/rfc/rfc9457.html
 ---
 
 **Rule.** Document every error status each operation can return, with a schema and one example.
 
-**Why.** Callers write error handling from the spec. An operation that lists only 200 teaches them nothing about 404, 409, 422 or 429, so they find out in production.
+**Why.** Callers write error handling from the spec. An operation that lists only 200 teaches them nothing about 404, 409, 422 or 429, so they find out in production. Give the errors one shared schema, such as RFC 9457 problem details, so each carries a status, a title and a type URI that callers can match on.
 
 **FAIL**
 

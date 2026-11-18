@@ -17,7 +17,7 @@ borrowed_from:
 
 **Rule.** Write down one versioning scheme for the API, and ship no breaking change inside a version it has published.
 
-**Why.** Callers upgrade on their own schedule. With no stated scheme, each breaking change is a surprise, and each team invents its own v2.
+**Why.** Callers upgrade on their own schedule. With no stated scheme, each breaking change is a surprise, and each team invents its own v2. Additive changes, such as a new field, can ship inside the current version; only a breaking change needs a new one.
 
 **FAIL**
 

@@ -16,7 +16,7 @@ borrowed_from:
 
 **Rule.** Put a helper in the module that owns the concept, or in a new module named after the concept.
 
-**Why.** A grab-bag has no owner and no cohesion. It becomes the dependency of everything and the place where unrelated code accretes.
+**Why.** A grab-bag has no owner and no cohesion. It becomes the dependency of everything and the place where unrelated code accretes. The same goes for a `Helper` or `Util` class suffix: put the methods in the class they belong to.
 
 **FAIL**
 

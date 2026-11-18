@@ -39,4 +39,4 @@ def verify(body: bytes, header_sig: str, key: bytes) -> bool:
 # Node: crypto.timingSafeEqual(bufA, bufB) after checking the lengths match
 ```
 
-**Counterpoint.** "Network jitter hides the difference." Attackers average thousands of samples, and the jitter shrinks when they sit in the same cloud region. Also, some constant-time functions need equal lengths (Node throws otherwise); compare fixed-length digests, or check the length first, since the length of a MAC is not secret.
+**Counterpoint.** "Network jitter hides the difference." Attackers average thousands of samples, and the jitter shrinks when they sit in the same cloud region. Also, some constant-time functions need equal lengths (Node throws; Go returns 0 at once, and Python's `compare_digest` can leak the length); compare fixed-length digests, or check the length first, since the length of a MAC is not secret.

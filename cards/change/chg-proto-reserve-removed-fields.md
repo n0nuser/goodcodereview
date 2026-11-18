@@ -15,7 +15,7 @@ borrowed_from:
 
 **Rule.** When you delete a protobuf field or enum value, add `reserved` for its number and name in the same change, and never reuse a number.
 
-**Why.** Old data and old clients still carry the number. A new field that takes it is read as the old type, and the failure is silent corruption, not an error.
+**Why.** Old data and old clients still carry the number. A new field that takes it is read as the old type, and the failure is silent corruption, not an error. Renumbering a live field breaks old data the same way.
 
 **FAIL**
 

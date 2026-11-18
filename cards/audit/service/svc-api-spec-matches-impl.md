@@ -20,7 +20,7 @@ borrowed_from:
 
 **Rule.** Keep the OpenAPI document as the source of truth, and generate it from the code or test the running service against it in CI.
 
-**Why.** A hand-edited spec drifts from the handlers. Callers and generated SDKs then code against fields and codes the service does not return.
+**Why.** A hand-edited spec drifts from the handlers. Callers and generated SDKs then code against fields and codes the service does not return. Publish the spec with each deploy, so callers read the version that matches what runs.
 
 **FAIL**
 

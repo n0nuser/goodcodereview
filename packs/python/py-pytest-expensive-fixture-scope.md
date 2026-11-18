@@ -57,4 +57,4 @@ def db(engine):
 
 In Django, `pytest-django` already does this: it builds the database once, runs each `db` test in a transaction that it rolls back, and `--reuse-db` skips the rebuild between runs.
 
-**Counterpoint.** "A session fixture is shared, so one test can leak state into the next." That holds for mutable objects, which is why the PASS keeps the engine shared and gives each test its own rolled-back session. A fixture that cannot be reset stays at function scope. Python's own docs warn that shared fixtures break isolation and parallelism, so build the shared part read-only.
+**Counterpoint.** "A session fixture is shared, so one test can leak state into the next." That holds for mutable objects, which is why the PASS keeps the engine shared and gives each test its own rolled-back session. A fixture that cannot be reset stays at function scope. Python's own docs warn that shared fixtures break isolation and parallelism, so build the shared part read-only. A test that must commit needs a transactional fixture, which clears the database after each test, so that test must repopulate its data every time.

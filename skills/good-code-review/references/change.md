@@ -34,11 +34,11 @@ resp = client.fetch_json(url)   # signature checked against source
 severity: should-fix  
 concerns: process  
 applies_when: An agent wrote the change, and an agent or the same session is asked to review it.  
-Backed by: Kubernetes (unjudged), Meta (unjudged), Stripe (unjudged), Uber (unjudged), Dropbox (unjudged), Anthropic (supports). Backing: mixed.
+Backed by: Kubernetes (unjudged), Meta (unjudged), Stripe (unjudged), Uber (unjudged), Dropbox (unjudged), Anthropic (supports), GitLab (unjudged). Backing: mixed.
 
 **Rule.** Get sign-off from a person or a fresh-context reviewer who has the spec but not the author's reasoning; self-review by the writing session does not count.
 
-**Why.** The same context repeats the same blind spots and assumptions. An approval without real reading is a rubber stamp. The person who submits the change must also be able to explain each hunk.
+**Why.** The same context repeats the same blind spots and assumptions. An approval without real reading is a rubber stamp. The person who submits the change must also be able to explain each hunk. A human author's own approval does not count either: most review tools can bar it.
 
 **FAIL**
 
@@ -81,7 +81,7 @@ Push that edits src/auth.py: patch ids differ, approval dismissed, re-requested.
 Push that only edits a README: approval stands once the build output is shown to be the same.
 ```
 
-**Counterpoint.** "Re-approving after every push is noisy." A rebase that keeps the patch id does not void the verdict, and neither does a change to tests, docs, or lint config that leaves the built output the same. Branch protection can enforce this without human effort.
+**Counterpoint.** "Re-approving after every push is noisy." A rebase that keeps the patch id does not void the verdict, and neither does a change to tests, docs, or lint config that leaves the built output the same. Branch protection can enforce this without human effort. Many review tools drop approvals on any new commit by default, so the exemptions above are the tuned case, not the baseline.
 
 ## chg-author-hygiene
 
@@ -237,7 +237,7 @@ Backed by: Python Software Foundation (unjudged), GitLab (unjudged), Stripe (unj
 
 **Rule.** Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.
 
-**Why.** Producers and consumers deploy at different times. A one-step rename breaks whichever side is still on the old version.
+**Why.** Producers and consumers deploy at different times. A one-step rename breaks whichever side is still on the old version. Start writing both forms before any reader moves to the new one, and backfill old rows, or a reader sees stale or empty values.
 
 **FAIL**
 
@@ -341,17 +341,55 @@ Security reviewer tagged. Randomness uses a crypto source.
 
 **Counterpoint.** Naming threats on every PR is theatre. Only changes that add one of the listed surfaces need the section, and most PRs write "none".
 
+## chg-no-per-user-ide-files
+
+severity: should-fix  
+concerns: process, maintainability  
+applies_when: A change adds a tracked file under an editor or IDE project directory.  
+tool gate: A CI step that fails when `git ls-files | rg '(^|/)(\.idea/workspace\.xml|\.idea/shelf/|xcuserdata/)|\.xcuserstate$'` prints a path. `git ls-files -ci --exclude-standard` lists only tracked files that already match an ignore entry, so it misses a repository with no entry.  
+Backed by: GitHub (unjudged), Git (unjudged), JetBrains (unjudged), Microsoft (unjudged), Apple (unjudged). Backing: unjudged.
+
+**Rule.** Do not commit a file that holds one developer's editor or IDE state; ignore those paths in the repository or a machine-wide exclude file. An ignore entry does not untrack a file already committed: remove it from the index with `git rm --cached`.
+
+**Why.** Per-user state changes on every IDE session and every machine, so it adds diff noise and merge conflicts. The shared files are the ones a teammate or CI needs. JetBrains says `.idea` holds both user-specific settings that "should not be placed under version control" and project settings "normally shared among developers". Microsoft says workspace settings in `.vscode` are "shared by all users of that project". Git and GitHub offer the repository `.gitignore` for paths everyone hits and a machine-wide exclude for a path only one developer has.
+
+**FAIL**
+
+```text
+git diff --cached --name-only
+.idea/workspace.xml
+xcuserdata/alice.xcuserdatad/xcschemes/App.xcscheme
+.gitignore            # no entry for either path
+```
+
+**PASS**
+
+```text
+# .gitignore
+.idea/workspace.xml
+.idea/shelf/
+xcuserdata/
+*.xcuserstate
+
+# committed
+.idea/codeStyles/Project.xml
+.vscode/settings.json
+App.xcodeproj/xcshareddata/xcschemes/App.xcscheme
+```
+
+**Counterpoint.** "A blanket ignore throws away the run configurations and schemes the team shares." Those live in shared locations: `.idea/runConfigurations/`, `.vscode/launch.json`, `xcshareddata/xcschemes/`. Commit those and ignore `workspace.xml` and `xcuserdata`. In a one-developer repository, put the path in the machine-wide exclude instead of the shared ignore file.
+
 ## chg-no-silenced-diagnostics
 
 severity: should-fix  
 concerns: correctness, maintainability, process  
 applies_when: The diff adds a suppression (lint ignore, type ignore, skipped test, swallowed error) or deletes a failing check.  
 tool gate: Linter rule that requires a reason and ticket on each suppression.  
-Backed by: Google (unjudged), Palantir (unjudged), Cursor (unjudged), ESLint (supports), Rust project (supports). Backing: mixed.
+Backed by: Google (unjudged), Palantir (unjudged), Cursor (unjudged), thoughtbot (unjudged), ESLint (supports), Rust project (supports). Backing: mixed.
 
 **Rule.** Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
 
-**Why.** Silencing a diagnostic hides the problem it reports and removes the safety net for the next author.
+**Why.** Silencing a diagnostic hides the problem it reports and removes the safety net for the next author. An exception with an expiry date fails the check again when it lapses, so it cannot stay forever.
 
 **FAIL**
 
@@ -497,7 +535,7 @@ Backed by: Google (unjudged), Microsoft (supports), Deliveroo (supports). Backin
 
 **Rule.** When you delete a protobuf field or enum value, add `reserved` for its number and name in the same change, and never reuse a number.
 
-**Why.** Old data and old clients still carry the number. A new field that takes it is read as the old type, and the failure is silent corruption, not an error.
+**Why.** Old data and old clients still carry the number. A new field that takes it is read as the old type, and the failure is silent corruption, not an error. Renumbering a live field breaks old data the same way.
 
 **FAIL**
 

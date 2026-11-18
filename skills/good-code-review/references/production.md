@@ -11,7 +11,7 @@ Backed by: GOV.UK (unjudged), W3C (unjudged), Section508.gov (unjudged), Deque (
 
 **Rule.** Before a public launch, run an accessibility audit against WCAG 2.2 AA that includes assistive technology, and link the report in the launch checklist.
 
-**Why.** Quick checks and automated tools are a first pass, not an evaluation. A page can pass both and still block a screen-reader user from finishing the task. Finding that after launch means fixing it under load and in public.
+**Why.** Quick checks and automated tools are a first pass, not an evaluation. A page can pass both and still block a screen-reader user from finishing the task. Finding that after launch means fixing it under load and in public. The audit is not a one-off: test again, with automated and manual checks, when features change.
 
 **FAIL**
 
@@ -40,7 +40,7 @@ Backed by: Google (unjudged), Prometheus (unjudged), Grafana Labs (unjudged), Da
 
 **Rule.** Page on user-visible symptoms, such as error rate and latency, not on causes.
 
-**Why.** Cause-based pages (CPU high) wake people without user impact. A mean hides the slow tail, and failed-request latency mixed with successes hides both. Require an error-rate alert to hold for a few minutes, so one blip does not page. Also cover latency, traffic, errors, and saturation, track latency as a distribution, and delete alerts that never fire.
+**Why.** Cause-based pages (CPU high) wake people without user impact. A mean hides the slow tail, and failed-request latency mixed with successes hides both. Require an error-rate alert to hold for a few minutes, so one blip does not page. Also cover latency, traffic, errors, and saturation, and page on saturation when a limit is about to be reached, not only after it is hit. Track latency as a distribution, and delete alerts that never fire.
 
 **FAIL**
 
@@ -68,7 +68,7 @@ Backed by: Google (unjudged), AWS (unjudged), OWASP (unjudged), Anthropic (unjud
 
 **Rule.** Roll out in stages behind a canary, and abort by rule, not by judgment.
 
-**Why.** A 100% push exposes everyone to the bug. A canary must be large and long enough to be representative. Errors of 20% on 5% of traffic are only 1% overall, so tie the canary to your error budget.
+**Why.** A 100% push exposes everyone to the bug. A canary must be large and long enough to be representative. Errors of 20% on 5% of traffic are only 1% overall, so tie the canary to your error budget. A feature flag does the same job inside one release: switch the change on for a small share of users, watch, then widen.
 
 **FAIL**
 
@@ -154,7 +154,7 @@ Backed by: Google (unjudged), Microsoft (unjudged), AWS (unjudged), Grafana Labs
 
 **Rule.** Load test before launch, past the expected peak, with pass and fail thresholds written down.
 
-**Why.** Overload behaviour is hard to predict from code, and launch traffic often beats the estimate. Test the whole workload on production-like infrastructure: testing one component, on smaller machines, or only up to the expected load misses the queue that fills first.
+**Why.** Overload behaviour is hard to predict from code, and launch traffic often beats the estimate. Test the whole workload on production-like infrastructure: testing one component, on smaller machines, or only up to the expected load misses the queue that fills first. Run the test as a pipeline step too, so a later change cannot slip under the thresholds.
 
 **FAIL**
 
@@ -209,7 +209,7 @@ Backed by: Netflix (unjudged), Stripe (unjudged), Airbnb (unjudged), GitHub (unj
 
 **Rule.** Before you move traffic to a new system, run it beside the old one on live or captured production traffic, diff the results, and cut over only when every mismatch is fixed or explained.
 
-**Why.** Fixtures cover the cases someone thought of, and production holds the rest. Airbnb's replay of real queries against MySQL 5.7 and 8.0 found queries whose row order was never fixed, and an application that sent the same cacheable query over and over. Neither shows up in a test suite. A diff on real traffic finds these while the old system still answers users, so a mismatch costs a log line instead of an incident.
+**Why.** Fixtures cover the cases someone thought of, and production holds the rest. Airbnb's replay of real queries against MySQL 5.7 and 8.0 found queries whose row order was never fixed, and an application that sent the same cacheable query over and over. Neither shows up in a test suite. A diff on real traffic finds these while the old system still answers users, so a mismatch costs a log line instead of an incident. Then shift traffic in steps with a way back; see [prod-canary-staged-rollout](production.md#prod-canary-staged-rollout) and [prod-kill-switch-fallback](production.md#prod-kill-switch-fallback).
 
 **FAIL**
 
@@ -230,7 +230,8 @@ def get_order(order_id):
     except Exception:
         shadow_error.inc()
     return old
-# the cutover flag flips once shadow_mismatch is zero or every mismatch is explained
+# once shadow_mismatch is zero or every mismatch is explained, the cutover flag shifts traffic in steps;
+# setting it back to 0% returns every read to the old store
 ```
 
 **Counterpoint.** "Running both is slow and doubles the load." It is slower than a flag-day switch, and Netflix says that is the reason it trusts the result. Keep the cost down: shadow a sample, call the new system off the request path, and never shadow a call with side effects such as a charge or an email. For writes, compare data snapshots after replication, as Stripe does, instead of sending each write twice. A refactor inside one process needs a characterization test, not production traffic. See [chg-refactor-has-behaviour-pin](change.md#chg-refactor-has-behaviour-pin).

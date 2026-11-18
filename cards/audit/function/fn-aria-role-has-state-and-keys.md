@@ -22,7 +22,7 @@ borrowed_from:
 
 **Rule.** When a native element cannot do the job, give the custom widget the state attribute and the keys its role promises.
 
-**Why.** A role only tells assistive technology what the element is. It adds no keyboard behaviour, and it says nothing about state. A `role="switch"` with no `aria-checked` is announced as a switch of unknown state. Wrong ARIA is worse than none, because it gives a screen-reader user a false picture. The widget also needs an accessible name, from its text or a label, or it is announced by role alone.
+**Why.** A role only tells assistive technology what the element is. It adds no keyboard behaviour, and it says nothing about state. A `role="switch"` with no `aria-checked` is announced as a switch of unknown state. Wrong ARIA is worse than none, because it gives a screen-reader user a false picture. The widget also needs an accessible name, from its text or a label, or it is announced by role alone. An element that is not natively focusable also needs `tabindex="0"` to take part in the Tab order.
 
 **FAIL**
 

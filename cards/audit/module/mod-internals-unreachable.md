@@ -20,7 +20,7 @@ borrowed_from:
 
 **Rule.** Keep a module's internals unimportable and untouched from outside it. A caller uses the public surface, not a private file or member.
 
-**Why.** Anything a caller can import becomes the interface, and a field a caller writes becomes part of the contract. A naming convention such as a leading underscore stops no one, and the module can no longer change its internals without breaking callers.
+**Why.** Anything a caller can import becomes the interface, and a field a caller writes becomes part of the contract. A leading-underscore member is for its own class and its subclasses, yet a naming convention alone stops no one, and the module can no longer change its internals without breaking callers.
 
 **FAIL**
 

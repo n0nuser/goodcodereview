@@ -16,15 +16,16 @@ borrowed_from:
   - https://docs.python.org/3/library/ssl.html
 ---
 
-**Rule.** Leave certificate and hostname verification on in every environment that ships.
+**Rule.** Leave certificate and hostname verification on in every environment that ships, and check the certificate against the host you meant to reach, not a name the server supplies.
 
-**Why.** With verification off, any on-path attacker presents a certificate and reads or changes the traffic. The flag is usually added to silence a dev-box error and then ships. Fix the trust store or pin a private CA instead.
+**Why.** With verification off, any on-path attacker presents a certificate and reads or changes the traffic. The flag is usually added to silence a dev-box error and then ships. Fix the trust store or pin a private CA instead. The client must supply the expected name itself, not take it from the certificate the server presents: set `ServerName` in Go, pass `server_hostname` in Python.
 
 **FAIL**
 
 ```text
 requests.get(url, verify=False)                  # Python
 https.request({ rejectUnauthorized: false })     // Node.js
+ctx.wrap_socket(sock, server_hostname=peer_cert_cn)   # name taken from the peer, so any valid certificate passes
 ```
 
 **PASS**

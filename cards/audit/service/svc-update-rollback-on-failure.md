@@ -17,7 +17,7 @@ borrowed_from:
 
 **Rule.** When an update fails, restore the previous version instead of leaving a missing or half-written one.
 
-**Why.** Deleting the old binary before the new one is in place leaves nothing to run if the copy fails, and the tool cannot update itself back. On Windows a running executable cannot be deleted but can be renamed, so move it aside first and restore it on failure.
+**Why.** Deleting the old binary before the new one is in place leaves nothing to run if the copy fails, and the tool cannot update itself back. On Windows a running executable cannot be deleted but can be renamed, so move it aside first and restore it on failure. Keep the old version until the new one has started and passed a self-check, since a binary that installs but will not start needs the old one back.
 
 **FAIL**
 
@@ -44,8 +44,9 @@ if err := os.Rename(newBin, exe); err != nil {
 	}
 	return err
 }
-os.Remove(old) // best effort; retry at next start if the OS still holds it
+// keep old until the new binary has started and passed its self-check;
+// delete it at the next successful start, not here
 return nil
 ```
 
-**Counterpoint.** "Keeping a second copy costs disk space and clutter." One binary-sized file, removed after success, is cheap next to a tool that cannot start.
+**Counterpoint.** "Keeping a second copy costs disk space and clutter." One binary-sized file, removed once the new version has started, is cheap next to a tool that cannot start.

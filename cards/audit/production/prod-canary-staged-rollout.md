@@ -20,7 +20,7 @@ borrowed_from:
 
 **Rule.** Roll out in stages behind a canary, and abort by rule, not by judgment.
 
-**Why.** A 100% push exposes everyone to the bug. A canary must be large and long enough to be representative. Errors of 20% on 5% of traffic are only 1% overall, so tie the canary to your error budget.
+**Why.** A 100% push exposes everyone to the bug. A canary must be large and long enough to be representative. Errors of 20% on 5% of traffic are only 1% overall, so tie the canary to your error budget. A feature flag does the same job inside one release: switch the change on for a small share of users, watch, then widen.
 
 **FAIL**
 

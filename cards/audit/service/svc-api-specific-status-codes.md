@@ -17,7 +17,7 @@ borrowed_from:
 
 **Rule.** Return the most specific status code that fits: 201 with `Location` for a create, 405 with `Allow` for a wrong method, and a 4xx or 5xx for any failure.
 
-**Why.** Clients, proxies and monitors act on the status line. A 200 with an error in the body hides failures from retries, caches and error-rate alerts. A create that returns 200 without `Location` forces the caller to guess the new URL.
+**Why.** Clients, proxies and monitors act on the status line. A 200 with an error in the body hides failures from retries, caches and error-rate alerts. A create that returns 200 without `Location` forces the caller to guess the new URL. A request body in a format the operation does not accept gets 415, not a 200 or a generic 400.
 
 **FAIL**
 

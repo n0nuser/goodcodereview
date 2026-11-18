@@ -10,6 +10,7 @@ applies_when: Tests were generated or edited alongside the code under test, espe
 tool_gate: Mutation testing; fail the build if mutated code still passes.
 borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
+  - https://abseil.io/resources/swe-book/html/ch12.html
   - https://go.dev/wiki/CodeReviewComments
   - https://michaelfeathers.silvrback.com/characterization-testing
   - https://github.com/cursor/plugins/blob/main/pstack/skills/principle-test-behavior-not-implementation/SKILL.md
@@ -18,7 +19,7 @@ borrowed_from:
 
 **Rule.** Write tests that fail when the behaviour breaks, and reject tests that mostly assert on mocks, copy the implementation, or were edited to match new output without explanation.
 
-**Why.** Generated tests tend to confirm what the code does, so they pass against a bug. A suite that cannot fail gives false confidence. Mock only at real boundaries; see [[mod-mock-at-boundaries-only]].
+**Why.** Generated tests tend to confirm what the code does, so they pass against a bug. A suite that cannot fail gives false confidence. A test that checks the calls made, not the result, breaks on every refactor. Mock only at real boundaries; see [[mod-mock-at-boundaries-only]].
 
 **FAIL**
 

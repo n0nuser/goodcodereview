@@ -10,7 +10,7 @@ Backed by: OWASP (unjudged), NCSC (unjudged), Microsoft (unjudged). Backing: unj
 
 **Rule.** Give the agent only the narrow tools and the minimal credentials its task needs.
 
-**Why.** Hallucination or an injected instruction can drive any tool the model holds. An open-ended shell or URL fetch hands over everything the service account can do. Where you can, run each tool as the requesting user rather than a shared admin identity, and let the downstream system check that user's rights on every call. [sys-prompt-injection](system.md#sys-prompt-injection) covers validating model output and human approval; this card covers how much the agent can reach in the first place.
+**Why.** Hallucination or an injected instruction can drive any tool the model holds. An open-ended shell or URL fetch hands over everything the service account can do. Where you can, run each tool as the requesting user rather than a shared admin identity, and let the downstream system check that user's rights on every call. A session that reads content from an untrusted party gets no privileged tools. [sys-prompt-injection](system.md#sys-prompt-injection) covers validating model output and human approval; this card covers how much the agent can reach in the first place.
 
 **FAIL**
 
@@ -36,7 +36,7 @@ Backed by: AWS (unjudged), Redis (unjudged), Caffeine project (unjudged), IETF (
 
 **Rule.** Bound every cache by size and give its entries an expiry.
 
-**Why.** An unbounded cache is a memory leak that shows up only under production traffic. Redis has no memory limit by default on 64-bit builds. Choose the TTL from the staleness you can tolerate, because an arbitrary one either serves stale data or does not help. Also version the values, since old and new code read each other's entries during a rolling deploy, and give the cache hit, miss, and origin-request metrics and a way to invalidate.
+**Why.** An unbounded cache is a memory leak that shows up only under production traffic. Redis has no memory limit by default on 64-bit builds. Choose the TTL from the staleness you can tolerate, because an arbitrary one either serves stale data or does not help. Also version the values, since old and new code read each other's entries during a rolling deploy, and give the cache hit, miss, and origin-request metrics and a way to invalidate. Invalidate on write: when a PUT, POST, or DELETE succeeds, drop the cached entry for that URI.
 
 **FAIL**
 
@@ -98,7 +98,7 @@ Backed by: Nielsen Norman Group (unjudged), W3C (unjudged), GOV.UK (unjudged), U
 
 **Rule.** Use one label and one icon for the same action and the same concept across all screens.
 
-**Why.** When "Remove", "Delete", and "Discard" all mean the same thing, users stop trusting any of them and ask whether each one differs. Keep the control in the same place on each screen, too. A familiar control costs no thought. A different one costs a pause, and in a destructive flow, a mistake.
+**Why.** When "Remove", "Delete", and "Discard" all mean the same thing, users stop trusting any of them and ask whether each one differs. Give the same control the same accessible name on each screen, so a screen reader says "Search" every time, not "Search" on one and "Find" on another. Keep the control in the same place on each screen, too. A familiar control costs no thought. A different one costs a pause, and in a destructive flow, a mistake.
 
 **FAIL**
 
@@ -155,7 +155,7 @@ Backed by: AWS (unjudged), Microsoft (supports), GitLab (supports). Backing: mix
 
 **Rule.** Wire load balancers and restarters to liveness and local checks only, never to shared-dependency checks.
 
-**Why.** Dependency status belongs in alarms. If the database blips, every host fails its check, all are removed at once, and a partial outage becomes total.
+**Why.** Dependency status belongs in alarms. If the database blips, every host fails its check, all are removed at once, and a partial outage becomes total. Even a local check can misfire, so the automation should stop sending traffic to one bad host but keep sending it when most of the fleet fails the check.
 
 **FAIL**
 
@@ -208,11 +208,11 @@ concerns: reliability
 applies_when: Work is buffered in a queue, a channel, or a thread pool between components.  
 context: server  
 tool gate: Lint for unbounded queue constructors.  
-Backed by: AWS (unjudged), Google (unjudged), Netflix (unjudged). Backing: unjudged.
+Backed by: AWS (unjudged), Google (unjudged), Netflix (unjudged), Uber (unjudged). Backing: unjudged.
 
-**Rule.** Bound every queue and reject excess work cheaply.
+**Rule.** Bound every queue, reject excess work cheaply, and drop queued requests whose caller has already given up.
 
-**Why.** An unbounded queue turns overload into minutes of latency, and by the time old items are served, callers have given up. Also keep a way to sideline old or excess messages (see PASS).
+**Why.** An unbounded queue turns overload into minutes of latency, and by the time old items are served, callers have given up. Also keep a way to sideline old or excess messages (see PASS). When something must go, shed the lowest-priority work first.
 
 **FAIL**
 
@@ -226,6 +226,7 @@ on overload: enqueue anyway; no age alarm, no spillover
 ```text
 q = Queue(maxsize=1000); if full: return 503 fast
 alarm on age of oldest item; spillover queue for old deltas
+drop a request that has waited past the caller's timeout
 ```
 
 **Counterpoint.** "Dropping work loses data." A bounded queue only makes the loss explicit and early. For work that must not be lost, spill to durable storage rather than memory. Shedding itself must be cheap. Slowing fast errors on purpose can stop a load balancer from steering more traffic at a shedding host.
@@ -239,7 +240,7 @@ Backed by: AWS (unjudged), Google (unjudged), Apache Software Foundation (unjudg
 
 **Rule.** Check a correctness lock on the resource side (fencing token or compare-and-set), never by lock possession alone.
 
-**Why.** A holder can pause past its TTL, lose the lock and still write. Only the store can reject the stale writer.
+**Why.** A holder can pause past its TTL, lose the lock and still write. Only the store can reject the stale writer. The holder takes the token when it gets the lock and sends it with every write.
 
 **FAIL**
 
@@ -271,7 +272,7 @@ Backed by: GitLab (unjudged), Stripe (unjudged), Ecto (unjudged), CockroachDB (u
 
 **Rule.** Run data backfills in batches, in a migration separate from the schema change.
 
-**Why.** A large backfill in one transaction holds locks for its whole run, and a failure halfway rolls all of it back. Batches with a pause between them keep each lock short and let the backfill resume. [chg-expand-contract](change.md#chg-expand-contract) covers the order of releases around it.
+**Why.** A large backfill in one transaction holds locks for its whole run, and a failure halfway rolls all of it back. Batches with a pause between them keep each lock short and let the backfill resume. Page the batches by the last id processed, not with `LIMIT`/`OFFSET`, which slows down on later pages. [chg-expand-contract](change.md#chg-expand-contract) covers the order of releases around it.
 
 **FAIL**
 
@@ -322,11 +323,11 @@ concerns: performance
 applies_when: Code loads related rows in a loop, or opens database connections per request.  
 context: data  
 tool gate: Query-count assertion in tests; ORM N+1 detector.  
-Backed by: Django Software Foundation (unjudged), Ruby on Rails (unjudged), SQLAlchemy (unjudged), Microsoft (unjudged), OpenJS Foundation (unjudged), PgBouncer project (unjudged), PostgreSQL (unjudged). Backing: unjudged.
+Backed by: Django Software Foundation (unjudged), Ruby on Rails (unjudged), SQLAlchemy (unjudged), Microsoft (unjudged), Laravel (unjudged), OpenJS Foundation (unjudged), PgBouncer project (unjudged), PostgreSQL (unjudged). Backing: unjudged.
 
 **Rule.** Fetch related rows in one query or batch, never one query per row.
 
-**Why.** A query per row multiplies latency by result size. Also back filter and join columns with an index and use a bounded connection pool: an unindexed filter turns each query into a scan, and a connection per request exhausts the database under load.
+**Why.** A query per row multiplies latency by result size. Where the ORM offers it, make an unplanned lazy load raise in tests (strict loading, a prevent-lazy-loading switch, the `raise` loader); that catches the loop before it ships. Also back filter and join columns with an index and use a bounded connection pool: an unindexed filter turns each query into a scan, and a connection per request exhausts the database under load.
 
 **FAIL**
 
@@ -381,7 +382,7 @@ Backed by: OWASP (unjudged), NCSC (unjudged), Microsoft (unjudged), Google (unju
 
 **Rule.** Validate model output deterministically before code acts on it.
 
-**Why.** Injected instructions in retrieved text can steer tool calls. No known prevention is fool-proof, and RAG or fine-tuning do not fully fix it, so the goal is to limit what a fooled model can make the code do. Also keep credentials in code, not in the model, and require human approval for high-risk actions.
+**Why.** Injected instructions in retrieved text can steer tool calls. No known prevention is fool-proof, and RAG or fine-tuning do not fully fix it, so the goal is to limit what a fooled model can make the code do. Treat retrieved text and tool output as untrusted input, and block known leak paths, such as rendering external URLs, in code rather than in the prompt. Also keep credentials in code, not in the model, and require human approval for high-risk actions.
 
 **FAIL**
 
@@ -439,7 +440,7 @@ Backed by: OWASP (unjudged), GitHub (unjudged), AWS (unjudged), PortSwigger (unj
 
 **Rule.** Fetch a user-supplied URL only when its host matches a server-side allowlist.
 
-**Why.** The server can reach networks that the attacker cannot, such as internal services and the cloud metadata address, and an open fetch lets the attacker read them. A hostname allowlist alone does not stop DNS rebinding, so also check that the resolved address is not private and connect to that address. Turn off redirect following, or check each redirect target the same way.
+**Why.** The server can reach networks that the attacker cannot, such as internal services and the cloud metadata address, and an open fetch lets the attacker read them. A hostname allowlist alone does not stop DNS rebinding, so also check that the resolved address is not private and connect to that address. Validate and sanitise every user value that goes into the URL, not only the host. Turn off redirect following, or check each redirect target the same way.
 
 **FAIL**
 

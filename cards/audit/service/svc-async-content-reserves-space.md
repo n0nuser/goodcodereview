@@ -22,7 +22,7 @@ borrowed_from:
 
 **Rule.** Reserve the space for late-loading content with set dimensions or an aspect ratio, so nothing already on screen moves.
 
-**Why.** A page that jumps while someone reads or taps makes them hit the wrong target. A cumulative layout shift of 0.1 or less is good, and over 0.25 is poor, measured on real users at the 75th percentile.
+**Why.** A page that jumps while someone reads or taps makes them hit the wrong target. A cumulative layout shift of 0.1 or less is good, and over 0.25 is poor, measured on real users at the 75th percentile. A placeholder of the same size, such as a skeleton, fills the reserved space and reads better than a blank gap.
 
 **FAIL**
 

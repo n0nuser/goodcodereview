@@ -23,7 +23,7 @@ borrowed_from:
 
 **Rule.** Make the page usable at 320 CSS pixels wide and at 200% text zoom, with no sideways scrolling, no clipped content, and no blocked pinch-zoom.
 
-**Why.** Low-vision users enlarge the page instead of using a small screen. A fixed width or a clipped container hides content from exactly those users. `user-scalable=no` takes away their only tool.
+**Why.** Low-vision users enlarge the page instead of using a small screen. A fixed width or a clipped container hides content from exactly those users. `user-scalable=no` takes away their only tool. A 320 px width is the same test as 400% zoom on a 1280 px screen, so the layout must reflow at that size without losing content or functions. `width=device-width` in the viewport meta makes the layout follow the screen width.
 
 **FAIL**
 

@@ -18,7 +18,7 @@ borrowed_from:
 
 **Rule.** Give the agent only the narrow tools and the minimal credentials its task needs.
 
-**Why.** Hallucination or an injected instruction can drive any tool the model holds. An open-ended shell or URL fetch hands over everything the service account can do. Where you can, run each tool as the requesting user rather than a shared admin identity, and let the downstream system check that user's rights on every call. [[sys-prompt-injection]] covers validating model output and human approval; this card covers how much the agent can reach in the first place.
+**Why.** Hallucination or an injected instruction can drive any tool the model holds. An open-ended shell or URL fetch hands over everything the service account can do. Where you can, run each tool as the requesting user rather than a shared admin identity, and let the downstream system check that user's rights on every call. A session that reads content from an untrusted party gets no privileged tools. [[sys-prompt-injection]] covers validating model output and human approval; this card covers how much the agent can reach in the first place.
 
 **FAIL**
 

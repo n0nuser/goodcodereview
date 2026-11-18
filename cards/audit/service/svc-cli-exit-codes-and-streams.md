@@ -22,7 +22,7 @@ borrowed_from:
 
 **Rule.** Exit non-zero when a command fails, and write results to stdout and errors and progress to stderr.
 
-**Why.** Scripts branch on the exit code and pipe stdout into the next program. A failure that exits 0 reads as success, and an error line on stdout lands in the next program's input. Add a `--json` flag for structured results, and keep prompts out of non-terminal runs (see [[svc-cli-non-interactive]]).
+**Why.** Scripts branch on the exit code and pipe stdout into the next program. A failure that exits 0 reads as success, and an error line on stdout lands in the next program's input. Scripts should never parse error wording or default text, which can change between releases. Add a `--json` flag for structured results, and keep prompts out of non-terminal runs (see [[svc-cli-non-interactive]]). Where callers must tell failures apart, give each class its own documented code, such as bad usage, authentication required or a service error.
 
 **FAIL**
 

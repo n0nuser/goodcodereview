@@ -19,7 +19,7 @@ borrowed_from:
 
 **Rule.** Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.
 
-**Why.** Small, tight controls cause mis-taps for anyone with a tremor, a large thumb, or a bumpy train. A mis-tap on "Delete" next to "Edit" costs more than a mis-tap on a menu item.
+**Why.** Small, tight controls cause mis-taps for anyone with a tremor, a large thumb, or a bumpy train. A mis-tap on "Delete" next to "Edit" costs more than a mis-tap on a menu item. Measure the size as the largest unobscured area of the target.
 
 **FAIL**
 

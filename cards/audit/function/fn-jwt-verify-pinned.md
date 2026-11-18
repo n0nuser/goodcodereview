@@ -18,9 +18,9 @@ borrowed_from:
   - https://pyjwt.readthedocs.io/en/stable/api.html
 ---
 
-**Rule.** Verify the signature against a fixed list of accepted algorithms, and check `iss` and `aud`, before reading any claim.
+**Rule.** Verify the signature against a fixed list of accepted algorithms, and check `iss`, `aud`, and `exp`, before reading any claim.
 
-**Why.** If the verifier takes the algorithm from the token header, an attacker picks `none` or turns an RSA public key into an HMAC secret. Claims read before verification are attacker text. Pinning the algorithm and binding each key to one algorithm closes both. Also require `exp`, so a stolen token stops working.
+**Why.** If the verifier takes the algorithm from the token header, an attacker picks `none` or turns an RSA public key into an HMAC secret. Claims read before verification are attacker text. Pinning the algorithm and binding each key to one algorithm closes both. Leave `none` out of the list, and never mix HMAC and public-key algorithms in it. Pick the key by `kid` from the issuer's published key set. Requiring `exp` means a stolen token stops working.
 
 **FAIL**
 

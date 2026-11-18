@@ -29,4 +29,4 @@ def handler():
 from app.billing.parsing import parse
 ```
 
-**Counterpoint.** "Import inside the function avoids a cycle." It hides the cycle instead of fixing it, and the design needs a third module or a dependency inversion. A lazy import for a heavy optional dependency is the one defensible exception; document it with a reason.
+**Counterpoint.** "Import inside the function avoids a cycle." It hides the cycle instead of fixing it, and the design needs a third module or a dependency inversion. A lazy import for a heavy optional dependency is the one defensible exception; document it with a reason. Some guides tolerate explicit relative imports and a function-level import to break a cycle; this pack chooses absolute imports because they survive moving files, and keeps the local import as a last resort.

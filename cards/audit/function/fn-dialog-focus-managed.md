@@ -8,7 +8,7 @@ lang: core
 applies_when: A component opens a modal dialog, drawer, or menu that covers the page.
 context: [ui]
 tool_gate: none; a component test that opens the dialog, presses Tab and Escape, and asserts `document.activeElement`.
-note: Focus into the modal, Tab kept inside: W3C APG, Mozilla, GitHub (Primer). Escape and return focus to the opener are in W3C APG and WebAIM; MDN does not state return focus, so that part is in Why
+note: Focus into the modal, Tab kept inside: W3C APG, Mozilla, GitHub (Primer). Escape is in W3C APG and WebAIM. Return focus to the opener is in W3C APG, WebAIM and GitHub (Primer), so it is in the Rule. Inert background is W3C APG and MDN (2 orgs), so it is in Why
 borrowed_from:
   - https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
   - https://www.w3.org/WAI/WCAG22/Understanding/no-keyboard-trap.html
@@ -17,9 +17,9 @@ borrowed_from:
   - https://primer.style/product/components/dialog/accessibility
 ---
 
-**Rule.** When a modal opens, move focus into it and keep Tab inside it. Make Escape close it.
+**Rule.** When a modal opens, move focus into it and keep Tab inside it. Make Escape close it. When it closes, return focus to the control that opened it or, if it is gone, to the next logical control.
 
-**Why.** Without it, a keyboard user keeps tabbing through the page behind the dialog, or gets stuck inside it with no exit. When it closes, return focus to the control that opened it. Focus that falls to the top of the page makes them start over.
+**Why.** Without it, a keyboard user keeps tabbing through the page behind the dialog, or gets stuck inside it with no exit. Content behind a modal must be inert, so neither keys nor the pointer reach it. Focus that falls to the top of the page after close makes them start over.
 
 **FAIL**
 
@@ -40,4 +40,4 @@ borrowed_from:
 </script>
 ```
 
-**Counterpoint.** "Our library handles it." Check, because a library that traps focus but never restores it is common. Prefer the native `<dialog>` with `showModal()`, which makes the page inert and closes on Escape. A dialog built from generic elements must recreate each of those.
+**Counterpoint.** "Our library handles it." Check, because a library that traps focus but never restores it is common. Prefer the native `<dialog>` with `showModal()`, which makes the page inert, closes on Escape and restores focus to the opener in current browsers, so the `onclose` handler above is belt and braces. A dialog built from generic elements must recreate each of those.

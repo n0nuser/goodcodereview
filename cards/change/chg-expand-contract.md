@@ -20,7 +20,7 @@ borrowed_from:
 
 **Rule.** Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.
 
-**Why.** Producers and consumers deploy at different times. A one-step rename breaks whichever side is still on the old version.
+**Why.** Producers and consumers deploy at different times. A one-step rename breaks whichever side is still on the old version. Start writing both forms before any reader moves to the new one, and backfill old rows, or a reader sees stale or empty values.
 
 **FAIL**
 

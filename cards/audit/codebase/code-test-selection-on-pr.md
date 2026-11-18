@@ -19,7 +19,7 @@ borrowed_from:
 
 **Rule.** When the full suite is slower than the pull-request feedback target, run only the tests the change affects on the pull request, and run the full suite before deploy or on a schedule.
 
-**Why.** A full suite on every pull request makes the queue wait for tests the change cannot break. Meta runs a third of the affected tests and reports catching more than 99.9 percent of regressions. Shopify runs the tests related to the change. The full run still happens, outside the pull-request gate.
+**Why.** A full suite on every pull request makes the queue wait for tests the change cannot break. Meta runs a third of the affected tests and reports catching more than 99.9 percent of regressions. Shopify runs the tests related to the change. Meta and Gradle pick them with a model trained on past results, not from what the change touches. The full run still happens, outside the pull-request gate.
 
 **FAIL**
 
@@ -57,4 +57,4 @@ jobs:
       - run: pytest
 ```
 
-**Counterpoint.** "Selection misses regressions." Shopify says a stale mapping let failing tests merge, about 0.06 percent of pull requests, and Microsoft falls back to all tests when it cannot classify a change. Keep the full run, fall back to all tests when the mapping cannot decide, and do not present the pull-request run as full coverage. The selected tests gate the merge, as [[code-ci-gates]] asks; the full run comes before deploy or on a schedule.
+**Counterpoint.** "Selection misses regressions." Shopify says a stale mapping let failing tests merge, about 0.06 percent of pull requests, and Shopify and Microsoft run every test when they cannot map or classify a change. Keep the full run, fall back to all tests when the mapping cannot decide, and do not present the pull-request run as full coverage. The selected tests gate the merge, as [[code-ci-gates]] asks; the full run comes before deploy or on a schedule.

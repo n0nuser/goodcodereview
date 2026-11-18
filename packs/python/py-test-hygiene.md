@@ -21,7 +21,7 @@ note: Google (small tests cannot reach the network or disk), Microsoft (a unit t
 
 **Rule.** Keep unit tests off external I/O (the network, the shared filesystem and the database) and off the real clock, and run tests that need them in a separate, slower tier.
 
-**Why.** A test that reaches the network, the disk or the database is slow and fails for reasons outside the code: an offline CI runner, a schema change, a clock at midnight. Those dependencies belong in an integration tier, where the failure is about the integration. Google's small tests cannot reach the network or disk; Microsoft's unit tests have no file system or database and control the clock through a seam; Django's `SimpleTestCase` blocks database queries by default.
+**Why.** A test that reaches the network, the disk or the database is slow and fails for reasons outside the code: an offline CI runner, a schema change, a clock at midnight. Those dependencies belong in an integration tier, where the failure is about the integration. Google's small tests cannot reach the network or disk; Microsoft's unit tests have no file system or database and control the clock through a seam; Django's `SimpleTestCase` blocks database queries by default. pytest-django fails a test that touches the database unless it opts in with a mark. Each test also builds and tears down its own state, so none depends on another's result or order.
 
 **FAIL**
 

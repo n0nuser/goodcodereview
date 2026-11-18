@@ -9,5 +9,5 @@ One line per stable production card: id, severity, concerns, context, place, rul
 - `prod-latency-slo-percentile` [should-fix] {performance, observability} L119+27: Define latency SLOs and alerts on high percentiles, never on the mean.
 - `prod-load-test-before-launch` [should-fix] {performance, reliability} L147+27: Load test before launch, past the expected peak, with pass and fail thresholds written down.
 - `prod-profile-on-demand` [discuss] {performance, observability} L175+26: Make a CPU and memory profile of a production instance obtainable, through a continuous profiler or a private profile endpoint.
-- `prod-shadow-compare-before-cutover` [should-fix] {correctness, reliability} <data> L202+35: Before you move traffic to a new system, run it beside the old one on live or captured production traffic, diff the results, and cut over only when every mismatch is fixed or explained.
-- `prod-slo-error-budget` [discuss] {reliability, observability} L238+24: Define an SLO with an indicator and window, and use its remaining error budget to gate risky releases.
+- `prod-shadow-compare-before-cutover` [should-fix] {correctness, reliability} <data> L202+36: Before you move traffic to a new system, run it beside the old one on live or captured production traffic, diff the results, and cut over only when every mismatch is fixed or explained.
+- `prod-slo-error-budget` [discuss] {reliability, observability} L239+24: Define an SLO with an indicator and window, and use its remaining error budget to gate risky releases.

@@ -10,11 +10,13 @@ applies_when: The repository is a Go module with a CI pipeline.
 tool_gate: go vet, staticcheck, errcheck via golangci-lint
 borrowed_from:
   - https://github.com/uber-go/guide/blob/master/style.md
+  - https://go.dev/wiki/CodeReviewComments
+  - https://geth.ethereum.org/docs/developers/geth-developer/code-review-guidelines
 ---
 
 **Rule.** CI runs `go vet` and a linter set that includes staticcheck and errcheck, and a finding fails the build.
 
-**Why.** These tools catch unchecked errors, misused `Printf` verbs and dead code before a reviewer sees them. If review comments repeat, the gate is missing. Lint the same way across the whole codebase; consistency matters more than the exact set.
+**Why.** These tools catch unchecked errors, misused `Printf` verbs and dead code before a reviewer sees them. If review comments repeat, the gate is missing. Formatting is a gate of the same kind: Go projects expect `gofmt`-clean code. Lint the same way across the whole codebase; consistency matters more than the exact set.
 
 **FAIL**
 

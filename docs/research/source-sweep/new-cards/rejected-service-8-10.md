@@ -1,0 +1,3 @@
+svc-no-default-credentials: rows 2528, 2529, 2557 verified (mitre, cisa), but stable svc-fail-closed-defaults already states it (placeholder "changeme" key, refuse to boot) and cites both sources.
+svc-reject-get-with-body: rows 1913, 1982 verified (portswigger, fastly); stable svc-cache-key-completeness already states it (PASS: return 400 to a GET with a body; tool_gate; cites both). Row 1905 "never assume a body" is the opposite clause (parse it) and conflicts in intent; dropped.
+svc-path-normalise-before-authz (staged, rows trimmed): row 1891 dropped, the cached page describes the vulnerability and its prevention list does not say to normalise; row 1973 (fragment) kept only as the same Envoy URL; rule reworded to what 1972 and 1911 back (2 orgs).

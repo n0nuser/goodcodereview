@@ -16,7 +16,7 @@ borrowed_from:
 
 **Rule.** Validate model output deterministically before code acts on it.
 
-**Why.** Injected instructions in retrieved text can steer tool calls. No known prevention is fool-proof, and RAG or fine-tuning do not fully fix it, so the goal is to limit what a fooled model can make the code do. Also keep credentials in code, not in the model, and require human approval for high-risk actions.
+**Why.** Injected instructions in retrieved text can steer tool calls. No known prevention is fool-proof, and RAG or fine-tuning do not fully fix it, so the goal is to limit what a fooled model can make the code do. Treat retrieved text and tool output as untrusted input, and block known leak paths, such as rendering external URLs, in code rather than in the prompt. Also keep credentials in code, not in the model, and require human approval for high-risk actions.
 
 **FAIL**
 

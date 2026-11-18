@@ -4,7 +4,7 @@ level: service
 tags: [accessibility, usability, frontend, routing]
 severity: should-fix
 status: draft
-lacks: held, kept draft by Pablo's call; W3C, Mozilla and A11y Project back the Rule
+lacks: held, kept draft by the maintainer; W3C, Mozilla and A11y Project back the Rule
 lang: core
 applies_when: An app serves several pages or client-side routes under one HTML shell.
 context: [ui]
@@ -21,7 +21,7 @@ borrowed_from:
 
 **Rule.** Give every page and every client-side view its own `<title>` that says what it is.
 
-**Why.** The title labels the browser tab, the history, search results, and bookmarks, and it helps users find where they are. If every route says "My App", a user cannot tell the pages apart. In a single-page app the shell's title stays put unless the code changes it, so it goes on describing the first view.
+**Why.** The title labels the browser tab, the history, search results, and bookmarks, and it helps users find where they are. If every route says "My App", a user cannot tell the pages apart. In a single-page app the shell's title stays put unless the code changes it, so it goes on describing the first view. Put what is unique to the page first and the site name last, because a screen reader reads the title from the start. When a form shows a validation error, begin the title with "Error:" so those users hear it at once.
 
 **FAIL**
 

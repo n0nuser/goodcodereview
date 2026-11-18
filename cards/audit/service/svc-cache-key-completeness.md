@@ -20,7 +20,7 @@ borrowed_from:
 
 **Rule.** Key every request input that can change the response, and strip any other request value before it reaches a cached body.
 
-**Why.** A cache keeps one response per key. If the origin echoes a header, a cookie, or a GET body that the key ignores, the first request stores content that every later visitor receives. An attacker can then place content on your domain without touching the origin: a link or a form. A value that reaches the body belongs in the key, or it must not reach the body at all. Caching only static types by default narrows the surface, though CDN defaults differ.
+**Why.** A cache keeps one response per key. If the origin echoes a header, a cookie, or a GET body that the key ignores, the first request stores content that every later visitor receives. An attacker can then place content on your domain without touching the origin: a link or a form. A value that reaches the body belongs in the key, or it must not reach the body at all. Do not key on a value that varies per user or per request, such as `User-Agent` or a session cookie: it splits the cache into one entry per value, so strip it instead. Caching only static types by default narrows the surface, though CDN defaults differ.
 
 **FAIL**
 

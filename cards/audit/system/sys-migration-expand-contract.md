@@ -20,7 +20,7 @@ borrowed_from:
 
 **Rule.** Run data backfills in batches, in a migration separate from the schema change.
 
-**Why.** A large backfill in one transaction holds locks for its whole run, and a failure halfway rolls all of it back. Batches with a pause between them keep each lock short and let the backfill resume. [[chg-expand-contract]] covers the order of releases around it.
+**Why.** A large backfill in one transaction holds locks for its whole run, and a failure halfway rolls all of it back. Batches with a pause between them keep each lock short and let the backfill resume. Page the batches by the last id processed, not with `LIMIT`/`OFFSET`, which slows down on later pages. [[chg-expand-contract]] covers the order of releases around it.
 
 **FAIL**
 

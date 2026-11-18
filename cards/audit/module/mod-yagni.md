@@ -7,7 +7,7 @@ status: stable
 lang: core
 applies_when: The code adds or keeps an abstraction, parameter, hook or option.
 tool_gate: none
-note: The MediaWiki architecture page labels itself a draft. The Microsoft playbook checklist may echo Google's wording and the extensibility guideline is indirect. Shopify backs the second-use clause.
+note: The MediaWiki architecture page labels itself a draft. The Microsoft playbook checklist may echo Google's wording and the extensibility guideline is indirect. Shopify and Microsoft ask for three or several uses, so no use count sits in the Rule.
 borrowed_from:
   - https://kentcdodds.com/blog/aha-programming
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
@@ -23,7 +23,7 @@ borrowed_from:
   - https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/hexagonal-architecture.html
 ---
 
-**Rule.** Do not build an abstraction or capability for a need that does not exist yet; add it when the need or a second use appears.
+**Rule.** Do not build an abstraction or capability for a need that does not exist yet; add it when the need appears.
 
 **Why.** Speculative flexibility costs reading time every day and is usually the wrong shape when the need arrives. Reviewers cannot verify a use that does not exist.
 
@@ -40,4 +40,4 @@ def send(msg, retries=3, backoff=None, hook=None): ...   # nobody passes these
 def send_welcome_email(user): ...
 ```
 
-**Counterpoint.** "But we will surely need it." Then add it when you do, in a change that has the real second caller to shape it. Optimising for easy change means simple code, not built-in flexibility. The cost of waiting is low, and the cost of the wrong guess is not. When the need is certain and a retrofit would be costly, as for a public API that cannot change later, weigh that cost before waiting.
+**Counterpoint.** "But we will surely need it." Then add it when you do, in a change that has the real caller to shape it. Optimising for easy change means simple code, not built-in flexibility. The cost of waiting is low, and the cost of the wrong guess is not. When the need is certain and a retrofit would be costly, as for a public API that cannot change later, weigh that cost before waiting.

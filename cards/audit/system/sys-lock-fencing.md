@@ -21,7 +21,7 @@ borrowed_from:
 
 **Rule.** Check a correctness lock on the resource side (fencing token or compare-and-set), never by lock possession alone.
 
-**Why.** A holder can pause past its TTL, lose the lock and still write. Only the store can reject the stale writer.
+**Why.** A holder can pause past its TTL, lose the lock and still write. Only the store can reject the stale writer. The holder takes the token when it gets the lock and sends it with every write.
 
 **FAIL**
 

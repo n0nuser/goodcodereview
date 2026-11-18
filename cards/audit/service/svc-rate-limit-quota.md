@@ -23,7 +23,7 @@ borrowed_from:
 
 **Rule.** Enforce a per-tenant quota on shared APIs and queues.
 
-**Why.** Without a quota, one noisy tenant consumes shared capacity for everyone. Key the count to the identity that owns the quota, such as the tenant, account or API key, and state the window and when capacity returns. Also add a per-tenant concurrency cap, and return 429 for over-quota but 503 for the service's own lack of capacity, so clients do not retry quota errors as capacity problems.
+**Why.** Without a quota, one noisy tenant consumes shared capacity for everyone. Key the count to the identity that owns the quota, such as the tenant, account or API key, and state the window and when capacity returns. Also add a per-client rate limit over a time window, set below the tenant quota, so one client cannot spend it all at once. Also add a per-tenant concurrency cap, and return 429 for over-quota but 503 for the service's own lack of capacity, so clients do not retry quota errors as capacity problems.
 
 **FAIL**
 

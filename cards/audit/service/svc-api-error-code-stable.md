@@ -17,7 +17,7 @@ borrowed_from:
 
 **Rule.** Give each error a stable machine-readable code that callers branch on, and never make them parse the message text.
 
-**Why.** Message text gets reworded, translated and fixed. A client that matches on "already exists" breaks on the first edit. A published code is a contract.
+**Why.** Message text gets reworded, translated and fixed. A client that matches on "already exists" breaks on the first edit. A published code is a contract, and one code names one kind of error: reusing it for a different error breaks callers who branch on it.
 
 **FAIL**
 

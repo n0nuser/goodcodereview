@@ -14,11 +14,12 @@ borrowed_from:
   - https://www.cisa.gov/news-events/directives/bod-22-01-reducing-significant-risk-known-exploited-vulnerabilities
   - https://docs.github.com/en/code-security/securing-your-organization/understanding-your-organizations-exposure-to-vulnerabilities/prioritizing-dependabot-alerts-using-metrics
   - https://cheatsheetseries.owasp.org/cheatsheets/Vulnerable_Dependency_Management_Cheat_Sheet.html
+  - https://tech.cabify.com/blog/engineering/cabify-container-certification
 ---
 
 **Rule.** Write down how long a known-vulnerable dependency may stay unfixed and fix or upgrade it inside that window.
 
-**Why.** A scan that finds a vulnerability and then sits unread protects nobody. An alert left open past its window is the failure, whatever the tool says. If a fix is not possible, record the accepted risk with an owner and a review date, so the open alert is a decision and not an oversight. [[code-dependency-licence-sbom]] covers running the scan, and this card covers acting on the result.
+**Why.** A scan that finds a vulnerability and then sits unread protects nobody. An alert left open past its window is the failure, whatever the tool says. If a fix is not possible, record the accepted risk with the CVE, the reason, an owner and an expiry date that lapses on its own, so the open alert is a decision and not an oversight. [[code-dependency-licence-sbom]] covers running the scan, and this card covers acting on the result.
 
 **FAIL**
 

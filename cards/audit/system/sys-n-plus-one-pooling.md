@@ -14,6 +14,7 @@ borrowed_from:
   - https://guides.rubyonrails.org/active_record_querying.html
   - https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html
   - https://learn.microsoft.com/en-us/azure/architecture/antipatterns/chatty-io/
+  - https://laravel.com/docs/12.x/eloquent
   - https://nodejs.org/api/http.html#class-httpagent
   - https://www.pgbouncer.org/features.html
   - https://www.postgresql.org/docs/current/runtime-config-connection.html
@@ -21,7 +22,7 @@ borrowed_from:
 
 **Rule.** Fetch related rows in one query or batch, never one query per row.
 
-**Why.** A query per row multiplies latency by result size. Also back filter and join columns with an index and use a bounded connection pool: an unindexed filter turns each query into a scan, and a connection per request exhausts the database under load.
+**Why.** A query per row multiplies latency by result size. Where the ORM offers it, make an unplanned lazy load raise in tests (strict loading, a prevent-lazy-loading switch, the `raise` loader); that catches the loop before it ships. Also back filter and join columns with an index and use a bounded connection pool: an unindexed filter turns each query into a scan, and a connection per request exhausts the database under load.
 
 **FAIL**
 

@@ -38,4 +38,4 @@ borrowed_from:
 <a href="/billing">Billing</a>
 ```
 
-**Counterpoint.** "Native buttons are hard to style." They are not: reset `border`, `background`, and `font` on the element. Rebuilding the keyboard, role, and focus behaviour by hand costs more and fails more often. Where a custom widget is unavoidable, follow the WAI-ARIA Authoring Practices pattern for it.
+**Counterpoint.** "Native buttons are hard to style." They are not: reset `border`, `background`, and `font` on the element. Rebuilding the keyboard, role, and focus behaviour by hand costs more and fails more often. Where a custom widget is unavoidable, follow the WAI-ARIA Authoring Practices pattern for it. A `div` that must take a click needs `role="button"`, `tabindex="0"`, and Enter and Space handlers; the role alone does not make it operable.

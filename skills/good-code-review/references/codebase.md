@@ -11,7 +11,7 @@ Backed by: jsx-eslint project (unjudged), Deque (unjudged), GOV.UK (supports), U
 
 **Rule.** Run an automated accessibility check, such as axe on rendered pages, in the automated tests, and fail the test on a violation.
 
-**Why.** A violation that nobody sees at review ships. A failing test catches the missing label or `alt` on the pull request that adds it, and run in CI on every change it blocks the merge. A JSX lint such as `jsx-a11y` catches some of the same problems earlier, in the editor. Either way it is a floor: tools find only part of the problems, so a person still tests with a keyboard.
+**Why.** A violation that nobody sees at review ships. A failing test catches the missing label or `alt` on the pull request that adds it, and run in CI on every pull request it blocks the merge. A JSX lint such as `jsx-a11y` catches some of the same problems earlier, in the editor. Either way it is a floor: tools find only part of the problems, so a person still tests with a keyboard and reviews the results the engine marks "incomplete".
 
 **FAIL**
 
@@ -38,9 +38,9 @@ concerns: maintainability, process
 applies_when: Auditing whether the reasons behind significant design choices are recorded.  
 Backed by: AWS (unjudged), Microsoft (unjudged), Google (unjudged), GOV.UK (unjudged), Spotify (unjudged), Cognitect (unjudged), Rust project (unjudged), Python Software Foundation (unjudged), Kubernetes (unjudged), Oxide Computer Company (unjudged). Backing: unjudged. People cited: Rich Hickey (unjudged).
 
-**Rule.** Keep a short written record for each significant design choice (datastore, framework, deviation from a pattern) that states the context, the decision, and its consequences.
+**Rule.** Keep a short written record for each significant design choice (datastore, framework, deviation from a pattern) that states the context, the decision, the options ruled out, and its consequences.
 
-**Why.** Without a record, the next reader reverses a decision blindly or cargo-cults it. Also list the options you ruled out and why: a record that weighs only the chosen design, its strengths or its flaws, is not a trade-off analysis.
+**Why.** Without a record, the next reader reverses a decision blindly or cargo-cults it. A record that weighs only the chosen design, its strengths or its flaws, is not a trade-off analysis, so say why each ruled-out option lost. Give each record a status (proposed, accepted, superseded). Do not edit an accepted record: write a new one that supersedes it and keep the old one. If review finds an undocumented decision, write its record then.
 
 **FAIL**
 
@@ -55,6 +55,35 @@ docs/adr/0007-queue.md: context, decision, consequences, status, and the 2 optio
 ```
 
 **Counterpoint.** ADRs rot and become paperwork. Keep each to a page, write them only for hard-to-reverse choices, and mark superseded ones.
+
+## code-ai-pr-disclosure
+
+severity: should-fix  
+concerns: process  
+applies_when: A pull request was written in whole or part by an AI tool.  
+tool gate: PR template checkbox for AI assistance; commit trailer check.  
+Backed by: Linux kernel (unjudged), Ghostty (unjudged), Godot Engine (unjudged). Backing: unjudged.
+
+**Rule.** Disclose AI assistance in the PR, and have a human author who can explain and defend every changed line without the tool.
+
+**Why.** Reviewers calibrate by who wrote the code. An undisclosed generated change gets the wrong scrutiny, and an author who cannot explain it leaves the reviewer to do the author's job.
+
+**FAIL**
+
+```text
+PR description: "Add retry logic."
+(500 generated lines; asked why a 3rd retry, the author says "the model chose it")
+```
+
+**PASS**
+
+```text
+PR description: "Add retry logic. Drafted with <tool>; I read and tested every line.
+ Tests: test_retry.py. Not covered: jitter."
+Trailer: Assisted-by: <tool>
+```
+
+**Counterpoint.** "Disclosure stigmatises tool use." The rule is about scrutiny, not blame: disclosed work is reviewed the same way and merged on the same terms. The agent never signs off or certifies origin; the human does.
 
 ## code-build-hermetic
 
@@ -97,7 +126,7 @@ Backed by: OpenSSF (unjudged), Palantir (unjudged), Kubernetes (unjudged). Backi
 
 **Rule.** Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
 
-**Why.** Any rule that depends on someone remembering will be skipped. Components where changes merge unreviewed or without discussion tend to ship more post-release defects.
+**Why.** Any rule that depends on someone remembering will be skipped. Components where changes merge unreviewed or without discussion tend to ship more post-release defects. Changes reach the branch only through a pull request, and force-push and branch deletion are blocked, so what was reviewed is what ships.
 
 **FAIL**
 
@@ -108,7 +137,8 @@ Default branch: no protection. Force-push allowed. CI optional.
 **PASS**
 
 ```text
-Protected main: 1 approval + required checks (build, test, lint, types).
+Protected main: pull request required, 1 approval + required checks (build, test, lint, types).
+Force-push and branch deletion blocked.
 ```
 
 **Counterpoint.** Gates slow small teams, and flaky tests train people to override. Keep gates few and reliable, fix flakes instead of overriding them, and let the gates own the mechanical checks so review time goes to design.
@@ -147,11 +177,11 @@ severity: should-fix
 concerns: maintainability  
 applies_when: Auditing for code, flags and files that nothing uses.  
 tool gate: An unused-code linter in CI (vulture, knip, or deadcode); allowlist each intentional exception with a reason.  
-Backed by: Palantir (unjudged), Google (unjudged), Meta (unjudged), Carnegie Mellon SEI (unjudged), Linux kernel (unjudged), NVIDIA (unjudged), Microsoft (unjudged), GitLab (unjudged), Uber (unjudged), Statsig (unjudged), JetBrains (unjudged), Lockheed Martin (unjudged). Backing: unjudged. People cited: Henrik Warne (unjudged), tef (programmingisterrible) (unjudged).
+Backed by: Palantir (unjudged), Google (unjudged), Meta (unjudged), Carnegie Mellon SEI (unjudged), Linux kernel (unjudged), NVIDIA (unjudged), Microsoft (unjudged), GitLab (unjudged), Uber (unjudged), Statsig (unjudged), JetBrains (unjudged), Lockheed Martin (unjudged), TUM ESI (unjudged). Backing: unjudged. People cited: Henrik Warne (unjudged), tef (programmingisterrible) (unjudged).
 
-**Rule.** Delete unreferenced functions and variables, and the branches of expired feature flags.
+**Rule.** Delete unreferenced functions and variables, unreachable code, commented-out code, and expired feature flags with their branches and configuration.
 
-**Why.** Dead code costs reading time, misleads searches, and gets "fixed" and tested for no benefit. The same holds for the common cases of commented-out code and files nothing links to: delete them too and let version control remember.
+**Why.** Dead code costs reading time, misleads searches, and gets "fixed" and tested for no benefit. The same holds for unused imports and files nothing links to: delete them too and let version control remember.
 
 **FAIL**
 
@@ -159,12 +189,15 @@ Backed by: Palantir (unjudged), Google (unjudged), Meta (unjudged), Carnegie Mel
 def old_export(): ...      # no caller anywhere in the repo
 if FLAGS["legacy_ui"]:     # flag permanently false since release 4
     render_legacy()
+# if USE_CACHE: warm()     # commented-out code, kept "just in case"
+return result
+log.info("done")          # unreachable
 ```
 
 **PASS**
 
 ```text
-Unused function and expired-flag branch deleted; version history shows where they went.
+Unused function, unreachable code, commented-out code and expired-flag branch deleted; version history shows where they went.
 The unused-code linter reports 0 symbols, or each is allowlisted with a reason.
 ```
 
@@ -178,7 +211,7 @@ applies_when: Auditing what third-party code the repo ships and under which term
 tool gate: A vulnerability scanner such as OSV-Scanner or Dependabot alerts; an SBOM generator such as Syft.  
 Backed by: OWASP (unjudged), OpenSSF (unjudged), CISA (unjudged), NIST (unjudged), GitHub (unjudged), Cabify (unjudged). Backing: unjudged.
 
-**Rule.** Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule. Each ask is judged separately: name which one failed on the FAIL line.
+**Rule.** Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule, and raise an alert when a new vulnerability applies. Each ask is judged separately: name which one failed on the FAIL line.
 
 **Why.** Without an inventory, a team cannot answer a disclosed vulnerability quickly. CI is the usual place for both steps: the SBOM then matches what was built, and the scan runs without anyone remembering it. Team policy: also fail the build on a dependency whose licence is not on the approved list.
 
@@ -192,7 +225,7 @@ No SBOM anywhere, no scanner in CI, and dependency alerts turned off.
 
 ```text
 CI: generate SBOM, run vulnerability scanner, fail on high severity;
-release artifacts attach the SBOM.
+release artifacts attach the SBOM; a new advisory for a shipped component raises an alert.
 ```
 
 **Counterpoint.** SBOMs and scanners create noise that nobody triages. Tune severity thresholds and assign an owner, since an ignored report is worse than none. The licence list is team policy, not a universal rule. Drop it if your team has no licence constraints.
@@ -309,7 +342,7 @@ Backed by: Dropbox (unjudged), Shopify (unjudged), Cabify (unjudged), Atlassian 
 
 **Rule.** Report every test that passes only on retry, move it to a quarantine with a named owner and a ticket, and return it to the merge gate only after it passes many reruns.
 
-**Why.** A test that fails at random on unchanged code teaches people to rerun until green, and then a real regression looks like noise. Dropbox removes tests that fail too often from the main pool and files a bug against the owner. Its fix workflow then runs the test 100 or more times in CI before the fix lands. Shopify retries a failed test but tells developers about every pass after a retry. The usual causes are a fixed pause where the test should wait for an element (Shopify) and state left behind by an earlier test (Cabify, Dropbox).
+**Why.** A test that fails at random on unchanged code teaches people to rerun until green, and then a real regression looks like noise. Dropbox removes tests that fail too often from the main pool and files a bug against the owner. Its fix workflow then runs the test 100 or more times in CI before the fix lands. Give the ticket a due date, so a quarantined test gets fixed or deleted instead of sitting there for good. Shopify retries a failed test but tells developers about every pass after a retry. The usual causes are a fixed pause where the test should wait for an element (Shopify) and state left behind by an earlier test (Cabify, Dropbox).
 
 **FAIL**
 
@@ -416,7 +449,7 @@ Backed by: Cursor (unjudged), Spotify (unjudged), Stripe (unjudged), Cabify (unj
 
 **Rule.** Back each written repo rule that a type, lint or CI check could enforce with that check, not with a line in an instruction file or a repeated review comment.
 
-**Why.** A rule that relies on memory gets broken, and reviewers then repeat the same correction. An instruction file is advisory: a person or an agent can skip it. A lint message that names the fix teaches it at the moment of the mistake. A "do not remove" code comment has the same weakness as an instruction file line.
+**Why.** A rule that relies on memory gets broken, and reviewers then repeat the same correction. An instruction file is advisory: a person or an agent can skip it. A lint message that names the fix teaches it at the moment of the mistake. A "do not remove" code comment has the same weakness as an instruction file line. Where no static check can see the rule, a hook or script that blocks the action is the enforcer.
 
 **FAIL**
 
@@ -494,6 +527,34 @@ key revoked and reissued the same day; new value comes from the secret store
 
 **Counterpoint.** "Scanners give false positives." Tune with an allowlist of reviewed, non-secret strings. A missed live key costs far more than a triaged alert. When you run a scanner as part of a review, run it with live verification off: checking a hit against the issuing service sends the secret to a third party and shows up in the reviewer's network logs. Treat the hit as leaked without the check. [sys-secrets-and-errors](system.md#sys-secrets-and-errors) covers where secrets live at runtime.
 
+## code-secrets-not-plaintext-in-repo
+
+severity: should-fix  
+concerns: security  
+applies_when: Auditing source files, config files and infrastructure code for credentials, keys and tokens.  
+tool gate: Secret scanning on push; a lint that rejects literal values for fields named password, token or key.  
+Backed by: OWASP (unjudged), GitLab (unjudged), CISA (unjudged). Backing: unjudged.
+
+**Rule.** Keep secrets out of source code and config.
+
+**Why.** Anyone with read access to the repository, and every clone and fork, gets a plaintext secret, and removing it later does not recall the copies. Read the secret at run time from a secret store, and it can be rotated without a code change.
+
+**FAIL**
+
+```python
+DB_PASSWORD = "S3cr37-prod"
+conn = connect(host="db.internal", user="app", password=DB_PASSWORD)
+```
+
+**PASS**
+
+```python
+import os
+conn = connect(host="db.internal", user="app", password=os.environ["DB_PASSWORD"])
+```
+
+**Counterpoint.** "Environment variables are plaintext too, and they leak into process listings and crash dumps." True, so the secret store is the source and the variable is only the hand-off. Mount the value from the store at start, and keep it out of logs. [code-secret-scan](codebase.md#code-secret-scan) covers finding a secret that is already committed.
+
 ## code-test-fixtures-built-once
 
 severity: should-fix  
@@ -537,7 +598,7 @@ Backed by: Meta (unjudged), Microsoft (unjudged), Shopify (unjudged), Google (un
 
 **Rule.** When the full suite is slower than the pull-request feedback target, run only the tests the change affects on the pull request, and run the full suite before deploy or on a schedule.
 
-**Why.** A full suite on every pull request makes the queue wait for tests the change cannot break. Meta runs a third of the affected tests and reports catching more than 99.9 percent of regressions. Shopify runs the tests related to the change. The full run still happens, outside the pull-request gate.
+**Why.** A full suite on every pull request makes the queue wait for tests the change cannot break. Meta runs a third of the affected tests and reports catching more than 99.9 percent of regressions. Shopify runs the tests related to the change. Meta and Gradle pick them with a model trained on past results, not from what the change touches. The full run still happens, outside the pull-request gate.
 
 **FAIL**
 
@@ -575,7 +636,7 @@ jobs:
       - run: pytest
 ```
 
-**Counterpoint.** "Selection misses regressions." Shopify says a stale mapping let failing tests merge, about 0.06 percent of pull requests, and Microsoft falls back to all tests when it cannot classify a change. Keep the full run, fall back to all tests when the mapping cannot decide, and do not present the pull-request run as full coverage. The selected tests gate the merge, as [code-ci-gates](codebase.md#code-ci-gates) asks; the full run comes before deploy or on a schedule.
+**Counterpoint.** "Selection misses regressions." Shopify says a stale mapping let failing tests merge, about 0.06 percent of pull requests, and Shopify and Microsoft run every test when they cannot map or classify a change. Keep the full run, fall back to all tests when the mapping cannot decide, and do not present the pull-request run as full coverage. The selected tests gate the merge, as [code-ci-gates](codebase.md#code-ci-gates) asks; the full run comes before deploy or on a schedule.
 
 ## code-vuln-remediation-window
 
@@ -583,11 +644,11 @@ severity: should-fix
 concerns: security, process  
 applies_when: The repo has open dependency alerts, update pull requests, or scan reports; with none open, mark it N/A.  
 tool gate: Dependabot or Renovate alerts with a severity SLA; OSV-Scanner or Scorecard `Vulnerabilities` in CI.  
-Backed by: OpenSSF (unjudged), CISA (unjudged), GitHub (unjudged), OWASP (unjudged). Backing: unjudged.
+Backed by: OpenSSF (unjudged), CISA (unjudged), GitHub (unjudged), OWASP (unjudged), Cabify (unjudged). Backing: unjudged.
 
 **Rule.** Write down how long a known-vulnerable dependency may stay unfixed and fix or upgrade it inside that window.
 
-**Why.** A scan that finds a vulnerability and then sits unread protects nobody. An alert left open past its window is the failure, whatever the tool says. If a fix is not possible, record the accepted risk with an owner and a review date, so the open alert is a decision and not an oversight. [code-dependency-licence-sbom](codebase.md#code-dependency-licence-sbom) covers running the scan, and this card covers acting on the result.
+**Why.** A scan that finds a vulnerability and then sits unread protects nobody. An alert left open past its window is the failure, whatever the tool says. If a fix is not possible, record the accepted risk with the CVE, the reason, an owner and an expiry date that lapses on its own, so the open alert is a decision and not an oversight. [code-dependency-licence-sbom](codebase.md#code-dependency-licence-sbom) covers running the scan, and this card covers acting on the result.
 
 **FAIL**
 
@@ -655,6 +716,56 @@ jobs:
 
 **Counterpoint.** "SHA pinning blocks automatic fixes and adds update churn." Let an update bot propose SHA bumps, so fixes still arrive as reviewed changes. Where the platform offers a lockfile for workflow dependencies, that lockfile is stronger than SHA pins and meets this check. A `pull_request_target` job can be safe when it never checks out or runs the fork's code, but splitting the privileged job from the untrusted one is easier to review than keeping them together.
 
+## code-workflow-token-per-job-write
+
+severity: should-fix  
+concerns: security  
+applies_when: Auditing GitHub Actions workflow files.  
+tool gate: OpenSSF Scorecard `Token-Permissions` check; zizmor `excessive-permissions` audit.  
+Backed by: OpenSSF (unjudged), Rust project (unjudged), GitHub (unjudged). Backing: unjudged.
+
+**Rule.** Set workflow token permissions to read-only or none at the top level and grant write only on the job that needs it.
+
+**Why.** Every job in a workflow gets the workflow's token. A compromised step in a test job can then push code or edit releases if the token is wide. Write access held by one job shrinks what a bad step elsewhere can do. [code-workflow-supply-chain](codebase.md#code-workflow-supply-chain) covers pinning and untrusted triggers.
+
+**FAIL**
+
+```yaml
+permissions: write-all
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: make test
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - run: make release
+```
+
+**PASS**
+
+```yaml
+permissions: {}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - run: make test
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - run: make release
+```
+
+**Counterpoint.** "Repeating permissions on every job is noise." Only the jobs that need more than the top level repeat anything, and a missing key fails closed. The noise is the point: each grant shows in review.
+
 ## code-workload-identity
 
 severity: should-fix  
@@ -664,7 +775,7 @@ Backed by: GitHub (unjudged), Google (unjudged), GitLab (unjudged), Microsoft (u
 
 **Rule.** Exchange the platform's OIDC token for a short-lived cloud credential, and pin the trust policy to the workload.
 
-**Why.** A cloud key stored as a CI secret stays valid until someone rotates it, and every job that reads it can use it elsewhere. An OIDC token is minted for one job, expires with it, and names the repository, branch or environment. The cloud side has to check that name. A trust policy with no `sub` condition lets any repository assume the role.
+**Why.** A cloud key stored as a CI secret stays valid until someone rotates it, and every job that reads it can use it elsewhere. An OIDC token is minted for one job, expires with it, and names the repository, branch or environment. The cloud side has to check that name. A trust policy with no `sub` condition lets any repository assume the role. Match on stable IDs, not names that can change, and check the audience too, so a token minted for another service or platform is refused.
 
 **FAIL**
 

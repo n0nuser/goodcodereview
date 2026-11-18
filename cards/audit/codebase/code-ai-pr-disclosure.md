@@ -3,8 +3,7 @@ id: code-ai-pr-disclosure
 level: codebase
 tags: [process, agents, contribution]
 severity: should-fix
-status: draft
-lacks: orgs, disclosure has the Linux kernel and Ghostty; needs a third org that asks for it and for an author who can explain the code
+status: stable
 lang: core
 applies_when: A pull request was written in whole or part by an AI tool.
 tool_gate: PR template checkbox for AI assistance; commit trailer check.
@@ -12,6 +11,7 @@ borrowed_from:
   - https://docs.kernel.org/process/generated-content.html
   - https://docs.kernel.org/process/coding-assistants.html
   - https://github.com/ghostty-org/ghostty/blob/main/AI_POLICY.md
+  - https://contributing.godotengine.org/en/latest/development/contribution_rules.html
 ---
 
 **Rule.** Disclose AI assistance in the PR, and have a human author who can explain and defend every changed line without the tool.

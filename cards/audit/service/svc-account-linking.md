@@ -20,7 +20,7 @@ borrowed_from:
 
 **Rule.** Link a federated identity to an existing account only after proving control of both, and key the link on the pair `iss` and `sub`, never on an unverified email or another profile claim.
 
-**Why.** An attacker who registers a victim's address first can wait for the victim to press "Sign in with Google" and inherit the account through an automatic merge. The same bug appears when an IdP asserts an address it never verified, or one that changed owner since it did. An authenticated session on the existing account, plus a freshly authenticated federated identity, proves both sides. `iss` and `sub` together are the only stable key; email, `preferred_username` and name can be reused or reassigned, so they are a lookup hint at best.
+**Why.** An attacker who registers a victim's address first can wait for the victim to press "Sign in with Google" and inherit the account through an automatic merge. The same bug appears when an IdP asserts an address it never verified, or one that changed owner since it did. An authenticated session on the existing account, plus a freshly authenticated federated identity, proves both sides. `iss` and `sub` together are the only stable key; email, `preferred_username` and name can be reused or reassigned, so they are a lookup hint at best. Each `iss` and `sub` pair belongs to one local account only.
 
 **FAIL**
 

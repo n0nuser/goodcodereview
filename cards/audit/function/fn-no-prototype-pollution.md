@@ -19,7 +19,7 @@ borrowed_from:
 
 **Rule.** Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys.
 
-**Why.** `obj[key] = value` with `key` set to `__proto__` writes to `Object.prototype`, so every object in the process gains that property. An attacker who sets `isAdmin` or a template option there can skip checks or reach code execution. The bug sits in generic helpers such as deep merge and path setters, so one bad helper exposes every caller. Blocking `__proto__`, `constructor`, and `prototype` inside a deep merge helps, but a blocklist misses obfuscated keys, so treat it as a stopgap.
+**Why.** `obj[key] = value` with `key` set to `__proto__` writes to `Object.prototype`, so every object in the process gains that property. An attacker who sets `isAdmin` or a template option there can skip checks or reach code execution. The bug sits in generic helpers such as deep merge, deep clone and path setters, so one bad helper exposes every caller. Blocking `__proto__`, `constructor`, and `prototype` inside a deep merge helps, but a blocklist misses obfuscated keys, so treat it as a stopgap.
 
 **FAIL**
 

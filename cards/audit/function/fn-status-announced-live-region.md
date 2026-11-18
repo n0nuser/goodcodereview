@@ -20,7 +20,7 @@ borrowed_from:
 
 **Rule.** Announce an async status message through a live region (`role="status"` or `role="alert"`), and put a `role="status"` or `aria-live` region in the markup before its text changes.
 
-**Why.** A sighted user sees "Saved" appear. A screen-reader user hears nothing, because focus did not move. Most readers announce a change only in a region that existed first, so a status region created together with its message is often skipped. A `role="alert"` region is the exception: readers announce it even when script injects it.
+**Why.** A sighted user sees "Saved" appear. A screen-reader user hears nothing, because focus did not move. Most readers announce a change only in a region that existed first, so a status region created together with its message is often skipped. A `role="alert"` region is the exception: readers announce it even when script injects it. Add `aria-atomic="true"` when the whole region should be read out on every change, and leave it off otherwise. Use `assertive` only for urgent, time-sensitive messages, because it cuts into whatever the reader is saying.
 
 **FAIL**
 

@@ -13,13 +13,14 @@ borrowed_from:
   - https://blog.palantir.com/code-review-best-practices-19e02780015f
   - https://github.com/cursor/plugins/blob/main/pstack/skills/correct/SKILL.md
   - https://github.com/cursor/plugins/blob/main/pstack/skills/no-comments/SKILL.md
+  - https://thoughtbot.com/blog/introducing-test-budget
   - https://eslint.org/docs/latest/use/configure/rules
   - https://rust-lang.github.io/rust-clippy/master/index.html#allow_attributes_without_reason
 ---
 
 **Rule.** Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
 
-**Why.** Silencing a diagnostic hides the problem it reports and removes the safety net for the next author.
+**Why.** Silencing a diagnostic hides the problem it reports and removes the safety net for the next author. An exception with an expiry date fails the check again when it lapses, so it cannot stay forever.
 
 **FAIL**
 

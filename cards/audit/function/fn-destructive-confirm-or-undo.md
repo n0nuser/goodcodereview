@@ -19,7 +19,7 @@ borrowed_from:
 
 **Rule.** Make a destructive action reversible with undo, or ask the user to confirm it before it runs.
 
-**Why.** People click the wrong thing. If the action cannot be reversed and nothing stops it, one slip deletes their work. Undo costs a successful user nothing, while a dialog on every click trains them to click through. A dialog works best when its buttons name the outcome, such as "Delete project" and "Cancel", because "OK" and "Are you sure?" say nothing about what happens next.
+**Why.** People click the wrong thing. If the action cannot be reversed and nothing stops it, one slip deletes their work. Undo costs a successful user nothing, while a dialog on every click trains them to click through. A dialog works best when its buttons name the outcome, such as "Delete project" and "Cancel", because "OK" and "Are you sure?" say nothing about what happens next. Always include Cancel as the clear, safe way out. Payments and legal commitments need the same care as deletes.
 
 **FAIL**
 

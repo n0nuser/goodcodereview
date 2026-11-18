@@ -1,0 +1,3 @@
+- svc-framing-denied-by-csp: duplicate; held card svc-security-headers states frame-ancestors in its Why (no third org yet).
+- svc-nosniff: duplicate; held card svc-security-headers states nosniff in its Why (no third org yet).
+- svc-session-expiry: duplicate; stable svc-session-lifecycle Why already says enforce idle and absolute timeouts; also row 1883 (nist) quote not found in cache.

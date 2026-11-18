@@ -1,5 +1,5 @@
 {
-"generated": "2026-11-12",
+"generated": "2026-11-18",
 "schema_version": 5,
 "cards": {
 "code-a11y-check-in-ci": {
@@ -14,9 +14,17 @@
 "level": "codebase",
 "severity": "discuss",
 "backing": "unjudged",
-"rule": "Keep a short written record for each significant design choice (datastore, framework, deviation from a pattern) that states the context, the decision, and its consequences.",
+"rule": "Keep a short written record for each significant design choice (datastore, framework, deviation from a pattern) that states the context, the decision, the options ruled out, and its consequences.",
 "url": "https://goodcodereview.com/codebase#code-adr",
 "tool_gate": null
+},
+"code-ai-pr-disclosure": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Disclose AI assistance in the PR, and have a human author who can explain and defend every changed line without the tool.",
+"url": "https://goodcodereview.com/codebase#code-ai-pr-disclosure",
+"tool_gate": "PR template checkbox for AI assistance; commit trailer check."
 },
 "code-build-hermetic": {
 "level": "codebase",
@@ -46,7 +54,7 @@
 "level": "codebase",
 "severity": "should-fix",
 "backing": "unjudged",
-"rule": "Delete unreferenced functions and variables, and the branches of expired feature flags.",
+"rule": "Delete unreferenced functions and variables, unreachable code, commented-out code, and expired feature flags with their branches and configuration.",
 "url": "https://goodcodereview.com/codebase#code-dead-code",
 "tool_gate": "An unused-code linter in CI (vulture, knip, or deadcode); allowlist each intentional exception with a reason."
 },
@@ -54,7 +62,7 @@
 "level": "codebase",
 "severity": "should-fix",
 "backing": "unjudged",
-"rule": "Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule. Each ask is judged separately: name which one failed on the FAIL line.",
+"rule": "Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule, and raise an alert when a new vulnerability applies. Each ask is judged separately: name which one failed on the FAIL line.",
 "url": "https://goodcodereview.com/codebase#code-dependency-licence-sbom",
 "tool_gate": "A vulnerability scanner such as OSV-Scanner or Dependabot alerts; an SBOM generator such as Syft."
 },
@@ -130,6 +138,14 @@
 "url": "https://goodcodereview.com/codebase#code-secret-scan",
 "tool_gate": "Secret scanning on push (provider or pre-commit hook) with push protection on."
 },
+"code-secrets-not-plaintext-in-repo": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Keep secrets out of source code and config.",
+"url": "https://goodcodereview.com/codebase#code-secrets-not-plaintext-in-repo",
+"tool_gate": "Secret scanning on push; a lint that rejects literal values for fields named password, token or key."
+},
 "code-test-fixtures-built-once": {
 "level": "codebase",
 "severity": "should-fix",
@@ -161,6 +177,14 @@
 "rule": "Pin every CI action to a full commit SHA, and keep code from an unreviewed change out of any job that holds secrets or can deploy.",
 "url": "https://goodcodereview.com/codebase#code-workflow-supply-chain",
 "tool_gate": "OpenSSF Scorecard `Pinned-Dependencies` and `Dangerous-Workflow` checks; zizmor `unpinned-uses` audit."
+},
+"code-workflow-token-per-job-write": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Set workflow token permissions to read-only or none at the top level and grant write only on the job that needs it.",
+"url": "https://goodcodereview.com/codebase#code-workflow-token-per-job-write",
+"tool_gate": "OpenSSF Scorecard `Token-Permissions` check; zizmor `excessive-permissions` audit."
 },
 "code-workload-identity": {
 "level": "codebase",
@@ -218,6 +242,14 @@
 "url": "https://goodcodereview.com/function-any#fn-comments-survive-context",
 "tool_gate": null
 },
+"fn-complexity-cap": {
+"level": "function",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Set a cyclomatic complexity limit in the linter and keep every function under it.",
+"url": "https://goodcodereview.com/function-any#fn-complexity-cap",
+"tool_gate": "PMD CyclomaticComplexity (reports 10 or more), RuboCop Metrics/CyclomaticComplexity (configured Max), Microsoft CA1502 (default 25)."
+},
 "fn-confine-file-path": {
 "level": "function",
 "severity": "block",
@@ -254,7 +286,7 @@
 "level": "function",
 "severity": "block",
 "backing": "unjudged",
-"rule": "When a modal opens, move focus into it and keep Tab inside it. Make Escape close it.",
+"rule": "When a modal opens, move focus into it and keep Tab inside it. Make Escape close it. When it closes, return focus to the control that opened it or, if it is gone, to the next logical control.",
 "url": "https://goodcodereview.com/function-ui#fn-dialog-focus-managed",
 "tool_gate": "none; a component test that opens the dialog, presses Tab and Escape, and asserts `document.activeElement`."
 },
@@ -273,6 +305,14 @@
 "rule": "Give arguments with different meanings distinct types, so a call that swaps them fails to type-check.",
 "url": "https://goodcodereview.com/function-any#fn-distinct-types-for-ids",
 "tool_gate": "Type checker with a newtype or branded-type pattern."
+},
+"fn-early-return-no-else": {
+"level": "function",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Handle the error or edge case first and return early, so the main path is not nested.",
+"url": "https://goodcodereview.com/function-any#fn-early-return-no-else",
+"tool_gate": "Pylint no-else-return (R1705), clang-tidy readability-else-after-return."
 },
 "fn-english-identifiers": {
 "level": "function",
@@ -374,7 +414,7 @@
 "level": "function",
 "severity": "block",
 "backing": "unjudged",
-"rule": "Verify the signature against a fixed list of accepted algorithms, and check `iss` and `aud`, before reading any claim.",
+"rule": "Verify the signature against a fixed list of accepted algorithms, and check `iss`, `aud`, and `exp`, before reading any claim.",
 "url": "https://goodcodereview.com/function-server#fn-jwt-verify-pinned",
 "tool_gate": "CodeQL `js/jwt-missing-verification`; a grep for `verify_signature\": False` and for `jwt.decode(` calls with no `algorithms=`."
 },
@@ -433,6 +473,14 @@
 "rule": "Use `<button>` for an action and `<a href>` for navigation. Do not attach a click handler to a `div`, `span`, or `a` with no `href`.",
 "url": "https://goodcodereview.com/function-ui#fn-native-button-or-link",
 "tool_gate": "ESLint `jsx-a11y/click-events-have-key-events` and `jsx-a11y/no-static-element-interactions`; `jsx-a11y/anchor-is-valid` for `href=\"#\"`."
+},
+"fn-nesting-depth-cap": {
+"level": "function",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Keep control-flow nesting shallow.",
+"url": "https://goodcodereview.com/function-any#fn-nesting-depth-cap",
+"tool_gate": "PMD AvoidDeeplyNestedIfStmts (problemDepth 3), Pylint too-many-nested-blocks (R1702, max-nested-blocks 5)."
 },
 "fn-no-blocking-call-in-async-code": {
 "level": "function",
@@ -546,6 +594,14 @@
 "url": "https://goodcodereview.com/function-any#fn-parameter-limit",
 "tool_gate": "ESLint max-params (default 3), Pylint too-many-arguments (R0913, max-args default 5) and too-many-positional-arguments (R0917, default 5), Checkstyle ParameterNumber (default 7), RuboCop Metrics/ParameterLists (default 5), PMD ExcessiveParameterList (minimum default 10)."
 },
+"fn-password-min-length": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Enforce a minimum password length on the server whenever a user sets a password.",
+"url": "https://goodcodereview.com/function-server#fn-password-min-length",
+"tool_gate": "none; a test that submits a short password. ASP.NET Identity sets it with Password.RequiredLength."
+},
 "fn-password-slow-hash": {
 "level": "function",
 "severity": "block",
@@ -582,7 +638,7 @@
 "level": "function",
 "severity": "should-fix",
 "backing": "unjudged",
-"rule": "Wrap each radio group, checkbox group, and multi-part value, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.",
+"rule": "Wrap each radio group, checkbox group, and other set of related controls, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.",
 "url": "https://goodcodereview.com/function-ui#fn-related-controls-in-fieldset",
 "tool_gate": null
 },
@@ -646,7 +702,7 @@
 "level": "function",
 "severity": "block",
 "backing": "unjudged",
-"rule": "Leave certificate and hostname verification on in every environment that ships.",
+"rule": "Leave certificate and hostname verification on in every environment that ships, and check the certificate against the host you meant to reach, not a name the server supplies.",
 "url": "https://goodcodereview.com/function-any#fn-tls-verify-on",
 "tool_gate": "Bandit B501 (`request_with_no_cert_validation`), CodeQL `py/request-without-cert-validation`; a grep for `rejectUnauthorized: false` and `InsecureSkipVerify: true`."
 },
@@ -710,7 +766,7 @@
 "level": "module",
 "severity": "should-fix",
 "backing": "unjudged",
-"rule": "Make every text and background token pair meet 4.5:1 (3:1 for large text), and every border, icon, and focus colour meet 3:1 against its neighbour.",
+"rule": "Make every text and background token pair meet 4.5:1 (3:1 for large text, which is 18pt, or 14pt bold), and every border, icon, and focus colour meet 3:1 against its neighbour.",
 "url": "https://goodcodereview.com/module#mod-colour-tokens-meet-contrast",
 "tool_gate": "axe `color-contrast` on rendered components; a unit test that computes the ratio for each token pair. axe cannot see text on images or gradients."
 },
@@ -858,6 +914,14 @@
 "url": "https://goodcodereview.com/module#mod-single-writer-per-state",
 "tool_gate": null
 },
+"mod-temporary-field": {
+"level": "module",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Make a field a local variable or a parameter when every method that uses it assigns it before reading it.",
+"url": "https://goodcodereview.com/module#mod-temporary-field",
+"tool_gate": "JetBrains FieldCanBeLocal, Sonar S1450, PMD SingularField (all private fields only)."
+},
 "mod-vetted-crypto-only": {
 "level": "module",
 "severity": "block",
@@ -870,7 +934,7 @@
 "level": "module",
 "severity": "should-fix",
 "backing": "unjudged",
-"rule": "Do not build an abstraction or capability for a need that does not exist yet; add it when the need or a second use appears.",
+"rule": "Do not build an abstraction or capability for a need that does not exist yet; add it when the need appears.",
 "url": "https://goodcodereview.com/module#mod-yagni",
 "tool_gate": null
 },
@@ -1014,7 +1078,7 @@
 "level": "service",
 "severity": "discuss",
 "backing": "mixed",
-"rule": "Use one casing convention per location (fields, query parameters, headers, paths) across the whole API, and state it in the API guide.",
+"rule": "Use one casing convention per location (fields, query parameters, headers, paths) across the whole API, and state it in the API guide. Name collections and array fields as plural nouns.",
 "url": "https://goodcodereview.com/service-server#svc-api-naming-consistent",
 "tool_gate": "Spec linter with a casing rule per location."
 },
@@ -1041,6 +1105,14 @@
 "rule": "Return the most specific status code that fits: 201 with `Location` for a create, 405 with `Allow` for a wrong method, and a 4xx or 5xx for any failure.",
 "url": "https://goodcodereview.com/service-server#svc-api-specific-status-codes",
 "tool_gate": "Integration tests asserting status and headers per operation; a spec linter for 201 and 405 responses."
+},
+"svc-api-version-on-every-request": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Name the API version on every request, in a header or a query parameter.",
+"url": "https://goodcodereview.com/service-server#svc-api-version-on-every-request",
+"tool_gate": "A shared HTTP client wrapper or gateway rule that sets the version, and a contract test that a request without one is rejected."
 },
 "svc-api-versioning-policy": {
 "level": "service",
@@ -1098,6 +1170,14 @@
 "url": "https://goodcodereview.com/service-server#svc-bound-client-controlled-sizes",
 "tool_gate": "Gateway request-size limit; schema `maxLength`/`maxItems`; test with a 10 MB body and `limit=1000000`."
 },
+"svc-bound-inbound-concurrency": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Cap how many requests a service handles at once with an explicit concurrency limit, and reject the excess. A timeout alone does not bound it.",
+"url": "https://goodcodereview.com/service-server#svc-bound-inbound-concurrency",
+"tool_gate": null
+},
 "svc-bounded-background-tasks": {
 "level": "service",
 "severity": "block",
@@ -1145,6 +1225,14 @@
 "rule": "Let the caller turn every prompt off with a flag or an environment variable, so the command never waits on a terminal.",
 "url": "https://goodcodereview.com/service-cli#svc-cli-non-interactive",
 "tool_gate": "CLI test that runs every command with stdin closed."
+},
+"svc-client-paces-outgoing-calls": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Pace outgoing calls to a rate-limited API on the client, at a fixed rate or with a token bucket, so the client is not throttled.",
+"url": "https://goodcodereview.com/service-any#svc-client-paces-outgoing-calls",
+"tool_gate": null
 },
 "svc-cors-allowlist": {
 "level": "service",
@@ -1378,6 +1466,14 @@
 "url": "https://goodcodereview.com/service-any#svc-timeouts",
 "tool_gate": null
 },
+"svc-tls-all-traffic": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Serve every HTTP-based API over TLS, with no plaintext listener or fallback.",
+"url": "https://goodcodereview.com/service-server#svc-tls-all-traffic",
+"tool_gate": "A scan in CI that the public API host refuses plain HTTP on port 80."
+},
 "svc-tls-modern-only": {
 "level": "service",
 "severity": "should-fix",
@@ -1390,7 +1486,7 @@
 "level": "service",
 "severity": "should-fix",
 "backing": "unjudged",
-"rule": "Revoke the user's refresh tokens on the server at logout and when the account is disabled, and make access tokens expire quickly or check them against a revocation record.",
+"rule": "Revoke the session's refresh token on the server at logout and every refresh token of the user when the account is disabled, and make access tokens expire quickly or check them against a revocation record.",
 "url": "https://goodcodereview.com/service-server#svc-token-revocation",
 "tool_gate": null
 },
@@ -1486,7 +1582,7 @@
 "level": "system",
 "severity": "block",
 "backing": "unjudged",
-"rule": "Bound every queue and reject excess work cheaply.",
+"rule": "Bound every queue, reject excess work cheaply, and drop queued requests whose caller has already given up.",
 "url": "https://goodcodereview.com/system#sys-load-shedding-bounded-queues",
 "tool_gate": "Lint for unbounded queue constructors."
 },
@@ -1649,6 +1745,14 @@
 "rule": "List any new attack surface in the description.",
 "url": "https://goodcodereview.com/change#chg-name-attack-surface",
 "tool_gate": "SAST and dependency scanning in CI catch the mechanical part."
+},
+"chg-no-per-user-ide-files": {
+"level": "change",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Do not commit a file that holds one developer's editor or IDE state; ignore those paths in the repository or a machine-wide exclude file. An ignore entry does not untrack a file already committed: remove it from the index with `git rm --cached`.",
+"url": "https://goodcodereview.com/change#chg-no-per-user-ide-files",
+"tool_gate": "A CI step that fails when `git ls-files | rg '(^|/)(\\.idea/workspace\\.xml|\\.idea/shelf/|xcuserdata/)|\\.xcuserstate$'` prints a path. `git ls-files -ci --exclude-standard` lists only tracked files that already match an ignore entry, so it misses a repository with no entry."
 },
 "chg-no-silenced-diagnostics": {
 "level": "change",

@@ -7,7 +7,7 @@ status: stable
 lang: core
 applies_when: Auditing for code, flags and files that nothing uses.
 tool_gate: An unused-code linter in CI (vulture, knip, or deadcode); allowlist each intentional exception with a reason.
-note: Commented-out code (Lockheed Martin JSF, JetBrains) and orphaned files (no source) have fewer than three organisations, so they sit in the Why. Palantir's page loads and backs only the commented-out-code case in the Why. Version-control history as the reason to delete has two organisations (Google, JetBrains), so it stays in the Why. JetBrains and Statsig are vendors.
+note: Unreachable code (CMU SEI, Lockheed Martin JSF, NVIDIA), commented-out code (Lockheed Martin JSF, JetBrains, TUM) and the flag's definition and configuration (Microsoft, GitLab, Uber) each have three organisations, so they sit in the Rule. Orphaned files (no source) sit in the Why. Palantir's page loads and backs only the commented-out-code case. Version-control history as the reason to delete has two organisations (Google, JetBrains), so it stays in the Why. Unused imports have two (NVIDIA, Go), so they sit in the Why. JetBrains and Statsig are vendors.
 borrowed_from:
   - https://henrikwarne.com/2024/01/10/tidy-first/
   - https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to
@@ -24,11 +24,13 @@ borrowed_from:
   - https://statsig.com/blog/feature-flag-code-cleanup
   - https://www.jetbrains.com/help/inspectopedia/CommentedOutCode.html
   - https://www.stroustrup.com/JSF-AV-rules.pdf
+  - https://github.com/tum-esi/common-coding-conventions
+  - https://go.dev/doc/effective_go
 ---
 
-**Rule.** Delete unreferenced functions and variables, and the branches of expired feature flags.
+**Rule.** Delete unreferenced functions and variables, unreachable code, commented-out code, and expired feature flags with their branches and configuration.
 
-**Why.** Dead code costs reading time, misleads searches, and gets "fixed" and tested for no benefit. The same holds for the common cases of commented-out code and files nothing links to: delete them too and let version control remember.
+**Why.** Dead code costs reading time, misleads searches, and gets "fixed" and tested for no benefit. The same holds for unused imports and files nothing links to: delete them too and let version control remember.
 
 **FAIL**
 
@@ -36,12 +38,15 @@ borrowed_from:
 def old_export(): ...      # no caller anywhere in the repo
 if FLAGS["legacy_ui"]:     # flag permanently false since release 4
     render_legacy()
+# if USE_CACHE: warm()     # commented-out code, kept "just in case"
+return result
+log.info("done")          # unreachable
 ```
 
 **PASS**
 
 ```text
-Unused function and expired-flag branch deleted; version history shows where they went.
+Unused function, unreachable code, commented-out code and expired-flag branch deleted; version history shows where they went.
 The unused-code linter reports 0 symbols, or each is allowlisted with a reason.
 ```
 

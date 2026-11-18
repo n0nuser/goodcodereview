@@ -19,7 +19,7 @@ borrowed_from:
   - https://webaim.org/standards/wcag/checklist
 ---
 
-**Rule.** Make every text and background token pair meet 4.5:1 (3:1 for large text), and every border, icon, and focus colour meet 3:1 against its neighbour.
+**Rule.** Make every text and background token pair meet 4.5:1 (3:1 for large text, which is 18pt, or 14pt bold), and every border, icon, and focus colour meet 3:1 against its neighbour.
 
 **Why.** Low contrast is invisible to the author on a bright monitor. Fixing it once in the tokens fixes every component. Fixing it per component means hunting through each one, and each new component can reintroduce it.
 

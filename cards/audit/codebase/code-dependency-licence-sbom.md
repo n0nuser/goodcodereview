@@ -17,7 +17,7 @@ borrowed_from:
   - https://tech.cabify.com/blog/engineering/cabify-container-certification
 ---
 
-**Rule.** Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule. Each ask is judged separately: name which one failed on the FAIL line.
+**Rule.** Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule, and raise an alert when a new vulnerability applies. Each ask is judged separately: name which one failed on the FAIL line.
 
 **Why.** Without an inventory, a team cannot answer a disclosed vulnerability quickly. CI is the usual place for both steps: the SBOM then matches what was built, and the scan runs without anyone remembering it. Team policy: also fail the build on a dependency whose licence is not on the approved list.
 
@@ -31,7 +31,7 @@ No SBOM anywhere, no scanner in CI, and dependency alerts turned off.
 
 ```text
 CI: generate SBOM, run vulnerability scanner, fail on high severity;
-release artifacts attach the SBOM.
+release artifacts attach the SBOM; a new advisory for a shipped component raises an alert.
 ```
 
 **Counterpoint.** SBOMs and scanners create noise that nobody triages. Tune severity thresholds and assign an owner, since an ignored report is worse than none. The licence list is team policy, not a universal rule. Drop it if your team has no licence constraints.

@@ -21,7 +21,7 @@ borrowed_from:
 
 **Rule.** Before you move traffic to a new system, run it beside the old one on live or captured production traffic, diff the results, and cut over only when every mismatch is fixed or explained.
 
-**Why.** Fixtures cover the cases someone thought of, and production holds the rest. Airbnb's replay of real queries against MySQL 5.7 and 8.0 found queries whose row order was never fixed, and an application that sent the same cacheable query over and over. Neither shows up in a test suite. A diff on real traffic finds these while the old system still answers users, so a mismatch costs a log line instead of an incident.
+**Why.** Fixtures cover the cases someone thought of, and production holds the rest. Airbnb's replay of real queries against MySQL 5.7 and 8.0 found queries whose row order was never fixed, and an application that sent the same cacheable query over and over. Neither shows up in a test suite. A diff on real traffic finds these while the old system still answers users, so a mismatch costs a log line instead of an incident. Then shift traffic in steps with a way back; see [[prod-canary-staged-rollout]] and [[prod-kill-switch-fallback]].
 
 **FAIL**
 
@@ -42,7 +42,8 @@ def get_order(order_id):
     except Exception:
         shadow_error.inc()
     return old
-# the cutover flag flips once shadow_mismatch is zero or every mismatch is explained
+# once shadow_mismatch is zero or every mismatch is explained, the cutover flag shifts traffic in steps;
+# setting it back to 0% returns every read to the old store
 ```
 
 **Counterpoint.** "Running both is slow and doubles the load." It is slower than a flag-day switch, and Netflix says that is the reason it trusts the result. Keep the cost down: shadow a sample, call the new system off the request path, and never shadow a call with side effects such as a charge or an email. For writes, compare data snapshots after replication, as Stripe does, instead of sending each write twice. A refactor inside one process needs a characterization test, not production traffic. See [[chg-refactor-has-behaviour-pin]].

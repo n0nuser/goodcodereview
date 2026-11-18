@@ -4,17 +4,18 @@ level: function
 tags: [correctness, concurrency, resources]
 severity: should-fix
 status: draft
-lacks: orgs, one blog post on structured concurrency backs it; needs two more orgs
+lacks: orgs, a structured-concurrency blog (one person) and Google (cancel path) back it; needs two more orgs for the owner rule
 lang: core
 applies_when: Code starts a task, thread, goroutine, or subprocess, or opens a handle (file, socket, connection).
 tool_gate: Leak detectors in tests (unclosed-resource warnings, goroutine leak checks).
 borrowed_from:
   - https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/
+  - https://go.dev/blog/pipelines
 ---
 
 **Rule.** Give every task and handle an owner that waits for it or closes it, on the error path too.
 
-**Why.** A task started and forgotten outlives its caller. Its errors vanish, nobody cancels it, and its resources are never released, which shows up later as a leak or a stuck shutdown.
+**Why.** A task started and forgotten outlives its caller. Its errors vanish, nobody cancels it, and its resources are never released, which shows up later as a leak or a stuck shutdown. Goroutines and threads are not garbage collected, so one blocked on a send or receive after its consumer stopped stays stuck unless it has a cancel signal.
 
 **FAIL**
 

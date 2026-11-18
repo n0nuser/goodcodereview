@@ -4,7 +4,7 @@ level: service
 tags: [security, http, headers]
 severity: should-fix
 status: draft
-lacks: held, kept draft by Pablo's call
+lacks: held, kept draft by the maintainer
 lang: core
 applies_when: The service serves HTML pages or sets cookies for browsers over HTTPS.
 context: [server]
@@ -21,7 +21,7 @@ borrowed_from:
 
 **Rule.** Send `Strict-Transport-Security` on every HTTPS response.
 
-**Why.** Without HSTS, the first plain-HTTP request can be downgraded by anyone on the path, and a user can click through a certificate warning. With it, the browser rewrites `http` to `https` and refuses the click-through. Two more one-line headers belong next to it: `X-Content-Type-Options: nosniff`, so a browser does not run an upload as script, and CSP `frame-ancestors` (or `X-Frame-Options: DENY`), so a hostile page cannot frame yours for clickjacking.
+**Why.** Without HSTS, the first plain-HTTP request can be downgraded by anyone on the path, and a user can click through a certificate warning. With it, the browser rewrites `http` to `https` and refuses the click-through. Set `max-age` to at least six months and prefer a year or more, since the protection lasts only that long. Serve no plain-HTTP endpoint for an API, so the first request never goes out unprotected. Add `includeSubDomains` only once every subdomain serves working HTTPS, because it makes any HTTP-only subdomain unreachable. Two more one-line headers belong next to it: `X-Content-Type-Options: nosniff`, so a browser does not run an upload as script, and CSP `frame-ancestors` (or `X-Frame-Options: DENY`), so a hostile page cannot frame yours for clickjacking.
 
 **FAIL**
 

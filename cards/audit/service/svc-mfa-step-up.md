@@ -40,6 +40,6 @@ def add_phone():
     notify(user, "phone changed")
 ```
 
-**Counterpoint.** "Prompting on every sensitive action annoys users, and a user who lost the only factor gets locked out." Use risk and a recent-auth window so the prompt appears only when the session is stale or the action is high risk, and keep the recovery path described above; without it, step-up becomes a denial of service against the account's owner.
+**Counterpoint.** "Prompting on every sensitive action annoys users, and a user who lost the only factor gets locked out." Use risk and a recent-auth window so the prompt appears only when the session is stale or the action is high risk, such as a new device or an untrusted network, and keep the recovery path described above; without it, step-up becomes a denial of service against the account's owner.
 
 **See also.** [[svc-auth-throttle-generic-errors]] covers guessing the factor; [[svc-session-lifecycle]] covers the session that carries the result.

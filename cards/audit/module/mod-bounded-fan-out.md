@@ -17,7 +17,7 @@ borrowed_from:
 
 **Rule.** Set a limit on how many other types or modules one unit depends on, and split a unit that passes it.
 
-**Why.** A unit that depends on many others breaks when any of them changes and is hard to test, because each dependency needs a stand-in. eslint-plugin-import says "a module with too many dependencies is a code smell, and usually indicates the module is doing too much". Microsoft's rule gives the same reason: high class coupling is "difficult to maintain".
+**Why.** A unit that depends on many others breaks when any of them changes and is hard to test, because each dependency needs a stand-in. eslint-plugin-import says "a module with too many dependencies is a code smell, and usually indicates the module is doing too much". Microsoft's rule gives the same reason: high class coupling is "difficult to maintain". Count each type or module once, however many names a unit takes from it, and leave out built-in language types and generated code.
 
 **FAIL**
 

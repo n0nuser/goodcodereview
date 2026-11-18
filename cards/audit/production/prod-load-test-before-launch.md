@@ -17,7 +17,7 @@ borrowed_from:
 
 **Rule.** Load test before launch, past the expected peak, with pass and fail thresholds written down.
 
-**Why.** Overload behaviour is hard to predict from code, and launch traffic often beats the estimate. Test the whole workload on production-like infrastructure: testing one component, on smaller machines, or only up to the expected load misses the queue that fills first.
+**Why.** Overload behaviour is hard to predict from code, and launch traffic often beats the estimate. Test the whole workload on production-like infrastructure: testing one component, on smaller machines, or only up to the expected load misses the queue that fills first. Run the test as a pipeline step too, so a later change cannot slip under the thresholds.
 
 **FAIL**
 
