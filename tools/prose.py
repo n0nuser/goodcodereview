@@ -245,7 +245,7 @@ The filter buttons and the copy buttons use a small script that is part of each 
 
 # What loads from other sites
 
-Nothing. Pages load no fonts, images, scripts, or styles from other sites. Links to other sites, such as the author's website and GitHub, load only when you follow them, and those sites have their own policies.
+Nothing. Pages load no fonts, images, scripts, or styles from other sites. The fonts are files on this site. Links to other sites, such as the author's website and GitHub, load only when you follow them, and those sites have their own policies.
 
 # Hosting
 
