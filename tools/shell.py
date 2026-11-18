@@ -21,6 +21,10 @@ FOOTER = (f'<footer><p>Created and edited by <a href="https://pablogonzalez.me">
           f'<li><a href="{REPO}/blob/main/AGENTS.md">AGENTS.md</a></li><li><a href="{REPO}/tree/main/skills/good-code-review">Skill folder</a></li></ul></footer>')
 
 
+# The body and heading faces are on every page, so load them early. The others load when the page first uses them.
+FONT_PRELOAD = "".join(f'<link rel="preload" href="/fonts/{f}.woff2" as="font" type="font/woff2" crossorigin>' for f in ("plex-serif-400", "plex-sans-600"))
+
+
 def page_url(slug: str) -> str:
     """The URL Cloudflare serves: it redirects /x.html to /x and /index.html to /."""
     return BASE + "/" if slug == "index" else f"{BASE}/{slug}"
@@ -129,10 +133,10 @@ def page(title: str, body: str, *, links: Sequence[NavLink] = (), cur: str = "",
     markup = (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">'
             '<meta name="text-scale" content="scale">'
             '<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32">'
-            f"<title>{html.escape(full)}</title>{head_tags(full, desc, slug)}<style>{CSS}</style>{jsonld}</head>"
+            f"<title>{html.escape(full)}</title>{head_tags(full, desc, slug)}{FONT_PRELOAD}<style>{CSS}</style></head>"
             f'<body><a class=skip href=#main>Skip to content</a>'
             f"{_nav(links, cur).replace('<header>', '<header>' + DIRECTIVE, 1)}<main id=main tabindex=-1>"
             f'{trail}'
-            f"<h1>{html.escape(title)}</h1>{stamp}{body}</main>{sprite(body)}"
+            f"<h1>{html.escape(title)}</h1>{stamp}{body}</main>{sprite(body)}{jsonld}"
             f"{footer}{tail}</body></html>")
     return extensionless(markup)

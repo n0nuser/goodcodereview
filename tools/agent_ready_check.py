@@ -327,7 +327,8 @@ def _items_34(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> No
     css = "".join(x for p in pages.values() for x in p.css)
     leaks = [t for t in ("document.cookie", "localStorage", "sessionStorage", "fetch(", "XMLHttpRequest", "sendBeacon", "WebSocket") if t in code]
     leaks += [t for t in ("@import", "http") if t in css] + [f"<{t}>" for p in pages.values() for t in ("img", "iframe", "form", "input", "video", "audio") if t in p.tags]
-    ext = [x for p in pages.values() for x in p.scripts] + [ln for p in pages.values() for ln in p.links if ln.get("rel") in ("stylesheet", "preload", "preconnect")]
+    ext = [x for p in pages.values() for x in p.scripts] + [ln for p in pages.values() for ln in p.links
+                                                      if ln.get("rel") in ("stylesheet", "preload", "preconnect") and not str(ln.get("href", "")).startswith("/fonts/")]
     r.check(34, not leaks and not ext, "page scripts and styles use no cookie, storage, or network call, and no page loads external or form content, as privacy.html says"
             + (f": found {', '.join(leaks)}" if leaks else ""))
 

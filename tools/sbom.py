@@ -6,7 +6,7 @@
 
 The deployed site has no runtime dependency: the build uses only the standard library. The SBOM lists what the repository
 installs to test and check it (Python from uv.lock, Node from package-lock.json) and the third-party data it ships
-(tools/org_icons.json, Simple Icons, CC0). Python licences come from the installed package metadata, so run `uv sync --locked` first.
+(tools/org_icons.json, Simple Icons, CC0, and the IBM Plex font files in tools/fonts, SIL OFL 1.1). Python licences come from the installed package metadata, so run `uv sync --locked` first.
 Standard library only.
 """
 import argparse
@@ -18,7 +18,7 @@ from importlib.metadata import PackageNotFoundError, metadata
 from pathlib import Path
 from typing import Any
 
-from config import ROOT, SBOM_FILE, SIMPLE_ICONS_VERSION
+from config import FONTSOURCE_VERSION, ROOT, SBOM_FILE, SIMPLE_ICONS_VERSION
 
 SPEC_VERSION = "1.6"
 LICENCE_PREFIX = "License :: OSI Approved :: "
@@ -88,11 +88,13 @@ def node_components(lock: Path) -> list[Component]:
     return out
 
 
-def data_components(icons: Path) -> list[Component]:
-    """The third-party data the repository ships: the Simple Icons paths in tools/org_icons.json."""
-    if not icons.is_file():
-        return []
-    return [Component("simple-icons", SIMPLE_ICONS_VERSION, f"pkg:npm/simple-icons@{SIMPLE_ICONS_VERSION}", "data", Licence(expression="CC0-1.0"))]
+def data_components(icons: Path, fonts: Path) -> list[Component]:
+    """The third-party data the repository ships: the Simple Icons paths in tools/org_icons.json and the IBM Plex files in tools/fonts."""
+    out = [Component("simple-icons", SIMPLE_ICONS_VERSION, f"pkg:npm/simple-icons@{SIMPLE_ICONS_VERSION}", "data", Licence(expression="CC0-1.0"))] if icons.is_file() else []
+    if fonts.is_dir():
+        out += [Component(f"ibm-plex-{f}", FONTSOURCE_VERSION, f"pkg:npm/%40fontsource/ibm-plex-{f}@{FONTSOURCE_VERSION}", "data", Licence(expression="OFL-1.1"))
+                for f in ("mono", "sans", "serif")]
+    return out
 
 
 def render(components: list[Component]) -> str:
@@ -109,7 +111,7 @@ def render(components: list[Component]) -> str:
 
 
 def collect(root: Path) -> list[Component]:
-    return python_components(root / "uv.lock") + node_components(root / "package-lock.json") + data_components(root / "tools" / "org_icons.json")
+    return python_components(root / "uv.lock") + node_components(root / "package-lock.json") + data_components(root / "tools" / "org_icons.json", root / "tools" / "fonts")
 
 
 def problems(components: list[Component], committed: Path, rendered: str) -> list[str]:
