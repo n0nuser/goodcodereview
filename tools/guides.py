@@ -47,6 +47,21 @@ GUIDES = (
           ("chg-agent-grounded-code", "chg-verify-before-claim", "chg-review-signal"),
           "To give your coding agent this standard, run `npx skills add n0nuser/goodcodereview` and ask it to review its own diff, or paste the one-line prompt above. "
           "Nothing is sent to us: the skill reads static files. See the [change level](html:change) for every check on a diff."),
+    Guide("ai-code-review-vs-static-analysis", "AI code review vs static analysis vs a checklist",
+          "How static analysis, AI code review and a checklist differ in what they find, how repeatable they are and what they cost, and how to use all three on one change.",
+          "Static analysis, AI code review and a checklist each find problems the other two miss.\n\n"
+          "Static analysis, such as a linter, a type checker or a security scanner, runs fixed rules over the code. It gives the same answer every time and runs on every commit. "
+          "It finds what someone wrote a rule for. It cannot tell you whether the change is the right one.\n\n"
+          "AI code review reads the diff with a language model and comments on it. It can follow context that a rule cannot, such as whether a function does what its name says. "
+          "Two runs on the same diff can differ, and a comment can be wrong, so check each finding before you act on it.\n\n"
+          "A checklist is a fixed list of questions that a person or an agent answers one by one. Good Code Review gives each answer a verdict, PASS, FAIL or N/A, with a file and line, "
+          "so a second reader can check the work. It costs reading time and no licence. It covers what your tools do not enforce yet, such as whether a migration can be rolled back.\n\n"
+          "Use them in order of cost. Put every rule a tool can enforce into the tool and block the merge on it. Let an AI reviewer or your own agent read the diff for the rest. "
+          "Use the checklist for what is left, and to check what the AI reviewer reports: ask for evidence before you accept a finding, and confirm that the imports and calls an agent wrote exist. "
+          "These are the stable checks behind that split.",
+          ("code-rule-has-enforcer", "code-ci-gates", "chg-review-signal", "chg-verify-before-claim", "chg-agent-grounded-code"),
+          "For each review comment you keep repeating, add a lint or CI check, then ask your agent to review its own diff with the checklist. "
+          "See the [codebase level](html:codebase) for the controls a repository should have and the [change level](html:change) for a diff."),
     Guide("good-code-review-vs-asking-your-agent", "Good Code Review vs asking your agent",
           "Where a fixed code review rule set helped an agent in our own tests, where it made no difference, and when to skip it. The numbers are included.",
           "You can ask your agent to review code with no checklist. Often that works well. This page shows where a fixed rule set helped in our own "
