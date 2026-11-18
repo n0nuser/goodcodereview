@@ -4,7 +4,7 @@ level: service
 tags: [performance, reliability, overload, rate-limiting]
 severity: should-fix
 status: draft
-lacks: evidence, Shopify, GitHub and Airbnb describe cost-based limits; none recommends it, and Uber dropped a bytes-based quota
+lacks: evidence, only Microsoft recommends cost-based limits; Shopify, GitHub and Airbnb describe them, and Uber dropped a bytes-based quota
 note: Shopify (GraphQL query cost from static analysis, in points per second), GitHub (GraphQL API limits points per hour, not calls), Airbnb (key-value store charges request units from bytes read and latency, not raw requests per second); Uber tried a bytes-based quota and dropped it as imprecise, which is the Counterpoint
 lang: core
 applies_when: One API or store serves requests whose cost differs by orders of magnitude, such as GraphQL queries, scans next to point reads, or bulk endpoints.
@@ -14,12 +14,13 @@ borrowed_from:
   - https://shopify.engineering/rate-limiting-graphql-apis-calculating-query-complexity
   - https://docs.github.com/en/graphql/overview/rate-limits-and-query-limits-for-the-graphql-api
   - https://airbnb.tech/infrastructure/from-static-rate-limiting-to-adaptive-traffic-management-in-airbnbs-key-value-store/
+  - https://learn.microsoft.com/en-us/azure/architecture/patterns/throttling
   - https://www.uber.com/es/en/blog/from-static-rate-limiting-to-intelligent-load-management/
 ---
 
 **Rule.** When request costs differ by orders of magnitude, charge each request its estimated cost against the quota instead of counting it as one.
 
-**Why.** A request count treats a one-row lookup and a 100,000-row scan the same, so a client within its quota can still overload the backend. Shopify computes a GraphQL query's cost by static analysis before it runs: one point per object, nothing for scalars, and a budget of 50 points per second up to 1,000. GitHub's GraphQL API also limits points, not calls. Airbnb's key-value store charges request units from the bytes read and the latency of each operation.
+**Why.** A request count treats a one-row lookup and a 100,000-row scan the same, so a client within its quota can still overload the backend. Shopify computes a GraphQL query's cost by static analysis before it runs: one point per object, nothing for scalars, and a budget of 50 points per second up to 1,000. GitHub's GraphQL API also limits points, not calls. Airbnb's key-value store charges request units from the bytes read and the latency of each operation. Writes cost more than reads: Shopify charges a mutation a higher fixed cost. GitHub also refuses a single call that is too large, whatever the remaining budget: it caps one call at 500,000 nodes.
 
 **FAIL**
 

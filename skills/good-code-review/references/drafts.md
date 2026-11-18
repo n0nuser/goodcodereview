@@ -35,6 +35,16 @@ lacks: orgs, only Anthropic (a vendor) backs it; needs two more orgs that bar bo
 
 Do not let a bot or agent approval satisfy a required human approval.
 
+## chg-changelog-entry
+
+level: change  
+severity: discuss  
+concerns: maintainability, process  
+applies_when: The project keeps a changelog, and the change adds, removes or changes a feature.  
+lacks: orgs, a changelog entry per feature change has USGS and Rails; needs a third org
+
+Add a changelog entry to each change that adds, removes or changes a feature.
+
 ## chg-fix-root-cause-not-symptom
 
 level: change  
@@ -51,9 +61,19 @@ level: change
 severity: should-fix  
 concerns: reliability  
 applies_when: The change adds a feature flag, kill switch or config toggle.  
-lacks: orgs, the owner clause has Dropbox only; default, removal date and ticket have no company source
+lacks: orgs, owner has Dropbox and Statsig; removal ticket has Statsig; default has GitLab; each needs another org
 
 Give every new flag an owner, a default, and a removal condition or date, and ticket the removal.
+
+## chg-link-tracked-issue
+
+level: change  
+severity: discuss  
+concerns: process, maintainability  
+applies_when: The project tracks work in an issue tracker.  
+lacks: orgs, "link each PR to its issue" has Apache and WordPress; needs a third org
+
+Link each pull request to the issue it addresses, with a keyword such as `Closes` or `See`.
 
 ## chg-matches-spec
 
@@ -86,16 +106,6 @@ context: data
 lacks: failable, without "attach the plan" a change review has nothing to mark FAIL; attaching has GitLab only
 
 Attach the query plan for each new or rewritten query on a growing table, taken on production-sized data.
-
-## chg-no-per-user-ide-files
-
-level: change  
-severity: should-fix  
-concerns: process, maintainability  
-applies_when: A change adds a tracked file under an editor or IDE project directory.  
-lacks: unreviewed, sources and examples are in place; no stable pass has checked rules 1 to 10
-
-Do not commit a file that holds one developer's editor or IDE state; ignore those paths in the repository or a machine-wide exclude file, and keep the settings the team shares in the repository.
 
 ## chg-review-comment-format
 
@@ -169,6 +179,27 @@ lacks: orgs, only the author's own Python review guide backs it; no independent 
 
 Return an empty collection for "nothing found"; return `None` only when absent differs from empty.
 
+## fn-error-summary
+
+level: function  
+severity: should-fix  
+concerns: accessibility, usability  
+applies_when: Code renders a form again after validation fails.  
+context: ui  
+lacks: orgs, "links each error to its field" has GOV.UK only; needs two more orgs that show a linked summary
+
+After a failed submit, show a summary at the top of the page that lists every error and links each one to its field.
+
+## fn-flags-type-for-flag-sets
+
+level: function  
+severity: should-fix  
+concerns: maintainability, correctness  
+applies_when: A type holds a set of independent options that can be combined, such as permissions or render options.  
+lacks: orgs, Microsoft and the Rust API guidelines state it; a third independent organisation is missing
+
+Model a set of independent flags with the language's or ecosystem's flags type (a `[Flags]` enum in C#, the `bitflags` crate in Rust), and do not use a plain enum for it.
+
 ## fn-known-keys-get-a-type
 
 level: function  
@@ -188,6 +219,27 @@ applies_when: A function returns or passes a tuple whose positions mean differen
 lacks: orgs, only the author's own Python review guide backs it; no independent org
 
 Return a small named record, not a positional tuple, once the fields differ in meaning.
+
+## fn-no-aria-hidden-on-focusable
+
+level: function  
+severity: should-fix  
+concerns: accessibility  
+applies_when: Markup or CSS hides an element that can take keyboard focus.  
+context: ui  
+lacks: orgs, Google and WebAIM state it; a third independent organisation is missing
+
+Never put `aria-hidden="true"` on an element that can take focus, or leave an element visually hidden while it has focus.
+
+## fn-no-logic-in-tests
+
+level: function  
+severity: discuss  
+concerns: testing, maintainability  
+applies_when: A test body contains if, for, while or switch, or a table test branches on its case.  
+lacks: orgs, "no branching in test bodies" has Microsoft and Uber only; needs one more org
+
+Keep `if`, `for`, `while` and `switch` out of test bodies, and split table cases that need different assertions into separate tests.
 
 ## fn-no-pass-through-wrapper
 
@@ -225,11 +277,21 @@ level: function
 severity: should-fix  
 concerns: correctness  
 applies_when: Code starts a task, thread, goroutine, or subprocess, or opens a handle (file, socket, connection).  
-lacks: orgs, one blog post on structured concurrency backs it; needs two more orgs
+lacks: orgs, a structured-concurrency blog (one person) and Google (cancel path) back it; needs two more orgs for the owner rule
 
 Give every task and handle an owner that waits for it or closes it, on the error path too.
 
 # module drafts
+
+## mod-call-parent-setup-teardown
+
+level: module  
+severity: should-fix  
+concerns: testing, reliability  
+applies_when: A test class overrides setUp, tearDown, setUpClass or tearDownClass in an xUnit-style framework.  
+lacks: orgs, "call the parent's setUp and tearDown" has Laravel and PSF; needs a third org
+
+A test class that overrides `setUp`, `tearDown`, `setUpClass` or `tearDownClass` calls the parent's version.
 
 ## mod-central-config
 
@@ -311,16 +373,6 @@ lacks: evidence, Liskov and Wing state the substitution rule; none says to run t
 
 Make a subtype pass its parent's tests: accept every input the parent accepts, promise at least what it promises, and keep its invariants.
 
-## mod-temporary-field
-
-level: module  
-severity: discuss  
-concerns: maintainability  
-applies_when: A private field is assigned and read inside one method, or every read of it follows an assignment.  
-lacks: unreviewed, sources and examples are in place; no stable pass has checked rules 1 to 10
-
-Make a field a local variable or a parameter when every method that uses it assigns it before reading it.
-
 ## mod-thin-entry-point
 
 level: module  
@@ -342,6 +394,17 @@ lacks: failable, nobody backs "once"; without it the FAIL, hand-rolled checks in
 Validate at the boundary, once, with a schema or model, so that inner layers receive typed, already-valid data.
 
 # service drafts
+
+## svc-401-sends-challenge
+
+level: service  
+severity: should-fix  
+concerns: compatibility, correctness  
+applies_when: A service answers a request that lacks valid credentials for a protected resource.  
+context: server  
+lacks: orgs, one org (IETF); the Siemens guideline restates RFC 9110, so it adds none; needs two more orgs that require the challenge
+
+Send a `WWW-Authenticate` challenge with every 401 response.
 
 ## svc-api-safe-idempotent-methods
 
@@ -376,6 +439,39 @@ lacks: orgs, W3C is the only backer; needs two more orgs that forward trace head
 
 Forward `traceparent` and `tracestate` on every outgoing call, keep the incoming trace id, and set a new parent id for each hop.
 
+## svc-boolean-no-is-prefix
+
+level: service  
+severity: discuss  
+concerns: maintainability  
+applies_when: A new API defines a boolean field or query parameter.  
+context: server  
+lacks: orgs, Google and Microsoft only; needs one more org that drops the "is" prefix on boolean API fields
+
+Name a new boolean field for its state (`enabled`, `required`), not with an `is` prefix.
+
+## svc-debug-off-in-production
+
+level: service  
+severity: should-fix  
+concerns: security  
+applies_when: The service has a debug mode or serves API docs or a developer UI such as Swagger.  
+context: server  
+lacks: orgs, OWASP backs debug modes and Microsoft backs Swagger UI; needs one more org per clause that turns debug tooling off in production
+
+Keep debug modes and developer tooling, such as Swagger UI, disabled in production.
+
+## svc-logs-tamper-resistant
+
+level: service  
+severity: should-fix  
+concerns: security, observability  
+applies_when: The service writes security-relevant logs or an audit trail.  
+context: server  
+lacks: orgs, tamper resistance has Google and OWASP only; needs a third org that ships logs to a store the host cannot alter
+
+Ship logs and audit trails to a store that the logged host cannot alter or delete.
+
 ## svc-page-title-per-route
 
 level: service  
@@ -387,6 +483,28 @@ lacks: held, kept draft by Pablo's call; W3C, Mozilla and A11y Project back the 
 
 Give every page and every client-side view its own `<title>` that says what it is.
 
+## svc-paginate-by-server-links
+
+level: service  
+severity: should-fix  
+concerns: correctness, compatibility  
+applies_when: The code calls a paginated HTTP or RPC API and reads more than one page.  
+context: server  
+lacks: orgs, "follow the next link" has GitHub only and "do not parse the token" has Google only; needs two more orgs for each
+
+Fetch the next page only from the link or token the server returned; do not build page numbers or open the token.
+
+## svc-path-normalise-before-authz
+
+level: service  
+severity: should-fix  
+concerns: security  
+applies_when: A proxy, gateway or CDN sits in front of the service and a deny, allow or cache rule matches on the URL path.  
+context: server  
+lacks: orgs, Envoy backs escaped-slash rejection and PortSwigger backs path agreement; each clause has fewer than three orgs
+
+Normalise the URL path once at the first hop, or reject escaped slashes there, so every hop resolves a path to the same resource before any routing or authorisation rule runs.
+
 ## svc-rate-limit-by-cost
 
 level: service  
@@ -394,7 +512,7 @@ severity: should-fix
 concerns: performance, reliability  
 applies_when: One API or store serves requests whose cost differs by orders of magnitude, such as GraphQL queries, scans next to point reads, or bulk endpoints.  
 context: server  
-lacks: evidence, Shopify, GitHub and Airbnb describe cost-based limits; none recommends it, and Uber dropped a bytes-based quota
+lacks: evidence, only Microsoft recommends cost-based limits; Shopify, GitHub and Airbnb describe them, and Uber dropped a bytes-based quota
 
 When request costs differ by orders of magnitude, charge each request its estimated cost against the quota instead of counting it as one.
 
@@ -431,6 +549,28 @@ lacks: held, kept draft by Pablo's call
 
 Send `Strict-Transport-Security` on every HTTPS response.
 
+## svc-server-read-timeouts
+
+level: service  
+severity: should-fix  
+concerns: security, reliability  
+applies_when: The service runs its own HTTP server and untrusted clients or networks can reach it.  
+context: server  
+lacks: orgs, Cloudflare (Go) and Node.js only; needs one more org that sets server read and header timeouts for untrusted clients
+
+Set a header-read timeout and a request-read timeout on a server that faces untrusted clients.
+
+## svc-tenant-scope-in-data-layer
+
+level: service  
+severity: should-fix  
+concerns: security, correctness  
+applies_when: Several tenants share one table or database and the service reads tenant data.  
+context: data  
+lacks: orgs, Microsoft (EF Core query filter) and OWASP (row-level security) only; needs one more org that scopes tenants in the data layer by default
+
+Enforce tenant scope in the data layer by default, with a query filter or row-level security, not by a predicate at each call site.
+
 # system drafts
 
 ## sys-append-only-stores-have-retention
@@ -453,6 +593,17 @@ lacks: orgs, AWS is the only backer; needs two more orgs
 
 Cap and coalesce the cache-miss path so an empty cache cannot overwhelm the origin.
 
+## sys-cache-hit-rate-watched
+
+level: system  
+severity: should-fix  
+concerns: observability, performance, reliability  
+applies_when: The change adds a cache, or resizes one, in front of a database or downstream service.  
+context: server  
+lacks: orgs, both clauses have AWS and Google only; the third source shows a cache chart, not a hit-rate or memory metric; needs one more org
+
+Emit a cache hit-rate or memory-use metric and alert on it, so an undersized cache is noticed before it hurts the origin.
+
 ## sys-constraint-not-valid
 
 level: system  
@@ -464,6 +615,17 @@ lacks: orgs, PostgreSQL docs are the only backer; needs two more orgs that add c
 
 Add the constraint `NOT VALID`, then run `VALIDATE CONSTRAINT` in a separate step, and never leave the VALIDATE out.
 
+## sys-hedge-budget
+
+level: system  
+severity: should-fix  
+concerns: reliability, performance  
+applies_when: The code sends a second copy of a request to another replica when the first is slow.  
+context: server  
+lacks: orgs, Google and Envoy back it; needs one more org that caps hedged requests or honours server pushback
+
+Cap hedged requests with a retry budget or retry limit, and stop hedging when the server asks clients not to retry.
+
 ## sys-leader-two-leaders
 
 level: system  
@@ -474,17 +636,28 @@ lacks: orgs, AWS is the only backer; needs two more orgs
 
 Make leader work safe if two leaders overlap: make it idempotent, check the lease before acting, and stop when renewal fails.
 
+## sys-shuffle-shard
+
+level: system  
+severity: should-fix  
+concerns: reliability  
+applies_when: Many tenants share a pool of workers or nodes, and one tenant's traffic or bug can take a worker down.  
+context: server  
+lacks: orgs, AWS and Airbnb back it; needs one more org that assigns tenants to shuffled worker subsets
+
+Assign each tenant a shuffled subset of shared workers, so one tenant's fault reaches only a few other tenants.
+
 # codebase drafts
 
-## code-ai-pr-disclosure
+## code-ci-job-pass-rate-threshold
 
 level: codebase  
-severity: should-fix  
-concerns: process  
-applies_when: A pull request was written in whole or part by an AI tool.  
-lacks: orgs, disclosure has the Linux kernel and Ghostty; needs a third org that asks for it and for an author who can explain the code
+severity: discuss  
+concerns: reliability, process  
+applies_when: Auditing how a team keeps its main-branch pipeline and blocking CI jobs trustworthy.  
+lacks: orgs, GitLab states a target and Kubernetes a gate; needs one more org that sets a numeric pass rate for the pipeline or a blocking job
 
-Disclose AI assistance in the PR, and have a human author who can explain and defend every changed line without the tool.
+Set a numeric pass-rate threshold for the pipeline or each blocking job, and act when it falls below it.
 
 ## code-documented-setup-runs
 
@@ -496,6 +669,26 @@ lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more org
 
 Keep the setup, build and run commands in the README or contribution guide accurate: they work as written on a clean checkout, and any drift is fixed or reported.
 
+## code-gate-new-violations-only
+
+level: codebase  
+severity: should-fix  
+concerns: maintainability, process  
+applies_when: Auditing a codebase that adopted a linter, a quality gate or an architecture rule after most of its code existed.  
+lacks: orgs, SonarSource (a vendor) and ArchUnit back it; needs one more org that gates on new code and keeps old violations apart
+
+Gate CI on new or modified code, and track pre-existing violations in a separate store without letting a build add to it.
+
+## code-signed-commits-protected
+
+level: codebase  
+severity: should-fix  
+concerns: security, process  
+applies_when: Auditing the branch protection of a repository that ships code or holds release branches.  
+lacks: orgs, "require signed commits" has OWASP and Node.js; GitHub documents the setting and AWS calls signing optional; needs one more org
+
+Require signed commits on protected branches, so unsigned commits cannot merge or be pushed.
+
 ## code-test-suite-time-budget
 
 level: codebase  
@@ -505,6 +698,16 @@ applies_when: Auditing how a codebase keeps its own test suite fast.
 lacks: orgs, "fail the build on a suite or per-test budget" has thoughtbot and SciPy; needs one more org
 
 Record the suite's total time and its slowest tests on every CI run, and fail the build when the total or a single test passes a written budget.
+
+## code-tests-order-independent
+
+level: codebase  
+severity: should-fix  
+concerns: testing, reliability  
+applies_when: Auditing a test suite for tests that pass alone and fail in a run, or the reverse.  
+lacks: orgs, GitLab and Alloy back it; Kent Beck is a person and does not count; needs one more org that runs tests in random order or isolates state
+
+Make each test pass in any order, sharing no mutable state with other tests.
 
 # production drafts
 

@@ -72,6 +72,16 @@ lacks: held, cites the draft card(s) mod-validate-at-boundary-once; stable once 
 
 Validate request data with a pydantic model, not hand-written checks.
 
+## py-raises-specific-exception
+
+level: function  
+severity: should-fix  
+concerns: testing  
+applies_when: A test asserts that code raises an exception.  
+lacks: orgs, bare-Exception clause has flake8-bugbear and pytest only; needs one more org
+
+In a test, assert the specific exception type, never bare `Exception`.
+
 ## py-settings-pydantic-settings
 
 level: module  

@@ -1,0 +1,3 @@
+- code-new-code-coverage: sources disagree (Kubernetes soft "in principle", Envoy via Dropbox wants 100% with no escape, Django calls missing coverage a warning); only Kubernetes backs the soft form, and the Dropbox row describes Envoy, not Dropbox.
+- code-unused-code-diagnostics-on: duplicate of code-dead-code (its tool_gate names an unused-code linter and cmu-sei MSC12 is already in its sources); Microsoft row is the TypeScript tsconfig option reference, not a practice.
+- cpp-no-c-style-cast: staged in docs/research/source-sweep/new-cards/ but not added; no packs/cpp exists (validate.py requires lang cards in packs/<lang>/). Decide whether to start a C++ pack.

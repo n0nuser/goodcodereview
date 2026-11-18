@@ -36,7 +36,7 @@ Backed by: Microsoft (unjudged), Checkstyle (unjudged), eslint-plugin-import (un
 
 **Rule.** Set a limit on how many other types or modules one unit depends on, and split a unit that passes it.
 
-**Why.** A unit that depends on many others breaks when any of them changes and is hard to test, because each dependency needs a stand-in. eslint-plugin-import says "a module with too many dependencies is a code smell, and usually indicates the module is doing too much". Microsoft's rule gives the same reason: high class coupling is "difficult to maintain".
+**Why.** A unit that depends on many others breaks when any of them changes and is hard to test, because each dependency needs a stand-in. eslint-plugin-import says "a module with too many dependencies is a code smell, and usually indicates the module is doing too much". Microsoft's rule gives the same reason: high class coupling is "difficult to maintain". Count each type or module once, however many names a unit takes from it, and leave out built-in language types and generated code.
 
 **FAIL**
 
@@ -94,7 +94,7 @@ context: ui
 tool gate: axe `color-contrast` on rendered components; a unit test that computes the ratio for each token pair. axe cannot see text on images or gradients.  
 Backed by: W3C (unjudged), Deque (unjudged), The A11y Project (unjudged), Apple (unjudged), Google (unjudged), WebAIM (unjudged). Backing: unjudged.
 
-**Rule.** Make every text and background token pair meet 4.5:1 (3:1 for large text), and every border, icon, and focus colour meet 3:1 against its neighbour.
+**Rule.** Make every text and background token pair meet 4.5:1 (3:1 for large text, which is 18pt, or 14pt bold), and every border, icon, and focus colour meet 3:1 against its neighbour.
 
 **Why.** Low contrast is invisible to the author on a bright monitor. Fixing it once in the tokens fixes every component. Fixing it per component means hunting through each one, and each new component can reintroduce it.
 
@@ -133,7 +133,7 @@ Backed by: Microsoft (unjudged), Rust project (unjudged), Google (unjudged). Bac
 
 **Rule.** Prefer a small interface that hides its implementation, and add a member only when callers need it.
 
-**Why.** An interface with too many members is hard to learn and hard to implement, and a public detail is a commitment you cannot change later. A shallow module, whose interface is nearly as complex as its implementation, charges the reader the cost of learning it and returns nothing. The complexity moves; it does not shrink.
+**Why.** An interface with too many members is hard to learn and hard to implement, and a public detail is a commitment you cannot change later. A public field pins the representation and lets callers bypass any check, so keep fields private and expose them through methods. A shallow module, whose interface is nearly as complex as its implementation, charges the reader the cost of learning it and returns nothing. The complexity moves; it does not shrink.
 
 **FAIL**
 
@@ -240,7 +240,7 @@ Backed by: Cursor (unjudged), Google (supports), Microsoft (supports), Refactori
 
 **Rule.** Keep a module's internals unimportable and untouched from outside it. A caller uses the public surface, not a private file or member.
 
-**Why.** Anything a caller can import becomes the interface, and a field a caller writes becomes part of the contract. A naming convention such as a leading underscore stops no one, and the module can no longer change its internals without breaking callers.
+**Why.** Anything a caller can import becomes the interface, and a field a caller writes becomes part of the contract. A leading-underscore member is for its own class and its subclasses, yet a naming convention alone stops no one, and the module can no longer change its internals without breaking callers.
 
 **FAIL**
 
@@ -350,7 +350,7 @@ Backed by: Apache Software Foundation (supports), Microsoft (supports), Dagster 
 
 **Rule.** Keep I/O at the edges: importing a package must not touch the network, read files, or read the environment.
 
-**Why.** Import-time effects make tests slow and order-dependent, break tooling that merely imports the module, and fail in places that had no reason to need a network.
+**Why.** Import-time effects make tests slow and order-dependent, break tooling that merely imports the module, and fail in places that had no reason to need a network. Opening a database connection or running heavy computation at import does the same damage.
 
 **FAIL**
 
@@ -470,7 +470,7 @@ Backed by: Google (supports), GitLab (supports), Feature-Sliced Design (supports
 
 **Rule.** Put a helper in the module that owns the concept, or in a new module named after the concept.
 
-**Why.** A grab-bag has no owner and no cohesion. It becomes the dependency of everything and the place where unrelated code accretes.
+**Why.** A grab-bag has no owner and no cohesion. It becomes the dependency of everything and the place where unrelated code accretes. The same goes for a `Helper` or `Util` class suffix: put the methods in the class they belong to.
 
 **FAIL**
 
@@ -630,6 +630,38 @@ or: state/a.json and state/b.json, one writer each; readers merge them
 
 **Counterpoint.** "A lock is simpler than a queue or an owner." A lock works only when the store rejects a writer whose lock has expired; see [sys-lock-fencing](system.md#sys-lock-fencing). Without that check, a paused holder can wake up and write after another writer took over.
 
+## mod-temporary-field
+
+severity: discuss  
+concerns: maintainability  
+applies_when: A private field is assigned and read inside one method, or every read of it follows an assignment.  
+tool gate: JetBrains FieldCanBeLocal, Sonar S1450, PMD SingularField (all private fields only).  
+Backed by: Refactoring.Guru (unjudged), JetBrains (unjudged), SonarSource (unjudged), PMD (unjudged). Backing: unjudged.
+
+**Rule.** Make a field a local variable or a parameter when every method that uses it assigns it before reading it.
+
+**Why.** The field looks like object state, so a reader expects it to survive between calls. It does not. It is one method's scratch space, so a reader looks for state the object never keeps. JetBrains, Sonar and PMD flag a private field whose every read follows an assignment, because a local variable says the same thing without the extra state.
+
+**FAIL**
+
+```python
+class Invoice:
+    def total(self, lines):
+        self._subtotal = sum(l.price for l in lines)   # scratch on the object
+        return self._subtotal * 1.2
+```
+
+**PASS**
+
+```python
+class Invoice:
+    def total(self, lines):
+        subtotal = sum(l.price for l in lines)
+        return subtotal * 1.2
+```
+
+**Counterpoint.** "The field carries state between calls." Then a read can happen before the next assignment, and the rule does not fire. The trigger is every read following an assignment in the same method. Caches, ORM models and serialisation models set attributes outside `__init__` on purpose, and their reads are not preceded by a fresh assignment, so they stay. In concurrent code a second thread can read between the assignment and the read, which is why PMD calls its rule threading-unaware; suppress it where another thread reads the field on purpose.
+
 ## mod-vetted-crypto-only
 
 severity: block  
@@ -665,7 +697,7 @@ concerns: maintainability, process
 applies_when: The code adds or keeps an abstraction, parameter, hook or option.  
 Backed by: Google (unjudged), Wikimedia (MediaWiki) (unjudged), Microsoft (unjudged), Shopify (unjudged), NVIDIA (unjudged), AWS (unjudged). Backing: unjudged. People cited: Kent C. Dodds (unjudged), Martin Fowler (unjudged), Henrik Warne (unjudged).
 
-**Rule.** Do not build an abstraction or capability for a need that does not exist yet; add it when the need or a second use appears.
+**Rule.** Do not build an abstraction or capability for a need that does not exist yet; add it when the need appears.
 
 **Why.** Speculative flexibility costs reading time every day and is usually the wrong shape when the need arrives. Reviewers cannot verify a use that does not exist.
 
@@ -682,7 +714,7 @@ def send(msg, retries=3, backoff=None, hook=None): ...   # nobody passes these
 def send_welcome_email(user): ...
 ```
 
-**Counterpoint.** "But we will surely need it." Then add it when you do, in a change that has the real second caller to shape it. Optimising for easy change means simple code, not built-in flexibility. The cost of waiting is low, and the cost of the wrong guess is not. When the need is certain and a retrofit would be costly, as for a public API that cannot change later, weigh that cost before waiting.
+**Counterpoint.** "But we will surely need it." Then add it when you do, in a change that has the real caller to shape it. Optimising for easy change means simple code, not built-in flexibility. The cost of waiting is low, and the cost of the wrong guess is not. When the need is certain and a retrofit would be costly, as for a public API that cannot change later, weigh that cost before waiting.
 
 ## py-class-earns-its-instance
 
@@ -799,7 +831,7 @@ def handler():
 from app.billing.parsing import parse
 ```
 
-**Counterpoint.** "Import inside the function avoids a cycle." It hides the cycle instead of fixing it, and the design needs a third module or a dependency inversion. A lazy import for a heavy optional dependency is the one defensible exception; document it with a reason.
+**Counterpoint.** "Import inside the function avoids a cycle." It hides the cycle instead of fixing it, and the design needs a third module or a dependency inversion. A lazy import for a heavy optional dependency is the one defensible exception; document it with a reason. Some guides tolerate explicit relative imports and a function-level import to break a cycle; this pack chooses absolute imports because they survive moving files, and keeps the local import as a last resort.
 
 ## py-no-init-or-model-tests
 
@@ -874,7 +906,7 @@ def db(engine):
 
 In Django, `pytest-django` already does this: it builds the database once, runs each `db` test in a transaction that it rolls back, and `--reuse-db` skips the rebuild between runs.
 
-**Counterpoint.** "A session fixture is shared, so one test can leak state into the next." That holds for mutable objects, which is why the PASS keeps the engine shared and gives each test its own rolled-back session. A fixture that cannot be reset stays at function scope. Python's own docs warn that shared fixtures break isolation and parallelism, so build the shared part read-only.
+**Counterpoint.** "A session fixture is shared, so one test can leak state into the next." That holds for mutable objects, which is why the PASS keeps the engine shared and gives each test its own rolled-back session. A fixture that cannot be reset stays at function scope. Python's own docs warn that shared fixtures break isolation and parallelism, so build the shared part read-only. A test that must commit needs a transactional fixture, which clears the database after each test, so that test must repopulate its data every time.
 
 ## py-test-hygiene
 
@@ -886,7 +918,7 @@ Backed by: Google (unjudged), Microsoft (unjudged), Spring (unjudged), GitLab (u
 
 **Rule.** Keep unit tests off external I/O (the network, the shared filesystem and the database) and off the real clock, and run tests that need them in a separate, slower tier.
 
-**Why.** A test that reaches the network, the disk or the database is slow and fails for reasons outside the code: an offline CI runner, a schema change, a clock at midnight. Those dependencies belong in an integration tier, where the failure is about the integration. Google's small tests cannot reach the network or disk; Microsoft's unit tests have no file system or database and control the clock through a seam; Django's `SimpleTestCase` blocks database queries by default.
+**Why.** A test that reaches the network, the disk or the database is slow and fails for reasons outside the code: an offline CI runner, a schema change, a clock at midnight. Those dependencies belong in an integration tier, where the failure is about the integration. Google's small tests cannot reach the network or disk; Microsoft's unit tests have no file system or database and control the clock through a seam; Django's `SimpleTestCase` blocks database queries by default. pytest-django fails a test that touches the database unless it opts in with a mark. Each test also builds and tears down its own state, so none depends on another's result or order.
 
 **FAIL**
 

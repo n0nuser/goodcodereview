@@ -20,7 +20,7 @@ borrowed_from:
 
 **Rule.** Issue each API key with the narrowest scopes and a bounded lifetime, and rotate or revoke it after any exposure.
 
-**Why.** A key with account-wide scope turns one leaked string into the whole account, and a key with no end date is still valid years after the integration was forgotten. Scopes bound what a leak can do; an expiry or a rotation bounds how long it can do it. Rotating on a schedule, as Google and Stripe advise, also shows whether you can replace the key before an incident forces the question. Show the secret once, at creation, as AWS does.
+**Why.** A key with account-wide scope turns one leaked string into the whole account, and a key with no end date is still valid years after the integration was forgotten. Scopes bound what a leak can do; an expiry or a rotation bounds how long it can do it. Rotating on a schedule, as Google and Stripe advise, also shows whether you can replace the key before an incident forces the question. Review keys regularly and delete any that are no longer needed. Where the platform allows, also bind a key to the sites, IP addresses or apps that use it. Show the secret once, at creation, as AWS does.
 
 **FAIL**
 

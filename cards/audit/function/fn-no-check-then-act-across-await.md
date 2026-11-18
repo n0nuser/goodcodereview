@@ -16,7 +16,7 @@ note: from the author's own Python review guide
 
 **Rule.** Make check-and-write one atomic operation where the state lives, and never split it across a suspension point.
 
-**Why.** Another task runs at every yield. Two withdrawals both read 100, both pass the check, and the balance goes negative.
+**Why.** Another task runs at every yield. Two withdrawals both read 100, both pass the check, and the balance goes negative. In SQL, read the row with a locking read (`SELECT ... FOR UPDATE`) or use serializable isolation, because a plain read takes no lock.
 
 **FAIL**
 

@@ -17,7 +17,7 @@ borrowed_from:
 
 **Rule.** Parse untrusted XML with external entity resolution turned off, for example through a hardened parser such as `defusedxml`.
 
-**Why.** A DTD can declare an entity whose value is `file:///etc/passwd` or an internal URL, and a parser that resolves it pastes that content into the document or makes the request for the attacker. Nested internal entities can also expand a small file into gigabytes. Where the parser allows it, also turn off DTDs and the parser's network access. Each parser has its own switches, so name them in the code instead of trusting the library default.
+**Why.** A DTD can declare an entity whose value is `file:///etc/passwd` or an internal URL, and a parser that resolves it pastes that content into the document or makes the request for the attacker. Nested internal entities can also expand a small file into gigabytes. Where the parser allows it, also turn off DTDs, XInclude, and the parser's network access. Each parser has its own switches, so name them in the code instead of trusting the library default.
 
 **FAIL**
 

@@ -8,7 +8,7 @@ lang: core
 applies_when: The service builds an absolute URL from the request, or reads `Host` or `X-Forwarded-*` to decide what to serve or where to send a user.
 context: [server]
 tool_gate: Framework host allowlist configured (`ALLOWED_HOSTS`, `AllowedHosts`, `config.hosts`, `trustHosts`), and a test that sends a hostile `Host` and expects 400.
-note: fn-redirect-target-allowlist checks where a redirect points; this card checks how a URL is built and which Host values the service answers. configured base URL - PortSwigger, Fastly and Rails; allowlist - PortSwigger, Fastly, Django, Microsoft, Rails and Laravel; trusted proxy - Django, Microsoft, PortSwigger and Fastly; duplicate Host has IETF and Fastly only, so it is in Why
+note: fn-redirect-target-allowlist checks where a redirect points; this card checks how a URL is built and which Host values the service answers. configured base URL - PortSwigger, Fastly and Rails; allowlist - PortSwigger, Fastly, Django, Microsoft, Rails and Laravel; trusted proxy - Django, Microsoft, PortSwigger and Fastly; duplicate Host has IETF and Fastly only, so it is in Why; a `*` allowlist entry has Django and Microsoft only, so it is in Why
 borrowed_from:
   - https://portswigger.net/web-security/host-header
   - https://www.fastly.com/learning/security/what-are-http-host-header-attacks
@@ -23,7 +23,7 @@ borrowed_from:
 
 **Rule.** Build absolute URLs from configured values, answer only for a `Host` on an allowlist, and take `X-Forwarded-*` values only from a trusted proxy.
 
-**Why.** A reset link built from the request `Host` carries whatever domain the attacker sent. The victim asks for a reset, the mail arrives with the attacker's host, and the token goes to the attacker when the link is opened. The same value drives routing, cache keys, and absolute redirects. A forwarded header is worse, because many stacks accept `X-Forwarded-Host` from any client and use it in place of `Host`. Two `Host` headers are a second route to the same disagreement: one component validates the first and another reads the last, so reject a request that carries more than one.
+**Why.** A reset link built from the request `Host` carries whatever domain the attacker sent. The victim asks for a reset, the mail arrives with the attacker's host, and the token goes to the attacker when the link is opened. The same value drives routing, cache keys, and absolute redirects. A forwarded header is worse, because many stacks accept `X-Forwarded-Host` from any client and use it in place of `Host`. Two `Host` headers are a second route to the same disagreement: one component validates the first and another reads the last, so reject a request that carries more than one. A `*` entry in the allowlist admits every host, so it is no allowlist at all.
 
 **FAIL**
 

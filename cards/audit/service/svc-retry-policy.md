@@ -20,7 +20,7 @@ borrowed_from:
 
 **Rule.** Retry only transient errors, with capped attempts and jittered exponential backoff.
 
-**Why.** Immediate, unbounded, or synchronized retries turn a brief fault into a load spike on the struggling dependency. Retry at one layer only: three layers of three attempts is nine calls per user request. Make retried writes safe with [[svc-idempotency-key]].
+**Why.** Immediate, unbounded, or synchronized retries turn a brief fault into a load spike on the struggling dependency. Retry at one layer only: three layers of three attempts is nine calls per user request. Keep one deadline for the whole call, across all attempts, not a fresh timeout per attempt. When a server sends `Retry-After`, wait that long. When the dependency keeps failing, stop retrying (a retry budget or a circuit breaker) instead of adding load. Make retried writes safe with [[svc-idempotency-key]].
 
 **FAIL**
 

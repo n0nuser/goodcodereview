@@ -18,7 +18,7 @@ borrowed_from:
 
 **Rule.** Never pass untrusted text to `eval`, `exec`, `new Function`, or a template compiler. Pass it to a fixed template or a parser as data.
 
-**Why.** Each of these turns a string into code that runs with the server's rights, so one field becomes remote code execution. A template engine counts: `render_template_string(request.args["msg"])` lets `{{ config }}` or worse run on the server. An expression language, such as SpEL, carries the same risk. Parse the data format instead (`json.loads`, `ast.literal_eval`), and keep templates in files the author wrote, with user values passed as variables.
+**Why.** Each of these turns a string into code that runs with the server's rights, so one field becomes remote code execution. A template engine counts: `render_template_string(request.args["msg"])` lets `{{ config }}` or worse run on the server. An expression language, such as SpEL, carries the same risk. Parse the data format instead (`json.loads`, `ast.literal_eval`), and keep templates in files the author wrote, with user values passed as variables. Better still, avoid run-time code generation where a parser or a lookup does the job.
 
 **FAIL**
 

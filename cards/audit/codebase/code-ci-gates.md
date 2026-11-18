@@ -16,7 +16,7 @@ borrowed_from:
 
 **Rule.** Require review and passing build, tests, lint, and type checks on the default branch before merge, and leave nothing mechanical to reviewer vigilance.
 
-**Why.** Any rule that depends on someone remembering will be skipped. Components where changes merge unreviewed or without discussion tend to ship more post-release defects.
+**Why.** Any rule that depends on someone remembering will be skipped. Components where changes merge unreviewed or without discussion tend to ship more post-release defects. Changes reach the branch only through a pull request, and force-push and branch deletion are blocked, so what was reviewed is what ships.
 
 **FAIL**
 
@@ -27,7 +27,8 @@ Default branch: no protection. Force-push allowed. CI optional.
 **PASS**
 
 ```text
-Protected main: 1 approval + required checks (build, test, lint, types).
+Protected main: pull request required, 1 approval + required checks (build, test, lint, types).
+Force-push and branch deletion blocked.
 ```
 
 **Counterpoint.** Gates slow small teams, and flaky tests train people to override. Keep gates few and reliable, fix flakes instead of overriding them, and let the gates own the mechanical checks so review time goes to design.

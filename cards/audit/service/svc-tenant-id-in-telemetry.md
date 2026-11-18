@@ -20,7 +20,7 @@ borrowed_from:
 
 **Rule.** Put the verified tenant id on every tenant-scoped log, metric and audit record.
 
-**Why.** A shared store returns another tenant's activity to any query that does not filter. The id has to be written from the verified tenant context, not from a request header, and it has to be there when a batch job or a queue worker writes the record, since no request middleware runs in those paths. A centralized audit store is acceptable only when read access enforces tenant scope. Metric events need the field too, or a per-tenant dashboard shows another tenant's numbers. Platform events that belong to no tenant, such as a node restart, carry no tenant id and are outside the Rule.
+**Why.** A shared store returns another tenant's activity to any query that does not filter. The id has to be written from the verified tenant context, not from a request header, and it has to be there when a batch job or a queue worker writes the record, since no request middleware runs in those paths. A centralized audit store is acceptable only when read access enforces tenant scope. Write it in one shared helper that reads the tenant from the verified token, so a service cannot leave it out or set it by hand. Metric events need the field too, or a per-tenant dashboard shows another tenant's numbers. Platform events that belong to no tenant, such as a node restart, carry no tenant id and are outside the Rule.
 
 **FAIL**
 

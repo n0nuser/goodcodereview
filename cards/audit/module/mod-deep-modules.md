@@ -18,7 +18,7 @@ note: a small interface, nothing more than callers need - Microsoft Framework De
 
 **Rule.** Prefer a small interface that hides its implementation, and add a member only when callers need it.
 
-**Why.** An interface with too many members is hard to learn and hard to implement, and a public detail is a commitment you cannot change later. A shallow module, whose interface is nearly as complex as its implementation, charges the reader the cost of learning it and returns nothing. The complexity moves; it does not shrink.
+**Why.** An interface with too many members is hard to learn and hard to implement, and a public detail is a commitment you cannot change later. A public field pins the representation and lets callers bypass any check, so keep fields private and expose them through methods. A shallow module, whose interface is nearly as complex as its implementation, charges the reader the cost of learning it and returns nothing. The complexity moves; it does not shrink.
 
 **FAIL**
 

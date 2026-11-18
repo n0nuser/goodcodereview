@@ -16,7 +16,7 @@ borrowed_from:
 
 **Rule.** Page on user-visible symptoms, such as error rate and latency, not on causes.
 
-**Why.** Cause-based pages (CPU high) wake people without user impact. A mean hides the slow tail, and failed-request latency mixed with successes hides both. Require an error-rate alert to hold for a few minutes, so one blip does not page. Also cover latency, traffic, errors, and saturation, track latency as a distribution, and delete alerts that never fire.
+**Why.** Cause-based pages (CPU high) wake people without user impact. A mean hides the slow tail, and failed-request latency mixed with successes hides both. Require an error-rate alert to hold for a few minutes, so one blip does not page. Also cover latency, traffic, errors, and saturation, and page on saturation when a limit is about to be reached, not only after it is hit. Track latency as a distribution, and delete alerts that never fire.
 
 **FAIL**
 

@@ -15,7 +15,7 @@ borrowed_from:
 
 **Rule.** Wire load balancers and restarters to liveness and local checks only, never to shared-dependency checks.
 
-**Why.** Dependency status belongs in alarms. If the database blips, every host fails its check, all are removed at once, and a partial outage becomes total.
+**Why.** Dependency status belongs in alarms. If the database blips, every host fails its check, all are removed at once, and a partial outage becomes total. Even a local check can misfire, so the automation should stop sending traffic to one bad host but keep sending it when most of the fleet fails the check.
 
 **FAIL**
 

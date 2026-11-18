@@ -3,8 +3,7 @@ id: chg-no-per-user-ide-files
 level: change
 tags: [process, maintainability, git]
 severity: should-fix
-status: draft
-lacks: unreviewed, sources and examples are in place; no stable pass has checked rules 1 to 10
+status: stable
 lang: core
 applies_when: A change adds a tracked file under an editor or IDE project directory.
 tool_gate: A CI step that fails when `git ls-files | rg '(^|/)(\.idea/workspace\.xml|\.idea/shelf/|xcuserdata/)|\.xcuserstate$'` prints a path. `git ls-files -ci --exclude-standard` lists only tracked files that already match an ignore entry, so it misses a repository with no entry.
@@ -20,7 +19,7 @@ borrowed_from:
   - https://developer.apple.com/documentation/xcode/setting-up-your-project-to-use-xcode-cloud
 ---
 
-**Rule.** Do not commit a file that holds one developer's editor or IDE state; ignore those paths in the repository or a machine-wide exclude file, and keep the settings the team shares in the repository.
+**Rule.** Do not commit a file that holds one developer's editor or IDE state; ignore those paths in the repository or a machine-wide exclude file. An ignore entry does not untrack a file already committed: remove it from the index with `git rm --cached`.
 
 **Why.** Per-user state changes on every IDE session and every machine, so it adds diff noise and merge conflicts. The shared files are the ones a teammate or CI needs. JetBrains says `.idea` holds both user-specific settings that "should not be placed under version control" and project settings "normally shared among developers". Microsoft says workspace settings in `.vscode` are "shared by all users of that project". Git and GitHub offer the repository `.gitignore` for paths everyone hits and a machine-wide exclude for a path only one developer has.
 

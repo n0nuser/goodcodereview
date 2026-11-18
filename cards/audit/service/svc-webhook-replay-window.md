@@ -18,7 +18,7 @@ borrowed_from:
 
 **Rule.** Reject an inbound signed message whose creation time is outside a short tolerance, and sign that time with the body so it cannot be swapped.
 
-**Why.** A valid signature proves who sent the message, not when. A captured request keeps its signature and can be sent again. Put the timestamp inside the signed content, as Slack, Svix and Stripe do. A timestamp in a separate header that the signature does not cover can be replaced by the attacker. Compare the timestamp with local time before doing any work. Retries are normal, so also store the message id and skip an id already processed. Deduplication stops a replay inside the window. The window stops one outside it and bounds how long the id store must keep entries.
+**Why.** A valid signature proves who sent the message, not when. A captured request keeps its signature and can be sent again. Put the timestamp inside the signed content, as Slack, Svix and Stripe do. A timestamp in a separate header that the signature does not cover can be replaced by the attacker. Compare the timestamp with local time before doing any work. Compute the signature over the raw, unmodified body, and compare it in constant time. Retries are normal, so also store the message id and skip an id already processed. Deduplication stops a replay inside the window. The window stops one outside it and bounds how long the id store must keep entries.
 
 **FAIL**
 

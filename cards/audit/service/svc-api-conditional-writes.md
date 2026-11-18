@@ -16,7 +16,7 @@ borrowed_from:
 
 **Rule.** Return an `ETag` on reads and honour `If-Match` on writes, answering 412 when the entity tag is stale.
 
-**Why.** A read-modify-write over HTTP is a race. The second writer overwrites the first without knowing it, and no error appears anywhere.
+**Why.** A read-modify-write over HTTP is a race. The second writer overwrites the first without knowing it, and no error appears anywhere. A DELETE races the same way: without the check it removes an update made after the read. After a 412 the client reads the resource again and retries on the fresh copy.
 
 **FAIL**
 

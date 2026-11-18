@@ -25,7 +25,7 @@ borrowed_from:
 
 **Rule.** Run an automated accessibility check, such as axe on rendered pages, in the automated tests, and fail the test on a violation.
 
-**Why.** A violation that nobody sees at review ships. A failing test catches the missing label or `alt` on the pull request that adds it, and run in CI on every change it blocks the merge. A JSX lint such as `jsx-a11y` catches some of the same problems earlier, in the editor. Either way it is a floor: tools find only part of the problems, so a person still tests with a keyboard.
+**Why.** A violation that nobody sees at review ships. A failing test catches the missing label or `alt` on the pull request that adds it, and run in CI on every pull request it blocks the merge. A JSX lint such as `jsx-a11y` catches some of the same problems earlier, in the editor. Either way it is a floor: tools find only part of the problems, so a person still tests with a keyboard and reviews the results the engine marks "incomplete".
 
 **FAIL**
 

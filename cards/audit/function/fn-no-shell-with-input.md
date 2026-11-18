@@ -17,7 +17,7 @@ borrowed_from:
 
 **Rule.** Start processes with the program and each argument as separate list items, and never through a shell string.
 
-**Why.** A shell reads `;`, `|` and `$()` as commands, so a filename of `a; rm -rf ~` runs. Argument arrays skip the shell. The values still need validation, since an argument beginning with `-` becomes an option; end options with `--` where the tool allows it.
+**Why.** A shell reads `;`, `|` and `$()` as commands, so a filename of `a; rm -rf ~` runs. Argument arrays skip the shell. A library call skips the process too, so it is better still when one exists. The values still need validation, since an argument beginning with `-` becomes an option; end options with `--` where the tool allows it.
 
 **FAIL**
 

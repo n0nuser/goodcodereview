@@ -21,9 +21,9 @@ borrowed_from:
   - https://rfd.shared.oxide.computer/rfd/0001
 ---
 
-**Rule.** Keep a short written record for each significant design choice (datastore, framework, deviation from a pattern) that states the context, the decision, and its consequences.
+**Rule.** Keep a short written record for each significant design choice (datastore, framework, deviation from a pattern) that states the context, the decision, the options ruled out, and its consequences.
 
-**Why.** Without a record, the next reader reverses a decision blindly or cargo-cults it. Also list the options you ruled out and why: a record that weighs only the chosen design, its strengths or its flaws, is not a trade-off analysis.
+**Why.** Without a record, the next reader reverses a decision blindly or cargo-cults it. A record that weighs only the chosen design, its strengths or its flaws, is not a trade-off analysis, so say why each ruled-out option lost. Give each record a status (proposed, accepted, superseded). Do not edit an accepted record: write a new one that supersedes it and keep the old one. If review finds an undocumented decision, write its record then.
 
 **FAIL**
 

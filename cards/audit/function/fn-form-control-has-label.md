@@ -21,7 +21,7 @@ borrowed_from:
 
 **Rule.** Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.
 
-**Why.** A screen reader announces a bare field as "edit text". Voice-control users cannot say its name. A label also enlarges the click target. A placeholder vanishes when the user types, so it fails every user who looks away and comes back.
+**Why.** A screen reader announces a bare field as "edit text". Voice-control users cannot say its name. A label also enlarges the click target. A placeholder vanishes when the user types, so it fails every user who looks away and comes back. Hints and examples vanish with it, so keep them out of the placeholder too.
 
 **FAIL**
 

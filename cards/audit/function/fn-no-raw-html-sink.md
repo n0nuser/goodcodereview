@@ -21,7 +21,7 @@ borrowed_from:
 
 **Rule.** Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.
 
-**Why.** One `innerHTML` of a username or of model output runs the attacker's script with the victim's session. Encoding must match the context: body, attribute, script string and URL each differ. Framework escape hatches such as `dangerouslySetInnerHTML` have the same effect.
+**Why.** One `innerHTML` of a username or of model output runs the attacker's script with the victim's session. Encoding must match the context: body, attribute, script string and URL each differ. Framework escape hatches such as `dangerouslySetInnerHTML` and Angular's `bypassSecurityTrustHtml` have the same effect.
 
 **FAIL**
 
@@ -38,4 +38,4 @@ el.textContent = comment.body;
 // user-authored HTML: DOMPurify.sanitize(html), nothing edited afterwards
 ```
 
-**Counterpoint.** "We need to render rich text." Then sanitise with a maintained library such as DOMPurify at render time and add a CSP as a second layer. A CSP alone is not a fix, because it is defence in depth.
+**Counterpoint.** "We need to render rich text." Then sanitise with a maintained library such as DOMPurify at render time and add a CSP as a second layer. A CSP alone is not a fix, because it is defence in depth. Where the browser supports Trusted Types, enforce them through the CSP, so HTML sinks reject plain strings and take only the sanitiser's output.

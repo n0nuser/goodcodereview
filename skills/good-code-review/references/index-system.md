@@ -9,12 +9,12 @@ One line per stable system card: id, severity, concerns, context, place, rule. T
 - `sys-fanout-leg-deadlines` [should-fix] {performance, reliability} L120+28: Give every leg of a fan-out its own deadline, and decide in code what happens when a leg misses it: a partial result, a hedged request, or an error.
 - `sys-health-liveness-readiness` [should-fix] {reliability} L149+25: Wire load balancers and restarters to liveness and local checks only, never to shared-dependency checks.
 - `sys-index-concurrently` [should-fix] {compatibility} <data> L175+28: Create indexes with `CONCURRENTLY`, outside a transaction block, and handle a failed build that leaves an INVALID index.
-- `sys-load-shedding-bounded-queues` [block] {reliability} <server> L204+28: Bound every queue and reject excess work cheaply.
-- `sys-lock-fencing` [block] {reliability, correctness} L233+29: Check a correctness lock on the resource side (fencing token or compare-and-set), never by lock possession alone.
-- `sys-migration-expand-contract` [block] {reliability, compatibility} <data> L263+26: Run data backfills in batches, in a migration separate from the schema change.
-- `sys-migration-lock-timeout` [should-fix] {compatibility} <data> L290+27: Set `lock_timeout` for the migration session and retry on timeout.
-- `sys-n-plus-one-pooling` [should-fix] {performance} <data> L318+28: Fetch related rows in one query or batch, never one query per row.
-- `sys-pii-minimise-retention` [should-fix] {security} L347+27: Give every store of personal or sensitive data a retention period, and delete or anonymise the data when it ends.
-- `sys-prompt-injection` [block] {security} L375+25: Validate model output deterministically before code acts on it.
-- `sys-secrets-and-errors` [block] {security, correctness} L401+30: Fail closed: a validation or auth error must deny, never continue, and an error response must not carry internals such as stack traces, SQL or tokens.
-- `sys-ssrf` [block] {security} L432+27: Fetch a user-supplied URL only when its host matches a server-side allowlist.
+- `sys-load-shedding-bounded-queues` [block] {reliability} <server> L204+29: Bound every queue, reject excess work cheaply, and drop queued requests whose caller has already given up.
+- `sys-lock-fencing` [block] {reliability, correctness} L234+29: Check a correctness lock on the resource side (fencing token or compare-and-set), never by lock possession alone.
+- `sys-migration-expand-contract` [block] {reliability, compatibility} <data> L264+26: Run data backfills in batches, in a migration separate from the schema change.
+- `sys-migration-lock-timeout` [should-fix] {compatibility} <data> L291+27: Set `lock_timeout` for the migration session and retry on timeout.
+- `sys-n-plus-one-pooling` [should-fix] {performance} <data> L319+28: Fetch related rows in one query or batch, never one query per row.
+- `sys-pii-minimise-retention` [should-fix] {security} L348+27: Give every store of personal or sensitive data a retention period, and delete or anonymise the data when it ends.
+- `sys-prompt-injection` [block] {security} L376+25: Validate model output deterministically before code acts on it.
+- `sys-secrets-and-errors` [block] {security, correctness} L402+30: Fail closed: a validation or auth error must deny, never continue, and an error response must not carry internals such as stack traces, SQL or tokens.
+- `sys-ssrf` [block] {security} L433+27: Fetch a user-supplied URL only when its host matches a server-side allowlist.

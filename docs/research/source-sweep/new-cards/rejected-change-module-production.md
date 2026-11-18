@@ -1,0 +1,2 @@
+mod-fakes-over-mocks: rejected, duplicate of mod-mock-at-boundaries-only (fakes accept only real signatures, keep internals real) and chg-agent-mock-asserting-tests; row 722 (Spotify) backs a different clause (no cross-service dependence). Judgment call: "fake over mock" could be a clause if the maintainer wants it.
+prod-sampling-profiler: rejected, prod-profile-on-demand (stable) already cites PSF and Grafana and states that sampling profilers stay at a few percent overhead.

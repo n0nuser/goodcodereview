@@ -31,4 +31,4 @@ if resp.status == HTTPStatus.NOT_FOUND or retries > MAX_RETRIES:
     mode = Mode.FAST
 ```
 
-**Counterpoint.** "A constant used once is noise." True for self-evident values (`0`, `1`, `""`, an index into a pair). The rule is for literals whose meaning is not visible at the use site, or that appear twice. The failure is two spellings of one concept, not the literal itself.
+**Counterpoint.** "A constant used once is noise." True for self-evident values (`0`, `1`, `""`, an index into a pair, a default value). A literal that is itself the abstraction, such as a coefficient in a formula, needs no name either. The rule is for literals whose meaning is not visible at the use site, or that appear twice. The failure is two spellings of one concept, not the literal itself.

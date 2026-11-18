@@ -13,11 +13,13 @@ borrowed_from:
   - https://github.com/cursor/plugins/blob/main/pstack/skills/typescript-best-practices/SKILL.md
   - https://www.typescriptlang.org/docs/handbook/2/narrowing.html
   - https://doc.rust-lang.org/book/ch06-02-match.html
+  - https://kotlinlang.org/docs/sealed-classes.html
+  - https://developer.gnome.org/documentation/guidelines/programming/coding-style.html
 ---
 
 **Rule.** Model variants as a tagged union, and make every switch over it fail the build when a variant is unhandled.
 
-**Why.** A bag of optional fields or booleans that must stay in sync allows states that mean nothing, and each reader has to know which combinations are legal. A new variant then slips past every switch that lacks an exhaustiveness check.
+**Why.** A bag of optional fields or booleans that must stay in sync allows states that mean nothing, and each reader has to know which combinations are legal. A new variant then slips past every switch that lacks an exhaustiveness check. A catch-all branch hides the same gap: Kotlin's `when` over a sealed type needs no `else`, and a C `switch` over an enum has a `case` for every member.
 
 **FAIL**
 

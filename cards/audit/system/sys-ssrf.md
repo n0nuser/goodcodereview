@@ -17,7 +17,7 @@ borrowed_from:
 
 **Rule.** Fetch a user-supplied URL only when its host matches a server-side allowlist.
 
-**Why.** The server can reach networks that the attacker cannot, such as internal services and the cloud metadata address, and an open fetch lets the attacker read them. A hostname allowlist alone does not stop DNS rebinding, so also check that the resolved address is not private and connect to that address. Turn off redirect following, or check each redirect target the same way.
+**Why.** The server can reach networks that the attacker cannot, such as internal services and the cloud metadata address, and an open fetch lets the attacker read them. A hostname allowlist alone does not stop DNS rebinding, so also check that the resolved address is not private and connect to that address. Validate and sanitise every user value that goes into the URL, not only the host. Turn off redirect following, or check each redirect target the same way.
 
 **FAIL**
 

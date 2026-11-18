@@ -18,7 +18,7 @@ borrowed_from:
 
 **Rule.** Put the visible label of a text input, select, or textarea directly above it.
 
-**Why.** A label sitting below a field, or halfway between two fields, gets read as the label of the wrong one. W3C notes that a label above the field cuts sideways scrolling for low-vision and phone users, who can lose a side label off the edge of the screen. Hint and error text can go between the label and the field. A help link, a button, or another field cannot. Checkboxes and radios are the exception: W3C puts the control first and its label to the right, in left-to-right languages.
+**Why.** A label sitting below a field, or halfway between two fields, gets read as the label of the wrong one. W3C notes that a label above the field cuts sideways scrolling for low-vision and phone users, who can lose a side label off the edge of the screen. Hint and error text can go between the label and the field. A help link, a button, or another field cannot. Placeholder text is not a label: it vanishes when the user types. Checkboxes and radios are the exception: W3C puts the control first and its label to the right, in left-to-right languages.
 
 **FAIL**
 

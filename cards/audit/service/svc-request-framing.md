@@ -21,7 +21,7 @@ borrowed_from:
 
 **Rule.** Reject a request that carries both `Transfer-Encoding` and `Content-Length`, or remove one field at the first hop, and parse header framing strictly rather than with a leniency flag.
 
-**Why.** Two hops can disagree about where a request ends. The front end reads one body length and the back end reads another, so the leftover bytes become the start of the next request on the same connection. That request skips the front end's checks: it can reach an admin route, poison a cache, or splice one user's response into another user's connection. The ambiguity comes from a second framing field, a malformed header name, or a parser that accepts what the specification rejects. A front end that downgrades HTTP/2 to HTTP/1.1 reopens the gap, so validate the rewritten request as well.
+**Why.** Two hops can disagree about where a request ends. The front end reads one body length and the back end reads another, so the leftover bytes become the start of the next request on the same connection. That request skips the front end's checks: it can reach an admin route, poison a cache, or splice one user's response into another user's connection. The ambiguity comes from a second framing field, a malformed header name, or a parser that accepts what the specification rejects. A front end that downgrades HTTP/2 to HTTP/1.1 reopens the gap, so validate the rewritten request as well. After rejecting an ambiguous request, close the connection, because the leftover bytes still sit on it.
 
 **FAIL**
 

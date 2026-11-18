@@ -10,7 +10,7 @@ Backed by: Microsoft (unjudged), OWASP (unjudged), NIST (unjudged), Okta (Auth0)
 
 **Rule.** Link a federated identity to an existing account only after proving control of both, and key the link on the pair `iss` and `sub`, never on an unverified email or another profile claim.
 
-**Why.** An attacker who registers a victim's address first can wait for the victim to press "Sign in with Google" and inherit the account through an automatic merge. The same bug appears when an IdP asserts an address it never verified, or one that changed owner since it did. An authenticated session on the existing account, plus a freshly authenticated federated identity, proves both sides. `iss` and `sub` together are the only stable key; email, `preferred_username` and name can be reused or reassigned, so they are a lookup hint at best.
+**Why.** An attacker who registers a victim's address first can wait for the victim to press "Sign in with Google" and inherit the account through an automatic merge. The same bug appears when an IdP asserts an address it never verified, or one that changed owner since it did. An authenticated session on the existing account, plus a freshly authenticated federated identity, proves both sides. `iss` and `sub` together are the only stable key; email, `preferred_username` and name can be reused or reassigned, so they are a lookup hint at best. Each `iss` and `sub` pair belongs to one local account only.
 
 **FAIL**
 
@@ -45,7 +45,7 @@ Backed by: IETF (unjudged), Zalando (unjudged), OWASP (supports), PortSwigger (u
 
 **Rule.** Set an explicit `Cache-Control` on every response a cache may store, use `private` or `no-store` for user-specific data, add `Vary` for any request header that changes the body, keep the origin's `Cache-Control` authoritative at the edge (no minimum TTL or force-cache override), and decide cacheability by the response `Content-Type`, not the URL extension.
 
-**Why.** With no directive, a cache may guess a lifetime from `Last-Modified`. A shared cache may then serve one user's response to another, or serve stale data for hours after a write. A dynamic page requested at `/account/x.css` is the same failure from the cache side: a rule that decides by extension stores a private page, and an edge rule that overrides `no-store` keeps it. The origin and the cache must also read the path the same way. When they do not, a path the origin treats as private can look like a static file to the cache.
+**Why.** With no directive, a cache may guess a lifetime from `Last-Modified`. A shared cache may then serve one user's response to another, or serve stale data for hours after a write. A shared cache must not reuse a response to a request with `Authorization` unless the response says `public`, `must-revalidate` or `s-maxage`. `private` still lets the browser keep a copy, so use `no-store` for sensitive data. At the edge, cache only responses that do not depend on the user. A dynamic page requested at `/account/x.css` is the same failure from the cache side: a rule that decides by extension stores a private page, and an edge rule that overrides `no-store` keeps it. The origin and the cache must also read the path the same way. When they do not, a path the origin treats as private can look like a static file to the cache.
 
 **FAIL**
 
@@ -81,7 +81,7 @@ Backed by: IETF (unjudged), Microsoft (unjudged), Zalando (unjudged). Backing: u
 
 **Rule.** Return an `ETag` on reads and honour `If-Match` on writes, answering 412 when the entity tag is stale.
 
-**Why.** A read-modify-write over HTTP is a race. The second writer overwrites the first without knowing it, and no error appears anywhere.
+**Why.** A read-modify-write over HTTP is a race. The second writer overwrites the first without knowing it, and no error appears anywhere. A DELETE races the same way: without the check it removes an update made after the read. After a 412 the client reads the resource again and retries on the fresh copy.
 
 **FAIL**
 
@@ -136,11 +136,11 @@ concerns: compatibility
 applies_when: A service retires an endpoint, field, version or parameter that outside callers use.  
 context: server  
 tool gate: Middleware that adds both headers for routes tagged deprecated; a spec linter on `deprecated: true` without a sunset date; a dashboard counting calls that carry the headers.  
-Backed by: IETF (unjudged), Zalando (unjudged), OpenAPI Initiative (unjudged), GitHub (unjudged), Google (unjudged). Backing: unjudged.
+Backed by: IETF (unjudged), Zalando (unjudged), OpenAPI Initiative (unjudged), GitHub (unjudged), Google (unjudged), Kubernetes (unjudged), Python Software Foundation (unjudged). Backing: unjudged.
 
 **Rule.** Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers.
 
-**Why.** The `Sunset` date must not be earlier than the `Deprecation` date (RFC 9745). Callers cannot read your roadmap. A removal with no signal in the responses is an outage for whoever has not read the changelog. Counting calls that carry the headers also tells you when removal is safe.
+**Why.** The `Sunset` date must not be earlier than the `Deprecation` date (RFC 9745). Callers cannot read your roadmap. A removal with no signal in the responses is an outage for whoever has not read the changelog. Set the `Sunset` date well after the announcement: projects that publish a minimum keep deprecated behaviour for one to two years. Counting calls that carry the headers also tells you when removal is safe.
 
 **FAIL**
 
@@ -153,9 +153,10 @@ responses before removal: no header, spec not marked deprecated
 
 ```text
 GET /v1/orders/9/summary -> 200
-  Deprecation: @1767225600
-  Sunset: Wed, 01 Jul 2026 00:00:00 GMT
+  Deprecation: @1798761600
+  Sunset: Sat, 01 Jan 2028 00:00:00 GMT
   Link: <https://api.example.com/docs/summary-removal>; rel="deprecation"
+  Link: <https://api.example.com/docs/summary-removal>; rel="sunset"
 spec: deprecated: true
 ```
 
@@ -168,11 +169,11 @@ concerns: correctness, compatibility
 applies_when: A service has an OpenAPI description, or callers depend on its error responses.  
 context: server  
 tool gate: Spec linter that requires 4xx and 5xx responses with a schema on every operation, and an example on each.  
-Backed by: OpenAPI Initiative (unjudged), Zalando (unjudged), Siemens (supports). Backing: mixed.
+Backed by: OpenAPI Initiative (unjudged), Zalando (unjudged), Siemens (supports), IETF (unjudged). Backing: mixed.
 
 **Rule.** Document every error status each operation can return, with a schema and one example.
 
-**Why.** Callers write error handling from the spec. An operation that lists only 200 teaches them nothing about 404, 409, 422 or 429, so they find out in production.
+**Why.** Callers write error handling from the spec. An operation that lists only 200 teaches them nothing about 404, 409, 422 or 429, so they find out in production. Give the errors one shared schema, such as RFC 9457 problem details, so each carries a status, a title and a type URI that callers can match on.
 
 **FAIL**
 
@@ -207,7 +208,7 @@ Backed by: IETF (unjudged), Google (unjudged), Microsoft (unjudged). Backing: un
 
 **Rule.** Give each error a stable machine-readable code that callers branch on, and never make them parse the message text.
 
-**Why.** Message text gets reworded, translated and fixed. A client that matches on "already exists" breaks on the first edit. A published code is a contract.
+**Why.** Message text gets reworded, translated and fixed. A client that matches on "already exists" breaks on the first edit. A published code is a contract, and one code names one kind of error: reusing it for a different error breaks callers who branch on it.
 
 **FAIL**
 
@@ -236,7 +237,7 @@ Backed by: Google (unjudged), GitHub (unjudged), Stripe (unjudged), AWS (unjudge
 
 **Rule.** Issue each API key with the narrowest scopes and a bounded lifetime, and rotate or revoke it after any exposure.
 
-**Why.** A key with account-wide scope turns one leaked string into the whole account, and a key with no end date is still valid years after the integration was forgotten. Scopes bound what a leak can do; an expiry or a rotation bounds how long it can do it. Rotating on a schedule, as Google and Stripe advise, also shows whether you can replace the key before an incident forces the question. Show the secret once, at creation, as AWS does.
+**Why.** A key with account-wide scope turns one leaked string into the whole account, and a key with no end date is still valid years after the integration was forgotten. Scopes bound what a leak can do; an expiry or a rotation bounds how long it can do it. Rotating on a schedule, as Google and Stripe advise, also shows whether you can replace the key before an incident forces the question. Review keys regularly and delete any that are no longer needed. Where the platform allows, also bind a key to the sites, IP addresses or apps that use it. Show the secret once, at creation, as AWS does.
 
 **FAIL**
 
@@ -264,26 +265,26 @@ concerns: maintainability
 applies_when: A service defines JSON fields, query parameters, headers or path segments for an HTTP API.  
 context: server  
 tool gate: Spec linter with a casing rule per location.  
-Backed by: Zalando (unjudged), Microsoft (unjudged), Google (supports), Kubernetes (supports). Backing: mixed.
+Backed by: Zalando (unjudged), Microsoft (unjudged), Google (supports), Kubernetes (supports), Ísland.is (unjudged). Backing: mixed.
 
-**Rule.** Use one casing convention per location (fields, query parameters, headers, paths) across the whole API, and state it in the API guide.
+**Rule.** Use one casing convention per location (fields, query parameters, headers, paths) across the whole API, and state it in the API guide. Name collections and array fields as plural nouns.
 
-**Why.** Mixed casing in one API makes callers look up each name. A client that guesses `orderId` after meeting `order_id` gets a silent null.
+**Why.** Mixed casing in one API makes callers look up each name. A client that guesses `orderId` after meeting `order_id` gets a silent null. The same goes for number: a field named `item` that holds a list reads as one value, so name collections and array fields in the plural.
 
 **FAIL**
 
 ```text
-GET /orders?pageSize=20 -> {"order_id": 1, "createdAt": "...", "Total-Cents": 500}
+GET /orders?pageSize=20 -> {"order_id": 1, "createdAt": "...", "Total-Cents": 500, "item": [...]}
 ```
 
 **PASS**
 
 ```text
-GET /orders?page_size=20 -> {"order_id": 1, "created_at": "...", "total_cents": 500}
+GET /orders?page_size=20 -> {"order_id": 1, "created_at": "...", "total_cents": 500, "items": [...]}
 # snake_case everywhere, as docs/api-guide.md says
 ```
 
-**Counterpoint.** "Pick the right convention." The sources disagree: Zalando asks for snake_case, Microsoft for camelCase in fields. Either passes. Do not change an existing API's casing to match a guide; that is a breaking change.
+**Counterpoint.** "Pick the right convention." Published guides disagree: some ask for snake_case, others for camelCase in fields. Either passes. Do not change an existing API's casing to match a guide; that is a breaking change.
 
 ## svc-api-problem-json
 
@@ -362,7 +363,7 @@ Backed by: IETF (unjudged), Zalando (unjudged), Microsoft (supports). Backing: m
 
 **Rule.** Return the most specific status code that fits: 201 with `Location` for a create, 405 with `Allow` for a wrong method, and a 4xx or 5xx for any failure.
 
-**Why.** Clients, proxies and monitors act on the status line. A 200 with an error in the body hides failures from retries, caches and error-rate alerts. A create that returns 200 without `Location` forces the caller to guess the new URL.
+**Why.** Clients, proxies and monitors act on the status line. A 200 with an error in the body hides failures from retries, caches and error-rate alerts. A create that returns 200 without `Location` forces the caller to guess the new URL. A request body in a format the operation does not accept gets 415, not a 200 or a generic 400.
 
 **FAIL**
 
@@ -381,6 +382,35 @@ PATCH /orders (not supported) -> 405  Allow: GET, POST
 
 **Counterpoint.** "A 200 with a status field is easier for our clients." It breaks every generic tool that reads the status line, including your own dashboards. Choosing between two fitting codes is a style call; the card fails only a code that says the wrong thing.
 
+## svc-api-version-on-every-request
+
+severity: should-fix  
+concerns: compatibility, maintainability  
+applies_when: The code calls an HTTP API that publishes dated or numbered versions, or the service offers one.  
+context: server  
+tool gate: A shared HTTP client wrapper or gateway rule that sets the version, and a contract test that a request without one is rejected.  
+Backed by: GitHub (unjudged), Google (unjudged), Microsoft (unjudged). Backing: unjudged.
+
+**Rule.** Name the API version on every request, in a header or a query parameter.
+
+**Why.** A request with no version gets whatever the server treats as the default, and that default moves. The caller then breaks on the server's schedule, not its own. A request that names its version keeps the behaviour it was tested against until the caller moves it. Choosing the scheme and keeping a version stable are covered by [svc-api-versioning-policy](service.md#svc-api-versioning-policy).
+
+**FAIL**
+
+```text
+GET /orders HTTP/1.1
+Host: api.example.com
+```
+
+**PASS**
+
+```text
+GET /orders?api-version=2026-03-01 HTTP/1.1
+Host: api.example.com
+```
+
+**Counterpoint.** "Always sending a version is clutter, and the latest is what we want anyway." The latest is only what you want on the day you tested it. Put the version in one client wrapper so call sites stay clean, and bump it as a reviewed change.
+
 ## svc-api-versioning-policy
 
 severity: should-fix  
@@ -392,7 +422,7 @@ Backed by: Zalando (unjudged), Microsoft (unjudged), Stripe (unjudged). Backing:
 
 **Rule.** Write down one versioning scheme for the API, and ship no breaking change inside a version it has published.
 
-**Why.** Callers upgrade on their own schedule. With no stated scheme, each breaking change is a surprise, and each team invents its own v2.
+**Why.** Callers upgrade on their own schedule. With no stated scheme, each breaking change is a surprise, and each team invents its own v2. Additive changes, such as a new field, can ship inside the current version; only a breaking change needs a new one.
 
 **FAIL**
 
@@ -422,7 +452,7 @@ Backed by: Google (unjudged), Apple (unjudged), Nielsen Norman Group (unjudged),
 
 **Rule.** Reserve the space for late-loading content with set dimensions or an aspect ratio, so nothing already on screen moves.
 
-**Why.** A page that jumps while someone reads or taps makes them hit the wrong target. A cumulative layout shift of 0.1 or less is good, and over 0.25 is poor, measured on real users at the 75th percentile.
+**Why.** A page that jumps while someone reads or taps makes them hit the wrong target. A cumulative layout shift of 0.1 or less is good, and over 0.25 is poor, measured on real users at the 75th percentile. A placeholder of the same size, such as a skeleton, fills the reserved space and reads better than a blank gap.
 
 **FAIL**
 
@@ -598,6 +628,49 @@ items: list[Item] = Field(max_length=100)            # body capped at 1 MB by th
 
 **Counterpoint.** "Legit clients sometimes need big batches." Offer a documented bulk or export endpoint with its own quota. The default path stays capped.
 
+## svc-bound-inbound-concurrency
+
+severity: should-fix  
+concerns: reliability, performance  
+applies_when: The service takes requests from callers it does not control.  
+context: server  
+Backed by: AWS (unjudged), Tokio project (unjudged), Uber (unjudged), Netflix (unjudged). Backing: unjudged.
+
+**Rule.** Cap how many requests a service handles at once with an explicit concurrency limit, and reject the excess. A timeout alone does not bound it.
+
+**Why.** Concurrency is arrival rate times latency. When a dependency slows down, in-flight requests pile up even if every one has a timeout and a retry cap, and the service runs out of threads, memory or connections. A hard limit turns that into fast 503 responses. In-flight count is also a better overload signal than requests per second, because it rises when work gets slower. This card limits inbound requests. Per-dependency limits are in [svc-circuit-breaker-bulkhead](service.md#svc-circuit-breaker-bulkhead), background tasks in [svc-bounded-background-tasks](service.md#svc-bounded-background-tasks), and queues in [sys-load-shedding-bounded-queues](system.md#sys-load-shedding-bounded-queues).
+
+**FAIL**
+
+```python
+import asyncio
+
+from aiohttp import web
+
+async def handle(request):
+    async with asyncio.timeout(5):          # a timeout only; any number of requests can wait here
+        return web.json_response(await backend.query(request))
+```
+
+**PASS**
+
+```python
+import asyncio
+
+from aiohttp import web
+
+limit = asyncio.Semaphore(100)
+
+async def handle(request):
+    if limit.locked():
+        return web.Response(status=503, headers={"Retry-After": "1"})
+    async with limit:
+        async with asyncio.timeout(5):
+            return web.json_response(await backend.query(request))
+```
+
+**Counterpoint.** "Autoscaling adds capacity when load rises." Scaling takes minutes and the pile-up takes seconds. The limit protects the service until new capacity arrives. Set it from a load test, not a guess, and revisit it when the service changes.
+
 ## svc-bounded-background-tasks
 
 severity: block  
@@ -646,7 +719,7 @@ Backed by: PortSwigger (unjudged), Cloudflare (unjudged), AWS (unjudged), Fastly
 
 **Rule.** Key every request input that can change the response, and strip any other request value before it reaches a cached body.
 
-**Why.** A cache keeps one response per key. If the origin echoes a header, a cookie, or a GET body that the key ignores, the first request stores content that every later visitor receives. An attacker can then place content on your domain without touching the origin: a link or a form. A value that reaches the body belongs in the key, or it must not reach the body at all. Caching only static types by default narrows the surface, though CDN defaults differ.
+**Why.** A cache keeps one response per key. If the origin echoes a header, a cookie, or a GET body that the key ignores, the first request stores content that every later visitor receives. An attacker can then place content on your domain without touching the origin: a link or a form. A value that reaches the body belongs in the key, or it must not reach the body at all. Do not key on a value that varies per user or per request, such as `User-Agent` or a session cookie: it splits the cache into one entry per value, so strip it instead. Caching only static types by default narrows the surface, though CDN defaults differ.
 
 **FAIL**
 
@@ -764,7 +837,7 @@ Backed by: Google (unjudged), GitHub (unjudged), AWS (unjudged), HashiCorp (unju
 
 **Rule.** Exit non-zero when a command fails, and write results to stdout and errors and progress to stderr.
 
-**Why.** Scripts branch on the exit code and pipe stdout into the next program. A failure that exits 0 reads as success, and an error line on stdout lands in the next program's input. Add a `--json` flag for structured results, and keep prompts out of non-terminal runs (see [svc-cli-non-interactive](service.md#svc-cli-non-interactive)).
+**Why.** Scripts branch on the exit code and pipe stdout into the next program. A failure that exits 0 reads as success, and an error line on stdout lands in the next program's input. Scripts should never parse error wording or default text, which can change between releases. Add a `--json` flag for structured results, and keep prompts out of non-terminal runs (see [svc-cli-non-interactive](service.md#svc-cli-non-interactive)). Where callers must tell failures apart, give each class its own documented code, such as bad usage, authentication required or a service error.
 
 **FAIL**
 
@@ -828,6 +901,47 @@ if *env == "" {
 
 **Counterpoint.** "Prompts are friendlier for people." Keep them. The rule only asks that the caller can switch prompts off.
 
+## svc-client-paces-outgoing-calls
+
+severity: should-fix  
+concerns: reliability, performance  
+applies_when: The code makes many calls to an API that publishes a rate limit.  
+Backed by: Shopify (unjudged), Stripe (unjudged), GitHub (unjudged). Backing: unjudged.
+
+**Rule.** Pace outgoing calls to a rate-limited API on the client, at a fixed rate or with a token bucket, so the client is not throttled.
+
+**Why.** A client that fires as fast as it can hits the limit, collects 429 responses, and spends its quota on calls that fail. Pacing to the published rate keeps the calls that count inside the budget. Retrying a 429 after backoff still has a place, as in [svc-retry-policy](service.md#svc-retry-policy), but it is the second line.
+
+**FAIL**
+
+```python
+for order in orders:
+    client.post("/orders", json=order)   # thousands of calls in a tight loop; the API allows 2 per second
+```
+
+**PASS**
+
+```python
+import time
+
+class Pacer:
+    def __init__(self, per_second):
+        self.gap = 1 / per_second
+        self.next = 0.0
+
+    def wait(self):
+        now = time.monotonic()
+        time.sleep(max(0.0, self.next - now))
+        self.next = max(now, self.next) + self.gap
+
+pacer = Pacer(2)
+for order in orders:
+    pacer.wait()
+    client.post("/orders", json=order)
+```
+
+**Counterpoint.** "The server returns 429 and Retry-After, so we can just react." Reacting means the limit is hit every time, and on some APIs repeated hits cost extra or lock the client out. Pace first and keep the 429 handling for the bursts that still get through.
+
 ## svc-cors-allowlist
 
 severity: should-fix  
@@ -870,7 +984,7 @@ Backed by: OWASP (unjudged), Mozilla (unjudged), Google (unjudged). Backing: unj
 
 **Rule.** Send a `Content-Security-Policy` whose `script-src` uses a per-response nonce or script hashes, with `object-src 'none'` and `base-uri 'none'`.
 
-**Why.** When an XSS bug slips through, CSP decides whether the injected script runs. A host allowlist such as `script-src 'self' cdn.example` usually has a bypass, because some allowed host serves JSONP or an old library. A nonce or hash only lets through scripts the server marked. `'strict-dynamic'` lets those scripts load their own children. Browsers that support nonces ignore an `'unsafe-inline'` fallback placed next to one, so that fallback is safe. `'unsafe-inline'` on its own turns the policy off for inline script.
+**Why.** When an XSS bug slips through, CSP decides whether the injected script runs. A host allowlist such as `script-src 'self' cdn.example` usually has a bypass, because some allowed host serves JSONP or an old library. A nonce or hash only lets through scripts the server marked. `'strict-dynamic'` lets those scripts load their own children. Browsers that support nonces ignore an `'unsafe-inline'` fallback placed next to one, so that fallback is safe. `'unsafe-inline'` on its own turns the policy off for inline script. Send the header on every response, not only the main page.
 
 **FAIL**
 
@@ -999,7 +1113,7 @@ resource "aws_sqs_queue" "orders" {
 sqs.send_message(QueueUrl=url, MessageBody=body, MessageGroupId=order_id)
 ```
 
-**Counterpoint.** "A dead-letter queue already stops the poison message." It stops it after the retry cap. Until then the redelivery holds its group, and in a FIFO queue that means every message behind it. Grouping and the dead-letter queue do different jobs, so keep both. Choose the group key from the unit that must stay ordered. A single group restores the head-of-line block you were trying to remove. On a standard queue with no ordering, there is no group to key and the second sentence of the Rule does not apply.
+**Counterpoint.** "A dead-letter queue already stops the poison message." It stops it after the retry cap. Until then the redelivery holds its group, and in a FIFO queue that means every message behind it. Grouping and the dead-letter queue do different jobs, so keep both. Choose the group key from the unit that must stay ordered. A single group restores the head-of-line block you were trying to remove, so use one only when the whole queue must stay in strict order. On a standard queue with no ordering, there is no group to key and the second sentence of the Rule does not apply.
 
 ## svc-export-scope
 
@@ -1084,7 +1198,7 @@ Backed by: PortSwigger (unjudged), Fastly (unjudged), Django Software Foundation
 
 **Rule.** Build absolute URLs from configured values, answer only for a `Host` on an allowlist, and take `X-Forwarded-*` values only from a trusted proxy.
 
-**Why.** A reset link built from the request `Host` carries whatever domain the attacker sent. The victim asks for a reset, the mail arrives with the attacker's host, and the token goes to the attacker when the link is opened. The same value drives routing, cache keys, and absolute redirects. A forwarded header is worse, because many stacks accept `X-Forwarded-Host` from any client and use it in place of `Host`. Two `Host` headers are a second route to the same disagreement: one component validates the first and another reads the last, so reject a request that carries more than one.
+**Why.** A reset link built from the request `Host` carries whatever domain the attacker sent. The victim asks for a reset, the mail arrives with the attacker's host, and the token goes to the attacker when the link is opened. The same value drives routing, cache keys, and absolute redirects. A forwarded header is worse, because many stacks accept `X-Forwarded-Host` from any client and use it in place of `Host`. Two `Host` headers are a second route to the same disagreement: one component validates the first and another reads the last, so reject a request that carries more than one. A `*` entry in the allowlist admits every host, so it is no allowlist at all.
 
 **FAIL**
 
@@ -1114,7 +1228,7 @@ Backed by: Microsoft (unjudged), IETF (unjudged), Stripe (unjudged). Backing: un
 
 **Rule.** Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.
 
-**Why.** A timeout does not say whether the first attempt ran. Retrying without a key charges twice or sends two emails. A common way to answer the retry is to store the first result and return it again.
+**Why.** A timeout does not say whether the first attempt ran. Retrying without a key charges twice or sends two emails. A common way to answer the retry is to store the first result and return it again. Reject a key that comes back with a different payload, since it is a client bug, not a retry. Where an API has side effects and offers no key, do not retry it.
 
 **FAIL**
 
@@ -1242,7 +1356,7 @@ def add_phone():
     notify(user, "phone changed")
 ```
 
-**Counterpoint.** "Prompting on every sensitive action annoys users, and a user who lost the only factor gets locked out." Use risk and a recent-auth window so the prompt appears only when the session is stale or the action is high risk, and keep the recovery path described above; without it, step-up becomes a denial of service against the account's owner.
+**Counterpoint.** "Prompting on every sensitive action annoys users, and a user who lost the only factor gets locked out." Use risk and a recent-auth window so the prompt appears only when the session is stale or the action is high risk, such as a new device or an untrusted network, and keep the recovery path described above; without it, step-up becomes a denial of service against the account's owner.
 
 **See also.** [svc-auth-throttle-generic-errors](service.md#svc-auth-throttle-generic-errors) covers guessing the factor; [svc-session-lifecycle](service.md#svc-session-lifecycle) covers the session that carries the result.
 
@@ -1319,7 +1433,7 @@ Backed by: IETF (unjudged), OWASP (unjudged), OpenID Foundation (unjudged), Micr
 
 **Rule.** Finish the authorization-code flow with PKCE and a challenge method that keeps the verifier out of the authorization request (`S256`), send the exact registered `redirect_uri` (a native app on the loopback interface may vary the port), and reject the response unless this transaction's `state` or OIDC `nonce` matches and the ID token's signature, `iss`, `aud` and `exp` check out.
 
-**Why.** A code that is not bound to the browser in front of you can be injected into another session, and an ID token minted for a different client or issuer can be replayed at your login. PKCE makes an intercepted code useless without the verifier, and `S256` is the method that does not reveal the verifier in the request. An exact redirect URI stops the code reaching an attacker's host. `state` or `nonce` ties the response to the login the user started. The ID-token checks reject a token that another app, another issuer or an expired clock made.
+**Why.** A code that is not bound to the browser in front of you can be injected into another session, and an ID token minted for a different client or issuer can be replayed at your login. PKCE makes an intercepted code useless without the verifier, and `S256` is the method that does not reveal the verifier in the request. An exact redirect URI stops the code reaching an attacker's host, and an `https` one keeps it off the network in clear (plain `http` is for a native app's loopback only). `state` or `nonce` ties the response to the login the user started. If the request carried a `nonce`, the ID token must carry it back and the value must match. The ID-token checks reject a token that another app, another issuer or an expired clock made. Compare `iss` exactly with the issuer you expect, and require `aud` to contain your own client ID.
 
 **FAIL**
 
@@ -1391,7 +1505,7 @@ Backed by: AWS (unjudged), Google (unjudged), Microsoft (unjudged), NIST (unjudg
 
 **Rule.** Enforce a per-tenant quota on shared APIs and queues.
 
-**Why.** Without a quota, one noisy tenant consumes shared capacity for everyone. Key the count to the identity that owns the quota, such as the tenant, account or API key, and state the window and when capacity returns. Also add a per-tenant concurrency cap, and return 429 for over-quota but 503 for the service's own lack of capacity, so clients do not retry quota errors as capacity problems.
+**Why.** Without a quota, one noisy tenant consumes shared capacity for everyone. Key the count to the identity that owns the quota, such as the tenant, account or API key, and state the window and when capacity returns. Also add a per-client rate limit over a time window, set below the tenant quota, so one client cannot spend it all at once. Also add a per-tenant concurrency cap, and return 429 for over-quota but 503 for the service's own lack of capacity, so clients do not retry quota errors as capacity problems.
 
 **FAIL**
 
@@ -1420,7 +1534,7 @@ Backed by: W3C (unjudged), Deque (unjudged), The A11y Project (unjudged), WebAIM
 
 **Rule.** Make the page usable at 320 CSS pixels wide and at 200% text zoom, with no sideways scrolling, no clipped content, and no blocked pinch-zoom.
 
-**Why.** Low-vision users enlarge the page instead of using a small screen. A fixed width or a clipped container hides content from exactly those users. `user-scalable=no` takes away their only tool.
+**Why.** Low-vision users enlarge the page instead of using a small screen. A fixed width or a clipped container hides content from exactly those users. `user-scalable=no` takes away their only tool. A 320 px width is the same test as 400% zoom on a 1280 px screen, so the layout must reflow at that size without losing content or functions. `width=device-width` in the viewport meta makes the layout follow the screen width.
 
 **FAIL**
 
@@ -1458,7 +1572,7 @@ Backed by: IETF (unjudged), PortSwigger (unjudged), Microsoft (unjudged), Fastly
 
 **Rule.** Reject a request that carries both `Transfer-Encoding` and `Content-Length`, or remove one field at the first hop, and parse header framing strictly rather than with a leniency flag.
 
-**Why.** Two hops can disagree about where a request ends. The front end reads one body length and the back end reads another, so the leftover bytes become the start of the next request on the same connection. That request skips the front end's checks: it can reach an admin route, poison a cache, or splice one user's response into another user's connection. The ambiguity comes from a second framing field, a malformed header name, or a parser that accepts what the specification rejects. A front end that downgrades HTTP/2 to HTTP/1.1 reopens the gap, so validate the rewritten request as well.
+**Why.** Two hops can disagree about where a request ends. The front end reads one body length and the back end reads another, so the leftover bytes become the start of the next request on the same connection. That request skips the front end's checks: it can reach an admin route, poison a cache, or splice one user's response into another user's connection. The ambiguity comes from a second framing field, a malformed header name, or a parser that accepts what the specification rejects. A front end that downgrades HTTP/2 to HTTP/1.1 reopens the gap, so validate the rewritten request as well. After rejecting an ambiguous request, close the connection, because the leftover bytes still sit on it.
 
 **FAIL**
 
@@ -1499,7 +1613,7 @@ Backed by: Microsoft (unjudged), AWS (unjudged), Google (unjudged), Stripe (unju
 
 **Rule.** Retry only transient errors, with capped attempts and jittered exponential backoff.
 
-**Why.** Immediate, unbounded, or synchronized retries turn a brief fault into a load spike on the struggling dependency. Retry at one layer only: three layers of three attempts is nine calls per user request. Make retried writes safe with [svc-idempotency-key](service.md#svc-idempotency-key).
+**Why.** Immediate, unbounded, or synchronized retries turn a brief fault into a load spike on the struggling dependency. Retry at one layer only: three layers of three attempts is nine calls per user request. Keep one deadline for the whole call, across all attempts, not a fresh timeout per attempt. When a server sends `Retry-After`, wait that long. When the dependency keeps failing, stop retrying (a retry budget or a circuit breaker) instead of adding load. Make retried writes safe with [svc-idempotency-key](service.md#svc-idempotency-key).
 
 **FAIL**
 
@@ -1535,7 +1649,7 @@ Backed by: Microsoft (unjudged), AWS (supports), Temporal (supports). Backing: m
 
 **Rule.** Make steps after the pivot idempotent and retryable, and make every compensation idempotent with a failure path.
 
-**Why.** After the pivot there is no undo, only retry until done. A compensation can itself fail, and unhandled it leaves the system inconsistent with nobody told.
+**Why.** A crash or a lost reply makes any participant run the same step twice, so make the steps before the pivot idempotent too where you can. After the pivot there is no undo, only retry until done. A compensation can itself fail, and unhandled it leaves the system inconsistent with nobody told.
 
 **FAIL**
 
@@ -1563,7 +1677,7 @@ Backed by: OASIS (unjudged), OWASP (unjudged), NIST (unjudged), Microsoft (unjud
 
 **Rule.** Verify the XML signature over the assertion you read, with the IdP's configured key rather than a key carried in the response, then require the assertion's `Audience` and its bearer `SubjectConfirmationData` `Recipient` to name this SP, the response `Destination` to be this endpoint, `InResponseTo` to match your request (absent for an IdP-initiated response), `NotOnOrAfter` to be current, and the assertion ID to be unseen. These are one step, verify the assertion, and each check is cited.
 
-**Why.** A valid signature elsewhere in the document proves nothing about the `<NameID>` your code just read. That gap is the signature-wrapping attack, and it lets an attacker choose which identity your service trusts. A lookup such as `.//NameID` is how the signed element and the read element get separated. Pinning the key to the IdP stops the document choosing its own verification key. The audience and destination checks stop an assertion minted for another SP from being posted here. `InResponseTo` catches a response injected into a browser that never started the request, and the time window plus the used-ID set stop a captured assertion from being replayed.
+**Why.** A valid signature elsewhere in the document proves nothing about the `<NameID>` your code just read. That gap is the signature-wrapping attack, and it lets an attacker choose which identity your service trusts. A lookup such as `.//NameID` is how the signed element and the read element get separated. Pinning the key to the IdP stops the document choosing its own verification key. The audience and destination checks stop an assertion minted for another SP from being posted here. `InResponseTo` catches a response injected into a browser that never started the request, and the time window (check `NotBefore` as well as `NotOnOrAfter`) plus the used-ID set stop a captured assertion from being replayed.
 
 **FAIL**
 
@@ -1603,7 +1717,7 @@ Backed by: OWASP (unjudged), Mozilla (unjudged), NIST (unjudged), Spring (unjudg
 
 **Rule.** Issue a new session ID at login, and set `Secure`, `HttpOnly` and `SameSite` on the session cookie.
 
-**Why.** A session ID that survives login can be planted by an attacker beforehand (fixation). A cookie without `HttpOnly` is readable by any injected script, and one without `Secure` travels over plain HTTP. Also end the session on the server at logout, because clearing only the browser cookie leaves a stolen copy valid, and enforce idle and absolute timeouts on the server. Scope the cookie to one host. With `Domain` omitted it is returned only to the host that set it, while a `Domain` set to the registrable domain sends it to every subdomain. Omitting `Domain` does not stop planting: a sibling subdomain that serves user content can still set a parent-domain cookie with the same name for the parent to accept. The `__Host-` prefix is what stops that, because the browser refuses a `__Host-` cookie that carries `Domain` or a path other than `/`. Use it on the session cookie.
+**Why.** A session ID that survives login can be planted by an attacker beforehand (fixation). Declare the old ID invalid when you issue the new one. A cookie without `HttpOnly` is readable by any injected script, and one without `Secure` travels over plain HTTP. Prefer `SameSite=Strict`, and use `Lax` only when users must stay signed in on arrival from links on other sites. Also end the session on the server at logout and clear the cookie in the browser too, because clearing only the browser cookie leaves a stolen copy valid, and enforce idle and absolute timeouts on the server. Scope the cookie to one host. With `Domain` omitted it is returned only to the host that set it, while a `Domain` set to the registrable domain sends it to every subdomain. Omitting `Domain` does not stop planting: a sibling subdomain that serves user content can still set a parent-domain cookie with the same name for the parent to accept. The `__Host-` prefix is what stops that, because the browser refuses a `__Host-` cookie that carries `Domain` or a path other than `/`. Use it on the session cookie.
 
 **FAIL**
 
@@ -1753,7 +1867,7 @@ Backed by: OWASP (unjudged), AWS (unjudged), Microsoft (unjudged), Google (unjud
 
 **Rule.** Put the verified tenant id on every tenant-scoped log, metric and audit record.
 
-**Why.** A shared store returns another tenant's activity to any query that does not filter. The id has to be written from the verified tenant context, not from a request header, and it has to be there when a batch job or a queue worker writes the record, since no request middleware runs in those paths. A centralized audit store is acceptable only when read access enforces tenant scope. Metric events need the field too, or a per-tenant dashboard shows another tenant's numbers. Platform events that belong to no tenant, such as a node restart, carry no tenant id and are outside the Rule.
+**Why.** A shared store returns another tenant's activity to any query that does not filter. The id has to be written from the verified tenant context, not from a request header, and it has to be there when a batch job or a queue worker writes the record, since no request middleware runs in those paths. A centralized audit store is acceptable only when read access enforces tenant scope. Write it in one shared helper that reads the tenant from the verified token, so a service cannot leave it out or set it by hand. Metric events need the field too, or a per-tenant dashboard shows another tenant's numbers. Platform events that belong to no tenant, such as a node restart, carry no tenant id and are outside the Rule.
 
 **FAIL**
 
@@ -1802,6 +1916,43 @@ def GetProfile(self, request, context):
 
 **Counterpoint.** "Defaults are fine; the library will time out eventually." Many defaults are infinite, and an eventual timeout longer than the caller's own deadline is wasted work. Configure the client's timeout once at construction, connect and read separately, then shrink it per call to what the caller has left. Pick the numbers from measured latency, such as the downstream p99.9, not folklore.
 
+## svc-tls-all-traffic
+
+severity: should-fix  
+concerns: security  
+applies_when: The service exposes an HTTP-based API.  
+context: server  
+tool gate: A scan in CI that the public API host refuses plain HTTP on port 80.  
+Backed by: Mozilla (unjudged), OWASP (unjudged), NIST (unjudged). Backing: unjudged.
+
+**Rule.** Serve every HTTP-based API over TLS, with no plaintext listener or fallback.
+
+**Why.** A plaintext listener or an `http://` call lets anyone on the path read tokens and payloads, or rewrite them. A redirect from port 80 does not fix it: the first request already went out in the clear. Turn plain HTTP off for APIs instead of redirecting it, and have clients call `https://` URLs only. This card is about whether traffic is encrypted at all. Protocol versions and certificate checks are covered by [svc-tls-modern-only](service.md#svc-tls-modern-only) and [fn-tls-verify-on](function.md#fn-tls-verify-on).
+
+**FAIL**
+
+```nginx
+server {
+    listen 80;
+    server_name api.example.com;
+    location / { proxy_pass http://unix:/run/app.sock; }
+}
+```
+
+**PASS**
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name api.example.com;
+    ssl_certificate     /etc/ssl/api.crt;
+    ssl_certificate_key /etc/ssl/api.key;
+    location / { proxy_pass http://unix:/run/app.sock; }
+}
+```
+
+**Counterpoint.** "Traffic between our own services never leaves the private network." A flat network means one compromised host can read all of it. Terminating TLS in a mesh or sidecar makes internal encryption cheap, so the exception costs more than it saves.
+
 ## svc-tls-modern-only
 
 severity: should-fix  
@@ -1813,7 +1964,7 @@ Backed by: IETF (unjudged), NIST (unjudged), OWASP (unjudged), Microsoft (unjudg
 
 **Rule.** Accept only TLS 1.2 and TLS 1.3 on servers.
 
-**Why.** TLS 1.0 and 1.1 lack modern cipher suites and are deprecated by RFC 8996, and SSL 3.0 is broken outright. A server that still offers them lets an attacker on the path force a downgrade, and it fails compliance scans. Library defaults have moved to TLS 1.2, but an explicit lower setting, an old base image, or a load-balancer policy from years ago keeps the old versions alive. With TLS 1.2, prefer AEAD suites with forward secrecy.
+**Why.** TLS 1.0 and 1.1 lack modern cipher suites and are deprecated by RFC 8996, and SSL 3.0 is broken outright. A server that still offers them lets an attacker on the path force a downgrade, and it fails compliance scans. Library defaults have moved to TLS 1.2, but an explicit lower setting, an old base image, or a load-balancer policy from years ago keeps the old versions alive. With TLS 1.2, prefer AEAD suites with forward secrecy. Clients and libraries that still offer TLS 1.0 or 1.1 should be updated too, so the old versions leave your own dependencies as well.
 
 **FAIL**
 
@@ -1839,9 +1990,9 @@ applies_when: The service issues refresh tokens, or self-contained access tokens
 context: server  
 Backed by: AWS (unjudged), Okta (Auth0) (unjudged), Microsoft (unjudged), Google (unjudged), IETF (unjudged), OWASP (unjudged). Backing: unjudged.
 
-**Rule.** Revoke the user's refresh tokens on the server at logout and when the account is disabled, and make access tokens expire quickly or check them against a revocation record.
+**Rule.** Revoke the session's refresh token on the server at logout and every refresh token of the user when the account is disabled, and make access tokens expire quickly or check them against a revocation record.
 
-**Why.** A refresh token is a long-lived credential. If logout only deletes it from the browser, a stolen copy keeps minting access tokens, and a disabled account whose refresh token still works keeps its access. The same holds after a password change, which [svc-password-reset](service.md#svc-password-reset) covers for a reset. A self-contained access token is valid until its `exp` unless the resource server checks something else, so revoking the refresh token alone leaves a window as long as the access lifetime. Close it with a lifetime of minutes, or with a denylist by `jti`, a per-user "not before" cutoff, or a per-user signing key.
+**Why.** A refresh token is a long-lived credential. If logout only deletes it from the browser, a stolen copy keeps minting access tokens, and a disabled account whose refresh token still works keeps its access. The same holds after a password change, which [svc-password-reset](service.md#svc-password-reset) covers for a reset. A self-contained access token is valid until its `exp` unless the resource server checks something else, so revoking the refresh token alone leaves a window as long as the access lifetime. A revocation endpoint should revoke the refresh token and, where it can, the access tokens issued from it. Close the window with a lifetime of minutes, or with a denylist by `jti`, a per-user "not before" cutoff, or a per-user signing key.
 
 **FAIL**
 
@@ -1854,7 +2005,7 @@ access token exp = 24h; resource server checks signature and exp only
 **PASS**
 
 ```text
-POST /logout        -> mark the refresh token (and its grant) revoked in the store
+POST /logout        -> mark this session's refresh token revoked in the store, and where the server supports it, the access tokens issued from it
 disable account     -> revoke every refresh token of the user; set user.tokens_valid_after = now
 access token exp = 5-15 min; resource server rejects iat < user.tokens_valid_after
 ```
@@ -1873,7 +2024,7 @@ Backed by: Microsoft (unjudged), Google (unjudged), Mender (unjudged). Backing: 
 
 **Rule.** When an update fails, restore the previous version instead of leaving a missing or half-written one.
 
-**Why.** Deleting the old binary before the new one is in place leaves nothing to run if the copy fails, and the tool cannot update itself back. On Windows a running executable cannot be deleted but can be renamed, so move it aside first and restore it on failure.
+**Why.** Deleting the old binary before the new one is in place leaves nothing to run if the copy fails, and the tool cannot update itself back. On Windows a running executable cannot be deleted but can be renamed, so move it aside first and restore it on failure. Keep the old version until the new one has started and passed a self-check, since a binary that installs but will not start needs the old one back.
 
 **FAIL**
 
@@ -1900,11 +2051,12 @@ if err := os.Rename(newBin, exe); err != nil {
 	}
 	return err
 }
-os.Remove(old) // best effort; retry at next start if the OS still holds it
+// keep old until the new binary has started and passed its self-check;
+// delete it at the next successful start, not here
 return nil
 ```
 
-**Counterpoint.** "Keeping a second copy costs disk space and clutter." One binary-sized file, removed after success, is cheap next to a tool that cannot start.
+**Counterpoint.** "Keeping a second copy costs disk space and clutter." One binary-sized file, removed once the new version has started, is cheap next to a tool that cannot start.
 
 ## svc-update-verify-provenance
 
@@ -1984,7 +2136,7 @@ Backed by: Svix (unjudged), Slack (unjudged), IETF (unjudged), Stripe (unjudged)
 
 **Rule.** Reject an inbound signed message whose creation time is outside a short tolerance, and sign that time with the body so it cannot be swapped.
 
-**Why.** A valid signature proves who sent the message, not when. A captured request keeps its signature and can be sent again. Put the timestamp inside the signed content, as Slack, Svix and Stripe do. A timestamp in a separate header that the signature does not cover can be replaced by the attacker. Compare the timestamp with local time before doing any work. Retries are normal, so also store the message id and skip an id already processed. Deduplication stops a replay inside the window. The window stops one outside it and bounds how long the id store must keep entries.
+**Why.** A valid signature proves who sent the message, not when. A captured request keeps its signature and can be sent again. Put the timestamp inside the signed content, as Slack, Svix and Stripe do. A timestamp in a separate header that the signature does not cover can be replaced by the attacker. Compare the timestamp with local time before doing any work. Compute the signature over the raw, unmodified body, and compare it in constant time. Retries are normal, so also store the message id and skip an id already processed. Deduplication stops a replay inside the window. The window stops one outside it and bounds how long the id store must keep entries.
 
 **FAIL**
 

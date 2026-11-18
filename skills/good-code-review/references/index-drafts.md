@@ -2,55 +2,74 @@
 
 One line per draft card in `drafts.md`: id, severity, concerns, place, rule. Draft cards are not vetted. The place `L<first>+<count>` is the card's lines in `drafts.md`.
 
-- `code-ai-pr-disclosure` [should-fix] {process} L479+9: Disclose AI assistance in the PR, and have a human author who can explain and defend every changed line without the tool.
-- `code-documented-setup-runs` [should-fix] {maintainability, process} L489+9: Keep the setup, build and run commands in the README or contribution guide accurate: they work as written on a clean checkout, and any drift is fixed or reported.
-- `code-test-suite-time-budget` [should-fix] {testing, performance, process} L499+9: Record the suite's total time and its slowest tests on every CI run, and fail the build when the total or a single test passes a written budget.
-- `fn-atomic-related-updates` [should-fix] {correctness} L152+9: Make related writes succeed or fail together.
-- `fn-empty-collection-not-none` [should-fix] {correctness} L162+9: Return an empty collection for "nothing found"; return `None` only when absent differs from empty.
-- `fn-known-keys-get-a-type` [should-fix] {correctness} L172+9: Give a fixed key set a record type: a model, a dataclass or a typed dict.
-- `fn-no-anonymous-tuples` [should-fix] {maintainability} L182+9: Return a small named record, not a positional tuple, once the fields differ in meaning.
-- `fn-no-pass-through-wrapper` [should-fix] {maintainability} L192+9: Delete a method that only forwards, and keep wrappers that validate, adapt, or narrow.
-- `fn-no-stringly-typed-returns` [should-fix] {correctness, compatibility} L202+9: Return a closed type (an enum, a tagged union or a sealed hierarchy) for a closed set of values, not a bare string. For a boolean flag, see [[fn-bool-arg-at-callsite]].
-- `fn-propagate-dont-swallow` [should-fix] {correctness} L212+9: Chain the original cause when you translate an exception.
-- `fn-resource-lifetime` [should-fix] {correctness} L222+9: Give every task and handle an owner that waits for it or closes it, on the error path too.
-- `inc-perf-regression-guard` [should-fix] {performance, testing} L523+9: Add an automated check that would have caught the regression (a benchmark, a budget, a load-test threshold, or a resource guard) as one of the postmortem's actions.
-- `inc-postmortem-owned-actions` [should-fix] {reliability, process} L533+9: Give every postmortem action one named owner, a due date, and a tracker link.
-- `inc-review-asks-which-check` [should-fix] {reliability, process} L543+9: Every incident review names the check that should have caught the fault (a test, CI gate, review, canary or alert) and turns the gap into a new or fixed check.
-- `mod-central-config` [should-fix] {maintainability} L234+9: Read configuration in one settings module and pass it in; business code must not read the environment or hold knobs.
-- `mod-cohesive-unit` [discuss] {maintainability} L244+9: Keep one cohesive concept per module.
-- `mod-mock-at-boundaries-only` [should-fix] {testing} L254+9: Mock only at the process boundary (HTTP, DB, cloud, clock, I/O).
-- `mod-no-repeated-switches` [discuss] {maintainability} L264+9: When the same switch or if-chain on one type appears in more than one place, replace the copies with polymorphism, unless each copy is an exhaustive switch over a closed type that fails the build when a case is missing.
-- `mod-no-wire-types-in-public-api` [should-fix] {maintainability} L274+9: Expose domain types in a module's public interface, and keep transport, storage and framework types behind it.
-- `mod-prefer-sync-api` [discuss] {correctness} L284+9: Keep logic in plain synchronous functions with no I/O, and add async wrappers at the edge only.
-- `mod-shim-fails-loudly` [should-fix] {correctness, reliability, testing} L294+9: A shim or stub must raise for every operation it does not implement; it must not return a success value such as 0, `None` or an empty result for an unknown call.
-- `mod-subtype-passes-parent-tests` [should-fix] {maintainability} L304+9: Make a subtype pass its parent's tests: accept every input the parent accepts, promise at least what it promises, and keep its invariants.
-- `mod-temporary-field` [discuss] {maintainability} L314+9: Make a field a local variable or a parameter when every method that uses it assigns it before reading it.
-- `mod-thin-entry-point` [should-fix] {maintainability} L324+9: Keep the entry module to wiring (bootstrap, configuration, lifespan) and put no business logic in it.
-- `mod-validate-at-boundary-once` [should-fix] {correctness, maintainability} L334+9: Validate at the boundary, once, with a schema or model, so that inner layers receive typed, already-valid data.
-- `prod-wide-events-bounded-labels` [should-fix] {observability} L511+9: Emit one structured event per request carrying trace, tenant, build and flag state.
-- `svc-api-safe-idempotent-methods` [should-fix] {compatibility} L346+10: Keep GET, HEAD and OPTIONS free of side effects, and make PUT and DELETE give the same end state when repeated.
-- `svc-api-spec-matches-impl` [should-fix] {compatibility} L357+10: Keep the OpenAPI document as the source of truth, and generate it from the code or test the running service against it in CI.
-- `svc-api-trace-context` [should-fix] {observability} L368+10: Forward `traceparent` and `tracestate` on every outgoing call, keep the incoming trace id, and set a new parent id for each hop.
-- `svc-page-title-per-route` [should-fix] {accessibility, usability} L379+10: Give every page and every client-side view its own `<title>` that says what it is.
-- `svc-rate-limit-by-cost` [should-fix] {performance, reliability} L390+10: When request costs differ by orders of magnitude, charge each request its estimated cost against the quota instead of counting it as one.
-- `svc-request-id-logging` [should-fix] {observability} L401+10: Put the request or trace id on every log line written during a request.
-- `svc-security-event-logging` [should-fix] {security, observability} L412+10: Log every failed authentication with the account name and a timestamp.
-- `svc-security-headers` [should-fix] {security} L423+10: Send `Strict-Transport-Security` on every HTTPS response.
-- `sys-append-only-stores-have-retention` [should-fix] {reliability, performance} L436+9: Give every store that only grows (event, audit and history tables, log files, finished-job registries) a maximum age or count, and a job or setting that enforces it.
-- `sys-cache-cold-start` [should-fix] {performance, reliability} L446+9: Cap and coalesce the cache-miss path so an empty cache cannot overwhelm the origin.
-- `sys-constraint-not-valid` [should-fix] {compatibility} L456+10: Add the constraint `NOT VALID`, then run `VALIDATE CONSTRAINT` in a separate step, and never leave the VALIDATE out.
-- `sys-leader-two-leaders` [should-fix] {reliability} L467+9: Make leader work safe if two leaders overlap: make it idempotent, check the lease before acting, and stop when renewal fails.
+- `code-ci-job-pass-rate-threshold` [discuss] {reliability, process} L652+9: Set a numeric pass-rate threshold for the pipeline or each blocking job, and act when it falls below it.
+- `code-documented-setup-runs` [should-fix] {maintainability, process} L662+9: Keep the setup, build and run commands in the README or contribution guide accurate: they work as written on a clean checkout, and any drift is fixed or reported.
+- `code-gate-new-violations-only` [should-fix] {maintainability, process} L672+9: Gate CI on new or modified code, and track pre-existing violations in a separate store without letting a build add to it.
+- `code-signed-commits-protected` [should-fix] {security, process} L682+9: Require signed commits on protected branches, so unsigned commits cannot merge or be pushed.
+- `code-test-suite-time-budget` [should-fix] {testing, performance, process} L692+9: Record the suite's total time and its slowest tests on every CI run, and fail the build when the total or a single test passes a written budget.
+- `code-tests-order-independent` [should-fix] {testing, reliability} L702+9: Make each test pass in any order, sharing no mutable state with other tests.
+- `fn-atomic-related-updates` [should-fix] {correctness} L162+9: Make related writes succeed or fail together.
+- `fn-empty-collection-not-none` [should-fix] {correctness} L172+9: Return an empty collection for "nothing found"; return `None` only when absent differs from empty.
+- `fn-error-summary` [should-fix] {accessibility, usability} L182+10: After a failed submit, show a summary at the top of the page that lists every error and links each one to its field.
+- `fn-flags-type-for-flag-sets` [should-fix] {maintainability, correctness} L193+9: Model a set of independent flags with the language's or ecosystem's flags type (a `[Flags]` enum in C#, the `bitflags` crate in Rust), and do not use a plain enum for it.
+- `fn-known-keys-get-a-type` [should-fix] {correctness} L203+9: Give a fixed key set a record type: a model, a dataclass or a typed dict.
+- `fn-no-anonymous-tuples` [should-fix] {maintainability} L213+9: Return a small named record, not a positional tuple, once the fields differ in meaning.
+- `fn-no-aria-hidden-on-focusable` [should-fix] {accessibility} L223+10: Never put `aria-hidden="true"` on an element that can take focus, or leave an element visually hidden while it has focus.
+- `fn-no-logic-in-tests` [discuss] {testing, maintainability} L234+9: Keep `if`, `for`, `while` and `switch` out of test bodies, and split table cases that need different assertions into separate tests.
+- `fn-no-pass-through-wrapper` [should-fix] {maintainability} L244+9: Delete a method that only forwards, and keep wrappers that validate, adapt, or narrow.
+- `fn-no-stringly-typed-returns` [should-fix] {correctness, compatibility} L254+9: Return a closed type (an enum, a tagged union or a sealed hierarchy) for a closed set of values, not a bare string. For a boolean flag, see [[fn-bool-arg-at-callsite]].
+- `fn-propagate-dont-swallow` [should-fix] {correctness} L264+9: Chain the original cause when you translate an exception.
+- `fn-resource-lifetime` [should-fix] {correctness} L274+9: Give every task and handle an owner that waits for it or closes it, on the error path too.
+- `inc-perf-regression-guard` [should-fix] {performance, testing} L726+9: Add an automated check that would have caught the regression (a benchmark, a budget, a load-test threshold, or a resource guard) as one of the postmortem's actions.
+- `inc-postmortem-owned-actions` [should-fix] {reliability, process} L736+9: Give every postmortem action one named owner, a due date, and a tracker link.
+- `inc-review-asks-which-check` [should-fix] {reliability, process} L746+9: Every incident review names the check that should have caught the fault (a test, CI gate, review, canary or alert) and turns the gap into a new or fixed check.
+- `mod-call-parent-setup-teardown` [should-fix] {testing, reliability} L286+9: A test class that overrides `setUp`, `tearDown`, `setUpClass` or `tearDownClass` calls the parent's version.
+- `mod-central-config` [should-fix] {maintainability} L296+9: Read configuration in one settings module and pass it in; business code must not read the environment or hold knobs.
+- `mod-cohesive-unit` [discuss] {maintainability} L306+9: Keep one cohesive concept per module.
+- `mod-mock-at-boundaries-only` [should-fix] {testing} L316+9: Mock only at the process boundary (HTTP, DB, cloud, clock, I/O).
+- `mod-no-repeated-switches` [discuss] {maintainability} L326+9: When the same switch or if-chain on one type appears in more than one place, replace the copies with polymorphism, unless each copy is an exhaustive switch over a closed type that fails the build when a case is missing.
+- `mod-no-wire-types-in-public-api` [should-fix] {maintainability} L336+9: Expose domain types in a module's public interface, and keep transport, storage and framework types behind it.
+- `mod-prefer-sync-api` [discuss] {correctness} L346+9: Keep logic in plain synchronous functions with no I/O, and add async wrappers at the edge only.
+- `mod-shim-fails-loudly` [should-fix] {correctness, reliability, testing} L356+9: A shim or stub must raise for every operation it does not implement; it must not return a success value such as 0, `None` or an empty result for an unknown call.
+- `mod-subtype-passes-parent-tests` [should-fix] {maintainability} L366+9: Make a subtype pass its parent's tests: accept every input the parent accepts, promise at least what it promises, and keep its invariants.
+- `mod-thin-entry-point` [should-fix] {maintainability} L376+9: Keep the entry module to wiring (bootstrap, configuration, lifespan) and put no business logic in it.
+- `mod-validate-at-boundary-once` [should-fix] {correctness, maintainability} L386+9: Validate at the boundary, once, with a schema or model, so that inner layers receive typed, already-valid data.
+- `prod-wide-events-bounded-labels` [should-fix] {observability} L714+9: Emit one structured event per request carrying trace, tenant, build and flag state.
+- `svc-401-sends-challenge` [should-fix] {compatibility, correctness} L398+10: Send a `WWW-Authenticate` challenge with every 401 response.
+- `svc-api-safe-idempotent-methods` [should-fix] {compatibility} L409+10: Keep GET, HEAD and OPTIONS free of side effects, and make PUT and DELETE give the same end state when repeated.
+- `svc-api-spec-matches-impl` [should-fix] {compatibility} L420+10: Keep the OpenAPI document as the source of truth, and generate it from the code or test the running service against it in CI.
+- `svc-api-trace-context` [should-fix] {observability} L431+10: Forward `traceparent` and `tracestate` on every outgoing call, keep the incoming trace id, and set a new parent id for each hop.
+- `svc-boolean-no-is-prefix` [discuss] {maintainability} L442+10: Name a new boolean field for its state (`enabled`, `required`), not with an `is` prefix.
+- `svc-debug-off-in-production` [should-fix] {security} L453+10: Keep debug modes and developer tooling, such as Swagger UI, disabled in production.
+- `svc-logs-tamper-resistant` [should-fix] {security, observability} L464+10: Ship logs and audit trails to a store that the logged host cannot alter or delete.
+- `svc-page-title-per-route` [should-fix] {accessibility, usability} L475+10: Give every page and every client-side view its own `<title>` that says what it is.
+- `svc-paginate-by-server-links` [should-fix] {correctness, compatibility} L486+10: Fetch the next page only from the link or token the server returned; do not build page numbers or open the token.
+- `svc-path-normalise-before-authz` [should-fix] {security} L497+10: Normalise the URL path once at the first hop, or reject escaped slashes there, so every hop resolves a path to the same resource before any routing or authorisation rule runs.
+- `svc-rate-limit-by-cost` [should-fix] {performance, reliability} L508+10: When request costs differ by orders of magnitude, charge each request its estimated cost against the quota instead of counting it as one.
+- `svc-request-id-logging` [should-fix] {observability} L519+10: Put the request or trace id on every log line written during a request.
+- `svc-security-event-logging` [should-fix] {security, observability} L530+10: Log every failed authentication with the account name and a timestamp.
+- `svc-security-headers` [should-fix] {security} L541+10: Send `Strict-Transport-Security` on every HTTPS response.
+- `svc-server-read-timeouts` [should-fix] {security, reliability} L552+10: Set a header-read timeout and a request-read timeout on a server that faces untrusted clients.
+- `svc-tenant-scope-in-data-layer` [should-fix] {security, correctness} L563+10: Enforce tenant scope in the data layer by default, with a query filter or row-level security, not by a predicate at each call site.
+- `sys-append-only-stores-have-retention` [should-fix] {reliability, performance} L576+9: Give every store that only grows (event, audit and history tables, log files, finished-job registries) a maximum age or count, and a job or setting that enforces it.
+- `sys-cache-cold-start` [should-fix] {performance, reliability} L586+9: Cap and coalesce the cache-miss path so an empty cache cannot overwhelm the origin.
+- `sys-cache-hit-rate-watched` [should-fix] {observability, performance, reliability} L596+10: Emit a cache hit-rate or memory-use metric and alert on it, so an undersized cache is noticed before it hurts the origin.
+- `sys-constraint-not-valid` [should-fix] {compatibility} L607+10: Add the constraint `NOT VALID`, then run `VALIDATE CONSTRAINT` in a separate step, and never leave the VALIDATE out.
+- `sys-hedge-budget` [should-fix] {reliability, performance} L618+10: Cap hedged requests with a retry budget or retry limit, and stop hedging when the server asks clients not to retry.
+- `sys-leader-two-leaders` [should-fix] {reliability} L629+9: Make leader work safe if two leaders overlap: make it idempotent, check the lease before acting, and stop when renewal fails.
+- `sys-shuffle-shard` [should-fix] {reliability} L639+10: Assign each tenant a shuffled subset of shared workers, so one tenant's fault reaches only a few other tenants.
 - `chg-agent-mock-asserting-tests` [should-fix] {testing, process} L7+9: Write tests that fail when the behaviour breaks, and reject tests that mostly assert on mocks, copy the implementation, or were edited to match new output without explanation.
 - `chg-api-spec-in-same-change` [should-fix] {compatibility} L17+10: Update the API spec in the same change that alters the routes, fields, status codes or headers it describes.
 - `chg-bot-approval-not-human` [should-fix] {process, security} L28+9: Do not let a bot or agent approval satisfy a required human approval.
-- `chg-fix-root-cause-not-symptom` [should-fix] {correctness, testing} L38+9: In a bug fix, state the cause you saw in evidence, and reject a guard, retry, sleep, longer timeout, swallowed error, cast, skipped or weakened test, or special case for the failing input that the cause does not justify.
-- `chg-flag-owner-retirement` [should-fix] {reliability} L48+9: Give every new flag an owner, a default, and a removal condition or date, and ticket the removal.
-- `chg-matches-spec` [should-fix] {process} L58+9: Trace every behaviour change in the diff to the stated requirement, and flag missing requirements and any change nobody asked for.
-- `chg-new-api-has-usage` [should-fix] {maintainability} L68+10: Ship new API with at least one real caller in the same change, and fail speculative interfaces and options that nothing uses.
-- `chg-new-query-has-plan` [should-fix] {performance} L79+10: Attach the query plan for each new or rewritten query on a growing table, taken on production-sized data.
-- `chg-no-per-user-ide-files` [should-fix] {process, maintainability} L90+9: Do not commit a file that holds one developer's editor or IDE state; ignore those paths in the repository or a machine-wide exclude file, and keep the settings the team shares in the repository.
-- `chg-review-comment-format` [discuss] {process} L100+9: Label each review comment with its severity: block, should-fix, or discuss.
-- `chg-review-rigour-by-risk` [should-fix] {process} L110+9: Set the review tier from what the change touches, such as auth, billing, CI or release workflows, and not from who wrote it.
-- `chg-review-rounds-capped` [discuss] {process} L120+9: Cap the number of review rounds; after the cap, re-review only the new diff and ask the author to rethink the approach if findings keep coming.
-- `chg-review-threads-resolved` [should-fix] {process} L130+9: Do not merge while any review thread is open; each one ends as a fix or as a resolution with a stated reason.
-- `chg-sensitive-paths-human-owner` [should-fix] {security, process} L140+9: Name a human owner in CODEOWNERS for auth, billing, CI and release paths, and require that owner's approval.
+- `chg-changelog-entry` [discuss] {maintainability, process} L38+9: Add a changelog entry to each change that adds, removes or changes a feature.
+- `chg-fix-root-cause-not-symptom` [should-fix] {correctness, testing} L48+9: In a bug fix, state the cause you saw in evidence, and reject a guard, retry, sleep, longer timeout, swallowed error, cast, skipped or weakened test, or special case for the failing input that the cause does not justify.
+- `chg-flag-owner-retirement` [should-fix] {reliability} L58+9: Give every new flag an owner, a default, and a removal condition or date, and ticket the removal.
+- `chg-link-tracked-issue` [discuss] {process, maintainability} L68+9: Link each pull request to the issue it addresses, with a keyword such as `Closes` or `See`.
+- `chg-matches-spec` [should-fix] {process} L78+9: Trace every behaviour change in the diff to the stated requirement, and flag missing requirements and any change nobody asked for.
+- `chg-new-api-has-usage` [should-fix] {maintainability} L88+10: Ship new API with at least one real caller in the same change, and fail speculative interfaces and options that nothing uses.
+- `chg-new-query-has-plan` [should-fix] {performance} L99+10: Attach the query plan for each new or rewritten query on a growing table, taken on production-sized data.
+- `chg-review-comment-format` [discuss] {process} L110+9: Label each review comment with its severity: block, should-fix, or discuss.
+- `chg-review-rigour-by-risk` [should-fix] {process} L120+9: Set the review tier from what the change touches, such as auth, billing, CI or release workflows, and not from who wrote it.
+- `chg-review-rounds-capped` [discuss] {process} L130+9: Cap the number of review rounds; after the cap, re-review only the new diff and ask the author to rethink the approach if findings keep coming.
+- `chg-review-threads-resolved` [should-fix] {process} L140+9: Do not merge while any review thread is open; each one ends as a fix or as a resolution with a stated reason.
+- `chg-sensitive-paths-human-owner` [should-fix] {security, process} L150+9: Name a human owner in CODEOWNERS for auth, billing, CI and release paths, and require that owner's approval.

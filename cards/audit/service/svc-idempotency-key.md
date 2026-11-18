@@ -17,7 +17,7 @@ borrowed_from:
 
 **Rule.** Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.
 
-**Why.** A timeout does not say whether the first attempt ran. Retrying without a key charges twice or sends two emails. A common way to answer the retry is to store the first result and return it again.
+**Why.** A timeout does not say whether the first attempt ran. Retrying without a key charges twice or sends two emails. A common way to answer the retry is to store the first result and return it again. Reject a key that comes back with a different payload, since it is a client bug, not a retry. Where an API has side effects and offers no key, do not retry it.
 
 **FAIL**
 

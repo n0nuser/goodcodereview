@@ -43,6 +43,16 @@ lacks: orgs, only Uber states it; needs two more organisations
 
 `init()` does no I/O, reads no environment and does not depend on other `init()` functions; do that work from `main()`.
 
+## go-return-error-not-panic
+
+level: function  
+severity: should-fix  
+concerns: reliability  
+applies_when: A Go function in a library or production path can fail on bad input, I/O, or another expected condition.  
+lacks: orgs, Uber and Google state it; a third independent organisation is missing
+
+Return an `error` for an expected failure; do not `panic` in library or production code.
+
 ## go-test-race-in-ci
 
 level: codebase  

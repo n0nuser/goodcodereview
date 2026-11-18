@@ -20,9 +20,9 @@ borrowed_from:
   - https://raw.githubusercontent.com/OWASP/ASVS/master/5.0/en/0x16-V7-Session-Management.md
 ---
 
-**Rule.** Revoke the user's refresh tokens on the server at logout and when the account is disabled, and make access tokens expire quickly or check them against a revocation record.
+**Rule.** Revoke the session's refresh token on the server at logout and every refresh token of the user when the account is disabled, and make access tokens expire quickly or check them against a revocation record.
 
-**Why.** A refresh token is a long-lived credential. If logout only deletes it from the browser, a stolen copy keeps minting access tokens, and a disabled account whose refresh token still works keeps its access. The same holds after a password change, which [[svc-password-reset]] covers for a reset. A self-contained access token is valid until its `exp` unless the resource server checks something else, so revoking the refresh token alone leaves a window as long as the access lifetime. Close it with a lifetime of minutes, or with a denylist by `jti`, a per-user "not before" cutoff, or a per-user signing key.
+**Why.** A refresh token is a long-lived credential. If logout only deletes it from the browser, a stolen copy keeps minting access tokens, and a disabled account whose refresh token still works keeps its access. The same holds after a password change, which [[svc-password-reset]] covers for a reset. A self-contained access token is valid until its `exp` unless the resource server checks something else, so revoking the refresh token alone leaves a window as long as the access lifetime. A revocation endpoint should revoke the refresh token and, where it can, the access tokens issued from it. Close the window with a lifetime of minutes, or with a denylist by `jti`, a per-user "not before" cutoff, or a per-user signing key.
 
 **FAIL**
 
@@ -35,7 +35,7 @@ access token exp = 24h; resource server checks signature and exp only
 **PASS**
 
 ```text
-POST /logout        -> mark the refresh token (and its grant) revoked in the store
+POST /logout        -> mark this session's refresh token revoked in the store, and where the server supports it, the access tokens issued from it
 disable account     -> revoke every refresh token of the user; set user.tokens_valid_after = now
 access token exp = 5-15 min; resource server rejects iat < user.tokens_valid_after
 ```

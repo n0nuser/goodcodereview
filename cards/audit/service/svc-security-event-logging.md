@@ -4,7 +4,7 @@ level: service
 tags: [security, observability, logging]
 severity: should-fix
 status: draft
-lacks: held, kept draft by Pablo's call
+lacks: held, kept draft by the maintainer
 lang: core
 applies_when: The service authenticates users.
 context: [server]
@@ -19,7 +19,7 @@ borrowed_from:
 
 **Rule.** Log every failed authentication with the account name and a timestamp.
 
-**Why.** Without these events, password guessing in progress is invisible and an incident cannot be reconstructed. Log authorization denials and validation failures the same way, and add a correlation ID so one request can be followed across services. Never log passwords, tokens or session IDs, because the log then becomes a second leak. Untrusted values with CR or LF can forge log lines, so use structured output.
+**Why.** Without these events, password guessing in progress is invisible and an incident cannot be reconstructed. Log authorization denials and validation failures the same way. Log successful logins too, so a success after many failures stands out, and log security-relevant data writes. Set the timestamp on the server, in UTC. Add a correlation ID so one request can be followed across services. Never log passwords, tokens or session IDs, because the log then becomes a second leak. Untrusted values with CR or LF can forge log lines, so use structured output.
 
 **FAIL**
 

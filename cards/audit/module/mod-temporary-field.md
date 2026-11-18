@@ -3,8 +3,7 @@ id: mod-temporary-field
 level: module
 tags: [maintainability, design, state]
 severity: discuss
-status: draft
-lacks: unreviewed, sources and examples are in place; no stable pass has checked rules 1 to 10
+status: stable
 lang: core
 applies_when: A private field is assigned and read inside one method, or every read of it follows an assignment.
 tool_gate: JetBrains FieldCanBeLocal, Sonar S1450, PMD SingularField (all private fields only).

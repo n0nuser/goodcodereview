@@ -19,7 +19,7 @@ borrowed_from:
 
 **Rule.** Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.
 
-**Why.** Jobs get retried and processes get killed. An append, a counter bump, or a lock file with no owner and time leaves the next run unable to tell finished work from half-done work. Record "done" only after the last step succeeds, so a crash leaves the work visibly pending.
+**Why.** Jobs get retried and processes get killed. An append, a counter bump, or a lock file with no owner and time leaves the next run unable to tell finished work from half-done work. Record "done" only after the last step succeeds, so a crash leaves the work visibly pending. A long job should also save its progress, so a rerun resumes where it stopped instead of revisiting finished rows.
 
 **FAIL**
 

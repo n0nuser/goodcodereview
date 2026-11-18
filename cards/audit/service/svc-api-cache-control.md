@@ -18,11 +18,13 @@ borrowed_from:
   - https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Expiration.html
   - https://cloud.google.com/cdn/docs/caching
   - https://learn.microsoft.com/en-us/azure/frontdoor/front-door-caching
+  - https://developers.cloudflare.com/cache/cache-security/avoid-web-poisoning/
+  - https://raw.githubusercontent.com/OWASP/ASVS/master/5.0/en/0x23-V14-Data-Protection.md
 ---
 
 **Rule.** Set an explicit `Cache-Control` on every response a cache may store, use `private` or `no-store` for user-specific data, add `Vary` for any request header that changes the body, keep the origin's `Cache-Control` authoritative at the edge (no minimum TTL or force-cache override), and decide cacheability by the response `Content-Type`, not the URL extension.
 
-**Why.** With no directive, a cache may guess a lifetime from `Last-Modified`. A shared cache may then serve one user's response to another, or serve stale data for hours after a write. A dynamic page requested at `/account/x.css` is the same failure from the cache side: a rule that decides by extension stores a private page, and an edge rule that overrides `no-store` keeps it. The origin and the cache must also read the path the same way. When they do not, a path the origin treats as private can look like a static file to the cache.
+**Why.** With no directive, a cache may guess a lifetime from `Last-Modified`. A shared cache may then serve one user's response to another, or serve stale data for hours after a write. A shared cache must not reuse a response to a request with `Authorization` unless the response says `public`, `must-revalidate` or `s-maxage`. `private` still lets the browser keep a copy, so use `no-store` for sensitive data. At the edge, cache only responses that do not depend on the user. A dynamic page requested at `/account/x.css` is the same failure from the cache side: a rule that decides by extension stores a private page, and an edge rule that overrides `no-store` keeps it. The origin and the cache must also read the path the same way. When they do not, a path the origin treats as private can look like a static file to the cache.
 
 **FAIL**
 

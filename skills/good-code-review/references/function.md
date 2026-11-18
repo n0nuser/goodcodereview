@@ -11,7 +11,7 @@ Backed by: W3C (unjudged), Mozilla (unjudged), Deque (unjudged), Google (unjudge
 
 **Rule.** When a native element cannot do the job, give the custom widget the state attribute and the keys its role promises.
 
-**Why.** A role only tells assistive technology what the element is. It adds no keyboard behaviour, and it says nothing about state. A `role="switch"` with no `aria-checked` is announced as a switch of unknown state. Wrong ARIA is worse than none, because it gives a screen-reader user a false picture. The widget also needs an accessible name, from its text or a label, or it is announced by role alone.
+**Why.** A role only tells assistive technology what the element is. It adds no keyboard behaviour, and it says nothing about state. A `role="switch"` with no `aria-checked` is announced as a switch of unknown state. Wrong ARIA is worse than none, because it gives a screen-reader user a false picture. The widget also needs an accessible name, from its text or a label, or it is announced by role alone. An element that is not natively focusable also needs `tabindex="0"` to take part in the Tab order.
 
 **FAIL**
 
@@ -179,6 +179,44 @@ retry = False  # see the PR, currently disabled
 
 **Counterpoint.** "Ticket links help traceability." They do, and the PASS keeps one. The ticket alone is not enough, since trackers get migrated and closed. Name the condition in the comment too.
 
+## fn-complexity-cap
+
+severity: discuss  
+concerns: maintainability, testing  
+applies_when: A function has many branches, or the project has no cyclomatic complexity limit yet.  
+tool gate: PMD CyclomaticComplexity (reports 10 or more), RuboCop Metrics/CyclomaticComplexity (configured Max), Microsoft CA1502 (default 25).  
+Backed by: PMD (unjudged), RuboCop (unjudged), Microsoft (unjudged), Lockheed Martin (unjudged). Backing: unjudged.
+
+**Rule.** Set a cyclomatic complexity limit in the linter and keep every function under it.
+
+**Why.** Each `if`, loop, `and` and `or` adds a path that a reader must follow and a test must cover. A function with 20 paths needs about 20 test cases, and nobody holds them all in mind at once. Set the limit in the linter so the count is not a matter of opinion. Common limits run from 10 to 25. Pick one and enforce it. Split a function that passes it into helpers that each do one job.
+
+**FAIL**
+
+```python
+def shipping_cost(order):
+    if order.country == "ES":
+        if order.weight > 20:
+            ...
+        elif order.express:
+            ...
+    elif order.country in EU:
+        if order.weight > 20 and order.express:
+            ...
+    # 12 more branches on tax, insurance and coupons
+```
+
+**PASS**
+
+```python
+def shipping_cost(order):
+    base = base_rate(order.country, order.weight)
+    return base + express_fee(order) + insurance(order)
+# each helper stays under the limit and has its own tests
+```
+
+**Counterpoint.** "A flat `switch` over 30 cases is simple, and the split makes it worse." Agreed: one flat dispatch is easy to read, and a hard cap can force a bad split. Treat the limit as the point where a reviewer looks, and let a flat dispatch pass with a short note in the config or the code. Split by job, not to hit a number.
+
 ## fn-confine-file-path
 
 severity: block  
@@ -237,7 +275,7 @@ def verify(body: bytes, header_sig: str, key: bytes) -> bool:
 # Node: crypto.timingSafeEqual(bufA, bufB) after checking the lengths match
 ```
 
-**Counterpoint.** "Network jitter hides the difference." Attackers average thousands of samples, and the jitter shrinks when they sit in the same cloud region. Also, some constant-time functions need equal lengths (Node throws otherwise); compare fixed-length digests, or check the length first, since the length of a MAC is not secret.
+**Counterpoint.** "Network jitter hides the difference." Attackers average thousands of samples, and the jitter shrinks when they sit in the same cloud region. Also, some constant-time functions need equal lengths (Node throws; Go returns 0 at once, and Python's `compare_digest` can leak the length); compare fixed-length digests, or check the length first, since the length of a MAC is not secret.
 
 ## fn-csprng-for-secrets
 
@@ -249,7 +287,7 @@ Backed by: OWASP (unjudged), Python Software Foundation (unjudged), Mozilla (unj
 
 **Rule.** Draw every security-relevant random value from the platform CSPRNG.
 
-**Why.** A general-purpose PRNG is predictable from a few outputs, so an attacker who sees two tokens can guess the next. UUIDv1 is time-based and also not secret. The API call is the whole fix, so it is cheap to demand.
+**Why.** A general-purpose PRNG is predictable from a few outputs, so an attacker who sees two tokens can guess the next. A value built from the clock or another narrow range is just as guessable, and so is a CSPRNG seeded with one. UUIDv1 is time-based and also not secret. The API call is the whole fix, so it is cheap to demand.
 
 **FAIL**
 
@@ -278,7 +316,7 @@ Backed by: Nielsen Norman Group (unjudged), Apple (unjudged), W3C (unjudged). Ba
 
 **Rule.** Make a destructive action reversible with undo, or ask the user to confirm it before it runs.
 
-**Why.** People click the wrong thing. If the action cannot be reversed and nothing stops it, one slip deletes their work. Undo costs a successful user nothing, while a dialog on every click trains them to click through. A dialog works best when its buttons name the outcome, such as "Delete project" and "Cancel", because "OK" and "Are you sure?" say nothing about what happens next.
+**Why.** People click the wrong thing. If the action cannot be reversed and nothing stops it, one slip deletes their work. Undo costs a successful user nothing, while a dialog on every click trains them to click through. A dialog works best when its buttons name the outcome, such as "Delete project" and "Cancel", because "OK" and "Are you sure?" say nothing about what happens next. Always include Cancel as the clear, safe way out. Payments and legal commitments need the same care as deletes.
 
 **FAIL**
 
@@ -307,9 +345,9 @@ context: ui
 tool gate: none; a component test that opens the dialog, presses Tab and Escape, and asserts `document.activeElement`.  
 Backed by: W3C (unjudged), Mozilla (unjudged), WebAIM (unjudged), GitHub (unjudged). Backing: unjudged.
 
-**Rule.** When a modal opens, move focus into it and keep Tab inside it. Make Escape close it.
+**Rule.** When a modal opens, move focus into it and keep Tab inside it. Make Escape close it. When it closes, return focus to the control that opened it or, if it is gone, to the next logical control.
 
-**Why.** Without it, a keyboard user keeps tabbing through the page behind the dialog, or gets stuck inside it with no exit. When it closes, return focus to the control that opened it. Focus that falls to the top of the page makes them start over.
+**Why.** Without it, a keyboard user keeps tabbing through the page behind the dialog, or gets stuck inside it with no exit. Content behind a modal must be inert, so neither keys nor the pointer reach it. Focus that falls to the top of the page after close makes them start over.
 
 **FAIL**
 
@@ -330,7 +368,7 @@ Backed by: W3C (unjudged), Mozilla (unjudged), WebAIM (unjudged), GitHub (unjudg
 </script>
 ```
 
-**Counterpoint.** "Our library handles it." Check, because a library that traps focus but never restores it is common. Prefer the native `<dialog>` with `showModal()`, which makes the page inert and closes on Escape. A dialog built from generic elements must recreate each of those.
+**Counterpoint.** "Our library handles it." Check, because a library that traps focus but never restores it is common. Prefer the native `<dialog>` with `showModal()`, which makes the page inert, closes on Escape and restores focus to the opener in current browsers, so the `onclose` handler above is belt and braces. A dialog built from generic elements must recreate each of those.
 
 ## fn-disclosure-hides-only-secondary
 
@@ -396,6 +434,44 @@ def refund(user_id: UserId, order_id: OrderId) -> None: ...
 ```
 
 **Counterpoint.** "Wrapper types add ceremony." A newtype costs one line and no runtime. Where the types differ only by argument position and the function has two arguments with obvious names, keyword-only parameters can be enough.
+
+## fn-early-return-no-else
+
+severity: discuss  
+concerns: maintainability  
+applies_when: A function checks an error or edge case, then continues with the main path.  
+tool gate: Pylint no-else-return (R1705), clang-tidy readability-else-after-return.  
+Backed by: Google (unjudged), Apache Software Foundation (unjudged), LLVM (unjudged). Backing: unjudged.
+
+**Rule.** Handle the error or edge case first and return early, so the main path is not nested.
+
+**Why.** Nesting the main path inside `if ok:` pushes the real work to the right and puts the failure case far from its check. Exiting early keeps the success path in one straight line down the page, and each failure sits next to its test. An `else` after a `return` adds a level of indentation for nothing.
+
+**FAIL**
+
+```python
+def charge(order):
+    if order.items:
+        if order.card:
+            return gateway.charge(order.card, order.total)
+        else:
+            raise NoCard(order.id)
+    else:
+        raise EmptyOrder(order.id)
+```
+
+**PASS**
+
+```python
+def charge(order):
+    if not order.items:
+        raise EmptyOrder(order.id)
+    if not order.card:
+        raise NoCard(order.id)
+    return gateway.charge(order.card, order.total)
+```
+
+**Counterpoint.** "A single exit point is easier to reason about." That holds when the function must release something on every path. Use `try`/`finally` or a context manager for that, and return early otherwise. Two symmetric branches of equal weight can stay as `if`/`else`.
 
 ## fn-english-identifiers
 
@@ -523,7 +599,7 @@ Backed by: W3C (unjudged), Mozilla (unjudged), Deque (unjudged), The A11y Projec
 
 **Rule.** Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.
 
-**Why.** A screen reader announces a bare field as "edit text". Voice-control users cannot say its name. A label also enlarges the click target. A placeholder vanishes when the user types, so it fails every user who looks away and comes back.
+**Why.** A screen reader announces a bare field as "edit text". Voice-control users cannot say its name. A label also enlarges the click target. A placeholder vanishes when the user types, so it fails every user who looks away and comes back. Hints and examples vanish with it, so keep them out of the placeholder too.
 
 **FAIL**
 
@@ -688,7 +764,7 @@ Backed by: W3C (unjudged), Mozilla (unjudged), Deque (unjudged), The A11y Projec
 
 **Rule.** Give every `<img>` an `alt` attribute: text that serves the image's purpose, or `alt=""` when the image is decorative.
 
-**Why.** A screen reader has nothing to say about an image with no `alt`, and often reads the file name instead. An informative image with an empty `alt` hides its content. A decorative image with a long `alt` adds noise to every page view.
+**Why.** A screen reader has nothing to say about an image with no `alt`, and often reads the file name instead. An informative image with an empty `alt` hides its content. A decorative image with a long `alt` adds noise to every page view. Words such as "image" or "chart", and file names, say nothing about what the image is for.
 
 **FAIL**
 
@@ -735,7 +811,7 @@ user, orders, prefs = await asyncio.gather(
     get_user(uid), get_orders(uid), get_prefs(uid))
 ```
 
-**Counterpoint.** "Parallel calls load the dependency harder and complicate errors." Cap fan-out with a semaphore or pool, and use a task group so one failure cancels the rest. A deliberate order, for rate limits or ordering, is a valid reason. Write it down.
+**Counterpoint.** "Parallel calls load the dependency harder and complicate errors." Cap fan-out with a semaphore or pool, and use a task group so one failure cancels the rest. Waiting for all of it still has to surface a failure: `errgroup`'s `Wait` and `Promise.all` report the first error, so check it. A deliberate order, for rate limits or ordering, is a valid reason. Write it down.
 
 ## fn-join-dont-concat-in-loop
 
@@ -774,9 +850,9 @@ context: server
 tool gate: CodeQL `js/jwt-missing-verification`; a grep for `verify_signature": False` and for `jwt.decode(` calls with no `algorithms=`.  
 Backed by: IETF (unjudged), OWASP (unjudged), Microsoft (unjudged), Google (unjudged), GitHub (unjudged), PyJWT project (unjudged). Backing: unjudged.
 
-**Rule.** Verify the signature against a fixed list of accepted algorithms, and check `iss` and `aud`, before reading any claim.
+**Rule.** Verify the signature against a fixed list of accepted algorithms, and check `iss`, `aud`, and `exp`, before reading any claim.
 
-**Why.** If the verifier takes the algorithm from the token header, an attacker picks `none` or turns an RSA public key into an HMAC secret. Claims read before verification are attacker text. Pinning the algorithm and binding each key to one algorithm closes both. Also require `exp`, so a stolen token stops working.
+**Why.** If the verifier takes the algorithm from the token header, an attacker picks `none` or turns an RSA public key into an HMAC secret. Claims read before verification are attacker text. Pinning the algorithm and binding each key to one algorithm closes both. Leave `none` out of the list, and never mix HMAC and public-key algorithms in it. Pick the key by `kid` from the issuer's published key set. Requiring `exp` means a stolen token stops working.
 
 **FAIL**
 
@@ -840,7 +916,7 @@ Backed by: GOV.UK (unjudged), Atlassian (unjudged), Nielsen Norman Group (unjudg
 
 **Rule.** Put the visible label of a text input, select, or textarea directly above it.
 
-**Why.** A label sitting below a field, or halfway between two fields, gets read as the label of the wrong one. W3C notes that a label above the field cuts sideways scrolling for low-vision and phone users, who can lose a side label off the edge of the screen. Hint and error text can go between the label and the field. A help link, a button, or another field cannot. Checkboxes and radios are the exception: W3C puts the control first and its label to the right, in left-to-right languages.
+**Why.** A label sitting below a field, or halfway between two fields, gets read as the label of the wrong one. W3C notes that a label above the field cuts sideways scrolling for low-vision and phone users, who can lose a side label off the edge of the screen. Hint and error text can go between the label and the field. A help link, a button, or another field cannot. Placeholder text is not a label: it vanishes when the user types. Checkboxes and radios are the exception: W3C puts the control first and its label to the right, in left-to-right languages.
 
 **FAIL**
 
@@ -1021,7 +1097,45 @@ Backed by: W3C (unjudged), Mozilla (unjudged), WebAIM (unjudged), jsx-eslint pro
 <a href="/billing">Billing</a>
 ```
 
-**Counterpoint.** "Native buttons are hard to style." They are not: reset `border`, `background`, and `font` on the element. Rebuilding the keyboard, role, and focus behaviour by hand costs more and fails more often. Where a custom widget is unavoidable, follow the WAI-ARIA Authoring Practices pattern for it.
+**Counterpoint.** "Native buttons are hard to style." They are not: reset `border`, `background`, and `font` on the element. Rebuilding the keyboard, role, and focus behaviour by hand costs more and fails more often. Where a custom widget is unavoidable, follow the WAI-ARIA Authoring Practices pattern for it. A `div` that must take a click needs `role="button"`, `tabindex="0"`, and Enter and Space handlers; the role alone does not make it operable.
+
+## fn-nesting-depth-cap
+
+severity: discuss  
+concerns: maintainability  
+applies_when: Code nests conditions or loops several levels deep.  
+tool gate: PMD AvoidDeeplyNestedIfStmts (problemDepth 3), Pylint too-many-nested-blocks (R1702, max-nested-blocks 5).  
+Backed by: PMD (unjudged), Pylint (unjudged), Apache Software Foundation (unjudged). Backing: unjudged.
+
+**Rule.** Keep control-flow nesting shallow.
+
+**Why.** Each level of nesting adds a condition the reader must keep in mind while reading the lines inside it. Deep code is harder to read and easier to break. Flatten it with early exits (see [fn-early-return-no-else](function.md#fn-early-return-no-else)), and set a limit in the linter. The linters above stop at 3 levels of `if` or 5 nested blocks by default.
+
+**FAIL**
+
+```python
+for user in users:
+    if user.active:
+        for order in user.orders:
+            if order.paid:
+                for line in order.lines:
+                    if line.refundable:
+                        refund(line)
+```
+
+**PASS**
+
+```python
+for user in users:
+    if not user.active:
+        continue
+    for order in paid_orders(user):
+        for line in order.lines:
+            if line.refundable:
+                refund(line)
+```
+
+**Counterpoint.** "Some data is nested, so the code must nest too." Walking a tree or a grid needs the loops. Move the inner body into a named function, or hide the walk in a generator, so each function stays flat.
 
 ## fn-no-blocking-call-in-async-code
 
@@ -1097,7 +1211,7 @@ Backed by: OWASP (supports), Oracle (supports), PostgreSQL (supports). Backing: 
 
 **Rule.** Make check-and-write one atomic operation where the state lives, and never split it across a suspension point.
 
-**Why.** Another task runs at every yield. Two withdrawals both read 100, both pass the check, and the balance goes negative.
+**Why.** Another task runs at every yield. Two withdrawals both read 100, both pass the check, and the balance goes negative. In SQL, read the row with a locking read (`SELECT ... FOR UPDATE`) or use serializable isolation, because a plain read takes no lock.
 
 **FAIL**
 
@@ -1127,7 +1241,7 @@ Backed by: OWASP (unjudged), MITRE (unjudged), Mozilla (unjudged), PortSwigger (
 
 **Rule.** Never pass untrusted text to `eval`, `exec`, `new Function`, or a template compiler. Pass it to a fixed template or a parser as data.
 
-**Why.** Each of these turns a string into code that runs with the server's rights, so one field becomes remote code execution. A template engine counts: `render_template_string(request.args["msg"])` lets `{{ config }}` or worse run on the server. An expression language, such as SpEL, carries the same risk. Parse the data format instead (`json.loads`, `ast.literal_eval`), and keep templates in files the author wrote, with user values passed as variables.
+**Why.** Each of these turns a string into code that runs with the server's rights, so one field becomes remote code execution. A template engine counts: `render_template_string(request.args["msg"])` lets `{{ config }}` or worse run on the server. An expression language, such as SpEL, carries the same risk. Parse the data format instead (`json.loads`, `ast.literal_eval`), and keep templates in files the author wrote, with user values passed as variables. Better still, avoid run-time code generation where a parser or a lookup does the job.
 
 **FAIL**
 
@@ -1197,7 +1311,7 @@ if resp.status == HTTPStatus.NOT_FOUND or retries > MAX_RETRIES:
     mode = Mode.FAST
 ```
 
-**Counterpoint.** "A constant used once is noise." True for self-evident values (`0`, `1`, `""`, an index into a pair). The rule is for literals whose meaning is not visible at the use site, or that appear twice. The failure is two spellings of one concept, not the literal itself.
+**Counterpoint.** "A constant used once is noise." True for self-evident values (`0`, `1`, `""`, an index into a pair, a default value). A literal that is itself the abstraction, such as a coefficient in a formula, needs no name either. The rule is for literals whose meaning is not visible at the use site, or that appear twice. The failure is two spellings of one concept, not the literal itself.
 
 ## fn-no-mass-assignment
 
@@ -1299,7 +1413,7 @@ Backed by: OWASP (unjudged), MITRE (unjudged), PortSwigger (unjudged), GitHub (u
 
 **Rule.** Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys.
 
-**Why.** `obj[key] = value` with `key` set to `__proto__` writes to `Object.prototype`, so every object in the process gains that property. An attacker who sets `isAdmin` or a template option there can skip checks or reach code execution. The bug sits in generic helpers such as deep merge and path setters, so one bad helper exposes every caller. Blocking `__proto__`, `constructor`, and `prototype` inside a deep merge helps, but a blocklist misses obfuscated keys, so treat it as a stopgap.
+**Why.** `obj[key] = value` with `key` set to `__proto__` writes to `Object.prototype`, so every object in the process gains that property. An attacker who sets `isAdmin` or a template option there can skip checks or reach code execution. The bug sits in generic helpers such as deep merge, deep clone and path setters, so one bad helper exposes every caller. Blocking `__proto__`, `constructor`, and `prototype` inside a deep merge helps, but a blocklist misses obfuscated keys, so treat it as a stopgap.
 
 **FAIL**
 
@@ -1336,7 +1450,7 @@ Backed by: OWASP (unjudged), Mozilla (unjudged), Meta (unjudged), Google (unjudg
 
 **Rule.** Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.
 
-**Why.** One `innerHTML` of a username or of model output runs the attacker's script with the victim's session. Encoding must match the context: body, attribute, script string and URL each differ. Framework escape hatches such as `dangerouslySetInnerHTML` have the same effect.
+**Why.** One `innerHTML` of a username or of model output runs the attacker's script with the victim's session. Encoding must match the context: body, attribute, script string and URL each differ. Framework escape hatches such as `dangerouslySetInnerHTML` and Angular's `bypassSecurityTrustHtml` have the same effect.
 
 **FAIL**
 
@@ -1353,7 +1467,7 @@ el.textContent = comment.body;
 // user-authored HTML: DOMPurify.sanitize(html), nothing edited afterwards
 ```
 
-**Counterpoint.** "We need to render rich text." Then sanitise with a maintained library such as DOMPurify at render time and add a CSP as a second layer. A CSP alone is not a fix, because it is defence in depth.
+**Counterpoint.** "We need to render rich text." Then sanitise with a maintained library such as DOMPurify at render time and add a CSP as a second layer. A CSP alone is not a fix, because it is defence in depth. Where the browser supports Trusted Types, enforce them through the CSP, so HTML sinks reject plain strings and take only the sanitiser's output.
 
 ## fn-no-shell-with-input
 
@@ -1365,7 +1479,7 @@ Backed by: OWASP (unjudged), Python Software Foundation (unjudged), Google (unju
 
 **Rule.** Start processes with the program and each argument as separate list items, and never through a shell string.
 
-**Why.** A shell reads `;`, `|` and `$()` as commands, so a filename of `a; rm -rf ~` runs. Argument arrays skip the shell. The values still need validation, since an argument beginning with `-` becomes an option; end options with `--` where the tool allows it.
+**Why.** A shell reads `;`, `|` and `$()` as commands, so a filename of `a; rm -rf ~` runs. Argument arrays skip the shell. A library call skips the process too, so it is better still when one exists. The values still need validation, since an argument beginning with `-` becomes an option; end options with `--` where the tool allows it.
 
 **FAIL**
 
@@ -1442,6 +1556,41 @@ def create_user(contact: Contact, subscription: Subscription):
 ```
 
 **Counterpoint.** "A parameter object just moves the fields into another class and can hide required ones." A record that groups values with one owner is not hiding them, and a builder that names each required value at the call site is clearer than eight slots. The failure is a bag object with optional fields that may be missing. Do not introduce one. A signature the author cannot change, such as an override of a third-party method, is exempt, because the parameter count is not the author's decision. Keyword-only parameters fix the call-site order problem but still count toward the limit, so group the values that travel together.
+
+## fn-password-min-length
+
+severity: should-fix  
+concerns: security  
+applies_when: Code accepts a new password from a user, at sign-up, a change, or a reset.  
+context: server  
+tool gate: none; a test that submits a short password. ASP.NET Identity sets it with Password.RequiredLength.  
+Backed by: NIST (unjudged), OWASP (unjudged), CISA (unjudged), NCSC (unjudged). Backing: unjudged.
+
+**Rule.** Enforce a minimum password length on the server whenever a user sets a password.
+
+**Why.** Length is the cheapest strength control: each added character multiplies the guesses an attacker needs. A check in the browser alone can be skipped by calling the API directly. NIST asks for 15 characters when the password is the only factor, and 8 when it is one of several. Framework defaults can be lower, so set the number on purpose.
+
+**FAIL**
+
+```python
+@app.post("/signup")
+def signup(form):
+    user = create_user(form.email, hash_password(form.password))
+```
+
+**PASS**
+
+```python
+MIN_PASSWORD_LENGTH = 15
+
+@app.post("/signup")
+def signup(form):
+    if len(form.password) < MIN_PASSWORD_LENGTH:
+        return error("Password must be at least 15 characters")
+    user = create_user(form.email, hash_password(form.password))
+```
+
+**Counterpoint.** "Long minimums push users to reuse or write passwords down." Length without composition rules is easier to remember than a short mixed password, and a passphrase works. Pair the limit with a generous maximum of at least 64 characters, and never truncate silently.
 
 ## fn-password-slow-hash
 
@@ -1570,13 +1719,13 @@ func valid(s string) bool { return lower.MatchString(s) }
 
 severity: should-fix  
 concerns: accessibility, usability  
-applies_when: Markup or a component renders a radio group, a checkbox group, or a value split across several inputs, such as a date or an address.  
+applies_when: Markup or a component renders a radio group, a checkbox group, a value split across several inputs, such as a date or an address, or another set of related controls.  
 context: ui  
 Backed by: GOV.UK (unjudged), W3C (unjudged), USWDS (unjudged), The A11y Project (unjudged). Backing: unjudged.
 
-**Rule.** Wrap each radio group, checkbox group, and multi-part value, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.
+**Rule.** Wrap each radio group, checkbox group, and other set of related controls, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.
 
-**Why.** Each radio's own label says only "Yes" or "No". Without a group, a screen reader user hears the option but not the question it answers. Put the `legend` first inside the `fieldset`. It acts as the group's heading, so assistive technology can tie each option to its question. The same holds for a date split into three boxes labelled "Day", "Month", and "Year". The visual group needs a matching code group, or the two drift apart.
+**Why.** Each radio's own label says only "Yes" or "No". Without a group, a screen reader user hears the option but not the question it answers. Put the `legend` first inside the `fieldset`. It acts as the group's heading, so assistive technology can tie each option to its question. A set of related controls here means controls that answer one question together, so a sign-in form's two fields are not a set. The same holds for a date split into three boxes labelled "Day", "Month", and "Year". The visual group needs a matching code group, or the two drift apart.
 
 **FAIL**
 
@@ -1611,7 +1760,7 @@ Backed by: Cursor (unjudged), Uber (unjudged), Stripe (unjudged), Dropbox (unjud
 
 **Rule.** Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.
 
-**Why.** Jobs get retried and processes get killed. An append, a counter bump, or a lock file with no owner and time leaves the next run unable to tell finished work from half-done work. Record "done" only after the last step succeeds, so a crash leaves the work visibly pending.
+**Why.** Jobs get retried and processes get killed. An append, a counter bump, or a lock file with no owner and time leaves the next run unable to tell finished work from half-done work. Record "done" only after the last step succeeds, so a crash leaves the work visibly pending. A long job should also save its progress, so a rerun resumes where it stopped instead of revisiting finished rows.
 
 **FAIL**
 
@@ -1705,7 +1854,7 @@ Backed by: W3C (unjudged), Mozilla (unjudged), WebAIM (unjudged). Backing: unjud
 
 **Rule.** Announce an async status message through a live region (`role="status"` or `role="alert"`), and put a `role="status"` or `aria-live` region in the markup before its text changes.
 
-**Why.** A sighted user sees "Saved" appear. A screen-reader user hears nothing, because focus did not move. Most readers announce a change only in a region that existed first, so a status region created together with its message is often skipped. A `role="alert"` region is the exception: readers announce it even when script injects it.
+**Why.** A sighted user sees "Saved" appear. A screen-reader user hears nothing, because focus did not move. Most readers announce a change only in a region that existed first, so a status region created together with its message is often skipped. A `role="alert"` region is the exception: readers announce it even when script injects it. Add `aria-atomic="true"` when the whole region should be read out on every change, and leave it off otherwise. Use `assertive` only for urgent, time-sensitive messages, because it cuts into whatever the reader is saying.
 
 **FAIL**
 
@@ -1737,7 +1886,7 @@ Backed by: W3C (unjudged), Apple (unjudged), The A11y Project (unjudged), Deque 
 
 **Rule.** Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.
 
-**Why.** Small, tight controls cause mis-taps for anyone with a tremor, a large thumb, or a bumpy train. A mis-tap on "Delete" next to "Edit" costs more than a mis-tap on a menu item.
+**Why.** Small, tight controls cause mis-taps for anyone with a tremor, a large thumb, or a bumpy train. A mis-tap on "Delete" next to "Edit" costs more than a mis-tap on a menu item. Measure the size as the largest unobscured area of the target.
 
 **FAIL**
 
@@ -1826,15 +1975,16 @@ applies_when: Code makes an outbound HTTPS, database or message-broker connectio
 tool gate: Bandit B501 (`request_with_no_cert_validation`), CodeQL `py/request-without-cert-validation`; a grep for `rejectUnauthorized: false` and `InsecureSkipVerify: true`.  
 Backed by: OWASP (unjudged), IETF (unjudged), Google (unjudged), GitHub (unjudged), Python Software Foundation (unjudged). Backing: unjudged.
 
-**Rule.** Leave certificate and hostname verification on in every environment that ships.
+**Rule.** Leave certificate and hostname verification on in every environment that ships, and check the certificate against the host you meant to reach, not a name the server supplies.
 
-**Why.** With verification off, any on-path attacker presents a certificate and reads or changes the traffic. The flag is usually added to silence a dev-box error and then ships. Fix the trust store or pin a private CA instead.
+**Why.** With verification off, any on-path attacker presents a certificate and reads or changes the traffic. The flag is usually added to silence a dev-box error and then ships. Fix the trust store or pin a private CA instead. The client must supply the expected name itself, not take it from the certificate the server presents: set `ServerName` in Go, pass `server_hostname` in Python.
 
 **FAIL**
 
 ```text
 requests.get(url, verify=False)                  # Python
 https.request({ rejectUnauthorized: false })     // Node.js
+ctx.wrap_socket(sock, server_hostname=peer_cert_cn)   # name taken from the peer, so any valid certificate passes
 ```
 
 **PASS**
@@ -1851,11 +2001,11 @@ severity: should-fix
 concerns: maintainability  
 applies_when: A type or function models a value that is one of several variants or states.  
 tool gate: A type checker with exhaustiveness checking (`never` in TypeScript, `assert_never` in Python).  
-Backed by: Cursor (unjudged), Microsoft (supports), Rust project (supports). Backing: mixed.
+Backed by: Cursor (unjudged), Microsoft (supports), Rust project (supports), JetBrains (unjudged), GNOME (unjudged). Backing: mixed.
 
 **Rule.** Model variants as a tagged union, and make every switch over it fail the build when a variant is unhandled.
 
-**Why.** A bag of optional fields or booleans that must stay in sync allows states that mean nothing, and each reader has to know which combinations are legal. A new variant then slips past every switch that lacks an exhaustiveness check.
+**Why.** A bag of optional fields or booleans that must stay in sync allows states that mean nothing, and each reader has to know which combinations are legal. A new variant then slips past every switch that lacks an exhaustiveness check. A catch-all branch hides the same gap: Kotlin's `when` over a sealed type needs no `else`, and a C `switch` over an enum has a `case` for every member.
 
 **FAIL**
 
@@ -1893,7 +2043,7 @@ Backed by: OWASP (unjudged), MITRE (unjudged), PortSwigger (unjudged), GitHub (u
 
 **Rule.** Parse untrusted XML with external entity resolution turned off, for example through a hardened parser such as `defusedxml`.
 
-**Why.** A DTD can declare an entity whose value is `file:///etc/passwd` or an internal URL, and a parser that resolves it pastes that content into the document or makes the request for the attacker. Nested internal entities can also expand a small file into gigabytes. Where the parser allows it, also turn off DTDs and the parser's network access. Each parser has its own switches, so name them in the code instead of trusting the library default.
+**Why.** A DTD can declare an entity whose value is `file:///etc/passwd` or an internal URL, and a parser that resolves it pastes that content into the document or makes the request for the attacker. Nested internal entities can also expand a small file into gigabytes. Where the parser allows it, also turn off DTDs, XInclude, and the parser's network access. Each parser has its own switches, so name them in the code instead of trusting the library default.
 
 **FAIL**
 

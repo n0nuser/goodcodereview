@@ -4,7 +4,7 @@ level: change
 tags: [reliability, feature-flags, release]
 severity: should-fix
 status: draft
-lacks: orgs, the owner clause has Dropbox only; default, removal date and ticket have no company source
+lacks: orgs, owner has Dropbox and Statsig; removal ticket has Statsig; default has GitLab; each needs another org
 lang: core
 applies_when: The change adds a feature flag, kill switch or config toggle.
 tool_gate: Flag registry linter that requires owner and expiry fields.
@@ -12,6 +12,8 @@ note: one practitioner essay (switch off a long-lived branch); Dropbox backs an 
 borrowed_from:
   - https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to
   - https://dropbox.tech/infrastructure/lessons-learned-in-incident-management
+  - https://statsig.com/blog/feature-flag-code-cleanup
+  - https://docs.gitlab.com/ee/development/feature_flags/
 ---
 
 **Rule.** Give every new flag an owner, a default, and a removal condition or date, and ticket the removal.

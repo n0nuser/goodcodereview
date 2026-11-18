@@ -5,7 +5,7 @@ tags: [accessibility, usability, frontend, forms, html]
 severity: should-fix
 status: stable
 lang: core
-applies_when: Markup or a component renders a radio group, a checkbox group, or a value split across several inputs, such as a date or an address.
+applies_when: Markup or a component renders a radio group, a checkbox group, a value split across several inputs, such as a date or an address, or another set of related controls.
 context: [ui]
 tool_gate: none
 note: 4 orgs (GOV.UK, W3C, USWDS, A11y Project). NN/g asks to tag groups for screen readers but does not name fieldset, so it does not count. No source gives a spacing threshold, so spacing stays out of the Rule. Only GOV.UK says the legend comes first, so that sits in Why
@@ -17,9 +17,9 @@ borrowed_from:
   - https://www.a11yproject.com/checklist/
 ---
 
-**Rule.** Wrap each radio group, checkbox group, and multi-part value, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.
+**Rule.** Wrap each radio group, checkbox group, and other set of related controls, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.
 
-**Why.** Each radio's own label says only "Yes" or "No". Without a group, a screen reader user hears the option but not the question it answers. Put the `legend` first inside the `fieldset`. It acts as the group's heading, so assistive technology can tie each option to its question. The same holds for a date split into three boxes labelled "Day", "Month", and "Year". The visual group needs a matching code group, or the two drift apart.
+**Why.** Each radio's own label says only "Yes" or "No". Without a group, a screen reader user hears the option but not the question it answers. Put the `legend` first inside the `fieldset`. It acts as the group's heading, so assistive technology can tie each option to its question. A set of related controls here means controls that answer one question together, so a sign-in form's two fields are not a set. The same holds for a date split into three boxes labelled "Day", "Month", and "Year". The visual group needs a matching code group, or the two drift apart.
 
 **FAIL**
 

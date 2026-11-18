@@ -18,7 +18,7 @@ borrowed_from:
 
 **Rule.** Draw every security-relevant random value from the platform CSPRNG.
 
-**Why.** A general-purpose PRNG is predictable from a few outputs, so an attacker who sees two tokens can guess the next. UUIDv1 is time-based and also not secret. The API call is the whole fix, so it is cheap to demand.
+**Why.** A general-purpose PRNG is predictable from a few outputs, so an attacker who sees two tokens can guess the next. A value built from the clock or another narrow range is just as guessable, and so is a CSPRNG seeded with one. UUIDv1 is time-based and also not secret. The API call is the whole fix, so it is cheap to demand.
 
 **FAIL**
 

@@ -16,7 +16,7 @@ borrowed_from:
 
 **Rule.** Make steps after the pivot idempotent and retryable, and make every compensation idempotent with a failure path.
 
-**Why.** After the pivot there is no undo, only retry until done. A compensation can itself fail, and unhandled it leaves the system inconsistent with nobody told.
+**Why.** A crash or a lost reply makes any participant run the same step twice, so make the steps before the pivot idempotent too where you can. After the pivot there is no undo, only retry until done. A compensation can itself fail, and unhandled it leaves the system inconsistent with nobody told.
 
 **FAIL**
 
