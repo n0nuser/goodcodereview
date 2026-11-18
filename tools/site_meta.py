@@ -47,6 +47,7 @@ def headers_file(slugs: Sequence[str]) -> str:
            f"  Content-Security-Policy: frame-ancestors 'none'; script-src 'sha256-{script_hash}'; object-src 'none'; base-uri 'none'"]
     for s in slugs:
         out += ["/" if s == "index" else f"/{s}", f'  Link: </{s}.md>; rel="alternate"; type="text/markdown"']
+    out += ["/fonts/*", "  Cache-Control: public, max-age=31536000, immutable"]
     out += ["/*.md", "  Content-Type: text/markdown; charset=utf-8", "/*.txt", "  Content-Type: text/plain; charset=utf-8",
             "/sitemap.xml", "  Content-Type: application/xml; charset=utf-8",
             *[x for path in ("/.well-known/agent-skills/index.json", "/.well-known/ard.json", "/.well-known/ai-catalog.json", "/agent.json")

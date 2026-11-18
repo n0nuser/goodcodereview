@@ -11,6 +11,39 @@
   "components": [
     {
       "type": "data",
+      "name": "ibm-plex-mono",
+      "version": "5.3.0",
+      "purl": "pkg:npm/%40fontsource/ibm-plex-mono@5.3.0",
+      "licenses": [
+        {
+          "expression": "OFL-1.1"
+        }
+      ]
+    },
+    {
+      "type": "data",
+      "name": "ibm-plex-sans",
+      "version": "5.3.0",
+      "purl": "pkg:npm/%40fontsource/ibm-plex-sans@5.3.0",
+      "licenses": [
+        {
+          "expression": "OFL-1.1"
+        }
+      ]
+    },
+    {
+      "type": "data",
+      "name": "ibm-plex-serif",
+      "version": "5.3.0",
+      "purl": "pkg:npm/%40fontsource/ibm-plex-serif@5.3.0",
+      "licenses": [
+        {
+          "expression": "OFL-1.1"
+        }
+      ]
+    },
+    {
+      "type": "data",
       "name": "simple-icons",
       "version": "15.22.0",
       "purl": "pkg:npm/simple-icons@15.22.0",

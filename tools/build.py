@@ -59,6 +59,7 @@ def site_files(b: BuildInput, skill: SkillOutput) -> Files:
     files["og.png"] = (TOOLS / "og.png").read_bytes()
     files["favicon.svg"] = FAVICON_SVG.encode()
     files["favicon.ico"] = (TOOLS / "favicon.ico").read_bytes()
+    files.update({f"fonts/{p.name}": p.read_bytes() for p in sorted((TOOLS / "fonts").iterdir())})
     return files
 
 

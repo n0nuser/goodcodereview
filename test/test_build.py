@@ -177,3 +177,12 @@ def test_a_split_level_hub_keeps_every_card_id_and_links_each_to_a_part_page(pla
         for cid in cards:
             assert f'<li id="{cid}"' in hub
             assert re.search(rf'<a href="{lv}-[a-z]+#{cid}">', hub)
+
+
+def test_every_font_face_and_preload_points_at_a_built_file(plan: Plan) -> None:
+    from assets import CSS
+    from shell import FONT_PRELOAD
+
+    urls = set(re.findall(r"url\((/fonts/[\w.-]+)\)", CSS)) | set(re.findall(r'href="(/fonts/[\w.-]+)"', FONT_PRELOAD))
+    assert urls and all(u.lstrip("/") in plan.site for u in urls)
+    assert "fonts/LICENSE.txt" in plan.site
