@@ -4,7 +4,7 @@ Every stable card that lists the `performance` concern, by level. The place `<le
 
 ## change
 
-- `chg-perf-claim-evidence` [should-fix] {performance, testing} change.md:L470+25: Back a performance claim with measured before-and-after numbers.
+- `chg-perf-claim-evidence` [should-fix] {performance, testing} change.md:L497+25: Back a performance claim with measured before-and-after numbers.
 
 ## function
 
@@ -39,9 +39,9 @@ Every stable card that lists the `performance` concern, by level. The place `<le
 
 ## codebase
 
-- `code-perf-budget-in-ci` [should-fix] {performance, process} codebase.md:L366+27: Write the performance budget down as a CI check that fails the build when it is exceeded.
-- `code-test-fixtures-built-once` [should-fix] {testing, performance} codebase.md:L558+32: Build an expensive fixture once per test run, and reset state between tests with a rollback or a truncate, never a rebuild.
-- `code-test-selection-on-pr` [discuss] {testing, performance, process} codebase.md:L591+49: When the full suite is slower than the pull-request feedback target, run only the tests the change affects on the pull request, and run the full suite before deploy or on a schedule.
+- `code-perf-budget-in-ci` [should-fix] {performance, process} codebase.md:L391+27: Write the performance budget down as a CI check that fails the build when it is exceeded.
+- `code-test-fixtures-built-once` [should-fix] {testing, performance} codebase.md:L583+32: Build an expensive fixture once per test run, and reset state between tests with a rollback or a truncate, never a rebuild.
+- `code-test-selection-on-pr` [discuss] {testing, performance, process} codebase.md:L616+49: When the full suite is slower than the pull-request feedback target, run only the tests the change affects on the pull request, and run the full suite before deploy or on a schedule.
 
 ## production
 

@@ -4,7 +4,7 @@ Every stable card that lists the `reliability` concern, by level. The place `<le
 
 ## change
 
-- `chg-rollback-path` [should-fix] {reliability} change.md:L672+27: State in the description how to undo the change.
+- `chg-rollback-path` [should-fix] {reliability} change.md:L699+27: State in the description how to undo the change.
 
 ## function
 
@@ -48,7 +48,7 @@ Every stable card that lists the `reliability` concern, by level. The place `<le
 
 ## codebase
 
-- `code-release-gated-on-ci` [should-fix] {reliability, process} codebase.md:L394+47: Make a release or publish job depend on the checks passing for the tagged commit, never on the tag alone.
+- `code-release-gated-on-ci` [should-fix] {reliability, process} codebase.md:L419+47: Make a release or publish job depend on the checks passing for the tagged commit, never on the tag alone.
 
 ## production
 

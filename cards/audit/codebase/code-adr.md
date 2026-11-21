@@ -19,6 +19,7 @@ borrowed_from:
   - https://peps.python.org/pep-0012/
   - https://github.com/kubernetes/enhancements/blob/master/keps/NNNN-kep-template/README.md
   - https://rfd.shared.oxide.computer/rfd/0001
+  - https://google.github.io/styleguide/docguide/best_practices
 ---
 
 **Rule.** Keep a short written record for each significant design choice (datastore, framework, deviation from a pattern) that states the context, the decision, the options ruled out, and its consequences.

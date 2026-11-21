@@ -226,6 +226,33 @@ Backed by: Cursor (unjudged), GitLab (supports), Spring (supports). Backing: mix
 
 **Counterpoint.** "It is an internal repo; people will ask." Each person who asks costs more than the note, and CI and deploy environments cannot ask. For published configuration, [chg-breaking-change-taxonomy](change.md#chg-breaking-change-taxonomy) has the wider rules.
 
+## chg-docs-updated-with-code
+
+severity: should-fix  
+concerns: maintainability, process  
+applies_when: The diff changes behaviour, an argument, a return value or an error that a comment, docstring, README or doc page describes.  
+Backed by: Google (unjudged), Zephyr Project (unjudged), Python Software Foundation (unjudged), Django Software Foundation (unjudged), OpenJS Foundation (unjudged). Backing: unjudged.
+
+**Rule.** Change the comments, docstrings and docs that describe the code in the same diff as the code, or delete them.
+
+**Why.** A doc fixed "later" is a doc that stays wrong. The reviewer sees the old text and the new behaviour side by side only in this diff, so this is the cheapest place to catch the mismatch.
+
+**FAIL**
+
+```text
+- def fetch(url, retries=3):   # retries up to 3 times
++ def fetch(url, retries=0):   # retries up to 3 times
+```
+
+**PASS**
+
+```text
+- def fetch(url, retries=3):   # retries up to 3 times
++ def fetch(url, retries=0):   # no retries unless the caller asks
+```
+
+**Counterpoint.** "Doc fixes bloat the diff and slow the change." Fixing the text is a line or two, and a separate doc PR is rarely sent. If the text cannot be fixed now, delete it.
+
 ## chg-expand-contract
 
 severity: block  

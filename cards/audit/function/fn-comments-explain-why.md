@@ -18,6 +18,7 @@ borrowed_from:
   - https://flink.apache.org/how-to-contribute/code-style-and-quality-common/
   - https://www.kernel.org/doc/html/latest/process/coding-style.html
   - https://refactoring.guru/smells/comments
+  - https://google.github.io/styleguide/docguide/best_practices
 ---
 
 **Rule.** Write comments that give a reason, a constraint, or a trade-off, and never restate what the next line does.

@@ -4,8 +4,8 @@ Every stable card that lists the `correctness` concern, by level. The place `<le
 
 ## change
 
-- `chg-match-codebase-pattern` [should-fix] {correctness, maintainability} change.md:L258+29: Follow the established pattern nearby.
-- `chg-no-silenced-diagnostics` [should-fix] {correctness, maintainability, process} change.md:L382+30: Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
+- `chg-match-codebase-pattern` [should-fix] {correctness, maintainability} change.md:L285+29: Follow the established pattern nearby.
+- `chg-no-silenced-diagnostics` [should-fix] {correctness, maintainability, process} change.md:L409+30: Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
 
 ## function
 

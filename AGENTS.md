@@ -45,4 +45,7 @@ Rules:
 2. Meet the acceptance rules in `CONTRIBUTING.md`: a rule that can fail, a FAIL and a PASS example, a why and a counterpoint, a source, one level, and your own words.
 3. Run `python3 tools/validate.py && python3 tools/build.py`.
 4. Commit the regenerated `skills/` directory. CI fails a pull request if `git diff --exit-code skills/` is dirty, and a push to `main` regenerates and commits `skills/` as a bot (`.github/workflows/sync-skills.yml`). Never edit `skills/` by hand.
-5. Send one card per pull request.
+5. When a source backs a rule an existing card already states (a stable or a draft), add the URL to that card's `borrowed_from` in the same change and record it in the research note. A card keeps every source that backs it, so a search for one card's gap also feeds its neighbours.
+6. Read each source for every practice it states, not just the one you came for. List the practices that no card covers yet, and evaluate each as a new draft card (steps 1 to 3) or as a clause on an existing one. Note the ones you skip, with the reason, in the research note.
+7. Each new card or source restarts steps 5 and 6: search for more organisations behind it, feed them to its neighbours, and read them for further practices. Stop when a pass adds no new card and no new source.
+8. Send one card per pull request.

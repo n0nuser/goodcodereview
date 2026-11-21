@@ -169,6 +169,16 @@ lacks: orgs, only one vendor's review skill backs it; the all-or-nothing princip
 
 Make related writes succeed or fail together.
 
+## fn-comments-stay-short
+
+level: function  
+severity: should-fix  
+concerns: maintainability  
+applies_when: A comment block runs past a few lines, such as a long explanation above a config value or env var.  
+lacks: orgs, only Google (docguide, Go doc comments) backs moving long reasoning out of comments; needs two more organisations that state it as a practice
+
+Keep a comment to a few lines. Put a longer explanation in the docs, a README or an ADR, and leave a one-line link in the comment.
+
 ## fn-empty-collection-not-none
 
 level: function  
@@ -658,6 +668,16 @@ applies_when: Auditing how a team keeps its main-branch pipeline and blocking CI
 lacks: orgs, GitLab states a target and Kubernetes a gate; needs one more org that sets a numeric pass rate for the pipeline or a blocking job
 
 Set a numeric pass-rate threshold for the pipeline or each blocking job, and act when it falls below it.
+
+## code-dead-docs-deleted
+
+level: codebase  
+severity: discuss  
+concerns: maintainability  
+applies_when: Auditing a repo whose docs, READMEs or design notes describe code that has since changed or gone.  
+lacks: orgs, Google and GitLab back deleting wrong docs; needs a third org (Chromium counts as Google)
+
+Delete docs known to be wrong or obsolete instead of leaving them in place or hiding them.
 
 ## code-documented-setup-runs
 

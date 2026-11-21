@@ -74,6 +74,14 @@
 "url": "https://goodcodereview.com/codebase#code-dependency-pinning",
 "tool_gate": "Lockfile-required install in CI; dependency-update bot config present."
 },
+"code-docs-link-dont-duplicate": {
+"level": "codebase",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Link to the existing page or guide instead of rewriting or restating it.",
+"url": "https://goodcodereview.com/codebase#code-docs-link-dont-duplicate",
+"tool_gate": null
+},
 "code-docs-refs-resolve": {
 "level": "codebase",
 "severity": "should-fix",
@@ -1713,6 +1721,14 @@
 "rule": "Flag a change that renames or removes an environment variable, moves a secret, or remaps a port as breaking for developers and operators, and update every place that documents or sets it.",
 "url": "https://goodcodereview.com/change#chg-devex-breaking-config",
 "tool_gate": "Startup check that fails fast on missing or unknown config keys."
+},
+"chg-docs-updated-with-code": {
+"level": "change",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Change the comments, docstrings and docs that describe the code in the same diff as the code, or delete them.",
+"url": "https://goodcodereview.com/change#chg-docs-updated-with-code",
+"tool_gate": null
 },
 "chg-expand-contract": {
 "level": "change",
