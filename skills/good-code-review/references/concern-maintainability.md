@@ -7,13 +7,14 @@ Every stable card that lists the `maintainability` concern, by level. The place 
 - `chg-agent-grounded-code` [should-fix] {maintainability, process} change.md:L3+28: Verify that every import and external call the agent wrote exists with that signature.
 - `chg-chestertons-fence` [should-fix] {maintainability, process} change.md:L142+26: Add a characterization test before rewriting code you do not understand.
 - `chg-delete-legacy-after-migration` [should-fix] {compatibility, maintainability} <data> change.md:L169+30: When no consumer sits outside the repo, move every caller to the new API and delete the old one, and the tests that pinned its internals, in the same change.
-- `chg-match-codebase-pattern` [should-fix] {correctness, maintainability} change.md:L258+29: Follow the established pattern nearby.
-- `chg-no-per-user-ide-files` [should-fix] {process, maintainability} change.md:L344+37: Do not commit a file that holds one developer's editor or IDE state; ignore those paths in the repository or a machine-wide exclude file. An ignore entry does not untrack a file already committed: remove it from the index with `git rm --cached`.
-- `chg-no-silenced-diagnostics` [should-fix] {correctness, maintainability, process} change.md:L382+30: Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
-- `chg-no-special-case-branches` [should-fix] {maintainability} change.md:L413+29: Put a new case behind its own function or type; do not add a one-off branch to a shared flow.
-- `chg-refactor-has-behaviour-pin` [should-fix] {testing, maintainability} change.md:L561+26: Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
-- `chg-refactor-separate` [should-fix] {maintainability, process} change.md:L588+27: Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
-- `chg-reuse-before-write` [should-fix] {maintainability} change.md:L616+27: Do not add a helper that duplicates one already in the repo; search for it first.
+- `chg-docs-updated-with-code` [should-fix] {maintainability, process} change.md:L229+26: Change the comments, docstrings and docs that describe the code in the same diff as the code, or delete them.
+- `chg-match-codebase-pattern` [should-fix] {correctness, maintainability} change.md:L285+29: Follow the established pattern nearby.
+- `chg-no-per-user-ide-files` [should-fix] {process, maintainability} change.md:L371+37: Do not commit a file that holds one developer's editor or IDE state; ignore those paths in the repository or a machine-wide exclude file. An ignore entry does not untrack a file already committed: remove it from the index with `git rm --cached`.
+- `chg-no-silenced-diagnostics` [should-fix] {correctness, maintainability, process} change.md:L409+30: Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
+- `chg-no-special-case-branches` [should-fix] {maintainability} change.md:L440+29: Put a new case behind its own function or type; do not add a one-off branch to a shared flow.
+- `chg-refactor-has-behaviour-pin` [should-fix] {testing, maintainability} change.md:L588+26: Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
+- `chg-refactor-separate` [should-fix] {maintainability, process} change.md:L615+27: Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
+- `chg-reuse-before-write` [should-fix] {maintainability} change.md:L643+27: Do not add a helper that duplicates one already in the repo; search for it first.
 
 ## function
 
@@ -69,7 +70,8 @@ Every stable card that lists the `maintainability` concern, by level. The place 
 - `code-adr` [discuss] {maintainability, process} codebase.md:L34+24: Keep a short written record for each significant design choice (datastore, framework, deviation from a pattern) that states the context, the decision, the options ruled out, and its consequences.
 - `code-consistency-drift` [discuss] {correctness, maintainability} codebase.md:L146+27: For each recurring concern (errors, config, HTTP clients, logging), make one pattern the standard instead of leaving several as equal peers.
 - `code-dead-code` [should-fix] {maintainability} codebase.md:L174+31: Delete unreferenced functions and variables, unreachable code, commented-out code, and expired feature flags with their branches and configuration.
-- `code-docs-refs-resolve` [should-fix] {maintainability} codebase.md:L276+31: Run a link check in CI over the docs, so that every relative link and anchor they cite resolves.
-- `code-file-lines-ceiling` [discuss] {maintainability, process} codebase.md:L308+27: Set a file-length limit in the linter (Pylint and SonarSource default to 1,000 lines), keep hand-written files under it unless a listed exception says otherwise, and split larger files by knowledge owned, not by execution order.
-- `code-rule-has-enforcer` [should-fix] {maintainability} codebase.md:L442+33: Back each written repo rule that a type, lint or CI check could enforce with that check, not with a line in an instruction file or a repeated review comment.
-- `py-ruff-gate` [should-fix] {maintainability} codebase.md:L813+32: Enable the Ruff rule sets E, F, I, B, UP, SIM, BLE, TID and D in CI.
+- `code-docs-link-dont-duplicate` [discuss] {maintainability} codebase.md:L276+24: Link to the existing page or guide instead of rewriting or restating it.
+- `code-docs-refs-resolve` [should-fix] {maintainability} codebase.md:L301+31: Run a link check in CI over the docs, so that every relative link and anchor they cite resolves.
+- `code-file-lines-ceiling` [discuss] {maintainability, process} codebase.md:L333+27: Set a file-length limit in the linter (Pylint and SonarSource default to 1,000 lines), keep hand-written files under it unless a listed exception says otherwise, and split larger files by knowledge owned, not by execution order.
+- `code-rule-has-enforcer` [should-fix] {maintainability} codebase.md:L467+33: Back each written repo rule that a type, lint or CI check could enforce with that check, not with a line in an instruction file or a repeated review comment.
+- `py-ruff-gate` [should-fix] {maintainability} codebase.md:L838+32: Enable the Ruff rule sets E, F, I, B, UP, SIM, BLE, TID and D in CI.

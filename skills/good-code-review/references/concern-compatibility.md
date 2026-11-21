@@ -7,10 +7,10 @@ Every stable card that lists the `compatibility` concern, by level. The place `<
 - `chg-breaking-change-taxonomy` [block] {compatibility} change.md:L114+27: Treat any change that callers can observe in a signature, return values, error types, defaults, or side effects as breaking until a consumer check says otherwise.
 - `chg-delete-legacy-after-migration` [should-fix] {compatibility, maintainability} <data> change.md:L169+30: When no consumer sits outside the repo, move every caller to the new API and delete the old one, and the tests that pinned its internals, in the same change.
 - `chg-devex-breaking-config` [should-fix] {compatibility, process} change.md:L200+28: Flag a change that renames or removes an environment variable, moves a secret, or remaps a port as breaking for developers and operators, and update every place that documents or sets it.
-- `chg-expand-contract` [block] {compatibility} <data> change.md:L229+28: Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.
-- `chg-migration-add-column-rewrite` [should-fix] {compatibility} <data> change.md:L288+27: Add the column nullable or with a constant default, then fill volatile, computed, or identity values in batches.
-- `chg-proto-no-field-type-change` [should-fix] {compatibility} change.md:L496+31: Never change the type of a protobuf field, switch it between repeated and scalar, or rename it while any consumer reads JSON or text format; add a new field instead.
-- `chg-proto-reserve-removed-fields` [should-fix] {compatibility} change.md:L528+32: When you delete a protobuf field or enum value, add `reserved` for its number and name in the same change, and never reuse a number.
+- `chg-expand-contract` [block] {compatibility} <data> change.md:L256+28: Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.
+- `chg-migration-add-column-rewrite` [should-fix] {compatibility} <data> change.md:L315+27: Add the column nullable or with a constant default, then fill volatile, computed, or identity values in batches.
+- `chg-proto-no-field-type-change` [should-fix] {compatibility} change.md:L523+31: Never change the type of a protobuf field, switch it between repeated and scalar, or rename it while any consumer reads JSON or text format; add a new field instead.
+- `chg-proto-reserve-removed-fields` [should-fix] {compatibility} change.md:L555+32: When you delete a protobuf field or enum value, add `reserved` for its number and name in the same change, and never reuse a number.
 
 ## function
 

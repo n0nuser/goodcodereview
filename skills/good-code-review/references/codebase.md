@@ -273,6 +273,31 @@ CI: poetry install        (poetry.lock committed; fails if it is stale)
 
 **Counterpoint.** Pinning delays security patches. A pin plus an update bot with a defined cadence beats floating versions, because the lock makes the update visible and revertable.
 
+## code-docs-link-dont-duplicate
+
+severity: discuss  
+concerns: maintainability  
+applies_when: Auditing docs, READMEs or comments that restate a guide, spec or page that already exists elsewhere.  
+Backed by: Google (unjudged), GitLab (unjudged), Mozilla (unjudged). Backing: unjudged.
+
+**Rule.** Link to the existing page or guide instead of rewriting or restating it.
+
+**Why.** Each copy is one more page to keep current, and the copies drift apart. A link has a single owner who fixes it once.
+
+**FAIL**
+
+```text
+README.md: a 40-line "How to use git rebase" section copied from the team wiki
+```
+
+**PASS**
+
+```text
+README.md: Rebase and branch rules are in [the contributing guide](docs/contributing.md#branches).
+```
+
+**Counterpoint.** "A link breaks and the reader has to leave the page." Run a link check (see `code-docs-refs-resolve`) and quote only the one line the reader needs here.
+
 ## code-docs-refs-resolve
 
 severity: should-fix  

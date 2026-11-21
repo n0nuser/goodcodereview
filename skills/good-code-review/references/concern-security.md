@@ -4,7 +4,7 @@ Every stable card that lists the `security` concern, by level. The place `<level
 
 ## change
 
-- `chg-name-attack-surface` [should-fix] {security, process} change.md:L316+27: List any new attack surface in the description.
+- `chg-name-attack-surface` [should-fix] {security, process} change.md:L343+27: List any new attack surface in the description.
 
 ## function
 
@@ -81,9 +81,9 @@ Every stable card that lists the `security` concern, by level. The place `<level
 
 - `code-dependency-licence-sbom` [should-fix] {security} codebase.md:L206+26: Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule, and raise an alert when a new vulnerability applies. Each ask is judged separately: name which one failed on the FAIL line.
 - `code-dependency-pinning` [block] {security} codebase.md:L233+42: Commit a lockfile with hashes and install from it in CI.
-- `code-secret-scan` [block] {security, process} codebase.md:L503+26: Scan for committed credentials, and treat any hit as leaked: revoke and replace it first. With no scanner present and no secret found, the FAIL is the missing control; evidence is "absent in <paths>". A platform scanner (GitHub secret scanning with push protection, GitLab secret detection) counts when it is enabled on the repo and covers history.
-- `code-secrets-not-plaintext-in-repo` [should-fix] {security} codebase.md:L530+27: Keep secrets out of source code and config.
-- `code-vuln-remediation-window` [should-fix] {security, process} codebase.md:L641+27: Write down how long a known-vulnerable dependency may stay unfixed and fix or upgrade it inside that window.
-- `code-workflow-supply-chain` [block] {security, process} codebase.md:L669+49: Pin every CI action to a full commit SHA, and keep code from an unreviewed change out of any job that holds secrets or can deploy.
-- `code-workflow-token-per-job-write` [should-fix] {security} codebase.md:L719+49: Set workflow token permissions to read-only or none at the top level and grant write only on the job that needs it.
-- `code-workload-identity` [should-fix] {security} codebase.md:L769+43: Exchange the platform's OIDC token for a short-lived cloud credential, and pin the trust policy to the workload.
+- `code-secret-scan` [block] {security, process} codebase.md:L528+26: Scan for committed credentials, and treat any hit as leaked: revoke and replace it first. With no scanner present and no secret found, the FAIL is the missing control; evidence is "absent in <paths>". A platform scanner (GitHub secret scanning with push protection, GitLab secret detection) counts when it is enabled on the repo and covers history.
+- `code-secrets-not-plaintext-in-repo` [should-fix] {security} codebase.md:L555+27: Keep secrets out of source code and config.
+- `code-vuln-remediation-window` [should-fix] {security, process} codebase.md:L666+27: Write down how long a known-vulnerable dependency may stay unfixed and fix or upgrade it inside that window.
+- `code-workflow-supply-chain` [block] {security, process} codebase.md:L694+49: Pin every CI action to a full commit SHA, and keep code from an unreviewed change out of any job that holds secrets or can deploy.
+- `code-workflow-token-per-job-write` [should-fix] {security} codebase.md:L744+49: Set workflow token permissions to read-only or none at the top level and grant write only on the job that needs it.
+- `code-workload-identity` [should-fix] {security} codebase.md:L794+43: Exchange the platform's OIDC token for a short-lived cloud credential, and pin the trust policy to the workload.

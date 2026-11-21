@@ -4,10 +4,10 @@ Every stable card that lists the `testing` concern, by level. The place `<level>
 
 ## change
 
-- `chg-perf-claim-evidence` [should-fix] {performance, testing} change.md:L470+25: Back a performance claim with measured before-and-after numbers.
-- `chg-refactor-has-behaviour-pin` [should-fix] {testing, maintainability} change.md:L561+26: Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
-- `chg-tests-ship-with-change` [block] {testing} change.md:L726+27: Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks.
-- `chg-verify-before-claim` [block] {testing, process} change.md:L786+26: Back every "works" or "bug" claim with something run: a repro, a test or command output.
+- `chg-perf-claim-evidence` [should-fix] {performance, testing} change.md:L497+25: Back a performance claim with measured before-and-after numbers.
+- `chg-refactor-has-behaviour-pin` [should-fix] {testing, maintainability} change.md:L588+26: Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
+- `chg-tests-ship-with-change` [block] {testing} change.md:L753+27: Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks.
+- `chg-verify-before-claim` [block] {testing, process} change.md:L813+26: Back every "works" or "bug" claim with something run: a repro, a test or command output.
 
 ## function
 
@@ -35,10 +35,10 @@ Every stable card that lists the `testing` concern, by level. The place `<level>
 ## codebase
 
 - `code-a11y-check-in-ci` [should-fix] {accessibility, testing} <ui> codebase.md:L3+30: Run an automated accessibility check, such as axe on rendered pages, in the automated tests, and fail the test on a violation.
-- `code-flaky-test-quarantine` [should-fix] {testing, process} codebase.md:L336+29: Report every test that passes only on retry, move it to a quarantine with a named owner and a ticket, and return it to the merge gate only after it passes many reruns.
-- `code-scoped-validation-loop` [discuss] {testing, process} codebase.md:L476+26: Document a command that checks one package or path, with readable output, so a small change does not need the full-repo run.
-- `code-test-fixtures-built-once` [should-fix] {testing, performance} codebase.md:L558+32: Build an expensive fixture once per test run, and reset state between tests with a rollback or a truncate, never a rebuild.
-- `code-test-selection-on-pr` [discuss] {testing, performance, process} codebase.md:L591+49: When the full suite is slower than the pull-request feedback target, run only the tests the change affects on the pull request, and run the full suite before deploy or on a schedule.
+- `code-flaky-test-quarantine` [should-fix] {testing, process} codebase.md:L361+29: Report every test that passes only on retry, move it to a quarantine with a named owner and a ticket, and return it to the merge gate only after it passes many reruns.
+- `code-scoped-validation-loop` [discuss] {testing, process} codebase.md:L501+26: Document a command that checks one package or path, with readable output, so a small change does not need the full-repo run.
+- `code-test-fixtures-built-once` [should-fix] {testing, performance} codebase.md:L583+32: Build an expensive fixture once per test run, and reset state between tests with a rollback or a truncate, never a rebuild.
+- `code-test-selection-on-pr` [discuss] {testing, performance, process} codebase.md:L616+49: When the full suite is slower than the pull-request feedback target, run only the tests the change affects on the pull request, and run the full suite before deploy or on a schedule.
 
 ## incident
 
