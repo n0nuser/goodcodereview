@@ -8,18 +8,23 @@ Every stable card that lists the `process` concern, by level. The place `<level>
 - `chg-agent-independent-review` [should-fix] {process} change.md:L32+25: Get sign-off from a person or a fresh-context reviewer who has the spec but not the author's reasoning; self-review by the writing session does not count.
 - `chg-approval-tied-to-patch` [should-fix] {process} change.md:L58+27: Treat an approval or verification verdict as current only if the patch is unchanged: compare `git patch-id` at the verdict commit with the current head. If the patches differ only in tests, docs, or lint config, the verdict can stand when the built output is the same; any other difference needs a fresh check.
 - `chg-author-hygiene` [should-fix] {process} change.md:L86+27: Self-review the diff and write the description before requesting review.
-- `chg-chestertons-fence` [should-fix] {maintainability, process} change.md:L142+26: Add a characterization test before rewriting code you do not understand.
-- `chg-devex-breaking-config` [should-fix] {compatibility, process} change.md:L200+28: Flag a change that renames or removes an environment variable, moves a secret, or remaps a port as breaking for developers and operators, and update every place that documents or sets it.
-- `chg-docs-updated-with-code` [should-fix] {maintainability, process} change.md:L229+26: Change the comments, docstrings and docs that describe the code in the same diff as the code, or delete them.
-- `chg-name-attack-surface` [should-fix] {security, process} change.md:L343+27: List any new attack surface in the description.
-- `chg-no-per-user-ide-files` [should-fix] {process, maintainability} change.md:L371+37: Do not commit a file that holds one developer's editor or IDE state; ignore those paths in the repository or a machine-wide exclude file. An ignore entry does not untrack a file already committed: remove it from the index with `git rm --cached`.
-- `chg-no-silenced-diagnostics` [should-fix] {correctness, maintainability, process} change.md:L409+30: Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
-- `chg-one-concern` [should-fix] {process} change.md:L470+26: Make each change do one logical thing; if the description needs "and" between unrelated outcomes, split it.
-- `chg-refactor-separate` [should-fix] {maintainability, process} change.md:L615+27: Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
-- `chg-review-signal` [discuss] {process} change.md:L671+27: Do not spend review comments on what a tool enforces or on minor style points; spend them on the findings that matter.
-- `chg-size-ceiling` [discuss] {process} change.md:L727+25: Split a change past about 400 changed lines or about 20 files, or say in the description why not; aim for about 200.
-- `chg-ui-change-screenshots-and-keyboard-pass` [should-fix] {accessibility, usability, process} <ui> change.md:L781+31: A UI change shows before-and-after screenshots and says what a keyboard-only pass and a 200% zoom check found on the changed screens.
-- `chg-verify-before-claim` [block] {testing, process} change.md:L813+26: Back every "works" or "bug" claim with something run: a repro, a test or command output.
+- `chg-changelog-entry` [discuss] {maintainability, process} change.md:L142+27: Add a changelog entry to each change that adds, removes or changes a feature.
+- `chg-chestertons-fence` [should-fix] {maintainability, process} change.md:L170+26: Add a characterization test before rewriting code you do not understand.
+- `chg-devex-breaking-config` [should-fix] {compatibility, process} change.md:L228+28: Flag a change that renames or removes an environment variable, moves a secret, or remaps a port as breaking for developers and operators, and update every place that documents or sets it.
+- `chg-docs-updated-with-code` [should-fix] {maintainability, process} change.md:L257+26: Change the comments, docstrings and docs that describe the code in the same diff as the code, or delete them.
+- `chg-name-attack-surface` [should-fix] {security, process} change.md:L371+27: List any new attack surface in the description.
+- `chg-no-per-user-ide-files` [should-fix] {process, maintainability} change.md:L399+37: Do not commit a file that holds one developer's editor or IDE state; ignore those paths in the repository or a machine-wide exclude file. An ignore entry does not untrack a file already committed: remove it from the index with `git rm --cached`.
+- `chg-no-silenced-diagnostics` [should-fix] {correctness, maintainability, process} change.md:L437+30: Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
+- `chg-one-concern` [should-fix] {process} change.md:L498+26: Make each change do one logical thing; if the description needs "and" between unrelated outcomes, split it.
+- `chg-refactor-separate` [should-fix] {maintainability, process} change.md:L643+27: Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
+- `chg-review-signal` [discuss] {process} change.md:L699+27: Do not spend review comments on what a tool enforces or on minor style points; spend them on the findings that matter.
+- `chg-size-ceiling` [discuss] {process} change.md:L755+25: Split a change past about 400 changed lines or about 20 files, or say in the description why not; aim for about 200.
+- `chg-ui-change-screenshots-and-keyboard-pass` [should-fix] {accessibility, usability, process} <ui> change.md:L809+31: A UI change shows before-and-after screenshots and says what a keyboard-only pass and a 200% zoom check found on the changed screens.
+- `chg-verify-before-claim` [block] {testing, process} change.md:L841+26: Back every "works" or "bug" claim with something run: a repro, a test or command output.
+
+## function
+
+- `fn-todo-has-owner-or-issue` [discuss] {maintainability, process} function.md:L2121+25: Give each TODO an owner or a tracking issue, such as `TODO(alice)` or `TODO(#1234)`.
 
 ## module
 

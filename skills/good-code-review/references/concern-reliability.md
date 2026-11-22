@@ -4,14 +4,15 @@ Every stable card that lists the `reliability` concern, by level. The place `<le
 
 ## change
 
-- `chg-rollback-path` [should-fix] {reliability} change.md:L699+27: State in the description how to undo the change.
+- `chg-rollback-path` [should-fix] {reliability} change.md:L727+27: State in the description how to undo the change.
 
 ## function
 
 - `fn-bounded-read-fails-at-cap` [should-fix] {correctness, reliability, security} function.md:L60+36: When a size cap is reached, return an error; never hand back the first N bytes as if they were the whole input.
-- `fn-guard-uri-decoding` [should-fix] {reliability, correctness} <ui,server> function.md:L623+32: Wrap `decodeURIComponent` on user input in a `try`/`catch`, or parse with `URLSearchParams`, so that a malformed `%` sequence cannot throw.
-- `fn-handle-rejected-promises` [should-fix] {reliability, correctness} function.md:L656+35: Handle the rejection of every promise you start: `await` it inside `try`/`catch`, end the chain with `.catch()`, or return it to a caller that does.
-- `fn-rerun-safe-after-crash` [should-fix] {reliability} function.md:L1754+30: Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.
+- `fn-doc-documents-errors` [should-fix] {maintainability, reliability} function.md:L464+33: Document in the doc comment each error a public function can raise, each condition that makes it panic, and each precondition a caller must meet to call it safely.
+- `fn-guard-uri-decoding` [should-fix] {reliability, correctness} <ui,server> function.md:L715+32: Wrap `decodeURIComponent` on user input in a `try`/`catch`, or parse with `URLSearchParams`, so that a malformed `%` sequence cannot throw.
+- `fn-handle-rejected-promises` [should-fix] {reliability, correctness} function.md:L748+35: Handle the rejection of every promise you start: `await` it inside `try`/`catch`, end the chain with `.catch()`, or return it to a caller that does.
+- `fn-rerun-safe-after-crash` [should-fix] {reliability} function.md:L1877+30: Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.
 
 ## module
 

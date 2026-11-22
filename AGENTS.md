@@ -47,5 +47,6 @@ Rules:
 4. Commit the regenerated `skills/` directory. CI fails a pull request if `git diff --exit-code skills/` is dirty, and a push to `main` regenerates and commits `skills/` as a bot (`.github/workflows/sync-skills.yml`). Never edit `skills/` by hand.
 5. When a source backs a rule an existing card already states (a stable or a draft), add the URL to that card's `borrowed_from` in the same change and record it in the research note. A card keeps every source that backs it, so a search for one card's gap also feeds its neighbours.
 6. Read each source for every practice it states, not just the one you came for. List the practices that no card covers yet, and evaluate each as a new draft card (steps 1 to 3) or as a clause on an existing one. Note the ones you skip, with the reason, in the research note.
-7. Each new card or source restarts steps 5 and 6: search for more organisations behind it, feed them to its neighbours, and read them for further practices. Stop when a pass adds no new card and no new source.
-8. Send one card per pull request.
+7. For every practice a source states (the card's own Rule and each lead from step 6), search for other organisations that state the same practice, until it has three or you have searched the obvious candidates and listed what you tried. Read each page as raw text (`curl`, then strip tags), not through a summariser; a claim you cannot find in the raw text does not count. A lead with one organisation is a lead, not a card.
+8. Each new card or source restarts steps 5 to 7: feed it to its neighbours, read it for further practices, and search other organisations for each. Stop when a pass adds no new card and no new source.
+9. Send one card per pull request.

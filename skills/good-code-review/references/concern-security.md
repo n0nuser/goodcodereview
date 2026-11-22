@@ -4,7 +4,7 @@ Every stable card that lists the `security` concern, by level. The place `<level
 
 ## change
 
-- `chg-name-attack-surface` [should-fix] {security, process} change.md:L343+27: List any new attack surface in the description.
+- `chg-name-attack-surface` [should-fix] {security, process} change.md:L371+27: List any new attack surface in the description.
 
 ## function
 
@@ -12,23 +12,23 @@ Every stable card that lists the `security` concern, by level. The place `<level
 - `fn-confine-file-path` [block] {security} function.md:L220+27: Resolve the final path and check that it stays inside the intended base directory before using it.
 - `fn-constant-time-secret-compare` [should-fix] {security} function.md:L248+31: Compare a secret, token or MAC with the platform's constant-time function, never with `==` or `!=`.
 - `fn-csprng-for-secrets` [block] {security} function.md:L280+27: Draw every security-relevant random value from the platform CSPRNG.
-- `fn-header-value-encoding` [block] {security} <server> function.md:L692+31: Set every response header through the framework's header API, never by writing to the connection, and reject or encode CR and LF in any request-derived value.
-- `fn-jwt-verify-pinned` [block] {security} <server> function.md:L844+29: Verify the signature against a fixed list of accepted algorithms, and check `iss`, `aud`, and `exp`, before reading any claim.
-- `fn-link-url-scheme-allowlist` [should-fix] {security} <ui> function.md:L980+28: Parse a URL that comes from data and allow only `https:` (and `http:` or `mailto:` where needed) before you set it as a link target.
-- `fn-mask-credentials-in-output` [should-fix] {security, usability} <cli> function.md:L1009+34: Mask credentials in list, show and debug output (keep only the last four characters), and print a full value only behind an explicit flag.
-- `fn-no-eval-untrusted` [block] {security} function.md:L1234+27: Never pass untrusted text to `eval`, `exec`, `new Function`, or a template compiler. Pass it to a fixed template or a parser as data.
-- `fn-no-mass-assignment` [block] {security} <server> function.md:L1316+29: Bind request data to a DTO or an explicit field allowlist, never straight onto the model.
-- `fn-no-native-deserialise-untrusted` [block] {security} function.md:L1346+27: Parse untrusted input with a data-only format, never with a native object deserialiser.
-- `fn-no-prototype-pollution` [block] {security} function.md:L1406+35: Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys.
-- `fn-no-raw-html-sink` [block] {security} <ui,server> function.md:L1442+29: Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.
-- `fn-no-shell-with-input` [block] {security} function.md:L1472+27: Start processes with the program and each argument as separate list items, and never through a shell string.
-- `fn-object-level-authz` [block] {security} <server> function.md:L1500+29: Check that the caller may act on the specific record before returning or changing it.
-- `fn-password-min-length` [should-fix] {security} <server> function.md:L1560+34: Enforce a minimum password length on the server whenever a user sets a password.
-- `fn-password-slow-hash` [block] {security} <server> function.md:L1595+28: Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.
-- `fn-redirect-target-allowlist` [should-fix] {security} <server> function.md:L1624+29: Redirect only to a local path or to a host on a server-side allowlist, never to a URL taken from the request as is.
-- `fn-response-fields-explicit` [should-fix] {security, compatibility} <server> function.md:L1785+28: Return a response type that lists each field, never the stored model or a generic dump of it.
-- `fn-tls-verify-on` [block] {security} function.md:L1970+27: Leave certificate and hostname verification on in every environment that ships, and check the certificate against the host you meant to reach, not a name the server supplies.
-- `fn-xml-no-external-entities` [block] {security} function.md:L2036+27: Parse untrusted XML with external entity resolution turned off, for example through a hardened parser such as `defusedxml`.
+- `fn-header-value-encoding` [block] {security} <server> function.md:L784+31: Set every response header through the framework's header API, never by writing to the connection, and reject or encode CR and LF in any request-derived value.
+- `fn-jwt-verify-pinned` [block] {security} <server> function.md:L936+29: Verify the signature against a fixed list of accepted algorithms, and check `iss`, `aud`, and `exp`, before reading any claim.
+- `fn-link-url-scheme-allowlist` [should-fix] {security} <ui> function.md:L1072+28: Parse a URL that comes from data and allow only `https:` (and `http:` or `mailto:` where needed) before you set it as a link target.
+- `fn-mask-credentials-in-output` [should-fix] {security, usability} <cli> function.md:L1101+34: Mask credentials in list, show and debug output (keep only the last four characters), and print a full value only behind an explicit flag.
+- `fn-no-eval-untrusted` [block] {security} function.md:L1326+27: Never pass untrusted text to `eval`, `exec`, `new Function`, or a template compiler. Pass it to a fixed template or a parser as data.
+- `fn-no-mass-assignment` [block] {security} <server> function.md:L1408+29: Bind request data to a DTO or an explicit field allowlist, never straight onto the model.
+- `fn-no-native-deserialise-untrusted` [block] {security} function.md:L1438+27: Parse untrusted input with a data-only format, never with a native object deserialiser.
+- `fn-no-prototype-pollution` [block] {security} function.md:L1498+35: Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys.
+- `fn-no-raw-html-sink` [block] {security} <ui,server> function.md:L1534+29: Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.
+- `fn-no-shell-with-input` [block] {security} function.md:L1564+27: Start processes with the program and each argument as separate list items, and never through a shell string.
+- `fn-object-level-authz` [block] {security} <server> function.md:L1592+29: Check that the caller may act on the specific record before returning or changing it.
+- `fn-password-min-length` [should-fix] {security} <server> function.md:L1652+34: Enforce a minimum password length on the server whenever a user sets a password.
+- `fn-password-slow-hash` [block] {security} <server> function.md:L1687+28: Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.
+- `fn-redirect-target-allowlist` [should-fix] {security} <server> function.md:L1747+29: Redirect only to a local path or to a host on a server-side allowlist, never to a URL taken from the request as is.
+- `fn-response-fields-explicit` [should-fix] {security, compatibility} <server> function.md:L1908+28: Return a response type that lists each field, never the stored model or a generic dump of it.
+- `fn-tls-verify-on` [block] {security} function.md:L2093+27: Leave certificate and hostname verification on in every environment that ships, and check the certificate against the host you meant to reach, not a name the server supplies.
+- `fn-xml-no-external-entities` [block] {security} function.md:L2185+27: Parse untrusted XML with external entity resolution turned off, for example through a hardened parser such as `defusedxml`.
 
 ## module
 

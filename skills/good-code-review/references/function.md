@@ -158,7 +158,7 @@ retry = False  # set retry to False
 severity: should-fix  
 concerns: maintainability  
 applies_when: A comment or TODO says "currently", "for now", "not yet", "see the PR" or promises future work.  
-Backed by: Google (unjudged), WebKit (supports), PostHog (supports). Backing: mixed. People cited: Sébastien Portebois (unjudged).
+Backed by: Google (unjudged), WebKit (supports), PostHog (supports), Kubernetes (unjudged), GitLab (unjudged), MariaDB (unjudged). Backing: mixed. People cited: Sébastien Portebois (unjudged).
 
 **Rule.** Write comments that remain true without outside context: no "currently", "for now" or "see the PR", and give a TODO the date or event that ends it.
 
@@ -305,6 +305,32 @@ token = secrets.token_urlsafe(32)           # os.urandom under the hood
 
 **Counterpoint.** "Math.random is fine for a short-lived code." Short-lived codes still get brute-forced, and predictable ones need no brute force. Use the CSPRNG for anything an attacker gains from guessing.
 
+## fn-deprecation-names-version-and-replacement
+
+severity: should-fix  
+concerns: compatibility, maintainability  
+applies_when: A diff marks a function, class, option or setting as deprecated.  
+tool gate: A deprecation helper that requires `since` and `replacement` arguments, or a lint on `@deprecated` without both.  
+Backed by: Django Software Foundation (unjudged), Oracle (unjudged), WordPress (unjudged). Backing: unjudged.
+
+**Rule.** Say in a deprecation notice which version deprecated it and what replaces it.
+
+**Why.** A bare "deprecated" tells callers to stop but not what to do. The version lets them judge how long they have, and the replacement is the migration. Name the removal version too when you have one.
+
+**FAIL**
+
+```java
+/** @deprecated Use something else. */
+```
+
+**PASS**
+
+```java
+/** @deprecated Since 3.2, use {@link #fetchAll()}. Removed in 4.0. */
+```
+
+**Counterpoint.** "We don't know the removal date." Then name the version it was deprecated in and the replacement, and leave the removal version out until it is decided.
+
 ## fn-destructive-confirm-or-undo
 
 severity: should-fix  
@@ -434,6 +460,72 @@ def refund(user_id: UserId, order_id: OrderId) -> None: ...
 ```
 
 **Counterpoint.** "Wrapper types add ceremony." A newtype costs one line and no runtime. Where the types differ only by argument position and the function has two arguments with obvious names, keyword-only parameters can be enough.
+
+## fn-doc-documents-errors
+
+severity: should-fix  
+concerns: maintainability, reliability  
+applies_when: A public function can raise or throw, panic, or has a safety precondition the caller must meet.  
+tool gate: Ruff `DOC501` (pydoclint rules) or the language's doc lint.  
+Backed by: Rust project (unjudged), Google (unjudged), Microsoft (unjudged). Backing: unjudged.
+
+**Rule.** Document in the doc comment each error a public function can raise, each condition that makes it panic, and each precondition a caller must meet to call it safely.
+
+**Why.** A caller reads the doc, not the body. An undocumented exception reaches production as an unhandled one, and an undocumented precondition becomes a crash or a memory bug.
+
+**FAIL**
+
+```python
+def port_for(name):
+    """Return the port for a service name."""
+    return PORTS[name]          # KeyError on an unknown name
+```
+
+**PASS**
+
+```python
+def port_for(name):
+    """Return the port for a service name.
+
+    Raises:
+        KeyError: If the name is not in PORTS.
+    """
+    return PORTS[name]
+```
+
+**Counterpoint.** "Exceptions change and the list goes stale." That argues for a lint that checks it, and for listing only what callers can cause. Listing every exception from every callee is not what the rule asks.
+
+## fn-doc-summary-sentence
+
+severity: discuss  
+concerns: maintainability  
+applies_when: A function, class or module has a doc comment or docstring.  
+tool gate: Ruff `D205` and `D415` (pydocstyle), Checkstyle `SummaryJavadoc`, or the language's doc lint.  
+Backed by: Python Software Foundation (unjudged), Swift project (unjudged), Rust project (unjudged), Google (unjudged), Drupal (unjudged), WordPress (unjudged), OpenStack (unjudged), NumPy (unjudged). Backing: unjudged.
+
+**Rule.** Open each doc comment with one short summary line, then a blank line before any detail.
+
+**Why.** Tools and readers show only the first line in indexes, hovers and search results. A summary that wraps, or that starts with detail, shows up cut off or empty.
+
+**FAIL**
+
+```python
+def fetch(url):
+    """Fetches the page at the URL, and if the server answers with a redirect
+    follows it up to five times before it gives up and raises."""
+```
+
+**PASS**
+
+```python
+def fetch(url):
+    """Return the page body, following up to five redirects.
+
+    Raise FetchError when the server keeps redirecting.
+    """
+```
+
+**Counterpoint.** "A one-line docstring is enough for a trivial function." It is, and the rule is met: the summary line is the whole comment. The rule only applies the moment a second line appears.
 
 ## fn-early-return-no-else
 
@@ -1621,6 +1713,37 @@ ph.verify(stored, attempt)             # rehash when check_needs_rehash()
 
 **Counterpoint.** "Argon2 is expensive at login." That cost is the defence; tune it to about a second on production hardware. Where FIPS compliance rules Argon2 out, PBKDF2-HMAC-SHA256 with a high iteration count is the accepted fallback.
 
+## fn-public-api-has-docstring
+
+severity: discuss  
+concerns: maintainability  
+applies_when: A diff adds a public module, class, function or method.  
+tool gate: Ruff `D100` to `D107` (pydocstyle), Checkstyle `MissingJavadocMethod`, Rust `missing_docs` (allow by default).  
+Backed by: Home Assistant (unjudged), Python Software Foundation (unjudged), Microsoft (unjudged), Apache Software Foundation (unjudged), Drupal (unjudged). Backing: unjudged.
+
+**Rule.** Give each public module, class, function and method a doc comment.
+
+**Why.** The doc comment is the contract a caller reads. Without one, callers read the body and depend on what it happens to do. Keep it short: see `fn-comments-explain-why` for what it adds.
+
+**FAIL**
+
+```python
+def retry(fn, times=3):
+    for _ in range(times):
+        ...
+```
+
+**PASS**
+
+```python
+def retry(fn, times=3):
+    """Call fn until it succeeds or times attempts are used up."""
+    for _ in range(times):
+        ...
+```
+
+**Counterpoint.** "Getters and obvious one-liners get a restating docstring." Skip those, or give them a one-line summary that adds the unit or the failure case. A docstring that only repeats the name is worse than none.
+
 ## fn-redirect-target-allowlist
 
 severity: should-fix  
@@ -1994,6 +2117,32 @@ requests.get(url, verify="/etc/ssl/company-ca.pem")   # private CA added, check 
 ```
 
 **Counterpoint.** "It is an internal network." Internal links get sniffed after one compromised host. A private CA gives you the same convenience with the check intact.
+
+## fn-todo-has-owner-or-issue
+
+severity: discuss  
+concerns: maintainability, process  
+applies_when: A diff adds a TODO, FIXME or similar marker.  
+tool gate: ESLint `no-warning-comments` with a pattern, Ruff `TD002`/`TD003`, or a regex check in CI.  
+Backed by: GitLab (unjudged), CockroachDB (unjudged), Envoy (unjudged), OpenStack (unjudged). Backing: unjudged.
+
+**Rule.** Give each TODO an owner or a tracking issue, such as `TODO(alice)` or `TODO(#1234)`.
+
+**Why.** An anonymous TODO has nobody to ask and nothing to close, so it stays for years. An owner or a ticket tells the next reader who knows the context and where the work is tracked.
+
+**FAIL**
+
+```text
+# TODO: handle the empty case
+```
+
+**PASS**
+
+```text
+# TODO(#1234): handle the empty case once the importer sends batches
+```
+
+**Counterpoint.** "People leave and tickets get closed." Then the marker still points somewhere to ask. Pair it with `fn-comments-survive-context` so the comment also says when it ends.
 
 ## fn-variants-as-tagged-union
 

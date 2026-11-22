@@ -35,16 +35,6 @@ lacks: orgs, only Anthropic (a vendor) backs it; needs two more orgs that bar bo
 
 Do not let a bot or agent approval satisfy a required human approval.
 
-## chg-changelog-entry
-
-level: change  
-severity: discuss  
-concerns: maintainability, process  
-applies_when: The project keeps a changelog, and the change adds, removes or changes a feature.  
-lacks: orgs, a changelog entry per feature change has USGS and Rails; needs a third org
-
-Add a changelog entry to each change that adds, removes or changes a feature.
-
 ## chg-fix-root-cause-not-symptom
 
 level: change  
@@ -175,7 +165,7 @@ level: function
 severity: should-fix  
 concerns: maintainability  
 applies_when: A comment block runs past a few lines, such as a long explanation above a config value or env var.  
-lacks: orgs, only Google (docguide, Go doc comments) backs moving long reasoning out of comments; needs two more organisations that state it as a practice
+lacks: orgs, GitLab (three lines) and Home Assistant back short comments; Google and Wikimedia back moving concepts into docs; each clause needs a third org
 
 Keep a comment to a few lines. Put a longer explanation in the docs, a README or an ADR, and leave a one-line link in the comment.
 
@@ -675,9 +665,29 @@ level: codebase
 severity: discuss  
 concerns: maintainability  
 applies_when: Auditing a repo whose docs, READMEs or design notes describe code that has since changed or gone.  
-lacks: orgs, Google and GitLab back deleting wrong docs; needs a third org (Chromium counts as Google)
+lacks: orgs, Google and the Linux kernel back deleting obsolete docs; GitLab's page is about deleting unfinished docs rather than hiding them, so a strict count has two
 
 Delete docs known to be wrong or obsolete instead of leaving them in place or hiding them.
+
+## code-doc-examples-stay-true
+
+level: codebase  
+severity: discuss  
+concerns: maintainability, testing  
+applies_when: Auditing docs, READMEs or doc comments that contain code samples.  
+lacks: orgs, Rust and Go (Google) run doc examples as tests; Kubernetes and Spotify embed examples from source files; each clause has two organisations
+
+Run each code example in the docs as a test, or include it from a source file that CI builds, instead of pasting it.
+
+## code-docs-redirect-on-move
+
+level: codebase  
+severity: discuss  
+concerns: maintainability, usability  
+applies_when: A diff renames, moves or deletes a published documentation page.  
+lacks: unreviewed, GitLab, Cloudflare and GitHub name a redirect when a page moves or is deleted; no stable pass has read the exact sentences against rules 1 to 10
+
+Add a redirect from the old URL in the same change that moves, renames or deletes a documentation page.
 
 ## code-documented-setup-runs
 

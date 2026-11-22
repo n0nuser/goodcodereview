@@ -139,6 +139,34 @@ flag orders_newest_first defaults off for one release".
 
 **Counterpoint.** Treating everything as breaking freezes the code. Weigh each change by known consumers and blast radius, and use a staged rollout instead of a ban. Optional parameters with defaults are the safe way to add.
 
+## chg-changelog-entry
+
+severity: discuss  
+concerns: maintainability, process  
+applies_when: The project keeps a changelog, and the change adds, removes or changes a feature.  
+Backed by: USGS (unjudged), Ruby on Rails (unjudged), Django Software Foundation (unjudged), Python Software Foundation (unjudged), GitLab (unjudged), Kubernetes (unjudged), Apache Software Foundation (unjudged). Backing: unjudged.
+
+**Rule.** Add a changelog entry to each change that adds, removes or changes a feature.
+
+**Why.** Users and release managers read the changelog, not the diff. A feature change with no entry reaches the release notes late or never, and a removal with no entry surprises whoever depended on it.
+
+**FAIL**
+
+```text
+Diff: removes the --legacy flag from the CLI and renames --out to --output.
+CHANGELOG.md is untouched.
+```
+
+**PASS**
+
+```text
+Diff: same change, plus in CHANGELOG.md under "Unreleased":
+  - Removed: the --legacy flag.
+  - Changed: --out is now --output.
+```
+
+**Counterpoint.** "Every fix needs an entry too, or the log is incomplete." Bug fixes, refactors and test changes carry no user-visible feature change, and entries for them bury the ones that matter. Add an entry for a fix only when users must act on it.
+
 ## chg-chestertons-fence
 
 severity: should-fix  
@@ -231,7 +259,7 @@ Backed by: Cursor (unjudged), GitLab (supports), Spring (supports). Backing: mix
 severity: should-fix  
 concerns: maintainability, process  
 applies_when: The diff changes behaviour, an argument, a return value or an error that a comment, docstring, README or doc page describes.  
-Backed by: Google (unjudged), Zephyr Project (unjudged), Python Software Foundation (unjudged), Django Software Foundation (unjudged), OpenJS Foundation (unjudged). Backing: unjudged.
+Backed by: Google (unjudged), Zephyr Project (unjudged), Python Software Foundation (unjudged), Django Software Foundation (unjudged), Apache Software Foundation (unjudged), OpenJS Foundation (unjudged). Backing: unjudged.
 
 **Rule.** Change the comments, docstrings and docs that describe the code in the same diff as the code, or delete them.
 

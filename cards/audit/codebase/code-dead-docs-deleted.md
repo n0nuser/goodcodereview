@@ -4,7 +4,7 @@ level: codebase
 tags: [maintainability, docs]
 severity: discuss
 status: draft
-lacks: orgs, Google and GitLab back deleting wrong docs; needs a third org (Chromium counts as Google)
+lacks: orgs, Google and the Linux kernel back deleting obsolete docs; GitLab's page is about deleting unfinished docs rather than hiding them, so a strict count has two
 lang: core
 applies_when: Auditing a repo whose docs, READMEs or design notes describe code that has since changed or gone.
 tool_gate: A freshness check (last-reviewed date or owner per page) that fails or flags pages untouched past a threshold.
@@ -13,6 +13,7 @@ borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
   - https://chromium.googlesource.com/chromium/src/+/main/docs/documentation_best_practices.md
   - https://docs.gitlab.com/development/documentation/workflow/
+  - https://www.kernel.org/doc/html/latest/doc-guide/contributing.html
 ---
 
 **Rule.** Delete docs known to be wrong or obsolete instead of leaving them in place or hiding them.
