@@ -15,6 +15,10 @@ borrowed_from:
   - https://dev.to/sportebois/software-design-red-flags-wisdom-nuggets-from-john-ousterhout-43i2
   - https://docs.webkit.org/Deep%20Dive/Web%20Inspector/Compatibility.html
   - https://github.com/PostHog/posthog/blob/master/.agents/skills/writing-code-comments/SKILL.md
+  - https://developers.google.com/style/timeless-documentation
+  - https://kubernetes.io/docs/contribute/style/style-guide/
+  - https://docs.gitlab.com/development/documentation/styleguide/word_list/
+  - https://www.mariadb.com/docs/general-resources/about/readme/documentation-style-guide
 ---
 
 **Rule.** Write comments that remain true without outside context: no "currently", "for now" or "see the PR", and give a TODO the date or event that ends it.

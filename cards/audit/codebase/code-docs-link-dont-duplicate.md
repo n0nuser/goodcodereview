@@ -7,12 +7,13 @@ status: stable
 lang: core
 applies_when: Auditing docs, READMEs or comments that restate a guide, spec or page that already exists elsewhere.
 tool_gate: none
-note: Google, GitLab and Mozilla (MDN) state it. Chromium and Go are Google. README-per-directory and minimum-viable-docs have only Google behind them
+note: Google, GitLab, Mozilla (MDN) and Kubernetes state it. Chromium and Go are Google. README-per-directory and minimum-viable-docs have only Google behind them
 borrowed_from:
   - https://google.github.io/styleguide/docguide/best_practices
   - https://chromium.googlesource.com/chromium/src/+/main/docs/documentation_best_practices.md
   - https://docs.gitlab.com/development/documentation/styleguide/
   - https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide
+  - https://kubernetes.io/docs/contribute/style/content-guide/
 ---
 
 **Rule.** Link to the existing page or guide instead of rewriting or restating it.

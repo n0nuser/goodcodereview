@@ -177,7 +177,7 @@ severity: should-fix
 concerns: maintainability  
 applies_when: Auditing for code, flags and files that nothing uses.  
 tool gate: An unused-code linter in CI (vulture, knip, or deadcode); allowlist each intentional exception with a reason.  
-Backed by: Palantir (unjudged), Google (unjudged), Meta (unjudged), Carnegie Mellon SEI (unjudged), Linux kernel (unjudged), NVIDIA (unjudged), Microsoft (unjudged), GitLab (unjudged), Uber (unjudged), Statsig (unjudged), JetBrains (unjudged), Lockheed Martin (unjudged), TUM ESI (unjudged). Backing: unjudged. People cited: Henrik Warne (unjudged), tef (programmingisterrible) (unjudged).
+Backed by: Palantir (unjudged), Google (unjudged), Meta (unjudged), Carnegie Mellon SEI (unjudged), Linux kernel (unjudged), NVIDIA (unjudged), Microsoft (unjudged), GitLab (unjudged), Apache Software Foundation (unjudged), Home Assistant (unjudged), Uber (unjudged), Statsig (unjudged), JetBrains (unjudged), Lockheed Martin (unjudged), TUM ESI (unjudged). Backing: unjudged. People cited: Henrik Warne (unjudged), tef (programmingisterrible) (unjudged).
 
 **Rule.** Delete unreferenced functions and variables, unreachable code, commented-out code, and expired feature flags with their branches and configuration.
 
@@ -278,7 +278,7 @@ CI: poetry install        (poetry.lock committed; fails if it is stale)
 severity: discuss  
 concerns: maintainability  
 applies_when: Auditing docs, READMEs or comments that restate a guide, spec or page that already exists elsewhere.  
-Backed by: Google (unjudged), GitLab (unjudged), Mozilla (unjudged). Backing: unjudged.
+Backed by: Google (unjudged), GitLab (unjudged), Mozilla (unjudged), Kubernetes (unjudged). Backing: unjudged.
 
 **Rule.** Link to the existing page or guide instead of rewriting or restating it.
 

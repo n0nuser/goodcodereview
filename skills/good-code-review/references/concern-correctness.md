@@ -4,24 +4,24 @@ Every stable card that lists the `correctness` concern, by level. The place `<le
 
 ## change
 
-- `chg-match-codebase-pattern` [should-fix] {correctness, maintainability} change.md:L285+29: Follow the established pattern nearby.
-- `chg-no-silenced-diagnostics` [should-fix] {correctness, maintainability, process} change.md:L409+30: Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
+- `chg-match-codebase-pattern` [should-fix] {correctness, maintainability} change.md:L313+29: Follow the established pattern nearby.
+- `chg-no-silenced-diagnostics` [should-fix] {correctness, maintainability, process} change.md:L437+30: Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
 
 ## function
 
 - `fn-bounded-read-fails-at-cap` [should-fix] {correctness, reliability, security} function.md:L60+36: When a size cap is reached, return an error; never hand back the first N bytes as if they were the whole input.
-- `fn-distinct-types-for-ids` [should-fix] {correctness} function.md:L409+28: Give arguments with different meanings distinct types, so a call that swaps them fails to type-check.
-- `fn-guard-uri-decoding` [should-fix] {reliability, correctness} <ui,server> function.md:L623+32: Wrap `decodeURIComponent` on user input in a `try`/`catch`, or parse with `URLSearchParams`, so that a malformed `%` sequence cannot throw.
-- `fn-handle-rejected-promises` [should-fix] {reliability, correctness} function.md:L656+35: Handle the rejection of every promise you start: `await` it inside `try`/`catch`, end the chain with `.catch()`, or return it to a caller that does.
-- `fn-independent-work-concurrent` [should-fix] {performance, correctness} function.md:L788+27: Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.
-- `fn-no-blocking-call-in-async-code` [block] {performance, correctness} function.md:L1140+29: Never make a blocking I/O call or run long CPU work directly in async code; use the async API or hand the work to a thread or worker.
-- `fn-no-caller-mutation` [should-fix] {correctness, testing} function.md:L1170+34: Do not mutate a parameter or an object the caller owns, unless the function is documented as mutating it.
-- `fn-no-check-then-act-across-await` [should-fix] {correctness} function.md:L1205+28: Make check-and-write one atomic operation where the state lives, and never split it across a suspension point.
-- `fn-specific-exceptions-only` [should-fix] {correctness} function.md:L1814+31: Catch only the specific exception you can handle in business code.
-- `fn-test-oracle-independent` [should-fix] {correctness, testing} function.md:L1944+25: Take a test's expected value from the requirement, not from the code under test.
-- `py-modern-typing` [should-fix] {correctness} function.md:L2092+26: Write `X | None` and builtin generics, not `typing` aliases.
-- `py-no-cast` [should-fix] {correctness} function.md:L2119+27: Do not use `cast()`; parse the boundary into a typed model, or narrow with `isinstance`.
-- `py-paths-from-file` [should-fix] {correctness} function.md:L2147+24: Resolve paths from `__file__`, not the current working directory.
+- `fn-distinct-types-for-ids` [should-fix] {correctness} function.md:L435+28: Give arguments with different meanings distinct types, so a call that swaps them fails to type-check.
+- `fn-guard-uri-decoding` [should-fix] {reliability, correctness} <ui,server> function.md:L715+32: Wrap `decodeURIComponent` on user input in a `try`/`catch`, or parse with `URLSearchParams`, so that a malformed `%` sequence cannot throw.
+- `fn-handle-rejected-promises` [should-fix] {reliability, correctness} function.md:L748+35: Handle the rejection of every promise you start: `await` it inside `try`/`catch`, end the chain with `.catch()`, or return it to a caller that does.
+- `fn-independent-work-concurrent` [should-fix] {performance, correctness} function.md:L880+27: Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.
+- `fn-no-blocking-call-in-async-code` [block] {performance, correctness} function.md:L1232+29: Never make a blocking I/O call or run long CPU work directly in async code; use the async API or hand the work to a thread or worker.
+- `fn-no-caller-mutation` [should-fix] {correctness, testing} function.md:L1262+34: Do not mutate a parameter or an object the caller owns, unless the function is documented as mutating it.
+- `fn-no-check-then-act-across-await` [should-fix] {correctness} function.md:L1297+28: Make check-and-write one atomic operation where the state lives, and never split it across a suspension point.
+- `fn-specific-exceptions-only` [should-fix] {correctness} function.md:L1937+31: Catch only the specific exception you can handle in business code.
+- `fn-test-oracle-independent` [should-fix] {correctness, testing} function.md:L2067+25: Take a test's expected value from the requirement, not from the code under test.
+- `py-modern-typing` [should-fix] {correctness} function.md:L2241+26: Write `X | None` and builtin generics, not `typing` aliases.
+- `py-no-cast` [should-fix] {correctness} function.md:L2268+27: Do not use `cast()`; parse the boundary into a typed model, or narrow with `isinstance`.
+- `py-paths-from-file` [should-fix] {correctness} function.md:L2296+24: Resolve paths from `__file__`, not the current working directory.
 
 ## module
 

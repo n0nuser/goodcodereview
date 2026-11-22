@@ -4,18 +4,18 @@ Every stable card that lists the `testing` concern, by level. The place `<level>
 
 ## change
 
-- `chg-perf-claim-evidence` [should-fix] {performance, testing} change.md:L497+25: Back a performance claim with measured before-and-after numbers.
-- `chg-refactor-has-behaviour-pin` [should-fix] {testing, maintainability} change.md:L588+26: Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
-- `chg-tests-ship-with-change` [block] {testing} change.md:L753+27: Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks.
-- `chg-verify-before-claim` [block] {testing, process} change.md:L813+26: Back every "works" or "bug" claim with something run: a repro, a test or command output.
+- `chg-perf-claim-evidence` [should-fix] {performance, testing} change.md:L525+25: Back a performance claim with measured before-and-after numbers.
+- `chg-refactor-has-behaviour-pin` [should-fix] {testing, maintainability} change.md:L616+26: Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
+- `chg-tests-ship-with-change` [block] {testing} change.md:L781+27: Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks.
+- `chg-verify-before-claim` [block] {testing, process} change.md:L841+26: Back every "works" or "bug" claim with something run: a repro, a test or command output.
 
 ## function
 
 - `fn-complexity-cap` [discuss] {maintainability, testing} function.md:L182+37: Set a cyclomatic complexity limit in the linter and keep every function under it.
-- `fn-no-caller-mutation` [should-fix] {correctness, testing} function.md:L1170+34: Do not mutate a parameter or an object the caller owns, unless the function is documented as mutating it.
-- `fn-test-behaviour-not-implementation` [should-fix] {testing, maintainability} function.md:L1909+34: Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.
-- `fn-test-oracle-independent` [should-fix] {correctness, testing} function.md:L1944+25: Take a test's expected value from the requirement, not from the code under test.
-- `py-pytest-parametrize` [should-fix] {testing} function.md:L2172+28: Write tests that differ only in inputs and expected values as one `@pytest.mark.parametrize` test.
+- `fn-no-caller-mutation` [should-fix] {correctness, testing} function.md:L1262+34: Do not mutate a parameter or an object the caller owns, unless the function is documented as mutating it.
+- `fn-test-behaviour-not-implementation` [should-fix] {testing, maintainability} function.md:L2032+34: Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.
+- `fn-test-oracle-independent` [should-fix] {correctness, testing} function.md:L2067+25: Take a test's expected value from the requirement, not from the code under test.
+- `py-pytest-parametrize` [should-fix] {testing} function.md:L2321+28: Write tests that differ only in inputs and expected values as one `@pytest.mark.parametrize` test.
 
 ## module
 

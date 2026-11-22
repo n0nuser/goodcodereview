@@ -4,7 +4,7 @@ level: change
 tags: [maintainability, docs, process]
 severity: should-fix
 status: stable
-note: Google, Zephyr, Python and Django state it for docs; Node.js only for API changes. Chromium is Google. Google's review guide also says to consider deleting docs when code is deleted
+note: Google, Zephyr, Python, Django and Apache Airflow state it for docs; Node.js only for API changes. Chromium is Google. Google's review guide also says to consider deleting docs when code is deleted
 lang: core
 applies_when: The diff changes behaviour, an argument, a return value or an error that a comment, docstring, README or doc page describes.
 tool_gate: none
@@ -15,6 +15,7 @@ borrowed_from:
   - https://docs.zephyrproject.org/latest/contribute/contributor_expectations.html
   - https://devguide.python.org/getting-started/pull-request-lifecycle/
   - https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/submitting-patches/
+  - https://github.com/apache/airflow/blob/main/contributing-docs/05_pull_requests.rst
   - https://github.com/nodejs/node/blob/main/doc/contributing/pull-requests.md
 ---
 

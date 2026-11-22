@@ -3,14 +3,19 @@ id: chg-changelog-entry
 level: change
 tags: [maintainability, process]
 severity: discuss
-status: draft
-lacks: orgs, a changelog entry per feature change has USGS and Rails; needs a third org
+status: stable
+note: Django, Python, GitLab, Kubernetes and Apache Spark state it; Kubernetes and Spark call it a release note or migration-guide entry. USGS and Rails also state it
 lang: core
 applies_when: The project keeps a changelog, and the change adds, removes or changes a feature.
 tool_gate: none
 borrowed_from:
   - https://astrogeology.usgs.gov/docs/how-to-guides/software-management/guidelines-for-pull-requests/
   - https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html
+  - https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/submitting-patches/
+  - https://devguide.python.org/getting-started/pull-request-lifecycle/
+  - https://docs.gitlab.com/development/changelog/
+  - https://github.com/kubernetes/community/blob/master/contributors/guide/release-notes.md
+  - https://spark.apache.org/contributing.html
 ---
 
 **Rule.** Add a changelog entry to each change that adds, removes or changes a feature.

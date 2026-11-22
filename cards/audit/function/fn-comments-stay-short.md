@@ -4,13 +4,16 @@ level: function
 tags: [maintainability, docs]
 severity: should-fix
 status: draft
-lacks: orgs, only Google (docguide, Go doc comments) backs moving long reasoning out of comments; needs two more organisations that state it as a practice
+lacks: orgs, GitLab (three lines) and Home Assistant back short comments; Google and Wikimedia back moving concepts into docs; each clause needs a third org
 lang: core
 applies_when: A comment block runs past a few lines, such as a long explanation above a config value or env var.
 tool_gate: A comment-length lint with a baseline for existing blocks (Go `commentlen` or `maxcomments-lint`, ESLint `comment-length` for width).
 borrowed_from:
   - https://google.github.io/styleguide/docguide/best_practices
   - https://go.dev/doc/comment
+  - https://docs.gitlab.com/development/code_comments/
+  - https://www.mediawiki.org/wiki/Manual:Coding_conventions
+  - https://contributors.home-assistant.io/core/development/style/
 ---
 
 **Rule.** Keep a comment to a few lines. Put a longer explanation in the docs, a README or an ADR, and leave a one-line link in the comment.

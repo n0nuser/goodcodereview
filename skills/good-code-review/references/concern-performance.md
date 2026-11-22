@@ -4,15 +4,15 @@ Every stable card that lists the `performance` concern, by level. The place `<le
 
 ## change
 
-- `chg-perf-claim-evidence` [should-fix] {performance, testing} change.md:L497+25: Back a performance claim with measured before-and-after numbers.
+- `chg-perf-claim-evidence` [should-fix] {performance, testing} change.md:L525+25: Back a performance claim with measured before-and-after numbers.
 
 ## function
 
-- `fn-fetch-only-needed-data` [should-fix] {performance} <data> function.md:L533+29: Filter, count, and aggregate in the query, and select only the columns the code uses.
-- `fn-independent-work-concurrent` [should-fix] {performance, correctness} function.md:L788+27: Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.
-- `fn-join-dont-concat-in-loop` [should-fix] {performance} function.md:L816+27: Build a string from a loop with a builder or a join, never with repeated `+=`.
-- `fn-no-blocking-call-in-async-code` [block] {performance, correctness} function.md:L1140+29: Never make a blocking I/O call or run long CPU work directly in async code; use the async API or hand the work to a thread or worker.
-- `fn-regex-compiled-once` [should-fix] {performance} function.md:L1688+29: Compile a regular expression once, at module or startup level, and reuse it.
+- `fn-fetch-only-needed-data` [should-fix] {performance} <data> function.md:L625+29: Filter, count, and aggregate in the query, and select only the columns the code uses.
+- `fn-independent-work-concurrent` [should-fix] {performance, correctness} function.md:L880+27: Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.
+- `fn-join-dont-concat-in-loop` [should-fix] {performance} function.md:L908+27: Build a string from a loop with a builder or a join, never with repeated `+=`.
+- `fn-no-blocking-call-in-async-code` [block] {performance, correctness} function.md:L1232+29: Never make a blocking I/O call or run long CPU work directly in async code; use the async API or hand the work to a thread or worker.
+- `fn-regex-compiled-once` [should-fix] {performance} function.md:L1811+29: Compile a regular expression once, at module or startup level, and reuse it.
 
 ## module
 

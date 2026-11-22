@@ -20,6 +20,8 @@ borrowed_from:
   - https://github.com/NVIDIA/Model-Optimizer/blob/main/CONTRIBUTING.md
   - https://learn.microsoft.com/en-us/devops/operate/progressive-experimentation-feature-flags
   - https://docs.gitlab.com/ee/development/feature_flags/
+  - https://kafka.apache.org/community/developer/
+  - https://contributors.home-assistant.io/core/development/style/
   - https://www.uber.com/blog/piranha/
   - https://statsig.com/blog/feature-flag-code-cleanup
   - https://www.jetbrains.com/help/inspectopedia/CommentedOutCode.html

@@ -5,16 +5,17 @@ Every stable card that lists the `maintainability` concern, by level. The place 
 ## change
 
 - `chg-agent-grounded-code` [should-fix] {maintainability, process} change.md:L3+28: Verify that every import and external call the agent wrote exists with that signature.
-- `chg-chestertons-fence` [should-fix] {maintainability, process} change.md:L142+26: Add a characterization test before rewriting code you do not understand.
-- `chg-delete-legacy-after-migration` [should-fix] {compatibility, maintainability} <data> change.md:L169+30: When no consumer sits outside the repo, move every caller to the new API and delete the old one, and the tests that pinned its internals, in the same change.
-- `chg-docs-updated-with-code` [should-fix] {maintainability, process} change.md:L229+26: Change the comments, docstrings and docs that describe the code in the same diff as the code, or delete them.
-- `chg-match-codebase-pattern` [should-fix] {correctness, maintainability} change.md:L285+29: Follow the established pattern nearby.
-- `chg-no-per-user-ide-files` [should-fix] {process, maintainability} change.md:L371+37: Do not commit a file that holds one developer's editor or IDE state; ignore those paths in the repository or a machine-wide exclude file. An ignore entry does not untrack a file already committed: remove it from the index with `git rm --cached`.
-- `chg-no-silenced-diagnostics` [should-fix] {correctness, maintainability, process} change.md:L409+30: Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
-- `chg-no-special-case-branches` [should-fix] {maintainability} change.md:L440+29: Put a new case behind its own function or type; do not add a one-off branch to a shared flow.
-- `chg-refactor-has-behaviour-pin` [should-fix] {testing, maintainability} change.md:L588+26: Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
-- `chg-refactor-separate` [should-fix] {maintainability, process} change.md:L615+27: Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
-- `chg-reuse-before-write` [should-fix] {maintainability} change.md:L643+27: Do not add a helper that duplicates one already in the repo; search for it first.
+- `chg-changelog-entry` [discuss] {maintainability, process} change.md:L142+27: Add a changelog entry to each change that adds, removes or changes a feature.
+- `chg-chestertons-fence` [should-fix] {maintainability, process} change.md:L170+26: Add a characterization test before rewriting code you do not understand.
+- `chg-delete-legacy-after-migration` [should-fix] {compatibility, maintainability} <data> change.md:L197+30: When no consumer sits outside the repo, move every caller to the new API and delete the old one, and the tests that pinned its internals, in the same change.
+- `chg-docs-updated-with-code` [should-fix] {maintainability, process} change.md:L257+26: Change the comments, docstrings and docs that describe the code in the same diff as the code, or delete them.
+- `chg-match-codebase-pattern` [should-fix] {correctness, maintainability} change.md:L313+29: Follow the established pattern nearby.
+- `chg-no-per-user-ide-files` [should-fix] {process, maintainability} change.md:L399+37: Do not commit a file that holds one developer's editor or IDE state; ignore those paths in the repository or a machine-wide exclude file. An ignore entry does not untrack a file already committed: remove it from the index with `git rm --cached`.
+- `chg-no-silenced-diagnostics` [should-fix] {correctness, maintainability, process} change.md:L437+30: Name the rule, the reason, and a ticket on every suppression; a swallowed error, skipped test, or disabled check is a FAIL unless justified.
+- `chg-no-special-case-branches` [should-fix] {maintainability} change.md:L468+29: Put a new case behind its own function or type; do not add a one-off branch to a shared flow.
+- `chg-refactor-has-behaviour-pin` [should-fix] {testing, maintainability} change.md:L616+26: Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
+- `chg-refactor-separate` [should-fix] {maintainability, process} change.md:L643+27: Put refactors, renames, and reformatting in their own commit or PR, apart from behaviour changes.
+- `chg-reuse-before-write` [should-fix] {maintainability} change.md:L671+27: Do not add a helper that duplicates one already in the repo; search for it first.
 
 ## function
 
@@ -22,17 +23,22 @@ Every stable card that lists the `maintainability` concern, by level. The place 
 - `fn-comments-explain-why` [should-fix] {maintainability} function.md:L128+27: Write comments that give a reason, a constraint, or a trade-off, and never restate what the next line does.
 - `fn-comments-survive-context` [should-fix] {maintainability} function.md:L156+25: Write comments that remain true without outside context: no "currently", "for now" or "see the PR", and give a TODO the date or event that ends it.
 - `fn-complexity-cap` [discuss] {maintainability, testing} function.md:L182+37: Set a cyclomatic complexity limit in the linter and keep every function under it.
-- `fn-early-return-no-else` [discuss] {maintainability} function.md:L438+37: Handle the error or edge case first and return early, so the main path is not nested.
-- `fn-english-identifiers` [discuss] {maintainability} function.md:L476+25: Write identifiers and comments in English, unless the project policy names another language.
-- `fn-length-budget` [discuss] {maintainability} function.md:L941+38: Split a function that passes the project's length limit (about 40 lines if it sets none) unless its body is one simple operation or one flat dispatch.
-- `fn-name-intermediate-conditions` [discuss] {maintainability} function.md:L1044+26: Name each compound condition by assigning its sub-conditions to booleans that say what they mean.
-- `fn-nesting-depth-cap` [discuss] {maintainability} function.md:L1102+37: Keep control-flow nesting shallow.
-- `fn-no-getattr-for-known-names` [discuss] {maintainability} function.md:L1262+25: Use plain field access, and reserve dynamic access for genuinely dynamic names.
-- `fn-no-magic-values` [should-fix] {maintainability} function.md:L1288+27: Give every meaningful literal a name: an enum member or a constant.
-- `fn-parameter-limit` [should-fix] {maintainability} function.md:L1530+29: Set a parameter-count limit in the project's linter, and keep signatures within it.
-- `fn-test-behaviour-not-implementation` [should-fix] {testing, maintainability} function.md:L1909+34: Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.
-- `fn-variants-as-tagged-union` [should-fix] {maintainability} function.md:L1998+37: Model variants as a tagged union, and make every switch over it fail the build when a variant is unhandled.
-- `py-docstrings-google` [discuss] {maintainability} function.md:L2064+27: Write a Google-style docstring only when it adds what the signature cannot say.
+- `fn-deprecation-names-version-and-replacement` [should-fix] {compatibility, maintainability} function.md:L308+25: Say in a deprecation notice which version deprecated it and what replaces it.
+- `fn-doc-documents-errors` [should-fix] {maintainability, reliability} function.md:L464+33: Document in the doc comment each error a public function can raise, each condition that makes it panic, and each precondition a caller must meet to call it safely.
+- `fn-doc-summary-sentence` [discuss] {maintainability} function.md:L498+31: Open each doc comment with one short summary line, then a blank line before any detail.
+- `fn-early-return-no-else` [discuss] {maintainability} function.md:L530+37: Handle the error or edge case first and return early, so the main path is not nested.
+- `fn-english-identifiers` [discuss] {maintainability} function.md:L568+25: Write identifiers and comments in English, unless the project policy names another language.
+- `fn-length-budget` [discuss] {maintainability} function.md:L1033+38: Split a function that passes the project's length limit (about 40 lines if it sets none) unless its body is one simple operation or one flat dispatch.
+- `fn-name-intermediate-conditions` [discuss] {maintainability} function.md:L1136+26: Name each compound condition by assigning its sub-conditions to booleans that say what they mean.
+- `fn-nesting-depth-cap` [discuss] {maintainability} function.md:L1194+37: Keep control-flow nesting shallow.
+- `fn-no-getattr-for-known-names` [discuss] {maintainability} function.md:L1354+25: Use plain field access, and reserve dynamic access for genuinely dynamic names.
+- `fn-no-magic-values` [should-fix] {maintainability} function.md:L1380+27: Give every meaningful literal a name: an enum member or a constant.
+- `fn-parameter-limit` [should-fix] {maintainability} function.md:L1622+29: Set a parameter-count limit in the project's linter, and keep signatures within it.
+- `fn-public-api-has-docstring` [discuss] {maintainability} function.md:L1716+30: Give each public module, class, function and method a doc comment.
+- `fn-test-behaviour-not-implementation` [should-fix] {testing, maintainability} function.md:L2032+34: Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.
+- `fn-todo-has-owner-or-issue` [discuss] {maintainability, process} function.md:L2121+25: Give each TODO an owner or a tracking issue, such as `TODO(alice)` or `TODO(#1234)`.
+- `fn-variants-as-tagged-union` [should-fix] {maintainability} function.md:L2147+37: Model variants as a tagged union, and make every switch over it fail the build when a variant is unhandled.
+- `py-docstrings-google` [discuss] {maintainability} function.md:L2213+27: Write a Google-style docstring only when it adds what the signature cannot say.
 
 ## module
 
