@@ -4,7 +4,7 @@ level: change
 tags: [maintainability, process]
 severity: discuss
 status: stable
-note: Django, Python, GitLab, Kubernetes and Apache Spark state it; Kubernetes and Spark call it a release note or migration-guide entry. USGS and Rails also state it
+note: Django, Python, GitLab, Kubernetes and Apache Spark state it; Kubernetes and Spark call it a release note or migration-guide entry. USGS and Rails also state it. Ansible and Grafana ask for an entry on bug fixes too, which the Counterpoint leaves to the project
 lang: core
 applies_when: The project keeps a changelog, and the change adds, removes or changes a feature.
 tool_gate: none
@@ -16,6 +16,8 @@ borrowed_from:
   - https://docs.gitlab.com/development/changelog/
   - https://github.com/kubernetes/community/blob/master/contributors/guide/release-notes.md
   - https://spark.apache.org/contributing.html
+  - https://docs.ansible.com/ansible/devel/community/development_process.html
+  - https://raw.githubusercontent.com/grafana/grafana/main/contribute/merge-pull-request.md
 ---
 
 **Rule.** Add a changelog entry to each change that adds, removes or changes a feature.

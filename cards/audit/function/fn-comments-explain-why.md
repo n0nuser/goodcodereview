@@ -15,6 +15,7 @@ borrowed_from:
   - https://henrikwarne.com/2024/01/10/tidy-first/
   - https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Code_style_guide/JavaScript
   - https://peps.python.org/pep-0008/
+  - https://peps.python.org/pep-0257/
   - https://flink.apache.org/how-to-contribute/code-style-and-quality-common/
   - https://www.kernel.org/doc/html/latest/process/coding-style.html
   - https://refactoring.guru/smells/comments

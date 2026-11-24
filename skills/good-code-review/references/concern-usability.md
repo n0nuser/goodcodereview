@@ -4,7 +4,7 @@ Every stable card that lists the `usability` concern, by level. The place `<leve
 
 ## change
 
-- `chg-ui-change-screenshots-and-keyboard-pass` [should-fix] {accessibility, usability, process} <ui> change.md:L809+31: A UI change shows before-and-after screenshots and says what a keyboard-only pass and a 200% zoom check found on the changed screens.
+- `chg-ui-change-screenshots-and-keyboard-pass` [should-fix] {accessibility, usability, process} <ui> change.md:L947+31: A UI change shows before-and-after screenshots and says what a keyboard-only pass and a 200% zoom check found on the changed screens.
 
 ## function
 
@@ -12,19 +12,22 @@ Every stable card that lists the `usability` concern, by level. The place `<leve
 - `fn-destructive-confirm-or-undo` [should-fix] {usability} <ui> function.md:L334+30: Make a destructive action reversible with undo, or ask the user to confirm it before it runs.
 - `fn-dialog-focus-managed` [block] {accessibility, usability} <ui> function.md:L365+33: When a modal opens, move focus into it and keep Tab inside it. Make Escape close it. When it closes, return focus to the control that opened it or, if it is gone, to the next logical control.
 - `fn-disclosure-hides-only-secondary` [should-fix] {usability} <ui> function.md:L399+35: Do not hide a required field or information most users need behind a disclosure that starts closed.
-- `fn-error-says-what-and-how` [should-fix] {usability, accessibility} <ui> function.md:L594+30: Show each validation error next to its field, in plain words that name what is wrong and how to fix it.
-- `fn-focus-indicator-visible` [block] {accessibility, usability} <ui> function.md:L655+27: Keep a visible focus indicator on every focusable element. Never set `outline: none` without a replacement.
-- `fn-form-control-has-label` [block] {accessibility, usability} <ui> function.md:L683+31: Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.
-- `fn-heading-structure` [should-fix] {accessibility, usability} <ui> function.md:L816+31: Mark every heading with a real `<h1>` to `<h6>` element, not a styled `div`, `span`, or `p`.
-- `fn-keep-input-on-error` [should-fix] {usability} <ui> function.md:L966+34: After a failed validation or submit, show the form again with every value the user entered, correct or not.
-- `fn-label-above-field` [discuss] {usability, accessibility} <ui> function.md:L1001+31: Put the visible label of a text input, select, or textarea directly above it.
-- `fn-mask-credentials-in-output` [should-fix] {security, usability} <cli> function.md:L1101+34: Mask credentials in list, show and debug output (keep only the last four characters), and print a full value only behind an explicit flag.
-- `fn-native-button-or-link` [block] {accessibility, usability} <ui> function.md:L1163+30: Use `<button>` for an action and `<a href>` for navigation. Do not attach a click handler to a `div`, `span`, or `a` with no `href`.
-- `fn-no-positive-tabindex` [should-fix] {accessibility, usability} <ui> function.md:L1466+31: Write the DOM in reading order and never set `tabindex` above 0.
-- `fn-reduced-motion-respected` [should-fix] {accessibility, usability} <ui> function.md:L1777+33: Switch off or replace large, repeating, or interaction-triggered motion when `prefers-reduced-motion: reduce` is set.
-- `fn-related-controls-in-fieldset` [should-fix] {accessibility, usability} <ui> function.md:L1841+35: Wrap each radio group, checkbox group, and other set of related controls, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.
-- `fn-status-announced-live-region` [should-fix] {accessibility, usability} <ui> function.md:L1969+31: Announce an async status message through a live region (`role="status"` or `role="alert"`), and put a `role="status"` or `aria-live` region in the markup before its text changes.
-- `fn-target-size` [should-fix] {accessibility, usability} <ui> function.md:L2001+30: Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.
+- `fn-error-message-actionable` [discuss] {usability, observability} function.md:L632+24: Say in an error message what went wrong and what the reader can do about it.
+- `fn-error-says-what-and-how` [should-fix] {usability, accessibility} <ui> function.md:L657+30: Show each validation error next to its field, in plain words that name what is wrong and how to fix it.
+- `fn-error-string-lowercase-no-period` [discuss] {maintainability, usability} function.md:L688+25: Start an error string in lowercase and end it without punctuation when it is wrapped or printed after other context.
+- `fn-error-text-no-apology-or-blame` [discuss] {usability} function.md:L714+25: Do not blame the user, and do not pad error text with "please", "sorry" or "oops".
+- `fn-focus-indicator-visible` [block] {accessibility, usability} <ui> function.md:L770+27: Keep a visible focus indicator on every focusable element. Never set `outline: none` without a replacement.
+- `fn-form-control-has-label` [block] {accessibility, usability} <ui> function.md:L798+31: Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.
+- `fn-heading-structure` [should-fix] {accessibility, usability} <ui> function.md:L931+31: Mark every heading with a real `<h1>` to `<h6>` element, not a styled `div`, `span`, or `p`.
+- `fn-keep-input-on-error` [should-fix] {usability} <ui> function.md:L1081+34: After a failed validation or submit, show the form again with every value the user entered, correct or not.
+- `fn-label-above-field` [discuss] {usability, accessibility} <ui> function.md:L1116+31: Put the visible label of a text input, select, or textarea directly above it.
+- `fn-mask-credentials-in-output` [should-fix] {security, usability} <cli> function.md:L1247+34: Mask credentials in list, show and debug output (keep only the last four characters), and print a full value only behind an explicit flag.
+- `fn-native-button-or-link` [block] {accessibility, usability} <ui> function.md:L1309+30: Use `<button>` for an action and `<a href>` for navigation. Do not attach a click handler to a `div`, `span`, or `a` with no `href`.
+- `fn-no-positive-tabindex` [should-fix] {accessibility, usability} <ui> function.md:L1612+31: Write the DOM in reading order and never set `tabindex` above 0.
+- `fn-reduced-motion-respected` [should-fix] {accessibility, usability} <ui> function.md:L1923+33: Switch off or replace large, repeating, or interaction-triggered motion when `prefers-reduced-motion: reduce` is set.
+- `fn-related-controls-in-fieldset` [should-fix] {accessibility, usability} <ui> function.md:L1987+35: Wrap each radio group, checkbox group, and other set of related controls, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.
+- `fn-status-announced-live-region` [should-fix] {accessibility, usability} <ui> function.md:L2115+31: Announce an async status message through a live region (`role="status"` or `role="alert"`), and put a `role="status"` or `aria-live` region in the markup before its text changes.
+- `fn-target-size` [should-fix] {accessibility, usability} <ui> function.md:L2147+30: Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.
 
 ## module
 
@@ -40,6 +43,12 @@ Every stable card that lists the `usability` concern, by level. The place `<leve
 ## system
 
 - `sys-consistent-ui-terms` [discuss] {usability, accessibility} <ui> system.md:L90+29: Use one label and one icon for the same action and the same concept across all screens.
+
+## codebase
+
+- `code-docs-link-text-descriptive` [discuss] {accessibility, usability} codebase.md:L353+25: Write link text that says where the link goes, never "here", "this page" or "click here".
+- `code-docs-no-minimising-words` [discuss] {usability} codebase.md:L430+25: Do not call a step "simple", "easy", "just" or "simply" in docs.
+- `code-docs-redirect-on-move` [discuss] {maintainability, usability} codebase.md:L456+26: Add a redirect from the old URL in the same change that moves, renames or deletes a documentation page.
 
 ## production
 

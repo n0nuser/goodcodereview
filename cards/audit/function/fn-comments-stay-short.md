@@ -4,7 +4,7 @@ level: function
 tags: [maintainability, docs]
 severity: should-fix
 status: draft
-lacks: orgs, GitLab (three lines) and Home Assistant back short comments; Google and Wikimedia back moving concepts into docs; each clause needs a third org
+lacks: contradiction, only GitLab and Home Assistant set a length limit; Go says no fixed length and CockroachDB values long comments
 lang: core
 applies_when: A comment block runs past a few lines, such as a long explanation above a config value or env var.
 tool_gate: A comment-length lint with a baseline for existing blocks (Go `commentlen` or `maxcomments-lint`, ESLint `comment-length` for width).

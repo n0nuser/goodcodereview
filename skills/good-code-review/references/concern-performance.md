@@ -4,15 +4,15 @@ Every stable card that lists the `performance` concern, by level. The place `<le
 
 ## change
 
-- `chg-perf-claim-evidence` [should-fix] {performance, testing} change.md:L525+25: Back a performance claim with measured before-and-after numbers.
+- `chg-perf-claim-evidence` [should-fix] {performance, testing} change.md:L663+25: Back a performance claim with measured before-and-after numbers.
 
 ## function
 
-- `fn-fetch-only-needed-data` [should-fix] {performance} <data> function.md:L625+29: Filter, count, and aggregate in the query, and select only the columns the code uses.
-- `fn-independent-work-concurrent` [should-fix] {performance, correctness} function.md:L880+27: Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.
-- `fn-join-dont-concat-in-loop` [should-fix] {performance} function.md:L908+27: Build a string from a loop with a builder or a join, never with repeated `+=`.
-- `fn-no-blocking-call-in-async-code` [block] {performance, correctness} function.md:L1232+29: Never make a blocking I/O call or run long CPU work directly in async code; use the async API or hand the work to a thread or worker.
-- `fn-regex-compiled-once` [should-fix] {performance} function.md:L1811+29: Compile a regular expression once, at module or startup level, and reuse it.
+- `fn-fetch-only-needed-data` [should-fix] {performance} <data> function.md:L740+29: Filter, count, and aggregate in the query, and select only the columns the code uses.
+- `fn-independent-work-concurrent` [should-fix] {performance, correctness} function.md:L995+27: Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.
+- `fn-join-dont-concat-in-loop` [should-fix] {performance} function.md:L1023+27: Build a string from a loop with a builder or a join, never with repeated `+=`.
+- `fn-no-blocking-call-in-async-code` [block] {performance, correctness} function.md:L1378+29: Never make a blocking I/O call or run long CPU work directly in async code; use the async API or hand the work to a thread or worker.
+- `fn-regex-compiled-once` [should-fix] {performance} function.md:L1957+29: Compile a regular expression once, at module or startup level, and reuse it.
 
 ## module
 
@@ -39,9 +39,9 @@ Every stable card that lists the `performance` concern, by level. The place `<le
 
 ## codebase
 
-- `code-perf-budget-in-ci` [should-fix] {performance, process} codebase.md:L391+27: Write the performance budget down as a CI check that fails the build when it is exceeded.
-- `code-test-fixtures-built-once` [should-fix] {testing, performance} codebase.md:L583+32: Build an expensive fixture once per test run, and reset state between tests with a rollback or a truncate, never a rebuild.
-- `code-test-selection-on-pr` [discuss] {testing, performance, process} codebase.md:L616+49: When the full suite is slower than the pull-request feedback target, run only the tests the change affects on the pull request, and run the full suite before deploy or on a schedule.
+- `code-perf-budget-in-ci` [should-fix] {performance, process} codebase.md:L573+27: Write the performance budget down as a CI check that fails the build when it is exceeded.
+- `code-test-fixtures-built-once` [should-fix] {testing, performance} codebase.md:L791+32: Build an expensive fixture once per test run, and reset state between tests with a rollback or a truncate, never a rebuild.
+- `code-test-selection-on-pr` [discuss] {testing, performance, process} codebase.md:L824+49: When the full suite is slower than the pull-request feedback target, run only the tests the change affects on the pull request, and run the full suite before deploy or on a schedule.
 
 ## production
 

@@ -4,7 +4,7 @@ Every stable card that lists the `security` concern, by level. The place `<level
 
 ## change
 
-- `chg-name-attack-surface` [should-fix] {security, process} change.md:L371+27: List any new attack surface in the description.
+- `chg-name-attack-surface` [should-fix] {security, process} change.md:L509+27: List any new attack surface in the description.
 
 ## function
 
@@ -12,23 +12,23 @@ Every stable card that lists the `security` concern, by level. The place `<level
 - `fn-confine-file-path` [block] {security} function.md:L220+27: Resolve the final path and check that it stays inside the intended base directory before using it.
 - `fn-constant-time-secret-compare` [should-fix] {security} function.md:L248+31: Compare a secret, token or MAC with the platform's constant-time function, never with `==` or `!=`.
 - `fn-csprng-for-secrets` [block] {security} function.md:L280+27: Draw every security-relevant random value from the platform CSPRNG.
-- `fn-header-value-encoding` [block] {security} <server> function.md:L784+31: Set every response header through the framework's header API, never by writing to the connection, and reject or encode CR and LF in any request-derived value.
-- `fn-jwt-verify-pinned` [block] {security} <server> function.md:L936+29: Verify the signature against a fixed list of accepted algorithms, and check `iss`, `aud`, and `exp`, before reading any claim.
-- `fn-link-url-scheme-allowlist` [should-fix] {security} <ui> function.md:L1072+28: Parse a URL that comes from data and allow only `https:` (and `http:` or `mailto:` where needed) before you set it as a link target.
-- `fn-mask-credentials-in-output` [should-fix] {security, usability} <cli> function.md:L1101+34: Mask credentials in list, show and debug output (keep only the last four characters), and print a full value only behind an explicit flag.
-- `fn-no-eval-untrusted` [block] {security} function.md:L1326+27: Never pass untrusted text to `eval`, `exec`, `new Function`, or a template compiler. Pass it to a fixed template or a parser as data.
-- `fn-no-mass-assignment` [block] {security} <server> function.md:L1408+29: Bind request data to a DTO or an explicit field allowlist, never straight onto the model.
-- `fn-no-native-deserialise-untrusted` [block] {security} function.md:L1438+27: Parse untrusted input with a data-only format, never with a native object deserialiser.
-- `fn-no-prototype-pollution` [block] {security} function.md:L1498+35: Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys.
-- `fn-no-raw-html-sink` [block] {security} <ui,server> function.md:L1534+29: Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.
-- `fn-no-shell-with-input` [block] {security} function.md:L1564+27: Start processes with the program and each argument as separate list items, and never through a shell string.
-- `fn-object-level-authz` [block] {security} <server> function.md:L1592+29: Check that the caller may act on the specific record before returning or changing it.
-- `fn-password-min-length` [should-fix] {security} <server> function.md:L1652+34: Enforce a minimum password length on the server whenever a user sets a password.
-- `fn-password-slow-hash` [block] {security} <server> function.md:L1687+28: Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.
-- `fn-redirect-target-allowlist` [should-fix] {security} <server> function.md:L1747+29: Redirect only to a local path or to a host on a server-side allowlist, never to a URL taken from the request as is.
-- `fn-response-fields-explicit` [should-fix] {security, compatibility} <server> function.md:L1908+28: Return a response type that lists each field, never the stored model or a generic dump of it.
-- `fn-tls-verify-on` [block] {security} function.md:L2093+27: Leave certificate and hostname verification on in every environment that ships, and check the certificate against the host you meant to reach, not a name the server supplies.
-- `fn-xml-no-external-entities` [block] {security} function.md:L2185+27: Parse untrusted XML with external entity resolution turned off, for example through a hardened parser such as `defusedxml`.
+- `fn-header-value-encoding` [block] {security} <server> function.md:L899+31: Set every response header through the framework's header API, never by writing to the connection, and reject or encode CR and LF in any request-derived value.
+- `fn-jwt-verify-pinned` [block] {security} <server> function.md:L1051+29: Verify the signature against a fixed list of accepted algorithms, and check `iss`, `aud`, and `exp`, before reading any claim.
+- `fn-link-url-scheme-allowlist` [should-fix] {security} <ui> function.md:L1187+28: Parse a URL that comes from data and allow only `https:` (and `http:` or `mailto:` where needed) before you set it as a link target.
+- `fn-mask-credentials-in-output` [should-fix] {security, usability} <cli> function.md:L1247+34: Mask credentials in list, show and debug output (keep only the last four characters), and print a full value only behind an explicit flag.
+- `fn-no-eval-untrusted` [block] {security} function.md:L1472+27: Never pass untrusted text to `eval`, `exec`, `new Function`, or a template compiler. Pass it to a fixed template or a parser as data.
+- `fn-no-mass-assignment` [block] {security} <server> function.md:L1554+29: Bind request data to a DTO or an explicit field allowlist, never straight onto the model.
+- `fn-no-native-deserialise-untrusted` [block] {security} function.md:L1584+27: Parse untrusted input with a data-only format, never with a native object deserialiser.
+- `fn-no-prototype-pollution` [block] {security} function.md:L1644+35: Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys.
+- `fn-no-raw-html-sink` [block] {security} <ui,server> function.md:L1680+29: Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.
+- `fn-no-shell-with-input` [block] {security} function.md:L1710+27: Start processes with the program and each argument as separate list items, and never through a shell string.
+- `fn-object-level-authz` [block] {security} <server> function.md:L1738+29: Check that the caller may act on the specific record before returning or changing it.
+- `fn-password-min-length` [should-fix] {security} <server> function.md:L1798+34: Enforce a minimum password length on the server whenever a user sets a password.
+- `fn-password-slow-hash` [block] {security} <server> function.md:L1833+28: Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.
+- `fn-redirect-target-allowlist` [should-fix] {security} <server> function.md:L1893+29: Redirect only to a local path or to a host on a server-side allowlist, never to a URL taken from the request as is.
+- `fn-response-fields-explicit` [should-fix] {security, compatibility} <server> function.md:L2054+28: Return a response type that lists each field, never the stored model or a generic dump of it.
+- `fn-tls-verify-on` [block] {security} function.md:L2239+27: Leave certificate and hostname verification on in every environment that ships, and check the certificate against the host you meant to reach, not a name the server supplies.
+- `fn-xml-no-external-entities` [block] {security} function.md:L2331+27: Parse untrusted XML with external entity resolution turned off, for example through a hardened parser such as `defusedxml`.
 
 ## module
 
@@ -79,11 +79,11 @@ Every stable card that lists the `security` concern, by level. The place `<level
 
 ## codebase
 
-- `code-dependency-licence-sbom` [should-fix] {security} codebase.md:L206+26: Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule, and raise an alert when a new vulnerability applies. Each ask is judged separately: name which one failed on the FAIL line.
-- `code-dependency-pinning` [block] {security} codebase.md:L233+42: Commit a lockfile with hashes and install from it in CI.
-- `code-secret-scan` [block] {security, process} codebase.md:L528+26: Scan for committed credentials, and treat any hit as leaked: revoke and replace it first. With no scanner present and no secret found, the FAIL is the missing control; evidence is "absent in <paths>". A platform scanner (GitHub secret scanning with push protection, GitLab secret detection) counts when it is enabled on the repo and covers history.
-- `code-secrets-not-plaintext-in-repo` [should-fix] {security} codebase.md:L555+27: Keep secrets out of source code and config.
-- `code-vuln-remediation-window` [should-fix] {security, process} codebase.md:L666+27: Write down how long a known-vulnerable dependency may stay unfixed and fix or upgrade it inside that window.
-- `code-workflow-supply-chain` [block] {security, process} codebase.md:L694+49: Pin every CI action to a full commit SHA, and keep code from an unreviewed change out of any job that holds secrets or can deploy.
-- `code-workflow-token-per-job-write` [should-fix] {security} codebase.md:L744+49: Set workflow token permissions to read-only or none at the top level and grant write only on the job that needs it.
-- `code-workload-identity` [should-fix] {security} codebase.md:L794+43: Exchange the platform's OIDC token for a short-lived cloud credential, and pin the trust policy to the workload.
+- `code-dependency-licence-sbom` [should-fix] {security} codebase.md:L232+26: Generate an SBOM, and scan dependencies for known vulnerabilities on every change or on a schedule, and raise an alert when a new vulnerability applies. Each ask is judged separately: name which one failed on the FAIL line.
+- `code-dependency-pinning` [block] {security} codebase.md:L259+42: Commit a lockfile with hashes and install from it in CI.
+- `code-secret-scan` [block] {security, process} codebase.md:L736+26: Scan for committed credentials, and treat any hit as leaked: revoke and replace it first. With no scanner present and no secret found, the FAIL is the missing control; evidence is "absent in <paths>". A platform scanner (GitHub secret scanning with push protection, GitLab secret detection) counts when it is enabled on the repo and covers history.
+- `code-secrets-not-plaintext-in-repo` [should-fix] {security} codebase.md:L763+27: Keep secrets out of source code and config.
+- `code-vuln-remediation-window` [should-fix] {security, process} codebase.md:L874+27: Write down how long a known-vulnerable dependency may stay unfixed and fix or upgrade it inside that window.
+- `code-workflow-supply-chain` [block] {security, process} codebase.md:L902+49: Pin every CI action to a full commit SHA, and keep code from an unreviewed change out of any job that holds secrets or can deploy.
+- `code-workflow-token-per-job-write` [should-fix] {security} codebase.md:L952+49: Set workflow token permissions to read-only or none at the top level and grant write only on the job that needs it.
+- `code-workload-identity` [should-fix] {security} codebase.md:L1002+43: Exchange the platform's OIDC token for a short-lived cloud credential, and pin the trust policy to the workload.
