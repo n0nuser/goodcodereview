@@ -203,6 +203,32 @@ The unused-code linter reports 0 symbols, or each is allowlisted with a reason.
 
 **Counterpoint.** Code may be called by reflection, plugins, or external users. Check with the detector's config and a grep of consumers. For public API, deprecate first (see `chg-expand-contract`).
 
+## code-dead-docs-deleted
+
+severity: discuss  
+concerns: maintainability  
+applies_when: Auditing a repo whose docs, READMEs or design notes describe code that has since changed or gone.  
+tool gate: A freshness check (last-reviewed date or owner per page) that fails or flags pages untouched past a threshold.  
+Backed by: Google (unjudged), GitLab (unjudged), Linux kernel (unjudged). Backing: unjudged.
+
+**Rule.** Delete the docs for code or features that were removed or never shipped, instead of leaving or hiding them.
+
+**Why.** A wrong page is worse than none: readers trust it. A design doc left as a living doc after the code ships drifts the same way, so archive it as a decision record. Version control keeps the history, so deleting loses nothing. Docs known to be wrong go for the same reason.
+
+**FAIL**
+
+```text
+docs/design-auth-v1.md   # describes a login flow removed two releases ago, no status line
+```
+
+**PASS**
+
+```text
+docs/adr/0004-auth.md    # status: superseded by 0009; the old design doc is deleted
+```
+
+**Counterpoint.** "Old docs may still help someone." Version control keeps them. The kernel guide allows an outdated-warning banner on a page you cannot fix yet. Mark a still-useful record `superseded` and link the replacement so nobody mistakes it for current.
+
 ## code-dependency-licence-sbom
 
 severity: should-fix  
@@ -273,6 +299,32 @@ CI: poetry install        (poetry.lock committed; fails if it is stale)
 
 **Counterpoint.** Pinning delays security patches. A pin plus an update bot with a defined cadence beats floating versions, because the lock makes the update visible and revertable.
 
+## code-doc-examples-stay-true
+
+severity: discuss  
+concerns: maintainability, testing  
+applies_when: Auditing docs, READMEs or doc comments that contain code samples.  
+tool gate: Rust `cargo test --doc`, Go example functions, Python `doctest`, or a build step that includes samples from files that CI compiles.  
+Backed by: Rust project (unjudged), Google (unjudged), Elixir (unjudged). Backing: unjudged.
+
+**Rule.** Run each code example in the docs as a test.
+
+**Why.** A pasted example drifts from the API it shows, and readers copy it. A tested example fails the build when the API changes. Including the sample from a source file that CI builds, instead of pasting it, gives the same protection.
+
+**FAIL**
+
+```text
+README.md: a 12-line ```python block pasted by hand, never run
+```
+
+**PASS**
+
+```text
+README.md: the sample is the body of tests/test_quickstart.py, run by `pytest --doctest-glob`
+```
+
+**Counterpoint.** "Some samples are fragments that cannot run." Mark those as fragments and keep them short. The rule is for samples a reader will copy and run.
+
 ## code-docs-link-dont-duplicate
 
 severity: discuss  
@@ -297,6 +349,136 @@ README.md: Rebase and branch rules are in [the contributing guide](docs/contribu
 ```
 
 **Counterpoint.** "A link breaks and the reader has to leave the page." Run a link check (see `code-docs-refs-resolve`) and quote only the one line the reader needs here.
+
+## code-docs-link-text-descriptive
+
+severity: discuss  
+concerns: accessibility, usability  
+applies_when: A diff adds or edits a link in documentation, a README or a user-facing message.  
+tool gate: markdownlint `MD059` (descriptive link text) or a regex for "here" and "click here" link text.  
+Backed by: Google (unjudged), GitLab (unjudged), Microsoft (unjudged), Kubernetes (unjudged). Backing: unjudged.
+
+**Rule.** Write link text that says where the link goes, never "here", "this page" or "click here".
+
+**Why.** Readers scan links on their own, and screen readers list them out of context. "Here" tells neither what they will find.
+
+**FAIL**
+
+```text
+For the deploy steps, click [here](docs/deploy.md).
+```
+
+**PASS**
+
+```text
+Follow the [deploy steps](docs/deploy.md).
+```
+
+**Counterpoint.** "Short link text reads better." The descriptive phrase is usually the words already in the sentence, so it costs no length.
+
+## code-docs-no-directional-words
+
+severity: discuss  
+concerns: accessibility  
+applies_when: A diff adds documentation text that points to other content or to something on screen.  
+tool gate: A Vale rule (`Google.WordList`, `Microsoft.Avoid`) or a regex for "above", "below", "left" and "right" in docs.  
+Backed by: Google (unjudged), Microsoft (unjudged), Mozilla (unjudged), GitLab (unjudged), Elastic (unjudged), Red Hat (unjudged). Backing: unjudged.
+
+**Rule.** Do not point to content with "above", "below", "left" or "right"; name it or link to it.
+
+**Why.** A screen reader gives those words no meaning, and the page reflows on a phone. A reorder of the page also turns "the table below" into a false pointer.
+
+**FAIL**
+
+```text
+See the example above, and the options in the table below.
+```
+
+**PASS**
+
+```text
+See [the retry example](#retry-example) and [the options table](#options).
+```
+
+**Counterpoint.** "Readers understand 'below'." Most do, until the section moves. A link survives a reorder, and "the following" works where a link is too heavy.
+
+## code-docs-no-future-promises
+
+severity: discuss  
+concerns: maintainability  
+applies_when: A diff adds text to published documentation that describes a feature, release or date that is not shipped.  
+Backed by: Google (unjudged), Kubernetes (unjudged), GitLab (unjudged). Backing: unjudged.
+
+**Rule.** Do not promise unreleased features, versions or dates in published docs.
+
+**Why.** A promise in the docs reads as a commitment. When the plan changes, the page is wrong, readers have planned around it, and nobody owns the fix.
+
+**FAIL**
+
+```text
+Bulk export will arrive in the next release.
+```
+
+**PASS**
+
+```text
+Bulk export is not supported. Track the request in issue #482.
+```
+
+**Counterpoint.** "Users want a roadmap." Keep one, outside the reference docs. Link the issue, which says what is planned without a date.
+
+## code-docs-no-minimising-words
+
+severity: discuss  
+concerns: usability  
+applies_when: A diff adds documentation text that describes a task or a step.  
+tool gate: A Vale rule (GitLab `SubstitutionWarning`, Google `WordList`) or a regex for "simply", "just", "easily" and "obviously".  
+Backed by: Django Software Foundation (unjudged), GitLab (unjudged), Google (unjudged), Docker (unjudged), Elastic (unjudged). Backing: unjudged.
+
+**Rule.** Do not call a step "simple", "easy", "just" or "simply" in docs.
+
+**Why.** What is easy for the author is not easy for a newcomer. A reader who fails at an "easy" step blames themselves, and the word adds nothing to the instruction.
+
+**FAIL**
+
+```text
+Simply run the migration, then just restart the worker.
+```
+
+**PASS**
+
+```text
+Run the migration, then restart the worker.
+```
+
+**Counterpoint.** "'Just' softens the tone." Cut the word and keep the instruction. If a step really is optional, say so.
+
+## code-docs-redirect-on-move
+
+severity: discuss  
+concerns: maintainability, usability  
+applies_when: A diff renames, moves or deletes a published documentation page.  
+tool gate: A redirect-file check in CI that fails when a page is removed and no redirect names it.  
+Backed by: GitLab (unjudged), Cloudflare (unjudged), GitHub (unjudged), Microsoft (unjudged), TYPO3 (unjudged), Mozilla (unjudged). Backing: unjudged.
+
+**Rule.** Add a redirect from the old URL in the same change that moves, renames or deletes a documentation page.
+
+**Why.** Links in issues, search results and other docs keep pointing at the old address. Without a redirect they land on a 404, and the broken links are found one reader at a time.
+
+**FAIL**
+
+```text
+Diff: git mv docs/deploy.md docs/ops/deploy.md   (no redirect entry)
+```
+
+**PASS**
+
+```text
+Diff: git mv docs/deploy.md docs/ops/deploy.md
+      redirects.yml: /docs/deploy -> /docs/ops/deploy
+```
+
+**Counterpoint.** "Internal docs have few outside links." Then the redirect is a one-line file. Skip it only for a page that was never published.
 
 ## code-docs-refs-resolve
 
@@ -415,6 +597,32 @@ k6: thresholds: { http_req_duration: ["p(95)<300"] }        # non-zero exit fail
 ```
 
 **Counterpoint.** "Benchmarks in CI are noisy and flake." They are when a gate trusts one run. Gate on a stable budget, compare repeated runs (benchstat wants 10 to 20), and keep the threshold above the noise. On a site with much room to improve, a tight budget only turns every build red, so set it at today's level and lower it later.
+
+## code-readme-per-module
+
+severity: discuss  
+concerns: maintainability  
+applies_when: Auditing a repo with several packages, modules or self-contained components.  
+tool gate: A CI check that every package root holds a README (a glob test, or a docs linter).  
+Backed by: Google (unjudged), Microsoft (unjudged), HashiCorp (unjudged), GitHub (unjudged). Backing: unjudged.
+
+**Rule.** Give each package, module or self-contained component a README at its root that says what it holds and how to use it.
+
+**Why.** A reader landing in a directory from search or a stack trace has no other place to learn what the code is for. The README is the one file everyone opens first.
+
+**FAIL**
+
+```text
+services/billing/    (12 files, no README)
+```
+
+**PASS**
+
+```text
+services/billing/README.md   What billing owns, how to run its tests, who to ask.
+```
+
+**Counterpoint.** "A README per folder is clutter." The rule stops at the unit that has its own purpose. Leave plain subfolders without one.
 
 ## code-release-gated-on-ci
 

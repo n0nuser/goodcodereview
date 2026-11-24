@@ -1,5 +1,5 @@
 {
-"generated": "2026-11-21",
+"generated": "2026-11-22",
 "schema_version": 5,
 "cards": {
 "code-a11y-check-in-ci": {
@@ -58,6 +58,14 @@
 "url": "https://goodcodereview.com/codebase#code-dead-code",
 "tool_gate": "An unused-code linter in CI (vulture, knip, or deadcode); allowlist each intentional exception with a reason."
 },
+"code-dead-docs-deleted": {
+"level": "codebase",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Delete the docs for code or features that were removed or never shipped, instead of leaving or hiding them.",
+"url": "https://goodcodereview.com/codebase#code-dead-docs-deleted",
+"tool_gate": "A freshness check (last-reviewed date or owner per page) that fails or flags pages untouched past a threshold."
+},
 "code-dependency-licence-sbom": {
 "level": "codebase",
 "severity": "should-fix",
@@ -74,6 +82,14 @@
 "url": "https://goodcodereview.com/codebase#code-dependency-pinning",
 "tool_gate": "Lockfile-required install in CI; dependency-update bot config present."
 },
+"code-doc-examples-stay-true": {
+"level": "codebase",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Run each code example in the docs as a test.",
+"url": "https://goodcodereview.com/codebase#code-doc-examples-stay-true",
+"tool_gate": "Rust `cargo test --doc`, Go example functions, Python `doctest`, or a build step that includes samples from files that CI compiles."
+},
 "code-docs-link-dont-duplicate": {
 "level": "codebase",
 "severity": "discuss",
@@ -81,6 +97,46 @@
 "rule": "Link to the existing page or guide instead of rewriting or restating it.",
 "url": "https://goodcodereview.com/codebase#code-docs-link-dont-duplicate",
 "tool_gate": null
+},
+"code-docs-link-text-descriptive": {
+"level": "codebase",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Write link text that says where the link goes, never \"here\", \"this page\" or \"click here\".",
+"url": "https://goodcodereview.com/codebase#code-docs-link-text-descriptive",
+"tool_gate": "markdownlint `MD059` (descriptive link text) or a regex for \"here\" and \"click here\" link text."
+},
+"code-docs-no-directional-words": {
+"level": "codebase",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Do not point to content with \"above\", \"below\", \"left\" or \"right\"; name it or link to it.",
+"url": "https://goodcodereview.com/codebase#code-docs-no-directional-words",
+"tool_gate": "A Vale rule (`Google.WordList`, `Microsoft.Avoid`) or a regex for \"above\", \"below\", \"left\" and \"right\" in docs."
+},
+"code-docs-no-future-promises": {
+"level": "codebase",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Do not promise unreleased features, versions or dates in published docs.",
+"url": "https://goodcodereview.com/codebase#code-docs-no-future-promises",
+"tool_gate": null
+},
+"code-docs-no-minimising-words": {
+"level": "codebase",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Do not call a step \"simple\", \"easy\", \"just\" or \"simply\" in docs.",
+"url": "https://goodcodereview.com/codebase#code-docs-no-minimising-words",
+"tool_gate": "A Vale rule (GitLab `SubstitutionWarning`, Google `WordList`) or a regex for \"simply\", \"just\", \"easily\" and \"obviously\"."
+},
+"code-docs-redirect-on-move": {
+"level": "codebase",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Add a redirect from the old URL in the same change that moves, renames or deletes a documentation page.",
+"url": "https://goodcodereview.com/codebase#code-docs-redirect-on-move",
+"tool_gate": "A redirect-file check in CI that fails when a page is removed and no redirect names it."
 },
 "code-docs-refs-resolve": {
 "level": "codebase",
@@ -113,6 +169,14 @@
 "rule": "Write the performance budget down as a CI check that fails the build when it is exceeded.",
 "url": "https://goodcodereview.com/codebase#code-perf-budget-in-ci",
 "tool_gate": "Lighthouse CI assert, size-limit, k6 thresholds, Gatling assertions, or a benchstat comparison in CI."
+},
+"code-readme-per-module": {
+"level": "codebase",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Give each package, module or self-contained component a README at its root that says what it holds and how to use it.",
+"url": "https://goodcodereview.com/codebase#code-readme-per-module",
+"tool_gate": "A CI check that every package root holds a README (a glob test, or a docs linter)."
 },
 "code-release-gated-on-ci": {
 "level": "codebase",
@@ -330,6 +394,14 @@
 "url": "https://goodcodereview.com/function-any#fn-doc-documents-errors",
 "tool_gate": "Ruff `DOC501` (pydoclint rules) or the language's doc lint."
 },
+"fn-doc-params-match-signature": {
+"level": "function",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Make the parameters a doc comment lists match the function's signature, by name and in number.",
+"url": "https://goodcodereview.com/function-any#fn-doc-params-match-signature",
+"tool_gate": "Ruff `D417` (missing argument descriptions), `DOC102`, Checkstyle `JavadocMethod`, or the compiler's doc warning (C# `CS1572`, `CS1573`)."
+},
 "fn-doc-summary-sentence": {
 "level": "function",
 "severity": "discuss",
@@ -354,6 +426,14 @@
 "url": "https://goodcodereview.com/function-any#fn-english-identifiers",
 "tool_gate": "Spell-check or non-ASCII identifier lint."
 },
+"fn-error-message-actionable": {
+"level": "function",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Say in an error message what went wrong and what the reader can do about it.",
+"url": "https://goodcodereview.com/function-any#fn-error-message-actionable",
+"tool_gate": null
+},
 "fn-error-says-what-and-how": {
 "level": "function",
 "severity": "should-fix",
@@ -361,6 +441,22 @@
 "rule": "Show each validation error next to its field, in plain words that name what is wrong and how to fix it.",
 "url": "https://goodcodereview.com/function-ui#fn-error-says-what-and-how",
 "tool_gate": "none; a rendered check that submits each invalid field."
+},
+"fn-error-string-lowercase-no-period": {
+"level": "function",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Start an error string in lowercase and end it without punctuation when it is wrapped or printed after other context.",
+"url": "https://goodcodereview.com/function-any#fn-error-string-lowercase-no-period",
+"tool_gate": "Go `staticcheck` `ST1005`, `revive` `error-strings`, Rust `clippy` has no rule; a regex check otherwise."
+},
+"fn-error-text-no-apology-or-blame": {
+"level": "function",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Do not blame the user, and do not pad error text with \"please\", \"sorry\" or \"oops\".",
+"url": "https://goodcodereview.com/function-any#fn-error-text-no-apology-or-blame",
+"tool_gate": "A regex or Vale rule for \"please\", \"sorry\", \"oops\" and \"you forgot\" in message strings."
 },
 "fn-fetch-only-needed-data": {
 "level": "function",
@@ -481,6 +577,14 @@
 "rule": "Parse a URL that comes from data and allow only `https:` (and `http:` or `mailto:` where needed) before you set it as a link target.",
 "url": "https://goodcodereview.com/function-ui#fn-link-url-scheme-allowlist",
 "tool_gate": null
+},
+"fn-log-or-return-not-both": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Handle an error once: return it or log it, not both.",
+"url": "https://goodcodereview.com/function-any#fn-log-or-return-not-both",
+"tool_gate": "A linter for log-and-return (Go `errorlint` patterns, SonarQube `S2139`), or a review check."
 },
 "fn-mask-credentials-in-output": {
 "level": "function",
@@ -1754,6 +1858,30 @@
 "url": "https://goodcodereview.com/change#chg-chestertons-fence",
 "tool_gate": null
 },
+"chg-commit-body-says-why": {
+"level": "change",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Use the commit body to say why the change was made, not to repeat what the diff shows.",
+"url": "https://goodcodereview.com/change#chg-commit-body-says-why",
+"tool_gate": null
+},
+"chg-commit-subject-imperative": {
+"level": "change",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Write the commit subject as a short command in the imperative, about 50 characters and at most 72, with no trailing period.",
+"url": "https://goodcodereview.com/change#chg-commit-subject-imperative",
+"tool_gate": "commitlint `subject-max-length` and `subject-case`, or a `commit-msg` hook."
+},
+"chg-commit-title-area-prefix": {
+"level": "change",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Start the commit or PR title with the area it changes, such as `net: summary` or `importer: summary`, where the project uses area prefixes.",
+"url": "https://goodcodereview.com/change#chg-commit-title-area-prefix",
+"tool_gate": "commitlint `scope-empty` or a PR-title check in CI."
+},
 "chg-delete-legacy-after-migration": {
 "level": "change",
 "severity": "should-fix",
@@ -1770,6 +1898,14 @@
 "url": "https://goodcodereview.com/change#chg-devex-breaking-config",
 "tool_gate": "Startup check that fails fast on missing or unknown config keys."
 },
+"chg-doc-marks-version-added": {
+"level": "change",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "When a diff adds or changes a documented feature, mark in the docs the version that added or changed it.",
+"url": "https://goodcodereview.com/change#chg-doc-marks-version-added",
+"tool_gate": "Sphinx `versionadded` and `versionchanged` directives with a docs check, or a front-matter lint for a version field."
+},
 "chg-docs-updated-with-code": {
 "level": "change",
 "severity": "should-fix",
@@ -1777,6 +1913,14 @@
 "rule": "Change the comments, docstrings and docs that describe the code in the same diff as the code, or delete them.",
 "url": "https://goodcodereview.com/change#chg-docs-updated-with-code",
 "tool_gate": null
+},
+"chg-each-commit-builds": {
+"level": "change",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Make each commit in a series build and pass the tests on its own.",
+"url": "https://goodcodereview.com/change#chg-each-commit-builds",
+"tool_gate": "A CI job that checks out each commit and runs the build and tests (`git rebase --exec`, `git bisect run`)."
 },
 "chg-expand-contract": {
 "level": "change",

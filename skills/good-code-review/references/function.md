@@ -495,6 +495,44 @@ def port_for(name):
 
 **Counterpoint.** "Exceptions change and the list goes stale." That argues for a lint that checks it, and for listing only what callers can cause. Listing every exception from every callee is not what the rule asks.
 
+## fn-doc-params-match-signature
+
+severity: discuss  
+concerns: maintainability, correctness  
+applies_when: A diff changes the parameters of a function that has a doc comment, or adds a doc comment that lists parameters.  
+tool gate: Ruff `D417` (missing argument descriptions), `DOC102`, Checkstyle `JavadocMethod`, or the compiler's doc warning (C# `CS1572`, `CS1573`).  
+Backed by: Drupal (unjudged), Microsoft (unjudged), Python Software Foundation (unjudged). Backing: unjudged.
+
+**Rule.** Make the parameters a doc comment lists match the function's signature, by name and in number.
+
+**Why.** Callers pass keyword arguments by the documented name. A renamed, added or removed parameter left out of the doc sends them to a name that no longer exists.
+
+**FAIL**
+
+```python
+def send(to, subject, body):
+    """Send a message.
+
+    Args:
+        recipient: Who gets it.
+    """
+```
+
+**PASS**
+
+```python
+def send(to, subject, body):
+    """Send a message.
+
+    Args:
+        to: Who gets it.
+        subject: The subject line.
+        body: The message text.
+    """
+```
+
+**Counterpoint.** "Obvious parameters need no description." Then leave the list out. The rule is against a list that disagrees with the signature, not against a short one.
+
 ## fn-doc-summary-sentence
 
 severity: discuss  
@@ -591,6 +629,31 @@ def calculate_total_price(cart): ...
 
 **Counterpoint.** "Domain terms have no English word." Keep the local term, once, in a glossary, and comment it ([mod-one-name-per-concept](module.md#mod-one-name-per-concept)). Python itself allows non-ASCII identifiers so that teams can name things in their own language (PEP 3131). If the code will never leave one language group, a team may choose that language. Write the choice down so the check can pass.
 
+## fn-error-message-actionable
+
+severity: discuss  
+concerns: usability, observability  
+applies_when: A diff writes a message for a person or an API caller that reports a failure, outside form validation.  
+Backed by: GNU Project (unjudged), Google (unjudged), Atlassian (unjudged), Apple (unjudged). Backing: unjudged.
+
+**Rule.** Say in an error message what went wrong and what the reader can do about it.
+
+**Why.** A message that stops at "failed" leaves the reader to guess the cause and the fix, and sends them to a search engine or a support ticket.
+
+**FAIL**
+
+```text
+Error: request failed (code 4021)
+```
+
+**PASS**
+
+```text
+The export was cut off because the file is over 100 MB. Choose a shorter date range and try again.
+```
+
+**Counterpoint.** "Some causes are unknown." Then say what is known and where to look, such as a log id. Keep the cause and fix in the message and put internals in a details field.
+
 ## fn-error-says-what-and-how
 
 severity: should-fix  
@@ -621,6 +684,58 @@ Backed by: Nielsen Norman Group (unjudged), GOV.UK (unjudged), W3C (unjudged), U
 ```
 
 **Counterpoint.** "Detailed messages leak information." For a login, that is true: say "Email or password is wrong". For ordinary fields, the specific message is the fix. Hold back the suggestion only where it would weaken security.
+
+## fn-error-string-lowercase-no-period
+
+severity: discuss  
+concerns: maintainability, usability  
+applies_when: Code builds an error or diagnostic string that callers wrap, print after other text, or show next to other tool output.  
+tool gate: Go `staticcheck` `ST1005`, `revive` `error-strings`, Rust `clippy` has no rule; a regex check otherwise.  
+Backed by: Google (unjudged), Rust project (unjudged), LLVM (unjudged). Backing: unjudged.
+
+**Rule.** Start an error string in lowercase and end it without punctuation when it is wrapped or printed after other context.
+
+**Why.** Wrapped errors join into one line ("open config: read file: permission denied"). A capital or a full stop in the middle reads as a typo and breaks the chain.
+
+**FAIL**
+
+```go
+return fmt.Errorf("Failed to read config.")
+```
+
+**PASS**
+
+```go
+return fmt.Errorf("read config: %w", err)
+```
+
+**Counterpoint.** "Messages shown to users should be proper sentences." They should, at the UI layer. Keep the wrapped error lowercase and format the user text where it is shown.
+
+## fn-error-text-no-apology-or-blame
+
+severity: discuss  
+concerns: usability  
+applies_when: A diff writes or edits a message shown to a person when something fails.  
+tool gate: A regex or Vale rule for "please", "sorry", "oops" and "you forgot" in message strings.  
+Backed by: GOV.UK (unjudged), Atlassian (unjudged), Apple (unjudged), Microsoft (unjudged), Google (unjudged). Backing: unjudged.
+
+**Rule.** Do not blame the user, and do not pad error text with "please", "sorry" or "oops".
+
+**Why.** The padding does not help the reader fix anything, and blame makes them stop reading. Say what happened and what to do, in neutral words.
+
+**FAIL**
+
+```text
+Oops! You forgot to enter your email. Please try again, sorry for the trouble.
+```
+
+**PASS**
+
+```text
+Enter your email address.
+```
+
+**Counterpoint.** "A sorry shows empathy." For a serious fault that is ours, say so once and plainly. For input the user got wrong, the shortest fix reads as the kindest.
 
 ## fn-fetch-only-needed-data
 
@@ -1097,6 +1212,37 @@ link.href = ["https:", "http:"].includes(u.protocol) ? u.href : "#";
 ```
 
 **Counterpoint.** "The feed is ours, so it is trusted." It is trusted until a third party writes into it or someone breaches it. The check is two lines and does not depend on who owns the source.
+
+## fn-log-or-return-not-both
+
+severity: should-fix  
+concerns: observability, maintainability  
+applies_when: A function handles an error by logging it and also returning or rethrowing it.  
+tool gate: A linter for log-and-return (Go `errorlint` patterns, SonarQube `S2139`), or a review check.  
+Backed by: Google (unjudged), Uber (unjudged), Kubernetes (unjudged). Backing: unjudged.
+
+**Rule.** Handle an error once: return it or log it, not both.
+
+**Why.** Each caller up the stack repeats the same log line, so one failure fills the log with copies and hides the real order of events. The caller knows if the error is expected and can log it once, or retry.
+
+**FAIL**
+
+```go
+if err != nil {
+    log.Printf("could not save: %v", err)
+    return err
+}
+```
+
+**PASS**
+
+```go
+if err != nil {
+    return fmt.Errorf("save order: %w", err)
+}
+```
+
+**Counterpoint.** "I want the log at the point of failure." Add context with wrapping and log once at the boundary that decides the outcome. A top-level handler is where logging belongs.
 
 ## fn-mask-credentials-in-output
 

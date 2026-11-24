@@ -2,6 +2,11 @@
 
 Every stable card that lists the `observability` concern, by level. The place `<level>.md:L<first>+<count>` is the card's lines: read them with offset `<first>` and limit `<count>`.
 
+## function
+
+- `fn-error-message-actionable` [discuss] {usability, observability} function.md:L632+24: Say in an error message what went wrong and what the reader can do about it.
+- `fn-log-or-return-not-both` [should-fix] {observability, maintainability} function.md:L1216+30: Handle an error once: return it or log it, not both.
+
 ## service
 
 - `svc-best-effort-optional-deps` [should-fix] {reliability, observability} service.md:L566+34: Give each call to a non-critical dependency a short budget and a default, so its failure degrades the result instead of failing the critical path, and count every fallback.

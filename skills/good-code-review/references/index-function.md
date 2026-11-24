@@ -18,63 +18,68 @@ One line per stable function card: id, severity, concerns, context, place, rule.
 - `fn-disclosure-hides-only-secondary` [should-fix] {usability} <ui> L399+35: Do not hide a required field or information most users need behind a disclosure that starts closed.
 - `fn-distinct-types-for-ids` [should-fix] {correctness} L435+28: Give arguments with different meanings distinct types, so a call that swaps them fails to type-check.
 - `fn-doc-documents-errors` [should-fix] {maintainability, reliability} L464+33: Document in the doc comment each error a public function can raise, each condition that makes it panic, and each precondition a caller must meet to call it safely.
-- `fn-doc-summary-sentence` [discuss] {maintainability} L498+31: Open each doc comment with one short summary line, then a blank line before any detail.
-- `fn-early-return-no-else` [discuss] {maintainability} L530+37: Handle the error or edge case first and return early, so the main path is not nested.
-- `fn-english-identifiers` [discuss] {maintainability} L568+25: Write identifiers and comments in English, unless the project policy names another language.
-- `fn-error-says-what-and-how` [should-fix] {usability, accessibility} <ui> L594+30: Show each validation error next to its field, in plain words that name what is wrong and how to fix it.
-- `fn-fetch-only-needed-data` [should-fix] {performance} <data> L625+29: Filter, count, and aggregate in the query, and select only the columns the code uses.
-- `fn-focus-indicator-visible` [block] {accessibility, usability} <ui> L655+27: Keep a visible focus indicator on every focusable element. Never set `outline: none` without a replacement.
-- `fn-form-control-has-label` [block] {accessibility, usability} <ui> L683+31: Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.
-- `fn-guard-uri-decoding` [should-fix] {reliability, correctness} <ui,server> L715+32: Wrap `decodeURIComponent` on user input in a `try`/`catch`, or parse with `URLSearchParams`, so that a malformed `%` sequence cannot throw.
-- `fn-handle-rejected-promises` [should-fix] {reliability, correctness} L748+35: Handle the rejection of every promise you start: `await` it inside `try`/`catch`, end the chain with `.catch()`, or return it to a caller that does.
-- `fn-header-value-encoding` [block] {security} <server> L784+31: Set every response header through the framework's header API, never by writing to the connection, and reject or encode CR and LF in any request-derived value.
-- `fn-heading-structure` [should-fix] {accessibility, usability} <ui> L816+31: Mark every heading with a real `<h1>` to `<h6>` element, not a styled `div`, `span`, or `p`.
-- `fn-img-alt-text` [should-fix] {accessibility} <ui> L848+31: Give every `<img>` an `alt` attribute: text that serves the image's purpose, or `alt=""` when the image is decorative.
-- `fn-independent-work-concurrent` [should-fix] {performance, correctness} L880+27: Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.
-- `fn-join-dont-concat-in-loop` [should-fix] {performance} L908+27: Build a string from a loop with a builder or a join, never with repeated `+=`.
-- `fn-jwt-verify-pinned` [block] {security} <server> L936+29: Verify the signature against a fixed list of accepted algorithms, and check `iss`, `aud`, and `exp`, before reading any claim.
-- `fn-keep-input-on-error` [should-fix] {usability} <ui> L966+34: After a failed validation or submit, show the form again with every value the user entered, correct or not.
-- `fn-label-above-field` [discuss] {usability, accessibility} <ui> L1001+31: Put the visible label of a text input, select, or textarea directly above it.
-- `fn-length-budget` [discuss] {maintainability} L1033+38: Split a function that passes the project's length limit (about 40 lines if it sets none) unless its body is one simple operation or one flat dispatch.
-- `fn-link-url-scheme-allowlist` [should-fix] {security} <ui> L1072+28: Parse a URL that comes from data and allow only `https:` (and `http:` or `mailto:` where needed) before you set it as a link target.
-- `fn-mask-credentials-in-output` [should-fix] {security, usability} <cli> L1101+34: Mask credentials in list, show and debug output (keep only the last four characters), and print a full value only behind an explicit flag.
-- `fn-name-intermediate-conditions` [discuss] {maintainability} L1136+26: Name each compound condition by assigning its sub-conditions to booleans that say what they mean.
-- `fn-native-button-or-link` [block] {accessibility, usability} <ui> L1163+30: Use `<button>` for an action and `<a href>` for navigation. Do not attach a click handler to a `div`, `span`, or `a` with no `href`.
-- `fn-nesting-depth-cap` [discuss] {maintainability} L1194+37: Keep control-flow nesting shallow.
-- `fn-no-blocking-call-in-async-code` [block] {performance, correctness} L1232+29: Never make a blocking I/O call or run long CPU work directly in async code; use the async API or hand the work to a thread or worker.
-- `fn-no-caller-mutation` [should-fix] {correctness, testing} L1262+34: Do not mutate a parameter or an object the caller owns, unless the function is documented as mutating it.
-- `fn-no-check-then-act-across-await` [should-fix] {correctness} L1297+28: Make check-and-write one atomic operation where the state lives, and never split it across a suspension point.
-- `fn-no-eval-untrusted` [block] {security} L1326+27: Never pass untrusted text to `eval`, `exec`, `new Function`, or a template compiler. Pass it to a fixed template or a parser as data.
-- `fn-no-getattr-for-known-names` [discuss] {maintainability} L1354+25: Use plain field access, and reserve dynamic access for genuinely dynamic names.
-- `fn-no-magic-values` [should-fix] {maintainability} L1380+27: Give every meaningful literal a name: an enum member or a constant.
-- `fn-no-mass-assignment` [block] {security} <server> L1408+29: Bind request data to a DTO or an explicit field allowlist, never straight onto the model.
-- `fn-no-native-deserialise-untrusted` [block] {security} L1438+27: Parse untrusted input with a data-only format, never with a native object deserialiser.
-- `fn-no-positive-tabindex` [should-fix] {accessibility, usability} <ui> L1466+31: Write the DOM in reading order and never set `tabindex` above 0.
-- `fn-no-prototype-pollution` [block] {security} L1498+35: Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys.
-- `fn-no-raw-html-sink` [block] {security} <ui,server> L1534+29: Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.
-- `fn-no-shell-with-input` [block] {security} L1564+27: Start processes with the program and each argument as separate list items, and never through a shell string.
-- `fn-object-level-authz` [block] {security} <server> L1592+29: Check that the caller may act on the specific record before returning or changing it.
-- `fn-parameter-limit` [should-fix] {maintainability} L1622+29: Set a parameter-count limit in the project's linter, and keep signatures within it.
-- `fn-password-min-length` [should-fix] {security} <server> L1652+34: Enforce a minimum password length on the server whenever a user sets a password.
-- `fn-password-slow-hash` [block] {security} <server> L1687+28: Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.
-- `fn-public-api-has-docstring` [discuss] {maintainability} L1716+30: Give each public module, class, function and method a doc comment.
-- `fn-redirect-target-allowlist` [should-fix] {security} <server> L1747+29: Redirect only to a local path or to a host on a server-side allowlist, never to a URL taken from the request as is.
-- `fn-reduced-motion-respected` [should-fix] {accessibility, usability} <ui> L1777+33: Switch off or replace large, repeating, or interaction-triggered motion when `prefers-reduced-motion: reduce` is set.
-- `fn-regex-compiled-once` [should-fix] {performance} L1811+29: Compile a regular expression once, at module or startup level, and reuse it.
-- `fn-related-controls-in-fieldset` [should-fix] {accessibility, usability} <ui> L1841+35: Wrap each radio group, checkbox group, and other set of related controls, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.
-- `fn-rerun-safe-after-crash` [should-fix] {reliability} L1877+30: Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.
-- `fn-response-fields-explicit` [should-fix] {security, compatibility} <server> L1908+28: Return a response type that lists each field, never the stored model or a generic dump of it.
-- `fn-specific-exceptions-only` [should-fix] {correctness} L1937+31: Catch only the specific exception you can handle in business code.
-- `fn-status-announced-live-region` [should-fix] {accessibility, usability} <ui> L1969+31: Announce an async status message through a live region (`role="status"` or `role="alert"`), and put a `role="status"` or `aria-live` region in the markup before its text changes.
-- `fn-target-size` [should-fix] {accessibility, usability} <ui> L2001+30: Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.
-- `fn-test-behaviour-not-implementation` [should-fix] {testing, maintainability} L2032+34: Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.
-- `fn-test-oracle-independent` [should-fix] {correctness, testing} L2067+25: Take a test's expected value from the requirement, not from the code under test.
-- `fn-tls-verify-on` [block] {security} L2093+27: Leave certificate and hostname verification on in every environment that ships, and check the certificate against the host you meant to reach, not a name the server supplies.
-- `fn-todo-has-owner-or-issue` [discuss] {maintainability, process} L2121+25: Give each TODO an owner or a tracking issue, such as `TODO(alice)` or `TODO(#1234)`.
-- `fn-variants-as-tagged-union` [should-fix] {maintainability} L2147+37: Model variants as a tagged union, and make every switch over it fail the build when a variant is unhandled.
-- `fn-xml-no-external-entities` [block] {security} L2185+27: Parse untrusted XML with external entity resolution turned off, for example through a hardened parser such as `defusedxml`.
-- `py-docstrings-google` [discuss] {maintainability} L2213+27: Write a Google-style docstring only when it adds what the signature cannot say.
-- `py-modern-typing` [should-fix] {correctness} L2241+26: Write `X | None` and builtin generics, not `typing` aliases.
-- `py-no-cast` [should-fix] {correctness} L2268+27: Do not use `cast()`; parse the boundary into a typed model, or narrow with `isinstance`.
-- `py-paths-from-file` [should-fix] {correctness} L2296+24: Resolve paths from `__file__`, not the current working directory.
-- `py-pytest-parametrize` [should-fix] {testing} L2321+28: Write tests that differ only in inputs and expected values as one `@pytest.mark.parametrize` test.
+- `fn-doc-params-match-signature` [discuss] {maintainability, correctness} L498+37: Make the parameters a doc comment lists match the function's signature, by name and in number.
+- `fn-doc-summary-sentence` [discuss] {maintainability} L536+31: Open each doc comment with one short summary line, then a blank line before any detail.
+- `fn-early-return-no-else` [discuss] {maintainability} L568+37: Handle the error or edge case first and return early, so the main path is not nested.
+- `fn-english-identifiers` [discuss] {maintainability} L606+25: Write identifiers and comments in English, unless the project policy names another language.
+- `fn-error-message-actionable` [discuss] {usability, observability} L632+24: Say in an error message what went wrong and what the reader can do about it.
+- `fn-error-says-what-and-how` [should-fix] {usability, accessibility} <ui> L657+30: Show each validation error next to its field, in plain words that name what is wrong and how to fix it.
+- `fn-error-string-lowercase-no-period` [discuss] {maintainability, usability} L688+25: Start an error string in lowercase and end it without punctuation when it is wrapped or printed after other context.
+- `fn-error-text-no-apology-or-blame` [discuss] {usability} L714+25: Do not blame the user, and do not pad error text with "please", "sorry" or "oops".
+- `fn-fetch-only-needed-data` [should-fix] {performance} <data> L740+29: Filter, count, and aggregate in the query, and select only the columns the code uses.
+- `fn-focus-indicator-visible` [block] {accessibility, usability} <ui> L770+27: Keep a visible focus indicator on every focusable element. Never set `outline: none` without a replacement.
+- `fn-form-control-has-label` [block] {accessibility, usability} <ui> L798+31: Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.
+- `fn-guard-uri-decoding` [should-fix] {reliability, correctness} <ui,server> L830+32: Wrap `decodeURIComponent` on user input in a `try`/`catch`, or parse with `URLSearchParams`, so that a malformed `%` sequence cannot throw.
+- `fn-handle-rejected-promises` [should-fix] {reliability, correctness} L863+35: Handle the rejection of every promise you start: `await` it inside `try`/`catch`, end the chain with `.catch()`, or return it to a caller that does.
+- `fn-header-value-encoding` [block] {security} <server> L899+31: Set every response header through the framework's header API, never by writing to the connection, and reject or encode CR and LF in any request-derived value.
+- `fn-heading-structure` [should-fix] {accessibility, usability} <ui> L931+31: Mark every heading with a real `<h1>` to `<h6>` element, not a styled `div`, `span`, or `p`.
+- `fn-img-alt-text` [should-fix] {accessibility} <ui> L963+31: Give every `<img>` an `alt` attribute: text that serves the image's purpose, or `alt=""` when the image is decorative.
+- `fn-independent-work-concurrent` [should-fix] {performance, correctness} L995+27: Start independent I/O together and wait for all of it; run calls in sequence only when one needs the result of another.
+- `fn-join-dont-concat-in-loop` [should-fix] {performance} L1023+27: Build a string from a loop with a builder or a join, never with repeated `+=`.
+- `fn-jwt-verify-pinned` [block] {security} <server> L1051+29: Verify the signature against a fixed list of accepted algorithms, and check `iss`, `aud`, and `exp`, before reading any claim.
+- `fn-keep-input-on-error` [should-fix] {usability} <ui> L1081+34: After a failed validation or submit, show the form again with every value the user entered, correct or not.
+- `fn-label-above-field` [discuss] {usability, accessibility} <ui> L1116+31: Put the visible label of a text input, select, or textarea directly above it.
+- `fn-length-budget` [discuss] {maintainability} L1148+38: Split a function that passes the project's length limit (about 40 lines if it sets none) unless its body is one simple operation or one flat dispatch.
+- `fn-link-url-scheme-allowlist` [should-fix] {security} <ui> L1187+28: Parse a URL that comes from data and allow only `https:` (and `http:` or `mailto:` where needed) before you set it as a link target.
+- `fn-log-or-return-not-both` [should-fix] {observability, maintainability} L1216+30: Handle an error once: return it or log it, not both.
+- `fn-mask-credentials-in-output` [should-fix] {security, usability} <cli> L1247+34: Mask credentials in list, show and debug output (keep only the last four characters), and print a full value only behind an explicit flag.
+- `fn-name-intermediate-conditions` [discuss] {maintainability} L1282+26: Name each compound condition by assigning its sub-conditions to booleans that say what they mean.
+- `fn-native-button-or-link` [block] {accessibility, usability} <ui> L1309+30: Use `<button>` for an action and `<a href>` for navigation. Do not attach a click handler to a `div`, `span`, or `a` with no `href`.
+- `fn-nesting-depth-cap` [discuss] {maintainability} L1340+37: Keep control-flow nesting shallow.
+- `fn-no-blocking-call-in-async-code` [block] {performance, correctness} L1378+29: Never make a blocking I/O call or run long CPU work directly in async code; use the async API or hand the work to a thread or worker.
+- `fn-no-caller-mutation` [should-fix] {correctness, testing} L1408+34: Do not mutate a parameter or an object the caller owns, unless the function is documented as mutating it.
+- `fn-no-check-then-act-across-await` [should-fix] {correctness} L1443+28: Make check-and-write one atomic operation where the state lives, and never split it across a suspension point.
+- `fn-no-eval-untrusted` [block] {security} L1472+27: Never pass untrusted text to `eval`, `exec`, `new Function`, or a template compiler. Pass it to a fixed template or a parser as data.
+- `fn-no-getattr-for-known-names` [discuss] {maintainability} L1500+25: Use plain field access, and reserve dynamic access for genuinely dynamic names.
+- `fn-no-magic-values` [should-fix] {maintainability} L1526+27: Give every meaningful literal a name: an enum member or a constant.
+- `fn-no-mass-assignment` [block] {security} <server> L1554+29: Bind request data to a DTO or an explicit field allowlist, never straight onto the model.
+- `fn-no-native-deserialise-untrusted` [block] {security} L1584+27: Parse untrusted input with a data-only format, never with a native object deserialiser.
+- `fn-no-positive-tabindex` [should-fix] {accessibility, usability} <ui> L1612+31: Write the DOM in reading order and never set `tabindex` above 0.
+- `fn-no-prototype-pollution` [block] {security} L1644+35: Never write an untrusted key into a plain object. Use a `Map`, an object from `Object.create(null)`, or an allowlist of keys.
+- `fn-no-raw-html-sink` [block] {security} <ui,server> L1680+29: Write untrusted text through an encoding sink (`textContent`, auto-escaped template), never through a raw HTML sink.
+- `fn-no-shell-with-input` [block] {security} L1710+27: Start processes with the program and each argument as separate list items, and never through a shell string.
+- `fn-object-level-authz` [block] {security} <server> L1738+29: Check that the caller may act on the specific record before returning or changing it.
+- `fn-parameter-limit` [should-fix] {maintainability} L1768+29: Set a parameter-count limit in the project's linter, and keep signatures within it.
+- `fn-password-min-length` [should-fix] {security} <server> L1798+34: Enforce a minimum password length on the server whenever a user sets a password.
+- `fn-password-slow-hash` [block] {security} <server> L1833+28: Hash passwords with Argon2id (or scrypt, bcrypt, PBKDF2) and a per-password salt from the library.
+- `fn-public-api-has-docstring` [discuss] {maintainability} L1862+30: Give each public module, class, function and method a doc comment.
+- `fn-redirect-target-allowlist` [should-fix] {security} <server> L1893+29: Redirect only to a local path or to a host on a server-side allowlist, never to a URL taken from the request as is.
+- `fn-reduced-motion-respected` [should-fix] {accessibility, usability} <ui> L1923+33: Switch off or replace large, repeating, or interaction-triggered motion when `prefers-reduced-motion: reduce` is set.
+- `fn-regex-compiled-once` [should-fix] {performance} L1957+29: Compile a regular expression once, at module or startup level, and reuse it.
+- `fn-related-controls-in-fieldset` [should-fix] {accessibility, usability} <ui> L1987+35: Wrap each radio group, checkbox group, and other set of related controls, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.
+- `fn-rerun-safe-after-crash` [should-fix] {reliability} L2023+30: Make a state-changing operation give the same result on a second run and after a crash at any step, by deriving each step from current state and making leftovers recognisable as stale.
+- `fn-response-fields-explicit` [should-fix] {security, compatibility} <server> L2054+28: Return a response type that lists each field, never the stored model or a generic dump of it.
+- `fn-specific-exceptions-only` [should-fix] {correctness} L2083+31: Catch only the specific exception you can handle in business code.
+- `fn-status-announced-live-region` [should-fix] {accessibility, usability} <ui> L2115+31: Announce an async status message through a live region (`role="status"` or `role="alert"`), and put a `role="status"` or `aria-live` region in the markup before its text changes.
+- `fn-target-size` [should-fix] {accessibility, usability} <ui> L2147+30: Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.
+- `fn-test-behaviour-not-implementation` [should-fix] {testing, maintainability} L2178+34: Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.
+- `fn-test-oracle-independent` [should-fix] {correctness, testing} L2213+25: Take a test's expected value from the requirement, not from the code under test.
+- `fn-tls-verify-on` [block] {security} L2239+27: Leave certificate and hostname verification on in every environment that ships, and check the certificate against the host you meant to reach, not a name the server supplies.
+- `fn-todo-has-owner-or-issue` [discuss] {maintainability, process} L2267+25: Give each TODO an owner or a tracking issue, such as `TODO(alice)` or `TODO(#1234)`.
+- `fn-variants-as-tagged-union` [should-fix] {maintainability} L2293+37: Model variants as a tagged union, and make every switch over it fail the build when a variant is unhandled.
+- `fn-xml-no-external-entities` [block] {security} L2331+27: Parse untrusted XML with external entity resolution turned off, for example through a hardened parser such as `defusedxml`.
+- `py-docstrings-google` [discuss] {maintainability} L2359+27: Write a Google-style docstring only when it adds what the signature cannot say.
+- `py-modern-typing` [should-fix] {correctness} L2387+26: Write `X | None` and builtin generics, not `typing` aliases.
+- `py-no-cast` [should-fix] {correctness} L2414+27: Do not use `cast()`; parse the boundary into a typed model, or narrow with `isinstance`.
+- `py-paths-from-file` [should-fix] {correctness} L2442+24: Resolve paths from `__file__`, not the current working directory.
+- `py-pytest-parametrize` [should-fix] {testing} L2467+28: Write tests that differ only in inputs and expected values as one `@pytest.mark.parametrize` test.

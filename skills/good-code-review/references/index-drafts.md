@@ -3,14 +3,11 @@
 One line per draft card in `drafts.md`: id, severity, concerns, place, rule. Draft cards are not vetted. The place `L<first>+<count>` is the card's lines in `drafts.md`.
 
 - `code-ci-job-pass-rate-threshold` [discuss] {reliability, process} L652+9: Set a numeric pass-rate threshold for the pipeline or each blocking job, and act when it falls below it.
-- `code-dead-docs-deleted` [discuss] {maintainability} L662+9: Delete docs known to be wrong or obsolete instead of leaving them in place or hiding them.
-- `code-doc-examples-stay-true` [discuss] {maintainability, testing} L672+9: Run each code example in the docs as a test, or include it from a source file that CI builds, instead of pasting it.
-- `code-docs-redirect-on-move` [discuss] {maintainability, usability} L682+9: Add a redirect from the old URL in the same change that moves, renames or deletes a documentation page.
-- `code-documented-setup-runs` [should-fix] {maintainability, process} L692+9: Keep the setup, build and run commands in the README or contribution guide accurate: they work as written on a clean checkout, and any drift is fixed or reported.
-- `code-gate-new-violations-only` [should-fix] {maintainability, process} L702+9: Gate CI on new or modified code, and track pre-existing violations in a separate store without letting a build add to it.
-- `code-signed-commits-protected` [should-fix] {security, process} L712+9: Require signed commits on protected branches, so unsigned commits cannot merge or be pushed.
-- `code-test-suite-time-budget` [should-fix] {testing, performance, process} L722+9: Record the suite's total time and its slowest tests on every CI run, and fail the build when the total or a single test passes a written budget.
-- `code-tests-order-independent` [should-fix] {testing, reliability} L732+9: Make each test pass in any order, sharing no mutable state with other tests.
+- `code-documented-setup-runs` [should-fix] {maintainability, process} L662+9: Keep the setup, build and run commands in the README or contribution guide accurate: they work as written on a clean checkout, and any drift is fixed or reported.
+- `code-gate-new-violations-only` [should-fix] {maintainability, process} L672+9: Gate CI on new or modified code, and track pre-existing violations in a separate store without letting a build add to it.
+- `code-signed-commits-protected` [should-fix] {security, process} L682+9: Require signed commits on protected branches, so unsigned commits cannot merge or be pushed.
+- `code-test-suite-time-budget` [should-fix] {testing, performance, process} L692+9: Record the suite's total time and its slowest tests on every CI run, and fail the build when the total or a single test passes a written budget.
+- `code-tests-order-independent` [should-fix] {testing, reliability} L702+9: Make each test pass in any order, sharing no mutable state with other tests.
 - `fn-atomic-related-updates` [should-fix] {correctness} L152+9: Make related writes succeed or fail together.
 - `fn-comments-stay-short` [should-fix] {maintainability} L162+9: Keep a comment to a few lines. Put a longer explanation in the docs, a README or an ADR, and leave a one-line link in the comment.
 - `fn-empty-collection-not-none` [should-fix] {correctness} L172+9: Return an empty collection for "nothing found"; return `None` only when absent differs from empty.
@@ -24,9 +21,9 @@ One line per draft card in `drafts.md`: id, severity, concerns, place, rule. Dra
 - `fn-no-stringly-typed-returns` [should-fix] {correctness, compatibility} L254+9: Return a closed type (an enum, a tagged union or a sealed hierarchy) for a closed set of values, not a bare string. For a boolean flag, see [[fn-bool-arg-at-callsite]].
 - `fn-propagate-dont-swallow` [should-fix] {correctness} L264+9: Chain the original cause when you translate an exception.
 - `fn-resource-lifetime` [should-fix] {correctness} L274+9: Give every task and handle an owner that waits for it or closes it, on the error path too.
-- `inc-perf-regression-guard` [should-fix] {performance, testing} L756+9: Add an automated check that would have caught the regression (a benchmark, a budget, a load-test threshold, or a resource guard) as one of the postmortem's actions.
-- `inc-postmortem-owned-actions` [should-fix] {reliability, process} L766+9: Give every postmortem action one named owner, a due date, and a tracker link.
-- `inc-review-asks-which-check` [should-fix] {reliability, process} L776+9: Every incident review names the check that should have caught the fault (a test, CI gate, review, canary or alert) and turns the gap into a new or fixed check.
+- `inc-perf-regression-guard` [should-fix] {performance, testing} L726+9: Add an automated check that would have caught the regression (a benchmark, a budget, a load-test threshold, or a resource guard) as one of the postmortem's actions.
+- `inc-postmortem-owned-actions` [should-fix] {reliability, process} L736+9: Give every postmortem action one named owner, a due date, and a tracker link.
+- `inc-review-asks-which-check` [should-fix] {reliability, process} L746+9: Every incident review names the check that should have caught the fault (a test, CI gate, review, canary or alert) and turns the gap into a new or fixed check.
 - `mod-call-parent-setup-teardown` [should-fix] {testing, reliability} L286+9: A test class that overrides `setUp`, `tearDown`, `setUpClass` or `tearDownClass` calls the parent's version.
 - `mod-central-config` [should-fix] {maintainability} L296+9: Read configuration in one settings module and pass it in; business code must not read the environment or hold knobs.
 - `mod-cohesive-unit` [discuss] {maintainability} L306+9: Keep one cohesive concept per module.
@@ -38,7 +35,7 @@ One line per draft card in `drafts.md`: id, severity, concerns, place, rule. Dra
 - `mod-subtype-passes-parent-tests` [should-fix] {maintainability} L366+9: Make a subtype pass its parent's tests: accept every input the parent accepts, promise at least what it promises, and keep its invariants.
 - `mod-thin-entry-point` [should-fix] {maintainability} L376+9: Keep the entry module to wiring (bootstrap, configuration, lifespan) and put no business logic in it.
 - `mod-validate-at-boundary-once` [should-fix] {correctness, maintainability} L386+9: Validate at the boundary, once, with a schema or model, so that inner layers receive typed, already-valid data.
-- `prod-wide-events-bounded-labels` [should-fix] {observability} L744+9: Emit one structured event per request carrying trace, tenant, build and flag state.
+- `prod-wide-events-bounded-labels` [should-fix] {observability} L714+9: Emit one structured event per request carrying trace, tenant, build and flag state.
 - `svc-401-sends-challenge` [should-fix] {compatibility, correctness} L398+10: Send a `WWW-Authenticate` challenge with every 401 response.
 - `svc-api-safe-idempotent-methods` [should-fix] {compatibility} L409+10: Keep GET, HEAD and OPTIONS free of side effects, and make PUT and DELETE give the same end state when repeated.
 - `svc-api-spec-matches-impl` [should-fix] {compatibility} L420+10: Keep the OpenAPI document as the source of truth, and generate it from the code or test the running service against it in CI.

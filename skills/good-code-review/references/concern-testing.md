@@ -4,18 +4,19 @@ Every stable card that lists the `testing` concern, by level. The place `<level>
 
 ## change
 
-- `chg-perf-claim-evidence` [should-fix] {performance, testing} change.md:L525+25: Back a performance claim with measured before-and-after numbers.
-- `chg-refactor-has-behaviour-pin` [should-fix] {testing, maintainability} change.md:L616+26: Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
-- `chg-tests-ship-with-change` [block] {testing} change.md:L781+27: Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks.
-- `chg-verify-before-claim` [block] {testing, process} change.md:L841+26: Back every "works" or "bug" claim with something run: a repro, a test or command output.
+- `chg-each-commit-builds` [discuss] {process, testing, maintainability} change.md:L393+28: Make each commit in a series build and pass the tests on its own.
+- `chg-perf-claim-evidence` [should-fix] {performance, testing} change.md:L663+25: Back a performance claim with measured before-and-after numbers.
+- `chg-refactor-has-behaviour-pin` [should-fix] {testing, maintainability} change.md:L754+26: Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
+- `chg-tests-ship-with-change` [block] {testing} change.md:L919+27: Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks.
+- `chg-verify-before-claim` [block] {testing, process} change.md:L979+26: Back every "works" or "bug" claim with something run: a repro, a test or command output.
 
 ## function
 
 - `fn-complexity-cap` [discuss] {maintainability, testing} function.md:L182+37: Set a cyclomatic complexity limit in the linter and keep every function under it.
-- `fn-no-caller-mutation` [should-fix] {correctness, testing} function.md:L1262+34: Do not mutate a parameter or an object the caller owns, unless the function is documented as mutating it.
-- `fn-test-behaviour-not-implementation` [should-fix] {testing, maintainability} function.md:L2032+34: Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.
-- `fn-test-oracle-independent` [should-fix] {correctness, testing} function.md:L2067+25: Take a test's expected value from the requirement, not from the code under test.
-- `py-pytest-parametrize` [should-fix] {testing} function.md:L2321+28: Write tests that differ only in inputs and expected values as one `@pytest.mark.parametrize` test.
+- `fn-no-caller-mutation` [should-fix] {correctness, testing} function.md:L1408+34: Do not mutate a parameter or an object the caller owns, unless the function is documented as mutating it.
+- `fn-test-behaviour-not-implementation` [should-fix] {testing, maintainability} function.md:L2178+34: Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.
+- `fn-test-oracle-independent` [should-fix] {correctness, testing} function.md:L2213+25: Take a test's expected value from the requirement, not from the code under test.
+- `py-pytest-parametrize` [should-fix] {testing} function.md:L2467+28: Write tests that differ only in inputs and expected values as one `@pytest.mark.parametrize` test.
 
 ## module
 
@@ -35,10 +36,11 @@ Every stable card that lists the `testing` concern, by level. The place `<level>
 ## codebase
 
 - `code-a11y-check-in-ci` [should-fix] {accessibility, testing} <ui> codebase.md:L3+30: Run an automated accessibility check, such as axe on rendered pages, in the automated tests, and fail the test on a violation.
-- `code-flaky-test-quarantine` [should-fix] {testing, process} codebase.md:L361+29: Report every test that passes only on retry, move it to a quarantine with a named owner and a ticket, and return it to the merge gate only after it passes many reruns.
-- `code-scoped-validation-loop` [discuss] {testing, process} codebase.md:L501+26: Document a command that checks one package or path, with readable output, so a small change does not need the full-repo run.
-- `code-test-fixtures-built-once` [should-fix] {testing, performance} codebase.md:L583+32: Build an expensive fixture once per test run, and reset state between tests with a rollback or a truncate, never a rebuild.
-- `code-test-selection-on-pr` [discuss] {testing, performance, process} codebase.md:L616+49: When the full suite is slower than the pull-request feedback target, run only the tests the change affects on the pull request, and run the full suite before deploy or on a schedule.
+- `code-doc-examples-stay-true` [discuss] {maintainability, testing} codebase.md:L302+25: Run each code example in the docs as a test.
+- `code-flaky-test-quarantine` [should-fix] {testing, process} codebase.md:L543+29: Report every test that passes only on retry, move it to a quarantine with a named owner and a ticket, and return it to the merge gate only after it passes many reruns.
+- `code-scoped-validation-loop` [discuss] {testing, process} codebase.md:L709+26: Document a command that checks one package or path, with readable output, so a small change does not need the full-repo run.
+- `code-test-fixtures-built-once` [should-fix] {testing, performance} codebase.md:L791+32: Build an expensive fixture once per test run, and reset state between tests with a rollback or a truncate, never a rebuild.
+- `code-test-selection-on-pr` [discuss] {testing, performance, process} codebase.md:L824+49: When the full suite is slower than the pull-request feedback target, run only the tests the change affects on the pull request, and run the full suite before deploy or on a schedule.
 
 ## incident
 

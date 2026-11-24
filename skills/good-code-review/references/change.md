@@ -144,7 +144,7 @@ flag orders_newest_first defaults off for one release".
 severity: discuss  
 concerns: maintainability, process  
 applies_when: The project keeps a changelog, and the change adds, removes or changes a feature.  
-Backed by: USGS (unjudged), Ruby on Rails (unjudged), Django Software Foundation (unjudged), Python Software Foundation (unjudged), GitLab (unjudged), Kubernetes (unjudged), Apache Software Foundation (unjudged). Backing: unjudged.
+Backed by: USGS (unjudged), Ruby on Rails (unjudged), Django Software Foundation (unjudged), Python Software Foundation (unjudged), GitLab (unjudged), Kubernetes (unjudged), Apache Software Foundation (unjudged), Red Hat (unjudged), Grafana Labs (unjudged). Backing: unjudged.
 
 **Rule.** Add a changelog entry to each change that adds, removes or changes a feature.
 
@@ -193,6 +193,88 @@ PR keeps it with a comment, adds a characterization test first.
 ```
 
 **Counterpoint.** Joel Spolsky's anti-rewrite case rests on anecdotes (Netscape, Borland), and Hickey argues for restating the problem, which may mean a new design. Rethinking is allowed. A big-bang rewrite needs small shippable steps, the old path working meanwhile, and a named defect.
+
+## chg-commit-body-says-why
+
+severity: discuss  
+concerns: process, maintainability  
+applies_when: A change is not trivial enough for its subject line to say everything.  
+Backed by: Django Software Foundation (unjudged), Spring (unjudged), Linux kernel (unjudged), Ruby on Rails (unjudged), GNOME (unjudged). Backing: unjudged.
+
+**Rule.** Use the commit body to say why the change was made, not to repeat what the diff shows.
+
+**Why.** The diff already shows what changed. The reason lives only in the author's head, and `git blame` is where the next maintainer looks for it.
+
+**FAIL**
+
+```text
+Change timeout from 5 to 30
+
+Changed the timeout constant to 30 seconds.
+```
+
+**PASS**
+
+```text
+Raise the export timeout to 30 seconds
+
+Large accounts take up to 20 seconds to export, and the 5 second limit
+cut them off halfway and left partial files.
+```
+
+**Counterpoint.** "The PR description has the reason." Squash merges and mirrors drop it. Keep a line in the commit, and link the PR for the rest.
+
+## chg-commit-subject-imperative
+
+severity: discuss  
+concerns: process, maintainability  
+applies_when: A change carries a commit message or squash-merge title.  
+tool gate: commitlint `subject-max-length` and `subject-case`, or a `commit-msg` hook.  
+Backed by: Linux kernel (unjudged), Kubernetes (unjudged), Spring (unjudged), OpenJS Foundation (unjudged), GNOME (unjudged), Google (unjudged). Backing: unjudged.
+
+**Rule.** Write the commit subject as a short command in the imperative, about 50 characters and at most 72, with no trailing period.
+
+**Why.** The subject is what `git log --oneline`, blame views and release tooling show. An imperative line reads as what applying the change does, and a short one is not cut off.
+
+**FAIL**
+
+```text
+Fixed the bug where the importer sometimes crashed when a row was empty.
+```
+
+**PASS**
+
+```text
+Skip empty rows in the importer
+```
+
+**Counterpoint.** "Our project uses past tense, or conventional-commit types." The rule is consistency and a short line. Follow the project's convention where one is written down, and check it in a hook.
+
+## chg-commit-title-area-prefix
+
+severity: discuss  
+concerns: process, maintainability  
+applies_when: The project has several subsystems or packages and writes commit or PR titles as `area: summary`.  
+tool gate: commitlint `scope-empty` or a PR-title check in CI.  
+Backed by: Linux kernel (unjudged), OpenJS Foundation (unjudged), Prometheus (unjudged). Backing: unjudged.
+
+**Rule.** Start the commit or PR title with the area it changes, such as `net: summary` or `importer: summary`, where the project uses area prefixes.
+
+**Why.** A one-line log shows which part of the system each change touched, so a reader can scan for their area and a bisect lands on the right owner.
+
+**FAIL**
+
+```text
+Skip empty rows
+```
+
+**PASS**
+
+```text
+importer: skip empty rows
+```
+
+**Counterpoint.** "Prefixes eat the 50 characters." They replace words the subject would spend on context anyway. A small repo with one area gains nothing, so the rule applies only where a prefix convention exists.
 
 ## chg-delete-legacy-after-migration
 
@@ -254,6 +336,33 @@ Backed by: Cursor (unjudged), GitLab (supports), Spring (supports). Backing: mix
 
 **Counterpoint.** "It is an internal repo; people will ask." Each person who asks costs more than the note, and CI and deploy environments cannot ask. For published configuration, [chg-breaking-change-taxonomy](change.md#chg-breaking-change-taxonomy) has the wider rules.
 
+## chg-doc-marks-version-added
+
+severity: discuss  
+concerns: compatibility  
+applies_when: A diff adds a public feature, option or API that is documented, or changes how a documented one behaves.  
+tool gate: Sphinx `versionadded` and `versionchanged` directives with a docs check, or a front-matter lint for a version field.  
+Backed by: Django Software Foundation (unjudged), Python Software Foundation (unjudged), OpenJS Foundation (unjudged), Elastic (unjudged). Backing: unjudged.
+
+**Rule.** When a diff adds or changes a documented feature, mark in the docs the version that added or changed it.
+
+**Why.** Readers run many versions. Without a version marker they cannot tell if the option exists in theirs, and the docs cannot be trimmed later without guessing.
+
+**FAIL**
+
+```text
+The `--dry-run` flag prints what would change.     (flag added in this diff, no version)
+```
+
+**PASS**
+
+```text
+The `--dry-run` flag prints what would change.
+.. versionadded:: 3.2
+```
+
+**Counterpoint.** "Release notes already say it." Release notes are read once at upgrade time. The marker stays on the page where the reader looks it up.
+
 ## chg-docs-updated-with-code
 
 severity: should-fix  
@@ -280,6 +389,35 @@ Backed by: Google (unjudged), Zephyr Project (unjudged), Python Software Foundat
 ```
 
 **Counterpoint.** "Doc fixes bloat the diff and slow the change." Fixing the text is a line or two, and a separate doc PR is rarely sent. If the text cannot be fixed now, delete it.
+
+## chg-each-commit-builds
+
+severity: discuss  
+concerns: process, testing, maintainability  
+applies_when: A change is submitted as several commits that are kept, not squashed.  
+tool gate: A CI job that checks out each commit and runs the build and tests (`git rebase --exec`, `git bisect run`).  
+Backed by: Linux kernel (unjudged), Prometheus (unjudged), Django Software Foundation (unjudged). Backing: unjudged.
+
+**Rule.** Make each commit in a series build and pass the tests on its own.
+
+**Why.** `git bisect` can land on any commit. A broken one in the middle of a series sends the person bisecting after a bug that the next commit already fixes.
+
+**FAIL**
+
+```text
+commit 1: Rename Config.timeout to Config.deadline   (callers still use timeout; build fails)
+commit 2: Update callers to deadline
+```
+
+**PASS**
+
+```text
+commit 1: Add Config.deadline, keep Config.timeout as an alias
+commit 2: Move callers to deadline
+commit 3: Remove Config.timeout
+```
+
+**Counterpoint.** "We squash on merge." Then the squashed commit is the unit and the rule is met by CI on the PR. The rule matters where the series is kept.
 
 ## chg-expand-contract
 
