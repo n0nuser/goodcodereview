@@ -262,11 +262,11 @@ severity: block
 concerns: security  
 applies_when: Auditing how the repo resolves third-party packages.  
 tool gate: Lockfile-required install in CI; dependency-update bot config present.  
-Backed by: OWASP (unjudged), OpenSSF (unjudged), Google (unjudged), Python Software Foundation (unjudged), npm (unjudged). Backing: unjudged.
+Backed by: OWASP (unjudged), OpenSSF (unjudged), Google (unjudged), Python Software Foundation (unjudged), npm (unjudged), Rust project (unjudged), Poetry (unjudged), pnpm (unjudged), Mend Renovate (unjudged), GitLab (unjudged), GitHub (unjudged). Backing: unjudged.
 
 **Rule.** Commit a lockfile with hashes and install from it in CI.
 
-**Why.** Unpinned versions make builds non-reproducible and let a compromised release flow straight into production. Updates should arrive as reviewed, staged changes, not silently. [code-workflow-supply-chain](codebase.md#code-workflow-supply-chain) covers CI action pins.
+**Why.** Unpinned versions make builds non-reproducible and let a compromised release flow straight into production. Updates should arrive as reviewed, staged changes, not silently. Run an update bot (Dependabot, Renovate or an autoroller) so the lock does not go stale and updates arrive as pull requests. [code-workflow-supply-chain](codebase.md#code-workflow-supply-chain) covers CI action pins.
 
 **FAIL**
 
@@ -512,6 +512,35 @@ docs-links:
 
 **Counterpoint.** "External links flake, so the job will be red half the time." Check local paths and anchors on every change, where the result is stable. Run the external links on a schedule, so a dead site never blocks a merge.
 
+## code-env-files-ignored
+
+severity: should-fix  
+concerns: security  
+applies_when: Auditing a repo whose application reads settings from .env files.  
+tool gate: A secret scan on push; a CI check that `git ls-files` lists no .env.local or .env file with real values.  
+Backed by: Laravel (unjudged), Symfony (unjudged), Vercel (unjudged), Vite (unjudged). Backing: unjudged.
+
+**Rule.** Git-ignore local environment files that hold real values; commit only a template with placeholders.
+
+**Why.** An `.env` file with real credentials, once committed, sits in every clone and in history, and deleting it later does not recall the copies ([code-secrets-not-plaintext-in-repo](codebase.md#code-secrets-not-plaintext-in-repo)). A committed template with placeholder values still tells the next developer which variables the app needs.
+
+**FAIL**
+
+```text
+.gitignore:   (no .env entries)
+.env          DB_PASSWORD=S3cr37-prod        (tracked by git)
+```
+
+**PASS**
+
+```text
+.gitignore:   .env
+              .env.*.local
+.env.example  DB_PASSWORD=change-me          (tracked, placeholders only)
+```
+
+**Counterpoint.** Frameworks such as Symfony and Next.js commit a `.env` of non-secret defaults, and an encrypted env file can be committed too. Both are fine: the check is that no file in the repo holds a real credential in plaintext, and that local override files are ignored.
+
 ## code-file-lines-ceiling
 
 severity: discuss  
@@ -569,6 +598,44 @@ Backed by: Dropbox (unjudged), Shopify (unjudged), Cabify (unjudged), Atlassian 
 ```
 
 **Counterpoint.** "Retries keep the build green, and quarantine hides coverage." Shopify's data backs retries: a slightly slower build beats an engineer rerunning it by hand. Retries are fine when each pass after a retry reaches someone. A quarantined test still runs outside the gate, and its owner and ticket stop it from staying there for good. Skipping or deleting a flaky test in a diff is a separate FAIL. See [chg-no-silenced-diagnostics](change.md#chg-no-silenced-diagnostics). For the merge gate itself, see [code-ci-gates](codebase.md#code-ci-gates).
+
+## code-gate-new-violations-only
+
+severity: should-fix  
+concerns: maintainability, process  
+applies_when: Auditing a codebase that adopted a linter, a quality gate or an architecture rule after most of its code existed.  
+tool gate: A baseline or frozen violation store with CI set to read it but not rewrite it (ArchUnit `FreezingArchRule`, a linter baseline file).  
+Backed by: SonarSource (unjudged), ArchUnit (unjudged), Google (unjudged). Backing: unjudged.
+
+**Rule.** Gate CI on new or modified code, and track pre-existing violations in a separate store without letting a build add to it.
+
+**Why.** A gate that fails on thousands of old findings gets switched off, and a gate with no record of them lets the debt grow unseen. Failing only on new findings keeps the gate on and stops the debt growing, and the store shows what is left to pay down.
+
+**FAIL**
+
+```properties
+# archunit.properties
+freeze.refreeze=true
+```
+
+CI refreezes on each run, so a new violation is absorbed and the build stays green.
+
+**PASS**
+
+```properties
+# archunit.properties
+freeze.store.default.path=archunit_store
+freeze.store.default.allowStoreCreation=false
+freeze.store.default.allowStoreUpdate=false
+```
+
+```java
+@ArchTest
+static final ArchRule no_cycles =
+    FreezingArchRule.freeze(slices().matching("com.app.(*)..").should().beFreeOfCycles());
+```
+
+**Counterpoint.** "A baseline hides real problems." It lists them in a file under version control, in plain view, and a change that touches a baselined spot is held to the full rule. Pair it with a plan to shrink the store.
 
 ## code-perf-budget-in-ci
 
@@ -766,11 +833,11 @@ severity: should-fix
 concerns: security  
 applies_when: Auditing source files, config files and infrastructure code for credentials, keys and tokens.  
 tool gate: Secret scanning on push; a lint that rejects literal values for fields named password, token or key.  
-Backed by: OWASP (unjudged), GitLab (unjudged), CISA (unjudged). Backing: unjudged.
+Backed by: OWASP (unjudged), GitLab (unjudged), CISA (unjudged), Laravel (unjudged), Symfony (unjudged), Vercel (unjudged), Vite (unjudged). Backing: unjudged.
 
 **Rule.** Keep secrets out of source code and config.
 
-**Why.** Anyone with read access to the repository, and every clone and fork, gets a plaintext secret, and removing it later does not recall the copies. Read the secret at run time from a secret store, and it can be rotated without a code change.
+**Why.** Anyone with read access to the repository, and every clone and fork, gets a plaintext secret, and removing it later does not recall the copies. Read the secret at run time from a secret store, and it can be rotated without a code change. [code-env-files-ignored](codebase.md#code-env-files-ignored) covers local `.env` files.
 
 **FAIL**
 
@@ -821,6 +888,34 @@ tests that must commit: their own database, cleaned with DELETE or TRUNCATE afte
 
 **Counterpoint.** "A shared fixture breaks test isolation and blocks parallel runs." It does when the shared part is mutable or when tests commit. Keep the shared part read-only, undo each test's writes by rollback, give each parallel worker its own database, and give the few tests that must commit a separate database. A database kept between runs goes stale after a schema change, so rebuild it when the migrations change.
 
+## code-test-pyramid-shape
+
+severity: discuss  
+concerns: testing, process  
+applies_when: Auditing a repo whose layout or CI report separates unit, integration and end-to-end tests, so a reviewer can count tests per tier. Without that split there is no count to fail, so mark the card N/A.  
+tool gate: A CI report that prints the number of tests per tier next to the run time.  
+Backed by: Google (unjudged), GitLab (unjudged), Microsoft (unjudged). Backing: unjudged.
+
+**Rule.** Keep most tests at the unit level, fewer at the integration level and fewest end-to-end.
+
+**Why.** End-to-end tests are the slowest to run and the costliest to keep working, and a failure in one points at the whole system, not at a line. A suite that leans on them gives slow, flaky feedback. Unit tests run in milliseconds and locate the failure. The mix is a guide, not a quota.
+
+**FAIL**
+
+```text
+CI report: unit 40, integration 120, end-to-end 310 (65% end-to-end).
+Full run: 55 minutes.
+```
+
+**PASS**
+
+```text
+CI report: unit 1,450, integration 210, end-to-end 38 (about 85/12/2).
+Full run: 11 minutes.
+```
+
+**Counterpoint.** "Our service is a thin layer over a database, and a UI-heavy app gets little from unit tests." Fair: such systems get more value from integration tests, and the right mix is not fixed. Raise a finding only when end-to-end tests clearly dominate and the run is slow, and raise it for discussion, not as a defect.
+
 ## code-test-selection-on-pr
 
 severity: discuss  
@@ -870,6 +965,44 @@ jobs:
 ```
 
 **Counterpoint.** "Selection misses regressions." Shopify says a stale mapping let failing tests merge, about 0.06 percent of pull requests, and Shopify and Microsoft run every test when they cannot map or classify a change. Keep the full run, fall back to all tests when the mapping cannot decide, and do not present the pull-request run as full coverage. The selected tests gate the merge, as [code-ci-gates](codebase.md#code-ci-gates) asks; the full run comes before deploy or on a schedule.
+
+## code-tests-no-fixed-sleep
+
+severity: should-fix  
+concerns: testing, reliability  
+applies_when: Auditing a test suite, or reviewing a diff that adds or changes a test that waits for something to happen.  
+tool gate: Grep the test directories for sleep calls (`time.sleep`, `Thread.sleep`, `cy.wait(<number>)`) and fail CI on a new one.  
+Backed by: Google (unjudged), Microsoft (unjudged), Cypress (unjudged). Backing: unjudged.
+
+**Rule.** Do not wait in a test on a fixed delay; wait for the condition you need, or inject a clock.
+
+**Why.** A delay that is long enough on a fast machine is too short on a loaded CI runner, so the test turns flaky, and it adds its whole length to every run even when the thing it waits for finished at once. A sleep also often means the code reaches a dependency the test should have replaced. For the same reasons, small unit tests do no real network, database or file-system I/O.
+
+**FAIL**
+
+```python
+import time
+from concurrent.futures import ThreadPoolExecutor
+
+def test_job_finishes():
+    pool = ThreadPoolExecutor()
+    future = pool.submit(run_job)
+    time.sleep(5)
+    assert future.done()
+```
+
+**PASS**
+
+```python
+from concurrent.futures import ThreadPoolExecutor
+
+def test_job_finishes():
+    with ThreadPoolExecutor() as pool:
+        future = pool.submit(run_job)
+        assert future.result(timeout=5) == "done"
+```
+
+**Counterpoint.** "Some systems give no signal to wait on, so polling with a sleep is the only way." Poll with a short interval and a deadline, and return as soon as the condition holds, so the delay is a ceiling and not a cost. End-to-end and integration tests legitimately use real I/O and polling; the rule bans the fixed wait, not the poll.
 
 ## code-vuln-remediation-window
 

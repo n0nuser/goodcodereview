@@ -1,7 +1,7 @@
 ---
 id: svc-client-paces-outgoing-calls
 level: service
-tags: [reliability, performance, api, rate-limits]
+tags: [reliability, performance, api, rate-limit]
 severity: should-fix
 status: stable
 lang: core

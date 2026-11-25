@@ -4,12 +4,14 @@ level: incident
 tags: [reliability, process, incident, learning]
 severity: should-fix
 status: draft
-lacks: orgs, an owner and due date on each action has no org; Dropbox and Shopify mention action items without naming either
-note: no source yet; first-hand reasoning
+lacks: orgs, Atlassian is the only firm backer; the Google SRE workbook shows an owner column in an example table only; needs two more orgs
+note: Atlassian asks who will take each action and by when, and says every postmortem action must be tracked in Jira. The Google workbook sample has owner and tracking-bug columns but states no rule, so it is soft
 lang: core
 applies_when: A postmortem or incident review is written or audited.
 tool_gate: Template that requires owner and due date per action.
-borrowed_from: []
+borrowed_from:
+  - https://www.atlassian.com/incident-management/handbook/postmortems
+  - https://sre.google/workbook/postmortem-culture/
 ---
 
 **Rule.** Give every postmortem action one named owner, a due date, and a tracker link.

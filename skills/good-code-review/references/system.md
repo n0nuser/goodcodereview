@@ -27,6 +27,42 @@ creds = user_scoped_token(user, scopes=["tickets:rw"])       # downstream checks
 
 **Counterpoint.** "Narrow tools make the agent less useful." Add tools when a task needs them and remove those that no task uses. A tool the model never calls is risk without benefit.
 
+## sys-backup-restore-tested
+
+severity: should-fix  
+concerns: reliability  
+applies_when: The system keeps backups of its own data, such as database dumps, snapshots or object-store copies.  
+context: data  
+tool gate: A scheduled restore job that exits non-zero when the restored data fails its checks; an alert when the job has not run for longer than its schedule.  
+Backed by: AWS (unjudged), Google (unjudged), CISA (unjudged), Microsoft (unjudged), GitLab (unjudged). Backing: unjudged.
+
+**Rule.** Restore every backup set on a schedule, check the restored data, and alert when the restore fails or stops running.
+
+**Why.** A backup that has never been restored is a guess. The dump can be empty, the credentials expired, the schema changed, or the job can have failed quietly for months, and the first restore then happens during an outage. Run the restore from a job, not from a person's memory, and give the job an owner who gets the alert. A sampled restore is enough: one table, one volume, one day. Data you can rebuild from another source, and state held only in a managed service that has no backup duty, are out of scope.
+
+**FAIL**
+
+```text
+# crontab on the db host: the only backup job
+0 2 * * *  pg_dump -Fc orders | aws s3 cp - s3://acme-backups/orders/$(date +\%F).dump
+# nothing ever reads the dump back
+```
+
+**PASS**
+
+```bash
+#!/usr/bin/env bash
+# restore-check.sh: weekly job with an owner and an alert on non-zero exit
+set -euo pipefail
+aws s3 cp "s3://acme-backups/orders/$(date +%F).dump" /tmp/orders.dump
+createdb restore_check
+pg_restore --no-owner -d restore_check /tmp/orders.dump
+psql -d restore_check -tAc "select count(*) from orders" | awk '$1 < 1000 { exit 1 }'
+dropdb restore_check
+```
+
+**Counterpoint.** "Restore tests cost money and need a spare environment." Restore a sample into a scratch instance that lives for the length of the job. The bill is small next to finding out during an incident that the backup is unusable. Managed backup services can schedule the restore and run the checks for you, which also meets the Rule.
+
 ## sys-cache-bounds-invalidation
 
 severity: should-fix  
@@ -429,6 +465,37 @@ except Exception as err:
 ```
 
 **Counterpoint.** "A broad `except Exception` breaks the specific-exceptions rule." At a security boundary, fail-closed wins: catch broadly, log redacted, deny, and never use a bare `except:`. "We need detail to debug." Log it server-side with a correlation id.
+
+## sys-shuffle-shard
+
+severity: should-fix  
+concerns: reliability  
+applies_when: Many tenants share a pool of workers or nodes, and one tenant's traffic or bug can take a worker down.  
+context: server  
+Backed by: AWS (unjudged), Airbnb (unjudged), Grafana Labs (unjudged). Backing: unjudged.
+
+**Rule.** Assign each tenant a shuffled subset of shared workers, so one tenant's fault reaches only a few other tenants.
+
+**Why.** If every tenant can use every worker, one bad tenant can exhaust all of them. With a random subset per tenant, two tenants rarely share all their workers, so one bad tenant leaves most others a healthy worker.
+
+**FAIL**
+
+```python
+def workers_for(tenant):
+    return ALL_WORKERS              # every tenant on every worker
+```
+
+**PASS**
+
+```python
+import hashlib, random
+
+def workers_for(tenant, k=4):
+    rng = random.Random(hashlib.sha256(tenant.encode()).digest())
+    return rng.sample(ALL_WORKERS, k)   # stable subset of k workers
+```
+
+**Counterpoint.** "Separate cells isolate better." They do, and they cost whole copies of the stack. Shuffle sharding runs on one shared pool and still leaves most tenants unaffected. Use cells for hard boundaries and this for the shared pool inside one.
 
 ## sys-ssrf
 

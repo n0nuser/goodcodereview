@@ -3,17 +3,17 @@ id: fn-flags-type-for-flag-sets
 level: function
 tags: [maintainability, correctness]
 severity: should-fix
-status: draft
-lacks: orgs, Microsoft and the Rust API guidelines state it; a third independent organisation is missing
+status: stable
 lang: core
 applies_when: A type holds a set of independent options that can be combined, such as permissions or render options.
 tool_gate: .NET analyzers CA1027 (mark flag enums with FlagsAttribute) and CA2217 (do not mark other enums with it).
 borrowed_from:
   - https://learn.microsoft.com/en-us/dotnet/standard/design-guidelines/enum
   - https://rust-lang.github.io/api-guidelines/type-safety.html
+  - https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/EnumSet.html
 ---
 
-**Rule.** Model a set of independent flags with the language's or ecosystem's flags type (a `[Flags]` enum in C#, the `bitflags` crate in Rust), and do not use a plain enum for it.
+**Rule.** Model a set of independent flags with the language's or ecosystem's flags type (a `[Flags]` enum in C#, the `bitflags` crate in Rust, `EnumSet` in Java), and do not use a plain enum for it.
 
 **Why.** A plain enum holds one value. Code that ORs its members together gets numbers that match no member, which print as a bare integer and fail an equality check. A flags type defines the combination, its printing, and the "no flags" value.
 

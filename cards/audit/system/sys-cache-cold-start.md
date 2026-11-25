@@ -4,12 +4,16 @@ level: system
 tags: [performance, reliability, caching, overload]
 severity: should-fix
 status: draft
-lacks: orgs, AWS is the only backer; needs two more orgs
+lacks: orgs, AWS is the only firm backer; Microsoft covers cache-down fallback only; Fastly and Go singleflight describe coalescing features; needs two more orgs
 lang: core
 applies_when: Cache misses fall through to a database or downstream service.
 tool_gate: none
+note: Microsoft says an application should keep working when the shared cache is unavailable. Fastly request collapsing and the Go singleflight package are tool descriptions of coalescing, so they are soft
 borrowed_from:
   - https://aws.amazon.com/builders-library/caching-challenges-and-strategies/
+  - https://learn.microsoft.com/en-us/azure/architecture/best-practices/caching
+  - https://docs.fastly.com/en/guides/request-collapsing
+  - https://pkg.go.dev/golang.org/x/sync/singleflight
 ---
 
 **Rule.** Cap and coalesce the cache-miss path so an empty cache cannot overwhelm the origin.

@@ -55,6 +55,45 @@ A human who can explain the change approves.
 
 **Counterpoint.** A same-session pass still catches typos and leftovers. Keep it as the author's self-review step, not as the gate. Meta tracks "eyeball time" as a guardrail against rubber-stamping, the failure this card targets.
 
+## chg-applied-migration-not-edited
+
+severity: should-fix  
+concerns: correctness, process  
+applies_when: The diff changes or deletes a migration file that is already on the main branch.  
+context: data  
+tool gate: Flyway `validate` or a Liquibase checksum check in CI; a CI step that fails when a file under the migrations directory that exists on main is modified or removed.  
+Backed by: Redgate (unjudged), Ruby on Rails (unjudged), Prisma (unjudged). Backing: unjudged.
+
+**Rule.** Do not edit or delete a migration that has already run in a shared environment; add a new migration that makes the change.
+
+**Why.** A database records which migrations it has applied. If you change one afterwards, environments that ran the old version never run the new one, so staging, production and each developer's copy drift apart with no error. Migration tools that store a checksum fail on the edited file instead. A new migration reaches every environment the same way. A migration that has run only on your own machine can still be edited.
+
+**FAIL**
+
+```diff
+# db/migrate/20260301120000_add_status_to_orders.rb  (merged and deployed last week)
+ class AddStatusToOrders < ActiveRecord::Migration[7.1]
+   def change
+-    add_column :orders, :status, :string
++    add_column :orders, :status, :string, default: "new", null: false
+   end
+ end
+```
+
+**PASS**
+
+```ruby
+# db/migrate/20260310090000_default_orders_status.rb  (new file)
+class DefaultOrdersStatus < ActiveRecord::Migration[7.1]
+  def change
+    change_column_default :orders, :status, from: nil, to: "new"
+    change_column_null :orders, :status, false, "new"
+  end
+end
+```
+
+**Counterpoint.** "The migration is broken, and fixing it in place is cheaper." That holds while only your machine has run it. Once any shared environment has, the fix goes in a new migration, because the old file has already done its work there and will not run again.
+
 ## chg-approval-tied-to-patch
 
 severity: should-fix  
@@ -448,6 +487,127 @@ ALTER TABLE users RENAME COLUMN name TO full_name;  -- app v1 still reads name
 
 **Counterpoint.** Three steps are slow for internal code. Exception: when producer and consumers deploy atomically from one repo, or the table is small enough to alter in one safe step, a one-step change is fine. Say so in the description. [sys-migration-expand-contract](system.md#sys-migration-expand-contract) covers batching the backfill.
 
+## chg-flag-both-states-tested
+
+severity: should-fix  
+concerns: testing  
+applies_when: The change adds or edits code behind a feature flag.  
+tool gate: Test helper that runs the flagged suite once per flag state, or a CI job that fails when a flag has tests for one state only.  
+Backed by: GitLab (unjudged), GrowthBook (unjudged), Unleash (unjudged). Backing: unjudged.
+
+**Rule.** Test the flagged behaviour with the flag on and with the flag off for as long as the flag exists.
+
+**Why.** The off path is the one production runs until rollout, and the one it falls back to when the flag is turned off in an incident. A suite that sets the flag on leaves that path unchecked, and it breaks unseen. See [chg-tests-ship-with-change](change.md#chg-tests-ship-with-change) for the general rule.
+
+**FAIL**
+
+```python
+def test_checkout_total(monkeypatch):
+    monkeypatch.setattr(flags, "is_on", lambda name: True)
+    assert checkout(cart).total == 90   # only the new path is tested
+```
+
+**PASS**
+
+```python
+@pytest.mark.parametrize("enabled,total", [(True, 90), (False, 100)])
+def test_checkout_total(monkeypatch, enabled, total):
+    monkeypatch.setattr(flags, "is_on", lambda name: enabled)
+    assert checkout(cart).total == total
+```
+
+**Counterpoint.** "Two states double the test cost, and many flags multiply it." Test each flag in both states on its own, with the others at their defaults, rather than every combination. Remove the flag soon after rollout and the second state goes with it.
+
+## chg-flag-fallback-chosen
+
+severity: should-fix  
+concerns: reliability  
+applies_when: The change evaluates a feature flag or kill switch in code.  
+Backed by: ConfigCat (unjudged), GrowthBook (unjudged), PostHog (unjudged), LaunchDarkly (unjudged). Backing: unjudged.
+
+**Rule.** Pass each flag evaluation a fallback chosen for the outcome if the flag service fails, and do not assume `false`.
+
+**Why.** When the flag service is down, the SDK returns the fallback. For a switch that disables a payment path or a safeguard, `false` turns off the thing you need most. A fallback that nobody chose is a decision made by the default argument. For tests of the fallback path, see [prod-kill-switch-fallback](production.md#prod-kill-switch-fallback).
+
+**FAIL**
+
+```python
+# "payments-enabled" is true in production. A flag outage returns False.
+enabled = client.variation("payments-enabled", context, False)
+```
+
+**PASS**
+
+```python
+# Fallback True: during a flag outage keep taking payments.
+enabled = client.variation("payments-enabled", context, True)
+```
+
+**Counterpoint.** "Ship new features off." That holds for a release flag, where the fallback is the old behaviour. It is a choice made per flag, and it is wrong for a flag whose off state removes a safeguard or a required path.
+
+## chg-flag-naming-convention
+
+severity: discuss  
+concerns: maintainability, process  
+applies_when: The change adds a feature flag or renames one.  
+tool gate: Flag registry linter that checks each key against the documented pattern and rejects a key that was deleted before.  
+Backed by: Unleash (unjudged), LaunchDarkly (unjudged), ConfigCat (unjudged), Flagsmith (unjudged), GrowthBook (unjudged). Backing: unjudged.
+
+**Rule.** Name each new flag by the team's written convention, and never give a deleted flag's key to different behaviour.
+
+**Why.** Names such as `test2` or `new_thing` hide what a flag does and who owns it, so nobody dares to remove it. A key that comes back with a new meaning can match old code, caches or telemetry that still refer to the earlier flag and switch on behaviour nobody meant to enable.
+
+**FAIL**
+
+```yaml
+# flags.yaml
+flags:
+  - key: newThing          # no area, type or purpose
+  - key: test2
+  - key: checkout.release.one-page-flow   # deleted last quarter, reused for a pricing experiment
+```
+
+**PASS**
+
+```yaml
+# flags.yaml  (convention in docs/flags.md: <area>.<type>.<behaviour>)
+flags:
+  - key: checkout.release.one-page-flow
+  - key: search.experiment.semantic-ranking
+  - key: pricing.experiment.annual-discount-banner   # new key, the old one stays retired
+```
+
+**Counterpoint.** "The pattern is bikeshedding." The exact pattern does matter little; sources disagree on it. What is checked is that one written pattern exists, the new key follows it, and retired keys are not reused. A lint over the registry makes that cheap.
+
+## chg-flag-owner-retirement
+
+severity: should-fix  
+concerns: reliability  
+applies_when: The change adds a feature flag, kill switch or config toggle.  
+tool gate: Flag registry linter that requires owner and expiry fields.  
+Backed by: Dropbox (unjudged), Statsig (unjudged), GitLab (unjudged), Google (unjudged), Unleash (unjudged), LaunchDarkly (unjudged), Harness (unjudged), GrowthBook (unjudged), ConfigCat (unjudged), FeatBit (unjudged), Flagsmith (unjudged), Optimizely (unjudged). Backing: unjudged. People cited: tef (programmingisterrible) (unjudged).
+
+**Rule.** Give every new flag an owner, a removal condition or date and a removal ticket, mark flags meant to stay as permanent, and remove the others and their dead branches once rollout ends.
+
+**Why.** A flag without an owner becomes a permanent fork of behaviour that nobody dares delete and that multiplies test paths. Opening the removal ticket with the flag, while the context is fresh, schedules the removal before the rollout starts. The off state of a flag is not always the safe one when evaluation fails; see [chg-flag-fallback-chosen](change.md#chg-flag-fallback-chosen).
+
+**FAIL**
+
+```python
+if flags.get("new_checkout"):   # who owns it? when does it go?
+    ...
+```
+
+**PASS**
+
+```python
+# flag: new_checkout  owner: payments
+# remove when 100% for 2 weeks (ticket PAY-88), temporary
+if flags.get("new_checkout"): ...
+```
+
+**Counterpoint.** Some flags are permanent, such as kill switches and entitlements. Label them as permanent, with an owner, and skip the removal condition. The check is that the intent is explicit.
+
 ## chg-match-codebase-pattern
 
 severity: should-fix  
@@ -533,6 +693,36 @@ Security reviewer tagged. Randomness uses a crypto source.
 ```
 
 **Counterpoint.** Naming threats on every PR is theatre. Only changes that add one of the listed surfaces need the section, and most PRs write "none".
+
+## chg-new-dependency-justified
+
+severity: should-fix  
+concerns: maintainability  
+applies_when: The change adds a third-party package, library or vendored source tree.  
+tool gate: A PR template or CI check that asks for the reason when a manifest gains a dependency.  
+Backed by: Google (unjudged), Kubernetes (unjudged), OpenSSF (unjudged). Backing: unjudged.
+
+**Rule.** When a change adds a dependency, say why it is needed and which existing dependency or own code was considered instead.
+
+**Why.** Every dependency is code the team did not write and must keep updating, a licence to satisfy and a new route for a supply-chain attack. A package added for one helper function keeps costing for years. A reviewer can only weigh the cost if the change names the need, and it also helps to name the licence and who maintains the package. See [chg-reuse-before-write](change.md#chg-reuse-before-write) for reuse inside the codebase and [code-dependency-licence-sbom](codebase.md#code-dependency-licence-sbom) for the licence check.
+
+**FAIL**
+
+```text
+PR: "add left-pad"
+diff: package.json  + "left-pad": "^1.3.0"
+```
+
+**PASS**
+
+```text
+PR: "Add dateutil for recurring-event expansion"
+Needed: RRULE parsing; 400 lines to write and test ourselves.
+Considered: stdlib datetime (no RRULE), the existing icalendar dependency (parses but does not expand).
+Licence: BSD-3. Maintained: active, last release 2 months ago.
+```
+
+**Counterpoint.** "A one-line justification for a small utility is review friction." Scale it by risk: a dev-only tool needs a sentence, a runtime or security-sensitive package needs the full note. The check is that a reason exists, not that every package gets an essay.
 
 ## chg-no-per-user-ide-files
 
@@ -922,7 +1112,7 @@ severity: block
 concerns: testing  
 applies_when: The change alters behaviour of non-trivial code.  
 tool gate: Coverage-delta or "changed source without changed tests" check in CI.  
-Backed by: Kubernetes (unjudged), Python Software Foundation (unjudged), Google (unjudged), Rust project (unjudged), Ruby on Rails (unjudged), Microsoft (unjudged), Mozilla (unjudged). Backing: unjudged.
+Backed by: Kubernetes (unjudged), Python Software Foundation (unjudged), Google (unjudged), Rust project (unjudged), Ruby on Rails (unjudged), Microsoft (unjudged), Mozilla (unjudged), Django Software Foundation (unjudged). Backing: unjudged.
 
 **Rule.** Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks.
 

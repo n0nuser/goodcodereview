@@ -1,7 +1,7 @@
 ---
 id: fn-test-oracle-independent
 level: function
-tags: [correctness, testing, tests]
+tags: [correctness, testing]
 severity: should-fix
 status: stable
 lang: core

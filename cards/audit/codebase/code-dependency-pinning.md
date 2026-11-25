@@ -14,11 +14,19 @@ borrowed_from:
   - https://sre.google/sre-book/release-engineering/
   - https://pip.pypa.io/en/stable/topics/secure-installs/
   - https://docs.npmjs.com/cli/v10/commands/npm-ci
+  - https://doc.rust-lang.org/cargo/faq.html
+  - https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json
+  - https://python-poetry.org/docs/basic-usage/
+  - https://pnpm.io/cli/install
+  - https://docs.renovatebot.com/dependency-pinning/
+  - https://chromium.googlesource.com/chromium/src/+/main/docs/adding_to_third_party.md
+  - https://docs.gitlab.com/development/dependencies/
+  - https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/about-dependabot-version-updates
 ---
 
 **Rule.** Commit a lockfile with hashes and install from it in CI.
 
-**Why.** Unpinned versions make builds non-reproducible and let a compromised release flow straight into production. Updates should arrive as reviewed, staged changes, not silently. [[code-workflow-supply-chain]] covers CI action pins.
+**Why.** Unpinned versions make builds non-reproducible and let a compromised release flow straight into production. Updates should arrive as reviewed, staged changes, not silently. Run an update bot (Dependabot, Renovate or an autoroller) so the lock does not go stale and updates arrive as pull requests. [[code-workflow-supply-chain]] covers CI action pins.
 
 **FAIL**
 

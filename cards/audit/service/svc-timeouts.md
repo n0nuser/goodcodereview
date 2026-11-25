@@ -15,6 +15,7 @@ borrowed_from:
   - https://sre.google/sre-book/addressing-cascading-failures/
   - https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter
   - https://learn.microsoft.com/en-us/aspnet/core/grpc/deadlines-cancellation
+  - https://go.dev/blog/context
 ---
 
 **Rule.** Set an explicit timeout on every remote call.

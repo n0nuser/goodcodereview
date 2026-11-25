@@ -4,19 +4,21 @@ Every stable card that lists the `testing` concern, by level. The place `<level>
 
 ## change
 
-- `chg-each-commit-builds` [discuss] {process, testing, maintainability} change.md:L393+28: Make each commit in a series build and pass the tests on its own.
-- `chg-perf-claim-evidence` [should-fix] {performance, testing} change.md:L663+25: Back a performance claim with measured before-and-after numbers.
-- `chg-refactor-has-behaviour-pin` [should-fix] {testing, maintainability} change.md:L754+26: Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
-- `chg-tests-ship-with-change` [block] {testing} change.md:L919+27: Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks.
-- `chg-verify-before-claim` [block] {testing, process} change.md:L979+26: Back every "works" or "bug" claim with something run: a repro, a test or command output.
+- `chg-each-commit-builds` [discuss] {process, testing, maintainability} change.md:L432+28: Make each commit in a series build and pass the tests on its own.
+- `chg-flag-both-states-tested` [should-fix] {testing} change.md:L490+30: Test the flagged behaviour with the flag on and with the flag off for as long as the flag exists.
+- `chg-perf-claim-evidence` [should-fix] {performance, testing} change.md:L853+25: Back a performance claim with measured before-and-after numbers.
+- `chg-refactor-has-behaviour-pin` [should-fix] {testing, maintainability} change.md:L944+26: Pin current behaviour with a characterization test, snapshot or equivalence check before the refactor moves any structure.
+- `chg-tests-ship-with-change` [block] {testing} change.md:L1109+27: Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks.
+- `chg-verify-before-claim` [block] {testing, process} change.md:L1169+26: Back every "works" or "bug" claim with something run: a repro, a test or command output.
 
 ## function
 
 - `fn-complexity-cap` [discuss] {maintainability, testing} function.md:L182+37: Set a cyclomatic complexity limit in the linter and keep every function under it.
-- `fn-no-caller-mutation` [should-fix] {correctness, testing} function.md:L1408+34: Do not mutate a parameter or an object the caller owns, unless the function is documented as mutating it.
-- `fn-test-behaviour-not-implementation` [should-fix] {testing, maintainability} function.md:L2178+34: Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.
-- `fn-test-oracle-independent` [should-fix] {correctness, testing} function.md:L2213+25: Take a test's expected value from the requirement, not from the code under test.
-- `py-pytest-parametrize` [should-fix] {testing} function.md:L2467+28: Write tests that differ only in inputs and expected values as one `@pytest.mark.parametrize` test.
+- `fn-no-caller-mutation` [should-fix] {correctness, testing} function.md:L1634+34: Do not mutate a parameter or an object the caller owns, unless the function is documented as mutating it.
+- `fn-no-logic-in-tests` [discuss] {testing, maintainability} function.md:L1752+32: Keep `if`, `for`, `while` and `switch` out of test bodies.
+- `fn-test-behaviour-not-implementation` [should-fix] {testing, maintainability} function.md:L2514+34: Assert what a caller can observe through the public interface, so a change that keeps behaviour does not break the test.
+- `fn-test-oracle-independent` [should-fix] {correctness, testing} function.md:L2549+25: Take a test's expected value from the requirement, not from the code under test.
+- `py-pytest-parametrize` [should-fix] {testing} function.md:L2836+28: Write tests that differ only in inputs and expected values as one `@pytest.mark.parametrize` test.
 
 ## module
 
@@ -37,10 +39,12 @@ Every stable card that lists the `testing` concern, by level. The place `<level>
 
 - `code-a11y-check-in-ci` [should-fix] {accessibility, testing} <ui> codebase.md:L3+30: Run an automated accessibility check, such as axe on rendered pages, in the automated tests, and fail the test on a violation.
 - `code-doc-examples-stay-true` [discuss] {maintainability, testing} codebase.md:L302+25: Run each code example in the docs as a test.
-- `code-flaky-test-quarantine` [should-fix] {testing, process} codebase.md:L543+29: Report every test that passes only on retry, move it to a quarantine with a named owner and a ticket, and return it to the merge gate only after it passes many reruns.
-- `code-scoped-validation-loop` [discuss] {testing, process} codebase.md:L709+26: Document a command that checks one package or path, with readable output, so a small change does not need the full-repo run.
-- `code-test-fixtures-built-once` [should-fix] {testing, performance} codebase.md:L791+32: Build an expensive fixture once per test run, and reset state between tests with a rollback or a truncate, never a rebuild.
-- `code-test-selection-on-pr` [discuss] {testing, performance, process} codebase.md:L824+49: When the full suite is slower than the pull-request feedback target, run only the tests the change affects on the pull request, and run the full suite before deploy or on a schedule.
+- `code-flaky-test-quarantine` [should-fix] {testing, process} codebase.md:L572+29: Report every test that passes only on retry, move it to a quarantine with a named owner and a ticket, and return it to the merge gate only after it passes many reruns.
+- `code-scoped-validation-loop` [discuss] {testing, process} codebase.md:L776+26: Document a command that checks one package or path, with readable output, so a small change does not need the full-repo run.
+- `code-test-fixtures-built-once` [should-fix] {testing, performance} codebase.md:L858+32: Build an expensive fixture once per test run, and reset state between tests with a rollback or a truncate, never a rebuild.
+- `code-test-pyramid-shape` [discuss] {testing, process} codebase.md:L891+27: Keep most tests at the unit level, fewer at the integration level and fewest end-to-end.
+- `code-test-selection-on-pr` [discuss] {testing, performance, process} codebase.md:L919+49: When the full suite is slower than the pull-request feedback target, run only the tests the change affects on the pull request, and run the full suite before deploy or on a schedule.
+- `code-tests-no-fixed-sleep` [should-fix] {testing, reliability} codebase.md:L969+37: Do not wait in a test on a fixed delay; wait for the condition you need, or inject a clock.
 
 ## incident
 

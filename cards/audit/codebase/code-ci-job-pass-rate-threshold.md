@@ -4,13 +4,15 @@ level: codebase
 tags: [reliability, process, ci]
 severity: discuss
 status: draft
-lacks: orgs, GitLab states a target and Kubernetes a gate; needs one more org that sets a numeric pass rate for the pipeline or a blocking job
+lacks: orgs, GitLab and Kubernetes back it; Slack's 95% main-branch target is one project's metric (soft); needs one more org that sets a threshold
 lang: core
 applies_when: Auditing how a team keeps its main-branch pipeline and blocking CI jobs trustworthy.
 tool_gate: A scheduled job that reads pass rate from CI history and opens an issue or pages the owner below the threshold.
+note: GitLab: master pipeline stability target above 95%; Kubernetes: blocking jobs need three green runs and a responsive owner; Slack: internal 95% metric (soft)
 borrowed_from:
   - https://about.gitlab.com/blog/gitlab-top-devops-tooling-metrics-and-targets/
   - https://github.com/kubernetes/sig-release/blob/master/release-blocking-jobs.md
+  - https://slack.engineering/handling-flaky-tests-at-scale-auto-detection-suppression/
 ---
 
 **Rule.** Set a numeric pass-rate threshold for the pipeline or each blocking job, and act when it falls below it.

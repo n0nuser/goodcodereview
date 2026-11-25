@@ -1,10 +1,11 @@
 """The HTML pages of the site: level, pack, and concerns listings, the glossary, the text pages, the home page, and the 404."""
 import html
 import re
+from collections.abc import Callable
 
 from agent_ready_check import Page
-from card_fields import lacks
-from config import PAGE_MAX, REPO, SITE_DESC
+from card_fields import concerns, lacks, topics
+from config import MIN_PART, PAGE_MAX, REPO, SITE_DESC
 from context import BuildInput, pack_name
 from errors import BuildError
 from guides import GUIDES, guide_text, guides_index_text
@@ -55,28 +56,54 @@ CONCERNS_INTRO = ("<p>Every card's rule on one page, and each row links to the f
 
 def part_spec(lv: Level, g: str, cards: list[Card]) -> PageSpec:
     """The page for one context of a split level. Raises BuildError when its description breaks the search-snippet length."""
-    desc = f"The {g} context of the {lv} review: {len(cards)} cards, each with a FAIL and a PASS example and the organisations that back the rule."
+    desc = f"The {g} {'part' if '-' in g else 'context'} of the {lv} review: {len(cards)} cards, each with a FAIL and a PASS example and the organisations that back the rule."
     if not MIN_DESC <= len(desc) <= MAX_DESC:
         raise BuildError(f"{lv}-{g}.html: description is {len(desc)} characters, want {MIN_DESC} to {MAX_DESC}")
-    intro = f"<p>{LEVEL_DESC[lv]} This page holds the cards for the <code>{g}</code> context. The <a href=\"{lv}.html\">{NAME[lv]}</a> page lists every card. {VERDICT}</p>"
+    intro = f"<p>{LEVEL_DESC[lv]} This page holds the cards for the <code>{g}</code> {'part' if '-' in g else 'context'}. The <a href=\"{lv}.html\">{NAME[lv]}</a> page lists every card. {VERDICT}</p>"
     return PageSpec(f"{lv}-{g}.html", f"{NAME[lv]}, {g} cards", intro, tuple(cards), desc, parent=str(lv))
 
 
-def split_levels(b: BuildInput) -> BuildInput:
-    """Split every level whose one-page HTML would reach PAGE_MAX characters of text into a hub plus one page per `context`.
+def _regroup(cards: list[Card], key: Callable[[Card], list[str]], fallback: str) -> dict[str, list[Card]]:
+    """The cards by the first value `key` gives (or `fallback`); a group under MIN_PART cards joins "other"."""
+    groups: dict[str, list[Card]] = {}
+    for c in cards:
+        groups.setdefault((key(c) or [fallback])[0], []).append(c)
+    small = [g for g, cs in groups.items() if len(cs) < MIN_PART and g != "other"]
+    if len(small) > 1 or (small and "other" in groups):
+        groups["other"] = groups.get("other", []) + [c for g in small for c in groups.pop(g)]
+    return groups
 
-    The measure is the one tools/agent_ready_check.py applies (`Page.chars()`). Raises BuildError when a part is still too big.
+
+def split_levels(b: BuildInput) -> BuildInput:
+    """Split every level whose one-page HTML would reach PAGE_MAX characters of text into a hub plus parts.
+
+    A level splits by `context`. A context part that is still too big splits by its cards' first concern, and a concern part
+    that is still too big by the first topic tag (docs/adr/0002). The measure is the one tools/agent_ready_check.py applies
+    (`Page.chars()`). Raises BuildError when a part is still too big after that.
     """
     def size(spec: PageSpec) -> int:
         return Page.parse(listing(spec, b.ids, b.links, empty=False, compact=False)).chars()
 
     over = frozenset(lv for lv in LEVELS if lv not in b.no_stable and size(PageSpec(f"{lv}.html", NAME[lv], "", tuple(b.core_at(lv)), "")) >= PAGE_MAX)
     split = b.with_split(over)
+    plan: dict[str, str] = {}
+
+    def fits(lv: Level, g: str, cs: list[Card]) -> bool:
+        return size(part_spec(lv, g, cs)) < PAGE_MAX
+
     for lv in over:
         for g, cs in split.parts(lv).items():
-            if size(part_spec(lv, g, cs)) >= PAGE_MAX:
-                raise BuildError(f"{lv}-{g}.html is over {PAGE_MAX:,} characters of text; add a context or split the level further")
-    return split
+            if fits(lv, g, cs):
+                continue
+            for sub, by_concern in _regroup(cs, concerns, "general").items():
+                if fits(lv, f"{g}-{sub}", by_concern):
+                    plan.update({c.fm["id"]: f"{g}-{sub}" for c in by_concern})
+                    continue
+                for tag, by_topic in _regroup(by_concern, topics, "general").items():
+                    if not fits(lv, f"{g}-{sub}-{tag}", by_topic):
+                        raise BuildError(f"{lv}-{g}-{sub}-{tag}.html is over {PAGE_MAX:,} characters of text; add a context or a tag that splits it")
+                    plan.update({c.fm["id"]: f"{g}-{sub}-{tag}" for c in by_topic})
+    return b.with_split(over, plan)
 
 
 def page_specs(b: BuildInput) -> list[PageSpec]:

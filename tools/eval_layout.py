@@ -34,7 +34,7 @@ PROMPT = (
 )
 ENTRY = {
     "whole": "The checklist is the file ./service.md.",
-    "parts": "The checklist starts at ./service-server.md.",
+    "parts": "The checklist starts at ./service-server-compatibility.md.",
     "llms": "Start from ./llms.txt, which says where the checklist is.",
 }
 

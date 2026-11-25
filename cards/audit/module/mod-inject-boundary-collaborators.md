@@ -11,6 +11,7 @@ borrowed_from:
   - https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection-guidelines
   - https://symfony.com/doc/current/service_container.html
   - https://testing.googleblog.com/2008/08/by-miko-hevery-so-you-decided-to.html
+  - https://learn.microsoft.com/en-us/dotnet/standard/datetime/
 note: from the author's own Python review guide
 ---
 

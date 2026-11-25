@@ -4,13 +4,15 @@ level: module
 tags: [testing, reliability]
 severity: should-fix
 status: draft
-lacks: orgs, "call the parent's setUp and tearDown" has Laravel and PSF; needs a third org
+lacks: orgs, Laravel and Django back it; the Python unittest page states no such rule; needs a third org
 lang: core
 applies_when: A test class overrides setUp, tearDown, setUpClass or tearDownClass in an xUnit-style framework.
 tool_gate: none
+note: Laravel says to call parent::setUp and parent::tearDown; Django says to call the super implementation of setUpClass and tearDownClass. The unittest page was re-read and states no rule on calling the parent, so it does not count
 borrowed_from:
   - https://laravel.com/docs/12.x/testing
   - https://docs.python.org/3/library/unittest.html
+  - https://docs.djangoproject.com/en/stable/topics/testing/tools/
 ---
 
 **Rule.** A test class that overrides `setUp`, `tearDown`, `setUpClass` or `tearDownClass` calls the parent's version.

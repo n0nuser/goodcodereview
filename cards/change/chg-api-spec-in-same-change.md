@@ -4,14 +4,16 @@ level: change
 tags: [compatibility, api, contracts]
 severity: should-fix
 status: draft
-lacks: orgs, OpenAPI and Zalando back it; needs a third org
+lacks: orgs, Kubernetes (spec in the same PR) and Zalando (spec first) back it; OpenAPI defines the format only; needs one more org
 lang: core
 applies_when: The diff adds, removes or changes an HTTP route, a request or response field, a status code or a header.
 context: [server]
 tool_gate: Breaking-change diff of the spec in CI, plus a check that fails when route files change and the spec file does not.
+note: Kubernetes: update the swagger and OpenAPI spec with make update, as a commit separate from the code but in the same PR; Zalando: define APIs before coding; OpenAPI spec is a format definition, not a practice
 borrowed_from:
   - https://spec.openapis.org/oas/v3.1.0.html
   - https://opensource.zalando.com/restful-api-guidelines/
+  - https://raw.githubusercontent.com/kubernetes/community/master/contributors/devel/sig-architecture/api_changes.md
 ---
 
 **Rule.** Update the API spec in the same change that alters the routes, fields, status codes or headers it describes.

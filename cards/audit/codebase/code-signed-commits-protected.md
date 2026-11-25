@@ -4,14 +4,16 @@ level: codebase
 tags: [security, process, supply-chain, git]
 severity: should-fix
 status: draft
-lacks: orgs, "require signed commits" has OWASP and Node.js; GitHub documents the setting and AWS calls signing optional; needs one more org
+lacks: orgs, OWASP requires it; Node.js signs release commits only; GitHub and GitLab document the setting; needs two more orgs that state it as a rule
 lang: core
 applies_when: Auditing the branch protection of a repository that ships code or holds release branches.
 tool_gate: Branch protection or ruleset "Require signed commits" on every protected branch.
+note: OWASP CI/CD cheat sheet: require commits to be signed; GitHub rulesets and GitLab push rules document the setting (soft); Node.js tags and signs release commits only
 borrowed_from:
   - https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html
   - https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets
   - https://github.com/nodejs/node/blob/main/doc/contributing/releases.md
+  - https://docs.gitlab.com/user/project/repository/push_rules/
 ---
 
 **Rule.** Require signed commits on protected branches, so unsigned commits cannot merge or be pushed.

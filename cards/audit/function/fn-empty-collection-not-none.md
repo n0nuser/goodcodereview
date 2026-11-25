@@ -4,12 +4,14 @@ level: function
 tags: [correctness, api, errors]
 severity: should-fix
 status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+lacks: orgs, Microsoft states it; PMD's rule page is a tool description; SEI CERT MET55-J would not load; needs two more orgs
 lang: core
 applies_when: A function returns a list, set or map.
 tool_gate: type checker
-borrowed_from: []
-note: from the author's own Python review guide
+borrowed_from:
+  - https://learn.microsoft.com/en-us/dotnet/standard/design-guidelines/guidelines-for-collections
+  - https://pmd.github.io/pmd/pmd_rules_java_errorprone.html
+note: Microsoft: do not return null from methods returning collections; PMD ReturnEmptyCollectionRatherThanNull (soft); SEI CERT MET55-J fetch failed 2026-11-24
 ---
 
 **Rule.** Return an empty collection for "nothing found"; return `None` only when absent differs from empty.

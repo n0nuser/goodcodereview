@@ -8,7 +8,7 @@ lacks: evidence, each source is one product's retention setting for its own stor
 lang: core
 applies_when: The system keeps a table, file, index or in-memory map that gains an entry for each event, request or job and that no code removes entries from.
 tool_gate: Retention settings in config (log rotation, index lifecycle policy, TTL or partition drop job); a check that every table named `*_events`, `*_log` or `*_history` has one.
-note: Backed by Kubernetes (finished-job TTL and history limits), Prometheus (retention time and size), Docker (log max-size and max-file) and Elastic (lifecycle policies). other cards cover caches and personal data; this card covers any store that only grows
+note: Backed by Kubernetes (finished-job TTL and history limits), Prometheus (retention time and size), Docker (log max-size and max-file) and Elastic (lifecycle policies). other cards cover caches and personal data; this card covers any store that only grows. Object stores and log groups: AWS S3 lifecycle rules, Azure Blob lifecycle management, Google Cloud Storage lifecycle and AWS CloudWatch log-group retention each describe the setting, none says every bucket needs one
 borrowed_from:
   - https://kubernetes.io/docs/concepts/workloads/controllers/ttlafterfinished/
   - https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/
@@ -16,6 +16,10 @@ borrowed_from:
   - https://docs.docker.com/engine/logging/drivers/json-file/
   - https://www.elastic.co/guide/en/elasticsearch/reference/current/index-lifecycle-management.html
   - https://www.postgresql.org/docs/current/ddl-partitioning.html
+  - https://docs.aws.amazon.com/AmazonS3/latest/userguide/cost-optimization.html
+  - https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview
+  - https://cloud.google.com/storage/docs/lifecycle
+  - https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Working-with-log-groups-and-streams.html
 ---
 
 **Rule.** Give every store that only grows (event, audit and history tables, log files, finished-job registries) a maximum age or count, and a job or setting that enforces it.

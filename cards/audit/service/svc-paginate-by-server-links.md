@@ -4,14 +4,17 @@ level: service
 tags: [correctness, compatibility, api]
 severity: should-fix
 status: draft
-lacks: orgs, "follow the next link" has GitHub only and "do not parse the token" has Google only; needs two more orgs for each
+lacks: orgs, next link has GitHub firm; Microsoft and Zalando state server-side rules only; opaque token has Google and Zalando (cursor opacity); needs more client-side orgs
 lang: core
 applies_when: The code calls a paginated HTTP or RPC API and reads more than one page.
 context: [server]
 tool_gate: none
+note: Microsoft says the server must return a nextLink the client can GET. Zalando says the server should return pagination links and that a cursor is an opaque pointer never to be inspected or constructed by clients. Zalando body text for the links rule was not matched, only its heading
 borrowed_from:
   - https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api
   - https://google.aip.dev/158
+  - https://raw.githubusercontent.com/microsoft/api-guidelines/vNext/azure/Guidelines.md
+  - https://opensource.zalando.com/restful-api-guidelines/
 ---
 
 **Rule.** Fetch the next page only from the link or token the server returned; do not build page numbers or open the token.

@@ -1,7 +1,7 @@
 ---
 id: fn-test-behaviour-not-implementation
 level: function
-tags: [testing, maintainability, tests]
+tags: [testing, maintainability]
 severity: should-fix
 status: stable
 lang: core

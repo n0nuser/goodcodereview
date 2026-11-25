@@ -4,13 +4,15 @@ level: change
 tags: [process, maintainability]
 severity: discuss
 status: draft
-lacks: orgs, "link each PR to its issue" has Apache and WordPress; needs a third org
+lacks: orgs, Apache requires an issue per PR; WordPress ships a Closes template; CPython puts the issue number in the news file name; needs a third org
 lang: core
 applies_when: The project tracks work in an issue tracker.
 tool_gate: PR template with a required "Closes" line; a CI check for a linked issue.
+note: Apache Flink: make sure the PR corresponds to a JIRA issue (hotfixes excepted); WordPress: PR template starts with Closes; CPython: issue number in the NEWS entry file name (soft)
 borrowed_from:
   - https://flink.apache.org/how-to-contribute/code-style-and-quality-pull-requests/
   - https://raw.githubusercontent.com/WordPress/gutenberg/trunk/.github/PULL_REQUEST_TEMPLATE.md
+  - https://devguide.python.org/getting-started/pull-request-lifecycle/
 ---
 
 **Rule.** Link each pull request to the issue it addresses, with a keyword such as `Closes` or `See`.

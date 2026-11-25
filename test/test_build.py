@@ -166,7 +166,7 @@ def test_internal_links_and_anchors_resolve_in_rendered_pages(site_text: dict[st
 
 
 def test_a_split_level_hub_keeps_every_card_id_and_links_each_to_a_part_page(plan: Plan) -> None:
-    split = [lv for lv in LEVELS if f"{lv}-any.html" in plan.site]
+    split = [lv for lv in LEVELS if f"{lv}.html" in plan.site and "<article" not in plan.site[f"{lv}.html"].decode() and f"{lv}-" in " ".join(plan.site)]
     assert split
     for lv in split:
         hub = plan.site[f"{lv}.html"].decode()
@@ -176,7 +176,7 @@ def test_a_split_level_hub_keeps_every_card_id_and_links_each_to_a_part_page(pla
         assert "<article" not in hub
         for cid in cards:
             assert f'<li id="{cid}"' in hub
-            assert re.search(rf'<a href="{lv}-[a-z]+#{cid}">', hub)
+            assert re.search(rf'<a href="{lv}-[a-z-]+#{cid}">', hub)
 
 
 def test_every_font_face_and_preload_points_at_a_built_file(plan: Plan) -> None:

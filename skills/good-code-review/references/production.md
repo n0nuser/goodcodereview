@@ -31,6 +31,41 @@ Launch checklist
 
 **Counterpoint.** "We have no budget for an external audit." The auditor can be in-house, if they are trained and did not build the service. Cut scope instead of the audit: audit the main task flows first, and say in the report which parts are not covered.
 
+## prod-alert-actionable-context
+
+severity: should-fix  
+concerns: observability  
+applies_when: A service ships alert rules that page a person.  
+tool gate: A lint on alert rules that requires a description and a runbook annotation.  
+Backed by: Google (unjudged), Microsoft (unjudged), AWS (unjudged), Datadog (unjudged). Backing: unjudged.
+
+**Rule.** Give every paging alert context a responder can act on: what it means and what to do next.
+
+**Why.** A page that says only "metric X is high" makes the responder start from nothing at 3 a.m. The usual form is a one-line description, the owning team and a link to a runbook for the first checks and the mitigation. Written-down steps shorten recovery time, and an alert with an owner cannot be ignored by default. Alerts that need no immediate action belong in a ticket queue, not a page ([prod-alerts-symptoms-golden-signals](production.md#prod-alerts-symptoms-golden-signals)).
+
+**FAIL**
+
+```yaml
+- alert: HighErrorRatio
+  expr: job:http_errors:ratio5m > 0.05
+  for: 5m
+  labels: {severity: page}
+```
+
+**PASS**
+
+```yaml
+- alert: HighErrorRatio
+  expr: job:http_errors:ratio5m > 0.05
+  for: 5m
+  labels: {severity: page, team: payments}
+  annotations:
+    summary: "More than 5% of checkout requests fail"
+    runbook_url: https://wiki.example.com/runbooks/checkout-errors
+```
+
+**Counterpoint.** "Runbooks go stale and nobody reads them." A stale runbook is a fixable defect, and the card asks only that the alert say what it means and where to start. Ticket-only and informational alerts need no runbook, so the rule covers rules that page.
+
 ## prod-alerts-symptoms-golden-signals
 
 severity: should-fix  
@@ -85,16 +120,42 @@ deploy: all hosts at once, no comparison, rollback = "ask someone"
 
 **See also.** [inc-rollback-path-tested](incident.md#inc-rollback-path-tested) (drill the rollback).
 
-**Counterpoint.** "Hotfixes can't wait." Then keep the canary short, not absent. Fleet tools should also have velocity limits. A hermetic, reproducible build tied to one revision ([code-build-hermetic](codebase.md#code-build-hermetic)) is the precondition for rollback to mean anything.
+**Counterpoint.** "Hotfixes can't wait." Then keep the canary short, not absent. Fleet tools should also have velocity limits. A hermetic, reproducible build tied to one revision ([code-build-hermetic](codebase.md#code-build-hermetic)) is the precondition for rollback to mean anything. [prod-config-ships-like-code](production.md#prod-config-ships-like-code) covers config and flag values.
+
+## prod-config-ships-like-code
+
+severity: should-fix  
+concerns: reliability  
+applies_when: A service has runtime configuration, feature-flag values or limits that can change in production.  
+tool gate: Production config store writable only by the deploy pipeline; the config repository requires review before merge.  
+Backed by: Google (unjudged), AWS (unjudged), Microsoft (unjudged). Backing: unjudged.
+
+**Rule.** Change configuration and flag values through a reviewed commit and the same staged, automated pipeline as code, not by hand on a host or console.
+
+**Why.** One configuration value can change behaviour as much as a code change, with less testing and review. A hand edit leaves no history, no second reader and no rollback, and it skips the canary that would catch the mistake ([prod-canary-staged-rollout](production.md#prod-canary-staged-rollout)).
+
+**FAIL**
+
+```text
+ssh prod-3 "sed -i 's/rate_limit: 100/rate_limit: 1000/' /etc/app/config.yaml"
+```
+
+**PASS**
+
+```text
+PR "raise rate_limit to 1000" -> reviewed -> merged -> config pipeline: 5% of hosts, health check, then the rest, auto-rollback on failure
+```
+
+**Counterpoint.** "In an incident we need to change a value now." An out-of-band change is allowed when the pipeline is too slow, as long as a commit records the same value straight after, so the repository stays the source of truth. A fast config pipeline makes the exception rare.
 
 ## prod-kill-switch-fallback
 
 severity: should-fix  
 concerns: reliability  
 applies_when: A new risky feature or a dependency fallback is added.  
-Backed by: AWS (unjudged), Cloudflare (unjudged), GitHub (unjudged), Slack (unjudged), Dropbox (unjudged), Shopify (unjudged), Anthropic (unjudged). Backing: unjudged.
+Backed by: AWS (unjudged), Cloudflare (unjudged), GitHub (unjudged), Slack (unjudged), Dropbox (unjudged), Shopify (unjudged), FeatBit (unjudged), GrowthBook (unjudged), Harness (unjudged), Anthropic (unjudged). Backing: unjudged.
 
-**Rule.** Make a risky feature switchable off without a deploy, and exercise every fallback path in test or in production on a schedule.
+**Rule.** Make a risky feature switchable off without a deploy, give each kill switch that stays an owner, and exercise every fallback path in test or in production on a schedule.
 
 **Why.** A deploy is the slowest way to stop a feature that is hurting users. An untested fallback fails exactly when you need it: a fail-open path that never ran under load can overload the systems behind it, and a kill switch applied to a case it never met can raise its own error. Run the service with the dependency turned off, such as the cache disabled, and check that the safeguards hold.
 
@@ -114,7 +175,7 @@ if flags.enabled("checkout_v2"):   # runtime toggle, default off
 # chaos job, weekly: block Redis for 10 minutes and assert backup_lookup serves
 ```
 
-**Counterpoint.** "Flags add branches." True for release flags, so delete each one after the rollout. A kill switch is meant to stay: keep it, give it an owner, and exercise it with the fallbacks, so it still works the day you need it. For runbook steps that a person runs, such as a rollback or a failover, see [inc-rollback-path-tested](incident.md#inc-rollback-path-tested).
+**Counterpoint.** "Flags add branches." True for release flags, so delete each one after the rollout. A kill switch is meant to stay: keep it, and exercise it with the fallbacks, so it still works the day you need it. For runbook steps that a person runs, such as a rollback or a failover, see [inc-rollback-path-tested](incident.md#inc-rollback-path-tested).
 
 ## prod-latency-slo-percentile
 
@@ -171,6 +232,34 @@ thresholds: p99 < 400 ms, errors < 0.1%; result linked in the launch doc
 ```
 
 **Counterpoint.** "A production-sized test environment costs too much." Size the test to the risk. A scaled-down environment is acceptable for a non-critical workload, and skipping the test is low risk for a small one. For a launch that could take down a shared dependency, the test is cheaper than the outage. Roll out in stages either way ([prod-canary-staged-rollout](production.md#prod-canary-staged-rollout)).
+
+## prod-metric-labels-bounded
+
+severity: should-fix  
+concerns: observability, performance  
+applies_when: A service records aggregated metrics (counters, histograms, gauges) with labels or dimensions.  
+tool gate: A cardinality limit on the metrics backend; a lint that rejects labels named user_id, request_id or raw path.  
+Backed by: Prometheus (unjudged), Microsoft (unjudged), Micrometer (unjudged). Backing: unjudged.
+
+**Rule.** Give a metric label only a bounded set of values; never a user id, request id, email, timestamp or raw URL path.
+
+**Why.** Every distinct label value creates a new time series. An unbounded label multiplies storage and query cost until the backend drops data or the bill arrives. User-supplied values are the usual cause, and a request path that includes ids or random 404 URLs is the sneakiest. Put per-request detail in a log line, span or event instead.
+
+**FAIL**
+
+```python
+REQUESTS = Counter("app_requests_total", "Requests", ["user_id", "path"])
+REQUESTS.labels(user_id=uid, path=request.url.path).inc()
+```
+
+**PASS**
+
+```python
+REQUESTS = Counter("app_requests_total", "Requests", ["route", "status"])
+REQUESTS.labels(route=request.scope["route"].path, status=str(resp.status_code)).inc()   # "/users/{id}"
+```
+
+**Counterpoint.** "We need per-user numbers." Aggregated metrics are the wrong store for that. Wide-event and log stores are built for high-cardinality fields, so write the user id there and keep the metric label to the route and status class. A small, known set such as tenant tier or region is fine.
 
 ## prod-profile-on-demand
 
