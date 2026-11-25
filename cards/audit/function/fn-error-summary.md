@@ -3,8 +3,7 @@ id: fn-error-summary
 level: function
 tags: [accessibility, usability, frontend, forms]
 severity: should-fix
-status: draft
-lacks: orgs, "links each error to its field" has GOV.UK only; needs two more orgs that show a linked summary
+status: stable
 lang: core
 applies_when: Code renders a form again after validation fails.
 context: [ui]
@@ -13,6 +12,8 @@ borrowed_from:
   - https://design-system.service.gov.uk/components/error-summary/
   - https://design-system.service.gov.uk/components/error-message/
   - https://www.a11yproject.com/checklist/
+  - https://service-manual.nhs.uk/design-system/components/error-summary
+  - https://designsystem.gov.scot/components/error-summary
 ---
 
 **Rule.** After a failed submit, show a summary at the top of the page that lists every error and links each one to its field.

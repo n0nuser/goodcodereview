@@ -4,7 +4,7 @@ Every stable card that lists the `accessibility` concern, by level. The place `<
 
 ## change
 
-- `chg-ui-change-screenshots-and-keyboard-pass` [should-fix] {accessibility, usability, process} <ui> change.md:L947+31: A UI change shows before-and-after screenshots and says what a keyboard-only pass and a 200% zoom check found on the changed screens.
+- `chg-ui-change-screenshots-and-keyboard-pass` [should-fix] {accessibility, usability, process} <ui> change.md:L1137+31: A UI change shows before-and-after screenshots and says what a keyboard-only pass and a 200% zoom check found on the changed screens.
 
 ## function
 
@@ -12,17 +12,19 @@ Every stable card that lists the `accessibility` concern, by level. The place `<
 - `fn-colour-not-sole-cue` [should-fix] {accessibility, usability} <ui> function.md:L97+30: Pair every colour that carries meaning with a second cue: text, an icon, a shape, or an underline.
 - `fn-dialog-focus-managed` [block] {accessibility, usability} <ui> function.md:L365+33: When a modal opens, move focus into it and keep Tab inside it. Make Escape close it. When it closes, return focus to the control that opened it or, if it is gone, to the next logical control.
 - `fn-error-says-what-and-how` [should-fix] {usability, accessibility} <ui> function.md:L657+30: Show each validation error next to its field, in plain words that name what is wrong and how to fix it.
-- `fn-focus-indicator-visible` [block] {accessibility, usability} <ui> function.md:L770+27: Keep a visible focus indicator on every focusable element. Never set `outline: none` without a replacement.
-- `fn-form-control-has-label` [block] {accessibility, usability} <ui> function.md:L798+31: Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.
-- `fn-heading-structure` [should-fix] {accessibility, usability} <ui> function.md:L931+31: Mark every heading with a real `<h1>` to `<h6>` element, not a styled `div`, `span`, or `p`.
-- `fn-img-alt-text` [should-fix] {accessibility} <ui> function.md:L963+31: Give every `<img>` an `alt` attribute: text that serves the image's purpose, or `alt=""` when the image is decorative.
-- `fn-label-above-field` [discuss] {usability, accessibility} <ui> function.md:L1116+31: Put the visible label of a text input, select, or textarea directly above it.
-- `fn-native-button-or-link` [block] {accessibility, usability} <ui> function.md:L1309+30: Use `<button>` for an action and `<a href>` for navigation. Do not attach a click handler to a `div`, `span`, or `a` with no `href`.
-- `fn-no-positive-tabindex` [should-fix] {accessibility, usability} <ui> function.md:L1612+31: Write the DOM in reading order and never set `tabindex` above 0.
-- `fn-reduced-motion-respected` [should-fix] {accessibility, usability} <ui> function.md:L1923+33: Switch off or replace large, repeating, or interaction-triggered motion when `prefers-reduced-motion: reduce` is set.
-- `fn-related-controls-in-fieldset` [should-fix] {accessibility, usability} <ui> function.md:L1987+35: Wrap each radio group, checkbox group, and other set of related controls, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.
-- `fn-status-announced-live-region` [should-fix] {accessibility, usability} <ui> function.md:L2115+31: Announce an async status message through a live region (`role="status"` or `role="alert"`), and put a `role="status"` or `aria-live` region in the markup before its text changes.
-- `fn-target-size` [should-fix] {accessibility, usability} <ui> function.md:L2147+30: Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.
+- `fn-error-summary` [should-fix] {accessibility, usability} <ui> function.md:L714+41: After a failed submit, show a summary at the top of the page that lists every error and links each one to its field.
+- `fn-focus-indicator-visible` [block] {accessibility, usability} <ui> function.md:L878+27: Keep a visible focus indicator on every focusable element. Never set `outline: none` without a replacement.
+- `fn-form-control-has-label` [block] {accessibility, usability} <ui> function.md:L906+31: Tie every form control to a visible `<label>`, with `for` and a matching `id` or by wrapping it. A placeholder is not a label.
+- `fn-heading-structure` [should-fix] {accessibility, usability} <ui> function.md:L1039+31: Mark every heading with a real `<h1>` to `<h6>` element, not a styled `div`, `span`, or `p`.
+- `fn-img-alt-text` [should-fix] {accessibility} <ui> function.md:L1125+31: Give every `<img>` an `alt` attribute: text that serves the image's purpose, or `alt=""` when the image is decorative.
+- `fn-label-above-field` [discuss] {usability, accessibility} <ui> function.md:L1278+31: Put the visible label of a text input, select, or textarea directly above it.
+- `fn-native-button-or-link` [block] {accessibility, usability} <ui> function.md:L1502+30: Use `<button>` for an action and `<a href>` for navigation. Do not attach a click handler to a `div`, `span`, or `a` with no `href`.
+- `fn-no-aria-hidden-on-focusable` [should-fix] {accessibility} <ui> function.md:L1571+32: Never put `aria-hidden="true"` on an element that can take focus, or leave an element visually hidden while it has focus.
+- `fn-no-positive-tabindex` [should-fix] {accessibility, usability} <ui> function.md:L1871+31: Write the DOM in reading order and never set `tabindex` above 0.
+- `fn-reduced-motion-respected` [should-fix] {accessibility, usability} <ui> function.md:L2182+33: Switch off or replace large, repeating, or interaction-triggered motion when `prefers-reduced-motion: reduce` is set.
+- `fn-related-controls-in-fieldset` [should-fix] {accessibility, usability} <ui> function.md:L2246+35: Wrap each radio group, checkbox group, and other set of related controls, such as day, month, and year, in a `<fieldset>` with a `<legend>` that names the group, often as the question.
+- `fn-status-announced-live-region` [should-fix] {accessibility, usability} <ui> function.md:L2451+31: Announce an async status message through a live region (`role="status"` or `role="alert"`), and put a `role="status"` or `aria-live` region in the markup before its text changes.
+- `fn-target-size` [should-fix] {accessibility, usability} <ui> function.md:L2483+30: Make each pointer target at least 24 by 24 CSS pixels, or space it so that a 24 px circle centred on it touches no other target and no other undersized target's circle.
 
 ## module
 
@@ -30,13 +32,13 @@ Every stable card that lists the `accessibility` concern, by level. The place `<
 
 ## service
 
-- `svc-no-redundant-entry` [should-fix] {usability, accessibility} <ui> service.md:L1363+29: Do not ask for information the user already gave in the same flow. Fill it in, or let the user pick it.
-- `svc-reflow-and-zoom` [should-fix] {accessibility, usability} <ui> service.md:L1526+37: Make the page usable at 320 CSS pixels wide and at 200% text zoom, with no sideways scrolling, no clipped content, and no blocked pinch-zoom.
-- `svc-slow-operation-shows-progress` [should-fix] {usability, accessibility} <ui> service.md:L1738+30: Show that a slow action is under way, and show its progress when it runs long.
+- `svc-no-redundant-entry` [should-fix] {usability, accessibility} <ui> service.md:L1514+29: Do not ask for information the user already gave in the same flow. Fill it in, or let the user pick it.
+- `svc-reflow-and-zoom` [should-fix] {accessibility, usability} <ui> service.md:L1706+37: Make the page usable at 320 CSS pixels wide and at 200% text zoom, with no sideways scrolling, no clipped content, and no blocked pinch-zoom.
+- `svc-slow-operation-shows-progress` [should-fix] {usability, accessibility} <ui> service.md:L1918+30: Show that a slow action is under way, and show its progress when it runs long.
 
 ## system
 
-- `sys-consistent-ui-terms` [discuss] {usability, accessibility} <ui> system.md:L90+29: Use one label and one icon for the same action and the same concept across all screens.
+- `sys-consistent-ui-terms` [discuss] {usability, accessibility} <ui> system.md:L126+29: Use one label and one icon for the same action and the same concept across all screens.
 
 ## codebase
 

@@ -1,7 +1,7 @@
 ---
 id: chg-refactor-has-behaviour-pin
 level: change
-tags: [testing, maintainability, refactoring, tests]
+tags: [testing, maintainability, refactoring]
 severity: should-fix
 status: stable
 lang: core

@@ -3,14 +3,20 @@ id: fn-resource-lifetime
 level: function
 tags: [correctness, concurrency, resources]
 severity: should-fix
-status: draft
-lacks: orgs, a structured-concurrency blog (one person) and Google (cancel path) back it; needs two more orgs for the owner rule
+status: stable
 lang: core
 applies_when: Code starts a task, thread, goroutine, or subprocess, or opens a handle (file, socket, connection).
 tool_gate: Leak detectors in tests (unclosed-resource warnings, goroutine leak checks).
 borrowed_from:
   - https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/
   - https://go.dev/blog/pipelines
+  - https://google.github.io/styleguide/go/decisions
+  - https://raw.githubusercontent.com/uber-go/guide/master/style.md
+  - https://docs.python.org/3/library/asyncio-task.html
+  - https://docs.python.org/3/tutorial/inputoutput.html
+  - https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines
+  - https://google.github.io/styleguide/cppguide.html
+  - https://go.dev/doc/effective_go
 ---
 
 **Rule.** Give every task and handle an owner that waits for it or closes it, on the error path too.

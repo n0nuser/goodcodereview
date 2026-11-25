@@ -942,6 +942,47 @@ for order in orders:
 
 **Counterpoint.** "The server returns 429 and Retry-After, so we can just react." Reacting means the limit is hit every time, and on some APIs repeated hits cost extra or lock the client out. Pace first and keep the 429 handling for the bursts that still get through.
 
+## svc-container-resources-set
+
+severity: should-fix  
+concerns: reliability, performance  
+applies_when: A change adds or edits a Kubernetes workload manifest or Helm values with containers.  
+context: server  
+tool gate: An admission policy or manifest linter that rejects a container with no CPU request, memory request or memory limit; a namespace LimitRange that supplies defaults.  
+Backed by: Microsoft (unjudged), AWS (unjudged), Google (unjudged). Backing: unjudged.
+
+**Rule.** Set a CPU request, a memory request and a memory limit on every container in the manifest, sidecars included.
+
+**Why.** The scheduler places pods by their requests. A container with none looks free, so nodes get overpacked and neighbours starve each other. A cluster with quotas can also reject the deployment. Without a memory limit, one leak takes the whole node down instead of restarting one container. A CPU limit is left out on purpose: it throttles a container that has spare node capacity, so set the CPU request to what the service needs and leave the limit off unless you have a reason. Size the numbers from measured use, not a guess copied from another service.
+
+**FAIL**
+
+```yaml
+containers:
+  - name: api
+    image: registry.example.com/api:1.8.2
+  - name: log-shipper
+    image: registry.example.com/shipper:0.4.0
+```
+
+**PASS**
+
+```yaml
+containers:
+  - name: api
+    image: registry.example.com/api:1.8.2
+    resources:
+      requests: { cpu: 250m, memory: 256Mi }
+      limits: { memory: 256Mi }
+  - name: log-shipper
+    image: registry.example.com/shipper:0.4.0
+    resources:
+      requests: { cpu: 50m, memory: 64Mi }
+      limits: { memory: 64Mi }
+```
+
+**Counterpoint.** "The namespace already has a LimitRange with defaults." Then the manifest can omit the block, as long as the repo shows that policy and the defaults fit the workload. Default values are one size for every container, so a service with a real profile still needs its own numbers.
+
 ## svc-cors-allowlist
 
 severity: should-fix  
@@ -1030,6 +1071,54 @@ Set-Cookie: sid=...; SameSite=Lax; Secure; HttpOnly
 ```
 
 **Counterpoint.** "Our API uses JSON, so browsers cannot forge it." A simple content type such as `text/plain` can carry a JSON body without a preflight. Reject it, or require a custom header such as `X-CSRF-Token`. Pure bearer-token APIs with no cookies are exempt.
+
+## svc-debug-off-in-production
+
+severity: should-fix  
+concerns: security  
+applies_when: The service has a debug mode, such as Flask or Django debug, a framework debugger or verbose error pages.  
+context: server  
+tool gate: A config check that debug is false in the production settings, and a smoke test that a deliberate server error returns a plain error page with no traceback.  
+Backed by: OWASP (unjudged), Django Software Foundation (unjudged), Pallets (unjudged), Microsoft (unjudged). Backing: unjudged.
+
+**Rule.** Keep debug mode off in production, and turn it on by environment so that a missing setting leaves it off.
+
+**Why.** A debug mode prints stack traces, settings and local variables, and some frameworks serve an interactive console that runs code from the browser. Each hands an attacker a map and secrets. A docs UI such as Swagger UI is the same kind of exposure: it lists every endpoint, parameter and model, including internal ones, so serve it in development only or put it behind authentication. Make the safe state the default.
+
+**FAIL**
+
+```python
+from flask import Flask
+
+app = Flask(__name__)
+
+if __name__ == "__main__":
+    app.run(debug=True)   # the interactive debugger is reachable wherever this runs
+```
+
+```python
+# settings.py
+DEBUG = True   # tracebacks with settings and source excerpts on every error page
+```
+
+**PASS**
+
+```python
+import os
+from flask import Flask
+
+app = Flask(__name__)
+
+if __name__ == "__main__":
+    app.run(debug=os.environ.get("APP_ENV") == "development")
+```
+
+```python
+# settings.py
+DEBUG = os.environ.get("DJANGO_DEBUG") == "1"   # unset means off
+```
+
+**Counterpoint.** "We need the traceback to diagnose a production bug." Send errors to a log or an error tracker, where the team can read them and visitors cannot. To reproduce a problem with debug on, run the same build in a staging environment that is not public.
 
 ## svc-decompression-cap
 
@@ -1326,6 +1415,68 @@ response: { "items": [...], "next_page_token": "def" }
 
 **Counterpoint.** "This list is always small." Say so with a bounded type or a documented limit, since data tends to outgrow its first estimate. Cursors cost more than offsets to build, but they stay stable while rows change.
 
+## svc-log-input-neutralised
+
+severity: should-fix  
+concerns: security  
+applies_when: A service writes plain-text (unstructured) log lines that include a value from a request, header, form or other external input.  
+context: server  
+tool gate: A formatter that escapes CR and LF in every record; a test that logs a value containing a newline and asserts a single line.  
+Backed by: OWASP (unjudged), MITRE (unjudged), GitLab (unjudged). Backing: unjudged.
+
+**Rule.** In plain-text logs, escape or strip CR, LF and delimiter characters in external input before logging it.
+
+**Why.** A value that contains a newline lets the sender write a line of their own into the log, such as a fake "login succeeded" entry, and so hide or forge events. Anyone reading or parsing the log cannot tell the forged line from a real one.
+
+**FAIL**
+
+```python
+logging.info(f"login failed for {username}")   # username = "bob\nINFO login succeeded for admin"
+```
+
+**PASS**
+
+```python
+logging.info("login failed for %r", username)   # %r escapes the newline: 'bob\nINFO login ...'
+```
+
+**Counterpoint.** "We already log JSON." Then the encoder escapes the newline and this check passes by construction; the card only applies to plain-text formats. Escaping in the formatter for every record is better than at each call site, so a missed call cannot reopen the hole.
+
+## svc-logs-structured
+
+severity: should-fix  
+concerns: observability  
+applies_when: A service ships its logs to an aggregator or search tool and its logger supports key/value fields.  
+context: server  
+tool gate: Pylint logging-fstring-interpolation (W1203), .NET analyzer CA2254, or a logger wrapper that accepts only a constant message plus fields.  
+Backed by: Microsoft (unjudged), Kubernetes (unjudged), OWASP (unjudged), Python Software Foundation (unjudged), Google (unjudged). Backing: unjudged.
+
+**Rule.** Log an event as a constant message plus key/value fields; do not build the message by interpolating variable data into it.
+
+**Why.** A formatted string can only be searched by text. Fields can be filtered, grouped and counted, and the message stays one searchable pattern however many orders fail. Interpolation also formats the string even when the level is off, and a value with a newline can forge a log line ([svc-log-input-neutralised](service.md#svc-log-input-neutralised)). Put the request id in the fields too.
+
+**FAIL**
+
+```go
+log.Printf("order %s failed for %s: %v", orderID, userID, err)
+```
+
+```python
+logger.error(f"order {order_id} failed for {user_id}")
+```
+
+**PASS**
+
+```go
+slog.Error("order failed", "order_id", orderID, "user_id", userID, "err", err)
+```
+
+```python
+logger.error("order failed", extra={"order_id": order_id, "user_id": user_id})
+```
+
+**Counterpoint.** CLIs and small scripts print text for a person, and a service with no aggregator gains little from fields. The card covers services whose logs are searched by machine. Where the logger has no field support, a format string with arguments (`logger.error("order %s failed", order_id)`) still avoids eager formatting.
+
 ## svc-mfa-step-up
 
 severity: should-fix  
@@ -1389,6 +1540,35 @@ Backed by: W3C (unjudged), Nielsen Norman Group (unjudged), GOV.UK (unjudged), B
 ```
 
 **Counterpoint.** "Retyping a new password confirms it." That is a fair exception. So is data that is no longer valid, and re-entry that is the point of the task, such as a memory test. Browser autofill does not count: the page itself must supply the value.
+
+## svc-no-secrets-in-logs
+
+severity: should-fix  
+concerns: security  
+applies_when: A service writes application or request logs.  
+context: server  
+tool gate: A redacting log filter or formatter; secret scanning over the log output of the test suite.  
+Backed by: OWASP (unjudged), MITRE (unjudged), GitLab (unjudged). Backing: unjudged.
+
+**Rule.** Do not log passwords, tokens, keys or session ids; log an internal id or a masked value instead.
+
+**Why.** Logs are copied to more places and read by more people than the secret store, and they live longer. A credential in a log line stays valid for as long as the log does. Whole header maps, request bodies and config objects are the usual leak, because nobody wrote the secret into the call on purpose.
+
+**FAIL**
+
+```python
+logger.info("request headers: %s", dict(request.headers))   # includes Authorization and Cookie
+logger.debug("loaded config: %s", config)                   # includes db_password
+```
+
+**PASS**
+
+```python
+logger.info("request received", extra={"request_id": rid, "client_id": client.id})
+logger.debug("loaded config", extra={"keys": sorted(config)})
+```
+
+**Counterpoint.** "Debugging needs the full request." Add a redaction layer that masks known secret fields before output, and keep verbose logs on a short retention ([sys-pii-minimise-retention](system.md#sys-pii-minimise-retention)). Identifiers such as a credential's internal id stay loggable.
 
 ## svc-no-secrets-in-url
 
@@ -1884,6 +2064,44 @@ audit.write(action="order.paid", tenant_id=tenant.id, actor=user.id)
 ```
 
 **Counterpoint.** "The pipeline adds the tenant from the request context." That works only for code that runs inside a request. Workers, schedulers and sidecars write records too, and a query cannot recover a field that was never written. If a shared layer injects the field, verify it with a two-tenant query, because a layer that silently skips one producer looks the same as a correct one until the query runs. Splitting logs into a store per tenant is stronger still where the operational cost is justified.
+
+## svc-tenant-scope-in-data-layer
+
+severity: should-fix  
+concerns: security, correctness  
+applies_when: Several tenants share one table or database and the service reads tenant data.  
+context: data  
+tool gate: A test that reads as a second tenant and asserts the first tenant's rows are absent; Postgres FORCE ROW LEVEL SECURITY.  
+Backed by: Microsoft (unjudged), OWASP (unjudged), AWS (unjudged). Backing: unjudged.
+
+**Rule.** Enforce tenant scope in the data layer by default, with a query filter or row-level security, not by a predicate at each call site.
+
+**Why.** A tenant predicate written per query is one forgotten `WHERE` away from showing one customer another's rows. Put the scope where every query inherits it, and make the unscoped read an explicit, visible call. Set the tenant from the verified identity, not from a request field. In Postgres, `FORCE` row-level security so the table owner is filtered too.
+
+**FAIL**
+
+```csharp
+// Each caller must remember the tenant predicate.
+var orders = await db.Orders.ToListAsync();   // returns every tenant's orders
+```
+
+**PASS**
+
+```csharp
+modelBuilder.Entity<Order>()
+    .HasQueryFilter(o => o.TenantId == _tenantId);   // _tenantId comes from the verified identity
+
+var orders = await db.Orders.ToListAsync();          // scoped by default
+```
+
+```sql
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE orders FORCE ROW LEVEL SECURITY;
+CREATE POLICY tenant_isolation ON orders
+    USING (tenant_id = current_setting('app.tenant_id')::uuid);
+```
+
+**Counterpoint.** "A hidden filter surprises people and costs performance." The surprise is the point: a missing filter fails safe. Index the tenant column, and keep the escape hatch (`IgnoreQueryFilters()`, or a separate admin role) rare, named, and audited.
 
 ## svc-timeouts
 

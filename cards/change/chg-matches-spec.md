@@ -4,12 +4,14 @@ level: change
 tags: [process, scope, requirements]
 severity: should-fix
 status: draft
-lacks: orgs, checking the change against the spec has Google, plus Dropbox for security only; needs a third org
+lacks: orgs, Google and Microsoft check the change against the task; none says to flag changes nobody asked for or missing requirements; needs a third org
 lang: core
 applies_when: The change links a ticket, spec or issue.
 tool_gate: none
+note: Google: does the change do what the developer intended; Microsoft playbook: verify the goals of the corresponding task are achieved, move out-of-scope concerns to separate tasks
 borrowed_from:
   - https://google.github.io/eng-practices/review/reviewer/looking-for.html
+  - https://microsoft.github.io/code-with-engineering-playbook/code-reviews/process-guidance/reviewer-guidance/
 ---
 
 **Rule.** Trace every behaviour change in the diff to the stated requirement, and flag missing requirements and any change nobody asked for.

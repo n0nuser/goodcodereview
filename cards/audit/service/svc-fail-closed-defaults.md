@@ -1,7 +1,7 @@
 ---
 id: svc-fail-closed-defaults
 level: service
-tags: [security, configuration]
+tags: [security, config]
 severity: should-fix
 status: stable
 lang: core

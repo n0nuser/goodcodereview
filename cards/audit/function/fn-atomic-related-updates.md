@@ -4,13 +4,16 @@ level: function
 tags: [correctness, consistency, errors]
 severity: should-fix
 status: draft
-lacks: orgs, only one vendor's review skill backs it; the all-or-nothing principle has no cited org
+lacks: orgs, PostgreSQL, Django and Rails describe what a transaction is, not a rule to wrap related writes; needs orgs that tell reviewers to do so
 lang: core
 applies_when: One operation writes to two or more places that must agree (rows, tables, stores, files).
 tool_gate: none
-note: from one vendor's review skill (opinion); the all-or-nothing principle is standard
+note: PostgreSQL, Django and Rails document the all-or-nothing mechanism (soft); the review rule itself comes from one vendor's review skill
 borrowed_from:
   - https://github.com/cursor/plugins/blob/main/thermos/skills/thermo-nuclear-code-quality-review/SKILL.md
+  - https://www.postgresql.org/docs/current/tutorial-transactions.html
+  - https://docs.djangoproject.com/en/5.1/topics/db/transactions/
+  - https://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html
 ---
 
 **Rule.** Make related writes succeed or fail together.

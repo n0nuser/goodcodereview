@@ -27,6 +27,36 @@ fix: stream the response; after: p99 1.9 s -> 240 ms, same load replay
 
 **Counterpoint.** "In an outage we mitigate first." Yes. Rolling back or adding capacity to stop the bleeding needs no profile. The rule covers the fix that closes the incident, which comes after the system is stable. Capacity kept as that fix, with no profile behind it, hides a code problem rather than removing it.
 
+## inc-postmortem-blameless
+
+severity: should-fix  
+concerns: process  
+applies_when: A postmortem, incident review or postmortem template is written or audited.  
+Backed by: Google (unjudged), PagerDuty (unjudged), Atlassian (unjudged), Microsoft (unjudged). Backing: unjudged.
+
+**Rule.** Write a postmortem so that it names causes in the system and the decisions around it, never a person or team as the one at fault.
+
+**Why.** People who expect blame stay quiet about what they saw and soften the timeline, so the contributing factors never reach the review. A cause of "someone was careless" also gives no action that prevents the next failure, while a cause such as "the schema accepted an empty list" does. The timeline may still say who made which change; only the verdict of fault is out.
+
+**FAIL**
+
+```text
+Root cause: Dana pushed a bad config without testing it.
+Action: Dana to be more careful with config changes.
+```
+
+**PASS**
+
+```text
+Contributing causes: the config schema accepted an empty region list, and the
+deploy pipeline had no validation step for region lists.
+14:02 Dana's change (PR 4412) merged with an empty list after the usual review.
+Action (owner: platform, due 2026-12-10, ISSUE-518): reject empty lists in the
+schema and add a validation step to the pipeline.
+```
+
+**Counterpoint.** "Blameless means nobody is accountable." Each change stays in the timeline with its author, and each action has an owner. What the rule refuses is the finding that a person caused the outage, because that finding ends the inquiry at the person and leaves the system as it was. It says nothing about performance management, which is a separate process.
+
 ## inc-rollback-path-tested
 
 severity: should-fix  
@@ -53,3 +83,31 @@ Runbook: rollback drilled monthly, last run 2026-10-01; schema is expand-only; o
 **See also.** [prod-canary-staged-rollout](production.md#prod-canary-staged-rollout) for abort rules, and [prod-kill-switch-fallback](production.md#prod-kill-switch-fallback) for fallbacks that run in code.
 
 **Counterpoint.** "Drills are costly." Start with the mitigations an incident would need first, and drill again when a migration or release process changes. A drill is cheaper than finding out during an outage that the rollback is impossible.
+
+## inc-single-incident-commander
+
+severity: discuss  
+concerns: process, reliability  
+applies_when: The repo or wiki holds an incident policy or runbook that covers major incidents. A repo with no such document has nothing to fail, so mark the card N/A.  
+Backed by: Google (unjudged), PagerDuty (unjudged), AWS (unjudged). Backing: unjudged.
+
+**Rule.** Name one incident commander for each major incident, who holds the overall state of the response and oversees the other roles.
+
+**Why.** Without one person holding the whole picture, responders duplicate each other, change the system in parallel and wait for someone else to decide. The commander does not need to be the most senior or the most technical person present; the role is to keep the state and assign the work.
+
+**FAIL**
+
+```text
+Incident policy: when a major incident starts, the on-call engineers and the
+manager join the channel and work it out together.
+```
+
+**PASS**
+
+```text
+Incident policy: the first responder declares a major incident and acts as
+incident commander until they hand over by name. The commander assigns
+operations and communications leads and keeps the incident log.
+```
+
+**Counterpoint.** "A role hierarchy is overhead for a small team or a small incident." Scope it to major incidents, and let one person hold several roles on a small team. The rule only asks that someone is named commander, so the question "who decides" has an answer before the page goes out.

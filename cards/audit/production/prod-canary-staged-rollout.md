@@ -16,6 +16,7 @@ borrowed_from:
   - https://x.com/addyosmani/status/2114604912520921136
   - https://learn.microsoft.com/en-us/azure/well-architected/operational-excellence/safe-deployments
   - https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-rollback-and-redeploy.html
+  - https://aws.amazon.com/builders-library/automating-safe-hands-off-deployments/
 ---
 
 **Rule.** Roll out in stages behind a canary, and abort by rule, not by judgment.
@@ -37,4 +38,4 @@ deploy: all hosts at once, no comparison, rollback = "ask someone"
 
 **See also.** [[inc-rollback-path-tested]] (drill the rollback).
 
-**Counterpoint.** "Hotfixes can't wait." Then keep the canary short, not absent. Fleet tools should also have velocity limits. A hermetic, reproducible build tied to one revision ([[code-build-hermetic]]) is the precondition for rollback to mean anything.
+**Counterpoint.** "Hotfixes can't wait." Then keep the canary short, not absent. Fleet tools should also have velocity limits. A hermetic, reproducible build tied to one revision ([[code-build-hermetic]]) is the precondition for rollback to mean anything. [[prod-config-ships-like-code]] covers config and flag values.

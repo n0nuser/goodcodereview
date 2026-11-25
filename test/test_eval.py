@@ -137,5 +137,5 @@ def test_layout_staging_gives_each_layout_only_its_files(tmp_path: Path) -> None
         work.mkdir()
         el.stage(layout, work)
         assert (work / "repo" / "app.py").is_file() and not (work / "repo" / "case.json").exists()
-        assert (work / "service.md").exists() == has_whole and (work / "service-server.md").exists() == has_parts
+        assert (work / "service.md").exists() == has_whole and (work / "service-any.md").exists() == has_parts
     assert "https://goodcodereview.com/" not in (tmp_path / "llms" / "llms.txt").read_text()

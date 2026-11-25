@@ -711,6 +711,48 @@ return fmt.Errorf("read config: %w", err)
 
 **Counterpoint.** "Messages shown to users should be proper sentences." They should, at the UI layer. Keep the wrapped error lowercase and format the user text where it is shown.
 
+## fn-error-summary
+
+severity: should-fix  
+concerns: accessibility, usability  
+applies_when: Code renders a form again after validation fails.  
+context: ui  
+tool gate: none; a rendered check that submits an invalid form and looks for the summary.  
+Backed by: GOV.UK (unjudged), The A11y Project (unjudged), NHS (unjudged), Scottish Government (unjudged). Backing: unjudged.
+
+**Rule.** After a failed submit, show a summary at the top of the page that lists every error and links each one to its field.
+
+**Why.** On a long form, an error below the fold goes unseen, and a screen reader user hears none of it until they reach the field. A summary at the top shows the whole problem at once and lets the user jump to each field. Show it even when there is only one error. Keep the message next to each field too; see [fn-error-says-what-and-how](function.md#fn-error-says-what-and-how).
+
+**FAIL**
+
+```html
+<form>
+  <label for="email">Email</label>
+  <input id="email" name="email">
+  <label for="dob">Date of birth</label>
+  <input id="dob" name="dob">
+  <p class="error">Enter a valid date</p>
+</form>
+```
+
+**PASS**
+
+```html
+<div class="error-summary" role="alert" tabindex="-1">
+  <h2>There is a problem</h2>
+  <ul>
+    <li><a href="#email">Enter an email address</a></li>
+    <li><a href="#dob">Enter a valid date of birth</a></li>
+  </ul>
+</div>
+<form>
+  ...
+</form>
+```
+
+**Counterpoint.** "The summary repeats the per-field messages and adds noise." It repeats them on purpose: the summary is for finding the errors, and the field message is for fixing one. The cost is one short list.
+
 ## fn-error-text-no-apology-or-blame
 
 severity: discuss  
@@ -736,6 +778,39 @@ Enter your email address.
 ```
 
 **Counterpoint.** "A sorry shows empathy." For a serious fault that is ours, say so once and plainly. For input the user got wrong, the shortest fix reads as the kindest.
+
+## fn-explicit-locale-for-case-change
+
+severity: should-fix  
+concerns: correctness  
+applies_when: The code changes the case of a string that a program reads (an identifier, header name or protocol key), in a runtime whose default depends on the machine's locale, such as Java, Kotlin or .NET.  
+Backed by: Oracle (unjudged), Google (unjudged), Microsoft (unjudged). Backing: unjudged.
+
+**Rule.** Change the case of a machine-read string with an explicit root or invariant locale, never the default one.
+
+**Why.** The default locale is whatever the machine or user has set. In Turkish, `"TITLE".toLowerCase()` gives `"tıtle"` in Java, so a header lookup or a key match that works on one host fails on another. The same applies to numbers: formatting a number with the default locale writes a decimal comma on some machines, and the program that reads the file cannot parse it. Use the locale of the person only for text shown to that person.
+
+**FAIL**
+
+```java
+String header = name.toLowerCase();
+```
+
+```csharp
+var key = name.ToUpper();
+```
+
+**PASS**
+
+```java
+String header = name.toLowerCase(Locale.ROOT);
+```
+
+```csharp
+var key = name.ToUpperInvariant();
+```
+
+**Counterpoint.** "Our users and servers are all in en-US." The default is a property of each host, and a laptop, a container image or one customer in Istanbul is enough to change it. The explicit argument costs one word. For text a person reads, such as a name in a heading, the user's locale is the right one.
 
 ## fn-fetch-only-needed-data
 
@@ -766,6 +841,39 @@ emails = User.objects.values_list("email", flat=True)
 ```
 
 **Counterpoint.** "Pushing logic into the database makes it the bottleneck." It does for formatting and business rules. Filtering and aggregation are what the database is built for, and moving them out usually ships far more data than it saves.
+
+## fn-flags-type-for-flag-sets
+
+severity: should-fix  
+concerns: maintainability, correctness  
+applies_when: A type holds a set of independent options that can be combined, such as permissions or render options.  
+tool gate: .NET analyzers CA1027 (mark flag enums with FlagsAttribute) and CA2217 (do not mark other enums with it).  
+Backed by: Microsoft (unjudged), Rust project (unjudged), Oracle (unjudged). Backing: unjudged.
+
+**Rule.** Model a set of independent flags with the language's or ecosystem's flags type (a `[Flags]` enum in C#, the `bitflags` crate in Rust, `EnumSet` in Java), and do not use a plain enum for it.
+
+**Why.** A plain enum holds one value. Code that ORs its members together gets numbers that match no member, which print as a bare integer and fail an equality check. A flags type defines the combination, its printing, and the "no flags" value.
+
+**FAIL**
+
+```csharp
+enum Access { Read = 1, Write = 2, Delete = 4 }
+
+var rw = Access.Read | Access.Write;
+Console.WriteLine(rw);   // prints 3
+```
+
+**PASS**
+
+```csharp
+[Flags]
+enum Access { None = 0, Read = 1, Write = 2, Delete = 4 }
+
+var rw = Access.Read | Access.Write;
+Console.WriteLine(rw);   // prints Read, Write
+```
+
+**Counterpoint.** "A plain enum with a `List<Access>` is simpler." For two or three options it can be. Once callers combine and test flags, a list loses the one-value set operations and the compact storage a flags type gives.
 
 ## fn-focus-indicator-visible
 
@@ -959,6 +1067,60 @@ Backed by: W3C (unjudged), Mozilla (unjudged), The A11y Project (unjudged). Back
 ```
 
 **Counterpoint.** "The design needs a small `h2`." That is a CSS problem. Keep the level that matches the outline and set the size in the stylesheet. Jumping back up a level, such as `h4` to `h2`, is fine when a section ends.
+
+## fn-honour-cancellation
+
+severity: should-fix  
+concerns: reliability, correctness  
+applies_when: The code runs a long-lived loop, a background task or request-scoped work in a language with a cancellation mechanism (context, token, interrupt, coroutine or asyncio task).  
+Backed by: Google (unjudged), Microsoft (unjudged), Oracle (unjudged), JetBrains (unjudged), Python Software Foundation (unjudged). Backing: unjudged.
+
+**Rule.** Take a cancellation signal in long-running work and check it between steps; when a handler catches a cancellation, finish the cleanup and re-raise it.
+
+**Why.** A caller that timed out or gave up still has its work running unless the work looks at the signal, so abandoned requests keep holding connections and threads. Cancellation is cooperative: nothing stops the code that does not check. A handler that swallows the cancellation turns a stop request into a task that carries on, and timeouts built on cancellation then misbehave.
+
+**FAIL**
+
+```python
+async def poll(client):
+    while True:
+        try:
+            await client.fetch()
+        except asyncio.CancelledError:
+            pass                      # swallowed: the task never stops
+```
+
+```go
+func run() {
+	for {
+		step() // nothing can tell this loop to stop
+	}
+}
+```
+
+**PASS**
+
+```python
+async def poll(client):
+    try:
+        while True:
+            await client.fetch()
+    except asyncio.CancelledError:
+        await client.close()          # cleanup first
+        raise                         # then let the cancellation through
+```
+
+```go
+func run(ctx context.Context) {
+	for ctx.Err() == nil {
+		step()
+	}
+}
+```
+
+**See also.** [svc-timeouts](service.md#svc-timeouts) sets the deadline on the caller; this card makes the callee honour it.
+
+**Counterpoint.** "Some steps must not be interrupted, such as a commit or a write-ahead flush." Let that step finish and check the signal after it; the rule asks for a check between steps, not an abort in the middle of one. A deliberately detached task that must outlive the request should say so and carry its own owner and stop condition.
 
 ## fn-img-alt-text
 
@@ -1279,6 +1441,37 @@ print("api_key:", mask(settings.api_key))
 
 **Counterpoint.** "Users need the value to copy it." Then give them an explicit reveal flag that is off by default, so the copy is a deliberate act and the default output is safe to paste. Never ask users to scrape the full secret out of a listing.
 
+## fn-monotonic-clock-for-durations
+
+severity: should-fix  
+concerns: correctness, reliability  
+applies_when: The code measures how long something took, or waits until a deadline, inside one process.  
+Backed by: Google (unjudged), Oracle (unjudged), Mozilla (unjudged), Python Software Foundation (unjudged). Backing: unjudged.
+
+**Rule.** Measure elapsed time and timeouts with a monotonic clock, never by subtracting wall-clock readings.
+
+**Why.** The wall clock jumps when the system clock is corrected, set by hand or resumed after a pause, so a difference of two readings can be negative or hours long. A timeout built on it fires at once or never. A monotonic reading only moves forward, but it means something only inside one process: a deadline saved to a database or sent to another host still uses wall time.
+
+**FAIL**
+
+```python
+start = time.time()
+do_work()
+elapsed = time.time() - start
+deadline = time.time() + 30
+```
+
+**PASS**
+
+```python
+start = time.monotonic()
+do_work()
+elapsed = time.monotonic() - start
+deadline = time.monotonic() + 30
+```
+
+**Counterpoint.** "The drift is tiny, and the wall clock is what the logs show." Corrections of seconds happen on any host that syncs its time, and one negative duration breaks a rate limiter or a retry loop. Keep wall time for what people read, such as a log line or a created-at field, and take the elapsed time from the monotonic clock.
+
 ## fn-name-intermediate-conditions
 
 severity: discuss  
@@ -1374,6 +1567,39 @@ for user in users:
 ```
 
 **Counterpoint.** "Some data is nested, so the code must nest too." Walking a tree or a grid needs the loops. Move the inner body into a named function, or hide the walk in a generator, so each function stays flat.
+
+## fn-no-aria-hidden-on-focusable
+
+severity: should-fix  
+concerns: accessibility  
+applies_when: Markup or CSS hides an element that can take keyboard focus.  
+context: ui  
+tool gate: axe `aria-hidden-focus`.  
+Backed by: Google (unjudged), WebAIM (unjudged), Mozilla (unjudged), Deque (unjudged), W3C (unjudged). Backing: unjudged.
+
+**Rule.** Never put `aria-hidden="true"` on an element that can take focus, or leave an element visually hidden while it has focus.
+
+**Why.** Keyboard focus still lands on the element, but a screen reader is told to skip it. The user tabs onto something that is not announced, or never reaches a control that does work. To hide a control, hide it for everyone, or remove it from the tab order too. A `role="presentation"` on a focusable element conflicts the same way: browsers ignore the role there, so the control is still announced, and axe flags it.
+
+**FAIL**
+
+```html
+<a href="/help" aria-hidden="true">Help</a>
+<a href="#main" class="skip">Skip to content</a>
+<style>.skip { position: absolute; left: -9999px; }</style>   <!-- no :focus rule: focus lands on nothing visible -->
+```
+
+**PASS**
+
+```html
+<a href="/help">Help</a>
+<button type="button">Save</button>
+<nav hidden><a href="/admin">Admin</a></nav>   <!-- hidden removes it from the tab order -->
+<a href="#main" class="skip">Skip to content</a>
+<style>.skip { position: absolute; left: -9999px; } .skip:focus { left: 0; }</style>
+```
+
+**Counterpoint.** "The icon button is decorative, so hide it." If it takes focus, it does something, and it needs a name. Hide the icon inside the button, not the button.
 
 ## fn-no-blocking-call-in-async-code
 
@@ -1522,6 +1748,39 @@ value = order.total
 ```
 
 **Counterpoint.** "I loop over field names." That is fine when the set of names is the data (a mapping from column names, a serializer). If the names are fixed, unroll the loop.
+
+## fn-no-logic-in-tests
+
+severity: discuss  
+concerns: testing, maintainability  
+applies_when: A test body contains if, for, while or switch, or a table test branches on its case.  
+tool gate: none; a review check for control flow inside test functions.  
+Backed by: Microsoft (unjudged), Uber (unjudged), Google (unjudged). Backing: unjudged.
+
+**Rule.** Keep `if`, `for`, `while` and `switch` out of test bodies.
+
+**Why.** A test with logic can be wrong itself, and nobody tests the tests. A loop that skips a case or an `if` that skips an assertion turns a failure into a pass. A table test that branches on its case means the cases do not share one expectation.
+
+**FAIL**
+
+```python
+def test_discount():
+    for qty, expected in [(1, 0), (10, 5), (100, 20)]:
+        if qty < 5:
+            assert discount(qty) == 0
+        else:
+            assert discount(qty) == expected
+```
+
+**PASS**
+
+```python
+@pytest.mark.parametrize("qty, expected", [(1, 0), (10, 5), (100, 20)])
+def test_discount(qty, expected):
+    assert discount(qty) == expected
+```
+
+**Counterpoint.** "A loop over many inputs is shorter." A parameterised test is just as short and reports each case separately. Cases that need different checks are different behaviours, so each gets its own test.
 
 ## fn-no-magic-values
 
@@ -2051,6 +2310,36 @@ os.replace(tmp, path)  # the reader sees the old file or the new one, never half
 
 **Counterpoint.** "Retries are rare." Crashes are not. For API calls that cross a network, [svc-idempotency-key](service.md#svc-idempotency-key) covers the key-based form of this rule.
 
+## fn-resource-lifetime
+
+severity: should-fix  
+concerns: correctness  
+applies_when: Code starts a task, thread, goroutine, or subprocess, or opens a handle (file, socket, connection).  
+tool gate: Leak detectors in tests (unclosed-resource warnings, goroutine leak checks).  
+Backed by: Google (partial), Uber (unjudged), Python Software Foundation (weak), ISO C++ (Standard C++ Foundation) (unjudged). Backing: mixed. People cited: Nathaniel J. Smith (unjudged).
+
+**Rule.** Give every task and handle an owner that waits for it or closes it, on the error path too.
+
+**Why.** A task started and forgotten outlives its caller. Its errors vanish, nobody cancels it, and its resources are never released, which shows up later as a leak or a stuck shutdown. Goroutines and threads are not garbage collected, so one blocked on a send or receive after its consumer stopped stays stuck unless it has a cancel signal.
+
+**FAIL**
+
+```python
+asyncio.create_task(send_metrics())     # nobody awaits it, nobody cancels it
+f = open(path); data = f.read()         # leaked if read() raises
+```
+
+**PASS**
+
+```python
+async with asyncio.TaskGroup() as tg:   # children finish inside this scope
+    tg.create_task(send_metrics())
+with open(path) as f:
+    data = f.read()
+```
+
+**Counterpoint.** "Some work is fire-and-forget by design." Then a long-lived owner (a supervisor or worker pool) holds it, logs its failures, and stops it at shutdown. [py-task-reference](service.md#py-task-reference) covers Python task references.
+
 ## fn-response-fields-explicit
 
 severity: should-fix  
@@ -2079,6 +2368,53 @@ return UserOut.model_validate(user)
 ```
 
 **Counterpoint.** "A response type per endpoint duplicates the model." Derive it from the model with a field list. The duplication is one line per field and shows up in the diff when a field is added.
+
+## fn-side-effects-after-commit
+
+severity: should-fix  
+concerns: correctness, reliability  
+applies_when: Code inside a database transaction enqueues a job, sends a message or email, calls another service, or clears a cache.  
+context: data  
+tool gate: A test that rolls the transaction back and asserts nothing was sent or enqueued; Rails `enqueue_after_transaction_commit = true` makes the safe form the default for jobs.  
+Backed by: Django Software Foundation (unjudged), Ruby on Rails (unjudged), Spring (unjudged), Sidekiq (unjudged), GitLab (unjudged), AWS (unjudged), Microsoft (unjudged). Backing: unjudged.
+
+**Rule.** Start side effects only after the transaction commits, with an `on_commit` or `after_commit` hook, or record them as an outbox row written inside the same transaction.
+
+**Why.** Inside the transaction, the worker can pick up the job before the row is visible, and it fails with "record not found". If the transaction then rolls back, the email or the message has already gone out for data that does not exist. A network call inside the transaction also keeps its locks open for as long as the call takes. After commit, the data is permanent and the effect follows it. Work that must not be lost, such as a payment event, needs the outbox form: a crash between the commit and the enqueue drops an after-commit hook, and an outbox row survives it.
+
+**FAIL**
+
+```python
+from django.db import transaction
+
+def place_order(cart):
+    with transaction.atomic():
+        order = Order.objects.create(user=cart.user, total=cart.total)
+        send_receipt.delay(order.id)   # may run before the commit, or after a rollback
+    return order
+```
+
+**PASS**
+
+```python
+from django.db import transaction
+
+def place_order(cart):
+    with transaction.atomic():
+        order = Order.objects.create(user=cart.user, total=cart.total)
+        transaction.on_commit(lambda: send_receipt.delay(order.id))
+    return order
+```
+
+```python
+def place_order(cart):
+    with transaction.atomic():
+        order = Order.objects.create(user=cart.user, total=cart.total)
+        Outbox.objects.create(topic="order.placed", payload={"order_id": order.id})
+    return order   # a relay process publishes Outbox rows and marks them sent
+```
+
+**Counterpoint.** "An after-commit hook can be lost if the process dies right after the commit." True, which is why the Rule offers the outbox for work that must happen. For best-effort effects, such as a cache clear or a notification the user can live without, the hook is enough. A queue that stores its jobs in the same database already joins the transaction and meets the Rule; confirm that it does before you rely on it.
 
 ## fn-specific-exceptions-only
 
@@ -2235,6 +2571,39 @@ assert total([Item(price=300), Item(price=450)]) == 750
 ```
 
 **Counterpoint.** "Recomputing keeps the test short." It also repeats the bug. Use a literal from the spec or a worked example.
+
+## fn-timestamps-stored-in-utc
+
+severity: should-fix  
+concerns: correctness  
+applies_when: The code stores, logs or sends a point in time (an instant), such as a created-at field, an event time or an API field.  
+Backed by: W3C (unjudged), Django Software Foundation (unjudged), Zalando (unjudged). Backing: unjudged.
+
+**Rule.** Store and send instants in UTC.
+
+**Why.** Local times repeat or skip an hour when clocks change, and values written in different zones cannot be compared or sorted without knowing each zone. Keep the data in UTC and convert to a person's zone only where you show it to them. Scope: a calendar date (a birthday) is not an instant, and a future local event (a 09:00 meeting in Madrid) needs its zone name, because zone rules change before the event.
+
+**FAIL**
+
+```python
+created_at = datetime.now()          # naive local time, the zone is lost
+```
+
+```sql
+created_at timestamp                 -- no zone information
+```
+
+**PASS**
+
+```python
+created_at = datetime.now(timezone.utc)
+```
+
+```sql
+created_at timestamptz
+```
+
+**Counterpoint.** "All our users are in one time zone." Daylight saving time still makes some local times ambiguous or missing twice a year, and the second time zone arrives after the data is in. Storing UTC costs nothing now and converting at display is one call; fixing mixed local times later means guessing what each row meant.
 
 ## fn-tls-verify-on
 

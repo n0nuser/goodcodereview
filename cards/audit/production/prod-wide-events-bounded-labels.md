@@ -4,17 +4,22 @@ level: production
 tags: [observability, telemetry]
 severity: should-fix
 status: draft
-lacks: orgs, Honeycomb is the only backer, and the Rule does not mention bounded labels; needs two more orgs
+lacks: orgs, one event per request has Honeycomb firm and Stripe soft; the label clause has Prometheus; needs two more orgs for each
 lang: core
 applies_when: A request handler or job emits telemetry.
 tool_gate: Lint for high-cardinality metric labels.
+note: Prometheus says not to use labels for high-cardinality dimensions such as user IDs. Stripe describes one canonical log line per request in a blog post, which is soft
 borrowed_from:
   - https://www.honeycomb.io/blog/time-to-version-observability-signs-point-to-yes
+  - https://prometheus.io/docs/practices/naming/
+  - https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/metrics-custom-overview
+  - https://docs.micrometer.io/micrometer/reference/concepts/naming.html
+  - https://stripe.com/blog/canonical-log-lines
 ---
 
 **Rule.** Emit one structured event per request carrying trace, tenant, build and flag state.
 
-**Why.** Many narrow log lines cannot be joined to answer "who is affected". A metric labeled with user id explodes cost. Without a deploy marker, you cannot compare before and after. Also keep metric labels bounded and record deploys and flag changes as telemetry.
+**Why.** Many narrow log lines cannot be joined to answer "who is affected". A metric labeled with user id explodes cost. Without a deploy marker, you cannot compare before and after. Also record deploys and flag changes as telemetry. [[prod-metric-labels-bounded]] covers the label rule.
 
 **FAIL**
 

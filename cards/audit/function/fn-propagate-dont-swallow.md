@@ -4,12 +4,17 @@ level: function
 tags: [correctness, errors]
 severity: should-fix
 status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+lacks: orgs, chaining has Microsoft; Python and Oracle describe the mechanism; Google Go and SEI CERT back no-swallow, which is in the Why; needs two more orgs
 lang: core
 applies_when: A handler catches an error and either drops it or raises a different one.
 tool_gate: ruff B904 (Python)
-borrowed_from: []
-note: from the author's own Python review guide
+borrowed_from:
+  - https://go.dev/wiki/CodeReviewComments
+  - https://wiki.sei.cmu.edu/confluence/display/java/ERR00-J.+Do+not+suppress+or+ignore+checked+exceptions
+  - https://learn.microsoft.com/en-us/dotnet/standard/exceptions/best-practices-for-exceptions
+  - https://docs.python.org/3/tutorial/errors.html
+  - https://docs.oracle.com/javase/tutorial/essential/exceptions/chained.html
+note: Microsoft: throw a new exception with the original as inner exception; Google Go: do not discard errors with _; SEI CERT ERR00-J: do not suppress checked exceptions; Python and Oracle describe chaining (soft)
 ---
 
 **Rule.** Chain the original cause when you translate an exception.

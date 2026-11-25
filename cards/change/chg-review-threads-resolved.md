@@ -4,13 +4,15 @@ level: change
 tags: [process, review]
 severity: should-fix
 status: draft
-lacks: orgs, only Anthropic (a vendor) backs it; needs two more orgs that block merge on open review threads
+lacks: orgs, GitHub and GitLab document the merge setting only; the Anthropic X post cannot be re-fetched; needs orgs that state it as a rule
 lang: core
 applies_when: A change has review comments and is about to merge.
 tool_gate: Branch protection that requires conversations to be resolved before merge.
-note: Anthropic only (a vendor, in a post about its own Claude Code team); "Require that all review threads be resolved before merging"
+note: GitHub: require conversation resolution before merging; GitLab: prevent merge while threads remain open; both are settings. Anthropic X post not re-fetchable (JS shell)
 borrowed_from:
   - https://x.com/addyosmani/status/2114604912520921136
+  - https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches
+  - https://docs.gitlab.com/user/project/merge_requests/
 ---
 
 **Rule.** Do not merge while any review thread is open; each one ends as a fix or as a resolution with a stated reason.

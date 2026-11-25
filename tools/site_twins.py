@@ -119,9 +119,9 @@ def markdown_twins(b: BuildInput, skill: SkillOutput) -> dict[str, str]:
         for n, (ctx, cs) in enumerate(by_ctx.items(), 1):
             stable = [card_section(c) for c in cs if is_stable(c)] or ["No vetted cards for this context yet."]
             first, done = done + 1, done + sum(is_stable(c) for c in cs)
-            others = ", ".join(f"[{o}]({BASE}/{lv}-{o}.md)" for o in by_ctx if o != ctx)
-            head = (f"# {lv}, {ctx}\n\nPart {n} of {len(by_ctx)} of the {lv} level: stable cards {first} to {done} of {total}, the `{ctx}` context. "
-                    f"A review of this level needs every part: read the others ({others}) too, and name the parts you read in your report.{pack_note} "
+            checklist = "\n".join(f"{i}. [{o}]({BASE}/{lv}-{o}.md): {sum(is_stable(c) for c in oc)} stable cards{' (this file)' if o == ctx else ''}" for i, (o, oc) in enumerate(by_ctx.items(), 1))
+            head = (f"# {lv}, {ctx}\n\nPart {n} of {len(by_ctx)} of the {lv} level: stable cards {first} to {done} of {total}, the `{ctx}` part. "
+                    f"This file holds only part of the checklist. Open all {len(by_ctx)} files before you report, and name the parts you read:\n\n{checklist}\n\n{pack_note.strip()} "
                     f"The whole level is one file at {BASE}/{lv}.md, about {skill.level_chars[lv] // 1000}K characters; a fetch tool may truncate it, so use it only if you can download it.\n\n")
             text = link_stable(head + "\n\n".join(stable) + "\n", skill.stable_home)
             twins[f"{lv}-{ctx}"] = Twin(f"{NAME[lv]}, {ctx} cards", part_spec(lv, ctx, cs).desc, text)

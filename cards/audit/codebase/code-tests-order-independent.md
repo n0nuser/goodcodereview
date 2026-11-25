@@ -4,14 +4,17 @@ level: codebase
 tags: [testing, reliability, ci]
 severity: should-fix
 status: draft
-lacks: orgs, GitLab and Alloy back it; Kent Beck is a person and does not count; needs one more org that runs tests in random order or isolates state
+lacks: orgs, Go and RSpec document shuffle flags only; the GitLab and Alloy pages state no order rule on re-fetch; needs orgs that state the rule
 lang: core
 applies_when: Auditing a test suite for tests that pass alone and fail in a run, or the reverse.
 tool_gate: Run the suite in random order in CI (`pytest-randomly`, RSpec `config.order = :random`, `go test -shuffle=on`).
+note: go test -shuffle and RSpec --order rand are options (soft); 2026-11-24: GitLab testing guide has no order rule, Alloy page blocked by Cloudflare
 borrowed_from:
   - https://testdesiderata.com/
   - https://docs.gitlab.com/development/testing_guide/best_practices/
   - https://alloy.ai/speeding-up-integration-tests-db
+  - https://pkg.go.dev/cmd/go
+  - https://rspec.info/features/3-13/rspec-core/command-line/order/
 ---
 
 **Rule.** Make each test pass in any order, sharing no mutable state with other tests.

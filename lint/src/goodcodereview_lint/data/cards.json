@@ -1,5 +1,5 @@
 {
-"generated": "2026-11-22",
+"generated": "2026-11-24",
 "schema_version": 5,
 "cards": {
 "code-a11y-check-in-ci": {
@@ -146,6 +146,14 @@
 "url": "https://goodcodereview.com/codebase#code-docs-refs-resolve",
 "tool_gate": "A link checker in CI, such as lychee (`lychee --offline --include-fragments docs README.md`) or mdBook linkcheck."
 },
+"code-env-files-ignored": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Git-ignore local environment files that hold real values; commit only a template with placeholders.",
+"url": "https://goodcodereview.com/codebase#code-env-files-ignored",
+"tool_gate": "A secret scan on push; a CI check that `git ls-files` lists no .env.local or .env file with real values."
+},
 "code-file-lines-ceiling": {
 "level": "codebase",
 "severity": "discuss",
@@ -161,6 +169,14 @@
 "rule": "Report every test that passes only on retry, move it to a quarantine with a named owner and a ticket, and return it to the merge gate only after it passes many reruns.",
 "url": "https://goodcodereview.com/codebase#code-flaky-test-quarantine",
 "tool_gate": null
+},
+"code-gate-new-violations-only": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Gate CI on new or modified code, and track pre-existing violations in a separate store without letting a build add to it.",
+"url": "https://goodcodereview.com/codebase#code-gate-new-violations-only",
+"tool_gate": "A baseline or frozen violation store with CI set to read it but not rewrite it (ArchUnit `FreezingArchRule`, a linter baseline file)."
 },
 "code-perf-budget-in-ci": {
 "level": "codebase",
@@ -226,6 +242,14 @@
 "url": "https://goodcodereview.com/codebase#code-test-fixtures-built-once",
 "tool_gate": "A CI job timeout plus a slowest-tests report in the build log (pytest or Django --durations, Gradle build scan)."
 },
+"code-test-pyramid-shape": {
+"level": "codebase",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Keep most tests at the unit level, fewer at the integration level and fewest end-to-end.",
+"url": "https://goodcodereview.com/codebase#code-test-pyramid-shape",
+"tool_gate": "A CI report that prints the number of tests per tier next to the run time."
+},
 "code-test-selection-on-pr": {
 "level": "codebase",
 "severity": "discuss",
@@ -233,6 +257,14 @@
 "rule": "When the full suite is slower than the pull-request feedback target, run only the tests the change affects on the pull request, and run the full suite before deploy or on a schedule.",
 "url": "https://goodcodereview.com/codebase#code-test-selection-on-pr",
 "tool_gate": "A PR job that runs the affected-tests command (`nx affected -t test`, Azure Test Impact Analysis, Develocity Predictive Test Selection), plus a full-suite job off the PR path."
+},
+"code-tests-no-fixed-sleep": {
+"level": "codebase",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Do not wait in a test on a fixed delay; wait for the condition you need, or inject a clock.",
+"url": "https://goodcodereview.com/codebase#code-tests-no-fixed-sleep",
+"tool_gate": "Grep the test directories for sleep calls (`time.sleep`, `Thread.sleep`, `cy.wait(<number>)`) and fail CI on a new one."
 },
 "code-vuln-remediation-window": {
 "level": "codebase",
@@ -450,6 +482,14 @@
 "url": "https://goodcodereview.com/function-any#fn-error-string-lowercase-no-period",
 "tool_gate": "Go `staticcheck` `ST1005`, `revive` `error-strings`, Rust `clippy` has no rule; a regex check otherwise."
 },
+"fn-error-summary": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "After a failed submit, show a summary at the top of the page that lists every error and links each one to its field.",
+"url": "https://goodcodereview.com/function-ui#fn-error-summary",
+"tool_gate": "none; a rendered check that submits an invalid form and looks for the summary."
+},
 "fn-error-text-no-apology-or-blame": {
 "level": "function",
 "severity": "discuss",
@@ -458,6 +498,14 @@
 "url": "https://goodcodereview.com/function-any#fn-error-text-no-apology-or-blame",
 "tool_gate": "A regex or Vale rule for \"please\", \"sorry\", \"oops\" and \"you forgot\" in message strings."
 },
+"fn-explicit-locale-for-case-change": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Change the case of a machine-read string with an explicit root or invariant locale, never the default one.",
+"url": "https://goodcodereview.com/function-any#fn-explicit-locale-for-case-change",
+"tool_gate": null
+},
 "fn-fetch-only-needed-data": {
 "level": "function",
 "severity": "should-fix",
@@ -465,6 +513,14 @@
 "rule": "Filter, count, and aggregate in the query, and select only the columns the code uses.",
 "url": "https://goodcodereview.com/function-data#fn-fetch-only-needed-data",
 "tool_gate": null
+},
+"fn-flags-type-for-flag-sets": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Model a set of independent flags with the language's or ecosystem's flags type (a `[Flags]` enum in C#, the `bitflags` crate in Rust, `EnumSet` in Java), and do not use a plain enum for it.",
+"url": "https://goodcodereview.com/function-any#fn-flags-type-for-flag-sets",
+"tool_gate": ".NET analyzers CA1027 (mark flag enums with FlagsAttribute) and CA2217 (do not mark other enums with it)."
 },
 "fn-focus-indicator-visible": {
 "level": "function",
@@ -513,6 +569,14 @@
 "rule": "Mark every heading with a real `<h1>` to `<h6>` element, not a styled `div`, `span`, or `p`.",
 "url": "https://goodcodereview.com/function-ui#fn-heading-structure",
 "tool_gate": "axe `p-as-heading` (experimental) flags a bold paragraph styled as a heading; axe `heading-order` flags skipped levels."
+},
+"fn-honour-cancellation": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Take a cancellation signal in long-running work and check it between steps; when a handler catches a cancellation, finish the cleanup and re-raise it.",
+"url": "https://goodcodereview.com/function-any#fn-honour-cancellation",
+"tool_gate": null
 },
 "fn-img-alt-text": {
 "level": "function",
@@ -594,6 +658,14 @@
 "url": "https://goodcodereview.com/function-cli#fn-mask-credentials-in-output",
 "tool_gate": "A test that seeds a fake token, runs the list/show/debug command, and asserts the full value is absent from stdout and stderr."
 },
+"fn-monotonic-clock-for-durations": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Measure elapsed time and timeouts with a monotonic clock, never by subtracting wall-clock readings.",
+"url": "https://goodcodereview.com/function-any#fn-monotonic-clock-for-durations",
+"tool_gate": null
+},
 "fn-name-intermediate-conditions": {
 "level": "function",
 "severity": "discuss",
@@ -617,6 +689,14 @@
 "rule": "Keep control-flow nesting shallow.",
 "url": "https://goodcodereview.com/function-any#fn-nesting-depth-cap",
 "tool_gate": "PMD AvoidDeeplyNestedIfStmts (problemDepth 3), Pylint too-many-nested-blocks (R1702, max-nested-blocks 5)."
+},
+"fn-no-aria-hidden-on-focusable": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Never put `aria-hidden=\"true\"` on an element that can take focus, or leave an element visually hidden while it has focus.",
+"url": "https://goodcodereview.com/function-ui#fn-no-aria-hidden-on-focusable",
+"tool_gate": "axe `aria-hidden-focus`."
 },
 "fn-no-blocking-call-in-async-code": {
 "level": "function",
@@ -657,6 +737,14 @@
 "rule": "Use plain field access, and reserve dynamic access for genuinely dynamic names.",
 "url": "https://goodcodereview.com/function-any#fn-no-getattr-for-known-names",
 "tool_gate": "ruff B009 / B010"
+},
+"fn-no-logic-in-tests": {
+"level": "function",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Keep `if`, `for`, `while` and `switch` out of test bodies.",
+"url": "https://goodcodereview.com/function-any#fn-no-logic-in-tests",
+"tool_gate": "none; a review check for control flow inside test functions."
 },
 "fn-no-magic-values": {
 "level": "function",
@@ -794,6 +882,14 @@
 "url": "https://goodcodereview.com/function-any#fn-rerun-safe-after-crash",
 "tool_gate": null
 },
+"fn-resource-lifetime": {
+"level": "function",
+"severity": "should-fix",
+"backing": "mixed",
+"rule": "Give every task and handle an owner that waits for it or closes it, on the error path too.",
+"url": "https://goodcodereview.com/function-any#fn-resource-lifetime",
+"tool_gate": "Leak detectors in tests (unclosed-resource warnings, goroutine leak checks)."
+},
 "fn-response-fields-explicit": {
 "level": "function",
 "severity": "should-fix",
@@ -801,6 +897,14 @@
 "rule": "Return a response type that lists each field, never the stored model or a generic dump of it.",
 "url": "https://goodcodereview.com/function-server#fn-response-fields-explicit",
 "tool_gate": "Response-schema tests that fail on unlisted fields."
+},
+"fn-side-effects-after-commit": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Start side effects only after the transaction commits, with an `on_commit` or `after_commit` hook, or record them as an outbox row written inside the same transaction.",
+"url": "https://goodcodereview.com/function-data#fn-side-effects-after-commit",
+"tool_gate": "A test that rolls the transaction back and asserts nothing was sent or enqueued; Rails `enqueue_after_transaction_commit = true` makes the safe form the default for jobs."
 },
 "fn-specific-exceptions-only": {
 "level": "function",
@@ -842,6 +946,14 @@
 "url": "https://goodcodereview.com/function-any#fn-test-oracle-independent",
 "tool_gate": "Mutation testing."
 },
+"fn-timestamps-stored-in-utc": {
+"level": "function",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Store and send instants in UTC.",
+"url": "https://goodcodereview.com/function-any#fn-timestamps-stored-in-utc",
+"tool_gate": null
+},
 "fn-tls-verify-on": {
 "level": "function",
 "severity": "block",
@@ -882,12 +994,28 @@
 "url": "https://goodcodereview.com/incident#inc-perf-fix-has-profile-evidence",
 "tool_gate": null
 },
+"inc-postmortem-blameless": {
+"level": "incident",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Write a postmortem so that it names causes in the system and the decisions around it, never a person or team as the one at fault.",
+"url": "https://goodcodereview.com/incident#inc-postmortem-blameless",
+"tool_gate": null
+},
 "inc-rollback-path-tested": {
 "level": "incident",
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Exercise each mitigation that a runbook names (rollback, failover, flag off) on a regular schedule.",
 "url": "https://goodcodereview.com/incident#inc-rollback-path-tested",
+"tool_gate": null
+},
+"inc-single-incident-commander": {
+"level": "incident",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Name one incident commander for each major incident, who holds the overall state of the response and oversees the other roles.",
+"url": "https://goodcodereview.com/incident#inc-single-incident-commander",
 "tool_gate": null
 },
 "mod-behaviour-lives-with-state": {
@@ -1098,6 +1226,14 @@
 "url": "https://goodcodereview.com/production#prod-a11y-audit-before-launch",
 "tool_gate": "none; a launch checklist item that links the audit report."
 },
+"prod-alert-actionable-context": {
+"level": "production",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Give every paging alert context a responder can act on: what it means and what to do next.",
+"url": "https://goodcodereview.com/production#prod-alert-actionable-context",
+"tool_gate": "A lint on alert rules that requires a description and a runbook annotation."
+},
 "prod-alerts-symptoms-golden-signals": {
 "level": "production",
 "severity": "should-fix",
@@ -1114,11 +1250,19 @@
 "url": "https://goodcodereview.com/production#prod-canary-staged-rollout",
 "tool_gate": "Deploy pipeline with canary stage and automatic abort."
 },
+"prod-config-ships-like-code": {
+"level": "production",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Change configuration and flag values through a reviewed commit and the same staged, automated pipeline as code, not by hand on a host or console.",
+"url": "https://goodcodereview.com/production#prod-config-ships-like-code",
+"tool_gate": "Production config store writable only by the deploy pipeline; the config repository requires review before merge."
+},
 "prod-kill-switch-fallback": {
 "level": "production",
 "severity": "should-fix",
 "backing": "unjudged",
-"rule": "Make a risky feature switchable off without a deploy, and exercise every fallback path in test or in production on a schedule.",
+"rule": "Make a risky feature switchable off without a deploy, give each kill switch that stays an owner, and exercise every fallback path in test or in production on a schedule.",
 "url": "https://goodcodereview.com/production#prod-kill-switch-fallback",
 "tool_gate": null
 },
@@ -1137,6 +1281,14 @@
 "rule": "Load test before launch, past the expected peak, with pass and fail thresholds written down.",
 "url": "https://goodcodereview.com/production#prod-load-test-before-launch",
 "tool_gate": "Load-test job with thresholds (k6, Gatling) in the release pipeline."
+},
+"prod-metric-labels-bounded": {
+"level": "production",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Give a metric label only a bounded set of values; never a user id, request id, email, timestamp or raw URL path.",
+"url": "https://goodcodereview.com/production#prod-metric-labels-bounded",
+"tool_gate": "A cardinality limit on the metrics backend; a lint that rejects labels named user_id, request_id or raw path."
 },
 "prod-profile-on-demand": {
 "level": "production",
@@ -1167,7 +1319,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Link a federated identity to an existing account only after proving control of both, and key the link on the pair `iss` and `sub`, never on an unverified email or another profile claim.",
-"url": "https://goodcodereview.com/service-server#svc-account-linking",
+"url": "https://goodcodereview.com/service-server-security#svc-account-linking",
 "tool_gate": null
 },
 "svc-api-cache-control": {
@@ -1175,7 +1327,7 @@
 "severity": "should-fix",
 "backing": "mixed",
 "rule": "Set an explicit `Cache-Control` on every response a cache may store, use `private` or `no-store` for user-specific data, add `Vary` for any request header that changes the body, keep the origin's `Cache-Control` authoritative at the edge (no minimum TTL or force-cache override), and decide cacheability by the response `Content-Type`, not the URL extension.",
-"url": "https://goodcodereview.com/service-server#svc-api-cache-control",
+"url": "https://goodcodereview.com/service-server-other#svc-api-cache-control",
 "tool_gate": "Integration test or header lint that rejects a 200 GET without `Cache-Control`."
 },
 "svc-api-conditional-writes": {
@@ -1183,7 +1335,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Return an `ETag` on reads and honour `If-Match` on writes, answering 412 when the entity tag is stale.",
-"url": "https://goodcodereview.com/service-server#svc-api-conditional-writes",
+"url": "https://goodcodereview.com/service-server-correctness#svc-api-conditional-writes",
 "tool_gate": "Integration test that sends a write with a stale `If-Match` and expects 412."
 },
 "svc-api-contract-tests": {
@@ -1191,7 +1343,7 @@
 "severity": "should-fix",
 "backing": "strong",
 "rule": "Run a contract test for each cross-service call, derived from the consumer's real requests, and fail the provider's build when it breaks one.",
-"url": "https://goodcodereview.com/service-server#svc-api-contract-tests",
+"url": "https://goodcodereview.com/service-server-compatibility#svc-api-contract-tests",
 "tool_gate": "Contract test run in CI for both sides, and a gate that blocks deploy when a consumer's contract fails against the provider."
 },
 "svc-api-deprecation-sunset": {
@@ -1199,7 +1351,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Before removing an endpoint, mark it `deprecated` in the spec and send `Deprecation` and `Sunset` headers.",
-"url": "https://goodcodereview.com/service-server#svc-api-deprecation-sunset",
+"url": "https://goodcodereview.com/service-server-compatibility#svc-api-deprecation-sunset",
 "tool_gate": "Middleware that adds both headers for routes tagged deprecated; a spec linter on `deprecated: true` without a sunset date; a dashboard counting calls that carry the headers."
 },
 "svc-api-documented-errors": {
@@ -1207,7 +1359,7 @@
 "severity": "should-fix",
 "backing": "mixed",
 "rule": "Document every error status each operation can return, with a schema and one example.",
-"url": "https://goodcodereview.com/service-server#svc-api-documented-errors",
+"url": "https://goodcodereview.com/service-server-correctness#svc-api-documented-errors",
 "tool_gate": "Spec linter that requires 4xx and 5xx responses with a schema on every operation, and an example on each."
 },
 "svc-api-error-code-stable": {
@@ -1215,7 +1367,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Give each error a stable machine-readable code that callers branch on, and never make them parse the message text.",
-"url": "https://goodcodereview.com/service-server#svc-api-error-code-stable",
+"url": "https://goodcodereview.com/service-server-compatibility#svc-api-error-code-stable",
 "tool_gate": "Spec linter that requires an enumerated error `type` or `reason` per operation; a test that pins the codes."
 },
 "svc-api-key-scope": {
@@ -1223,7 +1375,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Issue each API key with the narrowest scopes and a bounded lifetime, and rotate or revoke it after any exposure.",
-"url": "https://goodcodereview.com/service-server#svc-api-key-scope",
+"url": "https://goodcodereview.com/service-server-security#svc-api-key-scope",
 "tool_gate": null
 },
 "svc-api-naming-consistent": {
@@ -1231,7 +1383,7 @@
 "severity": "discuss",
 "backing": "mixed",
 "rule": "Use one casing convention per location (fields, query parameters, headers, paths) across the whole API, and state it in the API guide. Name collections and array fields as plural nouns.",
-"url": "https://goodcodereview.com/service-server#svc-api-naming-consistent",
+"url": "https://goodcodereview.com/service-server-other#svc-api-naming-consistent",
 "tool_gate": "Spec linter with a casing rule per location."
 },
 "svc-api-problem-json": {
@@ -1239,7 +1391,7 @@
 "severity": "should-fix",
 "backing": "mixed",
 "rule": "Return errors as `application/problem+json` with a `status` that equals the HTTP status, and leave stack traces and internal detail out.",
-"url": "https://goodcodereview.com/service-server#svc-api-problem-json",
+"url": "https://goodcodereview.com/service-server-compatibility#svc-api-problem-json",
 "tool_gate": "Middleware that builds every error body from one problem-details type; a test that fails on an error response without the media type."
 },
 "svc-api-retry-after": {
@@ -1247,7 +1399,7 @@
 "severity": "should-fix",
 "backing": "strong",
 "rule": "Send `Retry-After` on every 429 and 503, and set it no earlier than the time capacity returns.",
-"url": "https://goodcodereview.com/service-server#svc-api-retry-after",
+"url": "https://goodcodereview.com/service-server-reliability#svc-api-retry-after",
 "tool_gate": "Integration test that forces a 429 and a 503 and asserts a `Retry-After` header."
 },
 "svc-api-specific-status-codes": {
@@ -1255,7 +1407,7 @@
 "severity": "should-fix",
 "backing": "mixed",
 "rule": "Return the most specific status code that fits: 201 with `Location` for a create, 405 with `Allow` for a wrong method, and a 4xx or 5xx for any failure.",
-"url": "https://goodcodereview.com/service-server#svc-api-specific-status-codes",
+"url": "https://goodcodereview.com/service-server-compatibility#svc-api-specific-status-codes",
 "tool_gate": "Integration tests asserting status and headers per operation; a spec linter for 201 and 405 responses."
 },
 "svc-api-version-on-every-request": {
@@ -1263,7 +1415,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Name the API version on every request, in a header or a query parameter.",
-"url": "https://goodcodereview.com/service-server#svc-api-version-on-every-request",
+"url": "https://goodcodereview.com/service-server-compatibility#svc-api-version-on-every-request",
 "tool_gate": "A shared HTTP client wrapper or gateway rule that sets the version, and a contract test that a request without one is rejected."
 },
 "svc-api-versioning-policy": {
@@ -1271,7 +1423,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Write down one versioning scheme for the API, and ship no breaking change inside a version it has published.",
-"url": "https://goodcodereview.com/service-server#svc-api-versioning-policy",
+"url": "https://goodcodereview.com/service-server-compatibility#svc-api-versioning-policy",
 "tool_gate": "Spec diff in CI that fails on a breaking change inside a published version."
 },
 "svc-async-content-reserves-space": {
@@ -1287,7 +1439,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Limit failed attempts per account, and return the same message and status code whether or not the account exists.",
-"url": "https://goodcodereview.com/service-server#svc-auth-throttle-generic-errors",
+"url": "https://goodcodereview.com/service-server-security#svc-auth-throttle-generic-errors",
 "tool_gate": "Rate-limit middleware on auth routes; test that known and unknown users get identical responses."
 },
 "svc-authn-by-default": {
@@ -1295,7 +1447,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Require authentication on every route by default, and mark each public route by name.",
-"url": "https://goodcodereview.com/service-server#svc-authn-by-default",
+"url": "https://goodcodereview.com/service-server-security#svc-authn-by-default",
 "tool_gate": "A framework fallback that requires authentication (ASP.NET Core `FallbackPolicy`, Django `LoginRequiredMiddleware`, Spring Security `anyRequest().authenticated()`); a test that calls every route without credentials and expects 401 or a login redirect unless the route is on the public list."
 },
 "svc-authz-central-deny-default": {
@@ -1303,7 +1455,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Route every request through one authorization layer that denies when no rule allows it.",
-"url": "https://goodcodereview.com/service-server#svc-authz-central-deny-default",
+"url": "https://goodcodereview.com/service-server-security#svc-authz-central-deny-default",
 "tool_gate": "Router that denies routes with no policy; a test that lists every route and its required role."
 },
 "svc-best-effort-optional-deps": {
@@ -1319,7 +1471,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Cap every client-controlled size and count on the server: body bytes, string length, array items, page size and batch size.",
-"url": "https://goodcodereview.com/service-server#svc-bound-client-controlled-sizes",
+"url": "https://goodcodereview.com/service-server-security#svc-bound-client-controlled-sizes",
 "tool_gate": "Gateway request-size limit; schema `maxLength`/`maxItems`; test with a 10 MB body and `limit=1000000`."
 },
 "svc-bound-inbound-concurrency": {
@@ -1327,7 +1479,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Cap how many requests a service handles at once with an explicit concurrency limit, and reject the excess. A timeout alone does not bound it.",
-"url": "https://goodcodereview.com/service-server#svc-bound-inbound-concurrency",
+"url": "https://goodcodereview.com/service-server-reliability#svc-bound-inbound-concurrency",
 "tool_gate": null
 },
 "svc-bounded-background-tasks": {
@@ -1343,7 +1495,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Key every request input that can change the response, and strip any other request value before it reaches a cached body.",
-"url": "https://goodcodereview.com/service-server#svc-cache-key-completeness",
+"url": "https://goodcodereview.com/service-server-security#svc-cache-key-completeness",
 "tool_gate": "A test that sends an unkeyed header or a GET body and asserts the response body does not change."
 },
 "svc-circuit-breaker-bulkhead": {
@@ -1386,12 +1538,20 @@
 "url": "https://goodcodereview.com/service-any#svc-client-paces-outgoing-calls",
 "tool_gate": null
 },
+"svc-container-resources-set": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Set a CPU request, a memory request and a memory limit on every container in the manifest, sidecars included.",
+"url": "https://goodcodereview.com/service-server-reliability#svc-container-resources-set",
+"tool_gate": "An admission policy or manifest linter that rejects a container with no CPU request, memory request or memory limit; a namespace LimitRange that supplies defaults."
+},
 "svc-cors-allowlist": {
 "level": "service",
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Allow cross-origin access only to a fixed list of named origins, and never echo the request `Origin` header back unchecked.",
-"url": "https://goodcodereview.com/service-server#svc-cors-allowlist",
+"url": "https://goodcodereview.com/service-server-security#svc-cors-allowlist",
 "tool_gate": "Integration test that sends a hostile `Origin` and asserts it is not echoed."
 },
 "svc-csp-strict-script-src": {
@@ -1399,7 +1559,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Send a `Content-Security-Policy` whose `script-src` uses a per-response nonce or script hashes, with `object-src 'none'` and `base-uri 'none'`.",
-"url": "https://goodcodereview.com/service-server#svc-csp-strict-script-src",
+"url": "https://goodcodereview.com/service-server-security#svc-csp-strict-script-src",
 "tool_gate": "Google CSP Evaluator on the policy; a CI header check against a staging URL."
 },
 "svc-csrf-state-changing": {
@@ -1407,15 +1567,23 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Require a CSRF token (or an equivalent header check) on every cookie-authenticated request that changes state, and never change state on GET.",
-"url": "https://goodcodereview.com/service-server#svc-csrf-state-changing",
+"url": "https://goodcodereview.com/service-server-security#svc-csrf-state-changing",
 "tool_gate": "Framework CSRF middleware enabled; test that a POST without the token returns 403."
+},
+"svc-debug-off-in-production": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Keep debug mode off in production, and turn it on by environment so that a missing setting leaves it off.",
+"url": "https://goodcodereview.com/service-server-security#svc-debug-off-in-production",
+"tool_gate": "A config check that debug is false in the production settings, and a smoke test that a deliberate server error returns a plain error page with no traceback."
 },
 "svc-decompression-cap": {
 "level": "service",
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Cap the decompressed output of every decoder, and set the cap on the output rather than the compressed input.",
-"url": "https://goodcodereview.com/service-server#svc-decompression-cap",
+"url": "https://goodcodereview.com/service-server-security#svc-decompression-cap",
 "tool_gate": "Apache `DeflateInflateLimitRequestBody`; ASP.NET Core `MaxRequestBodySize`; a test that inflates a 1 MB gzip to about 1 GB and asserts the decoder stops at the cap."
 },
 "svc-dlq": {
@@ -1423,7 +1591,7 @@
 "severity": "should-fix",
 "backing": "mixed",
 "rule": "Give every consumer queue a dead-letter queue and keep a way to replay it after the fix. On an ordered queue, key the group or session to the unit that must stay ordered, so a poison message holds only its own unit.",
-"url": "https://goodcodereview.com/service-server#svc-dlq",
+"url": "https://goodcodereview.com/service-server-reliability#svc-dlq",
 "tool_gate": "A config check that every consumed queue has a dead-letter target (for SQS in Terraform, a `redrive_policy` with `maxReceiveCount`), and an alarm on dead-letter queue depth."
 },
 "svc-export-scope": {
@@ -1439,7 +1607,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Ship every security control switched on, with an empty allow-list denying everything.",
-"url": "https://goodcodereview.com/service-server#svc-fail-closed-defaults",
+"url": "https://goodcodereview.com/service-server-security#svc-fail-closed-defaults",
 "tool_gate": "A startup check that raises on a missing or placeholder secret (Django refuses an unset `SECRET_KEY`; Pydantic Settings fields without a default); a test that boots the service with an empty environment and expects a failed start or denied requests."
 },
 "svc-host-header-trust": {
@@ -1447,7 +1615,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Build absolute URLs from configured values, answer only for a `Host` on an allowlist, and take `X-Forwarded-*` values only from a trusted proxy.",
-"url": "https://goodcodereview.com/service-server#svc-host-header-trust",
+"url": "https://goodcodereview.com/service-server-security#svc-host-header-trust",
 "tool_gate": "Framework host allowlist configured (`ALLOWED_HOSTS`, `AllowedHosts`, `config.hosts`, `trustHosts`), and a test that sends a hostile `Host` and expects 400."
 },
 "svc-idempotency-key": {
@@ -1455,7 +1623,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Make every retryable write idempotent: the caller sends a unique key, and a retry with the same key never applies the write twice.",
-"url": "https://goodcodereview.com/service-server#svc-idempotency-key",
+"url": "https://goodcodereview.com/service-server-reliability#svc-idempotency-key",
 "tool_gate": null
 },
 "svc-invalid-input-is-4xx": {
@@ -1463,7 +1631,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Check each caller-supplied value against its allowed domain (range, allowed set, an id that must exist, an encoding the code can handle) at the boundary, and answer a failed check with a 4xx, never a 5xx.",
-"url": "https://goodcodereview.com/service-server#svc-invalid-input-is-4xx",
+"url": "https://goodcodereview.com/service-server-correctness#svc-invalid-input-is-4xx",
 "tool_gate": "Schema or model constraints on every field (minimum, maximum, enum, format); a test that posts a negative number, an unknown id and a non-ASCII header and expects a 4xx."
 },
 "svc-list-endpoint-paginates": {
@@ -1471,15 +1639,31 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Paginate every list endpoint, with a default page size and a server-side maximum.",
-"url": "https://goodcodereview.com/service-server#svc-list-endpoint-paginates",
+"url": "https://goodcodereview.com/service-server-other#svc-list-endpoint-paginates",
 "tool_gate": "Contract test that calls the list with a huge page size and asserts the clamp or a 400."
+},
+"svc-log-input-neutralised": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "In plain-text logs, escape or strip CR, LF and delimiter characters in external input before logging it.",
+"url": "https://goodcodereview.com/service-server-security#svc-log-input-neutralised",
+"tool_gate": "A formatter that escapes CR and LF in every record; a test that logs a value containing a newline and asserts a single line."
+},
+"svc-logs-structured": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Log an event as a constant message plus key/value fields; do not build the message by interpolating variable data into it.",
+"url": "https://goodcodereview.com/service-server-other#svc-logs-structured",
+"tool_gate": "Pylint logging-fstring-interpolation (W1203), .NET analyzer CA2254, or a logger wrapper that accepts only a constant message plus fields."
 },
 "svc-mfa-step-up": {
 "level": "service",
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Require a fresh authentication with an already-bound factor before sensitive actions and before adding, replacing or removing an MFA factor; an existing session alone is not enough.",
-"url": "https://goodcodereview.com/service-server#svc-mfa-step-up",
+"url": "https://goodcodereview.com/service-server-security#svc-mfa-step-up",
 "tool_gate": null
 },
 "svc-no-redundant-entry": {
@@ -1490,12 +1674,20 @@
 "url": "https://goodcodereview.com/service-ui#svc-no-redundant-entry",
 "tool_gate": "none; a walk through the flow that lists each field asked twice."
 },
+"svc-no-secrets-in-logs": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Do not log passwords, tokens, keys or session ids; log an internal id or a masked value instead.",
+"url": "https://goodcodereview.com/service-server-security#svc-no-secrets-in-logs",
+"tool_gate": "A redacting log filter or formatter; secret scanning over the log output of the test suite."
+},
 "svc-no-secrets-in-url": {
 "level": "service",
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Send tokens, keys, passwords, and personal data in a header or the request body, never in the path or query string.",
-"url": "https://goodcodereview.com/service-server#svc-no-secrets-in-url",
+"url": "https://goodcodereview.com/service-server-security#svc-no-secrets-in-url",
 "tool_gate": null
 },
 "svc-oauth-code-flow-binding": {
@@ -1503,7 +1695,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Finish the authorization-code flow with PKCE and a challenge method that keeps the verifier out of the authorization request (`S256`), send the exact registered `redirect_uri` (a native app on the loopback interface may vary the port), and reject the response unless this transaction's `state` or OIDC `nonce` matches and the ID token's signature, `iss`, `aud` and `exp` check out.",
-"url": "https://goodcodereview.com/service-server#svc-oauth-code-flow-binding",
+"url": "https://goodcodereview.com/service-server-security#svc-oauth-code-flow-binding",
 "tool_gate": null
 },
 "svc-password-reset": {
@@ -1511,7 +1703,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Make the reset token single-use and short-lived, and on success revoke every session.",
-"url": "https://goodcodereview.com/service-server#svc-password-reset",
+"url": "https://goodcodereview.com/service-server-security#svc-password-reset",
 "tool_gate": null
 },
 "svc-rate-limit-quota": {
@@ -1519,7 +1711,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Enforce a per-tenant quota on shared APIs and queues.",
-"url": "https://goodcodereview.com/service-server#svc-rate-limit-quota",
+"url": "https://goodcodereview.com/service-server-security#svc-rate-limit-quota",
 "tool_gate": null
 },
 "svc-reflow-and-zoom": {
@@ -1535,7 +1727,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Reject a request that carries both `Transfer-Encoding` and `Content-Length`, or remove one field at the first hop, and parse header framing strictly rather than with a leniency flag.",
-"url": "https://goodcodereview.com/service-server#svc-request-framing",
+"url": "https://goodcodereview.com/service-server-security#svc-request-framing",
 "tool_gate": "A test that sends one request with both Content-Length and Transfer-Encoding and expects 400 or a closed connection."
 },
 "svc-retry-policy": {
@@ -1551,7 +1743,7 @@
 "severity": "should-fix",
 "backing": "mixed",
 "rule": "Make steps after the pivot idempotent and retryable, and make every compensation idempotent with a failure path.",
-"url": "https://goodcodereview.com/service-server#svc-saga-steps",
+"url": "https://goodcodereview.com/service-server-reliability#svc-saga-steps",
 "tool_gate": null
 },
 "svc-saml-assertion-binding": {
@@ -1559,7 +1751,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Verify the XML signature over the assertion you read, with the IdP's configured key rather than a key carried in the response, then require the assertion's `Audience` and its bearer `SubjectConfirmationData` `Recipient` to name this SP, the response `Destination` to be this endpoint, `InResponseTo` to match your request (absent for an IdP-initiated response), `NotOnOrAfter` to be current, and the assertion ID to be unseen. These are one step, verify the assertion, and each check is cited.",
-"url": "https://goodcodereview.com/service-server#svc-saml-assertion-binding",
+"url": "https://goodcodereview.com/service-server-security#svc-saml-assertion-binding",
 "tool_gate": null
 },
 "svc-session-lifecycle": {
@@ -1567,7 +1759,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Issue a new session ID at login, and set `Secure`, `HttpOnly` and `SameSite` on the session cookie.",
-"url": "https://goodcodereview.com/service-server#svc-session-lifecycle",
+"url": "https://goodcodereview.com/service-server-security#svc-session-lifecycle",
 "tool_gate": "Header test on the login response; session fixation test in the end-to-end suite."
 },
 "svc-slow-operation-shows-progress": {
@@ -1591,7 +1783,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Pass untrusted data to queries as bound parameters, never by string concatenation or formatting.",
-"url": "https://goodcodereview.com/service-server#svc-sqli-authn",
+"url": "https://goodcodereview.com/service-server-security#svc-sqli-authn",
 "tool_gate": "Bandit B608 (`hardcoded_sql_expressions`), CodeQL `py/sql-injection`."
 },
 "svc-stream-dont-materialise": {
@@ -1607,8 +1799,16 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Put the verified tenant id on every tenant-scoped log, metric and audit record.",
-"url": "https://goodcodereview.com/service-server#svc-tenant-id-in-telemetry",
+"url": "https://goodcodereview.com/service-server-security#svc-tenant-id-in-telemetry",
 "tool_gate": "A test that writes an event for each of two tenants, then queries one tenant and asserts the other is absent."
+},
+"svc-tenant-scope-in-data-layer": {
+"level": "service",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Enforce tenant scope in the data layer by default, with a query filter or row-level security, not by a predicate at each call site.",
+"url": "https://goodcodereview.com/service-data#svc-tenant-scope-in-data-layer",
+"tool_gate": "A test that reads as a second tenant and asserts the first tenant's rows are absent; Postgres FORCE ROW LEVEL SECURITY."
 },
 "svc-timeouts": {
 "level": "service",
@@ -1623,7 +1823,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Serve every HTTP-based API over TLS, with no plaintext listener or fallback.",
-"url": "https://goodcodereview.com/service-server#svc-tls-all-traffic",
+"url": "https://goodcodereview.com/service-server-security#svc-tls-all-traffic",
 "tool_gate": "A scan in CI that the public API host refuses plain HTTP on port 80."
 },
 "svc-tls-modern-only": {
@@ -1631,7 +1831,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Accept only TLS 1.2 and TLS 1.3 on servers.",
-"url": "https://goodcodereview.com/service-server#svc-tls-modern-only",
+"url": "https://goodcodereview.com/service-server-security#svc-tls-modern-only",
 "tool_gate": "testssl.sh or a similar scan against the public endpoint in CI; the load balancer's named security policy checked in config review."
 },
 "svc-token-revocation": {
@@ -1639,7 +1839,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Revoke the session's refresh token on the server at logout and every refresh token of the user when the account is disabled, and make access tokens expire quickly or check them against a revocation record.",
-"url": "https://goodcodereview.com/service-server#svc-token-revocation",
+"url": "https://goodcodereview.com/service-server-security#svc-token-revocation",
 "tool_gate": null
 },
 "svc-update-rollback-on-failure": {
@@ -1663,7 +1863,7 @@
 "severity": "block",
 "backing": "unjudged",
 "rule": "Allowlist the file type, cap the size, and store each upload under a generated name where the server will not execute it.",
-"url": "https://goodcodereview.com/service-server#svc-upload-validate-store",
+"url": "https://goodcodereview.com/service-server-security#svc-upload-validate-store",
 "tool_gate": "Upload tests with a renamed `.php`, an oversized file and a zip bomb."
 },
 "svc-webhook-replay-window": {
@@ -1671,7 +1871,7 @@
 "severity": "should-fix",
 "backing": "unjudged",
 "rule": "Reject an inbound signed message whose creation time is outside a short tolerance, and sign that time with the body so it cannot be swapped.",
-"url": "https://goodcodereview.com/service-server#svc-webhook-replay-window",
+"url": "https://goodcodereview.com/service-server-security#svc-webhook-replay-window",
 "tool_gate": "A test that replays a captured request with the timestamp moved outside the tolerance and asserts a 4xx, and one that changes only the timestamp header and asserts a 4xx."
 },
 "sys-agent-tool-least-privilege": {
@@ -1681,6 +1881,14 @@
 "rule": "Give the agent only the narrow tools and the minimal credentials its task needs.",
 "url": "https://goodcodereview.com/system#sys-agent-tool-least-privilege",
 "tool_gate": "Tool registry reviewed in code; downstream credentials scoped in IAM and tested as the agent identity."
+},
+"sys-backup-restore-tested": {
+"level": "system",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Restore every backup set on a schedule, check the restored data, and alert when the restore fails or stops running.",
+"url": "https://goodcodereview.com/system#sys-backup-restore-tested",
+"tool_gate": "A scheduled restore job that exits non-zero when the restored data fails its checks; an alert when the job has not run for longer than its schedule."
 },
 "sys-cache-bounds-invalidation": {
 "level": "system",
@@ -1794,6 +2002,14 @@
 "url": "https://goodcodereview.com/system#sys-secrets-and-errors",
 "tool_gate": "Secret scanner in CI; log-redaction tests."
 },
+"sys-shuffle-shard": {
+"level": "system",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Assign each tenant a shuffled subset of shared workers, so one tenant's fault reaches only a few other tenants.",
+"url": "https://goodcodereview.com/system#sys-shuffle-shard",
+"tool_gate": null
+},
 "sys-ssrf": {
 "level": "system",
 "severity": "block",
@@ -1817,6 +2033,14 @@
 "rule": "Get sign-off from a person or a fresh-context reviewer who has the spec but not the author's reasoning; self-review by the writing session does not count.",
 "url": "https://goodcodereview.com/change#chg-agent-independent-review",
 "tool_gate": null
+},
+"chg-applied-migration-not-edited": {
+"level": "change",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Do not edit or delete a migration that has already run in a shared environment; add a new migration that makes the change.",
+"url": "https://goodcodereview.com/change#chg-applied-migration-not-edited",
+"tool_gate": "Flyway `validate` or a Liquibase checksum check in CI; a CI step that fails when a file under the migrations directory that exists on main is modified or removed."
 },
 "chg-approval-tied-to-patch": {
 "level": "change",
@@ -1930,6 +2154,38 @@
 "url": "https://goodcodereview.com/change#chg-expand-contract",
 "tool_gate": "Schema or API diff tools (breaking-change detectors) in CI."
 },
+"chg-flag-both-states-tested": {
+"level": "change",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Test the flagged behaviour with the flag on and with the flag off for as long as the flag exists.",
+"url": "https://goodcodereview.com/change#chg-flag-both-states-tested",
+"tool_gate": "Test helper that runs the flagged suite once per flag state, or a CI job that fails when a flag has tests for one state only."
+},
+"chg-flag-fallback-chosen": {
+"level": "change",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Pass each flag evaluation a fallback chosen for the outcome if the flag service fails, and do not assume `false`.",
+"url": "https://goodcodereview.com/change#chg-flag-fallback-chosen",
+"tool_gate": null
+},
+"chg-flag-naming-convention": {
+"level": "change",
+"severity": "discuss",
+"backing": "unjudged",
+"rule": "Name each new flag by the team's written convention, and never give a deleted flag's key to different behaviour.",
+"url": "https://goodcodereview.com/change#chg-flag-naming-convention",
+"tool_gate": "Flag registry linter that checks each key against the documented pattern and rejects a key that was deleted before."
+},
+"chg-flag-owner-retirement": {
+"level": "change",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "Give every new flag an owner, a removal condition or date and a removal ticket, mark flags meant to stay as permanent, and remove the others and their dead branches once rollout ends.",
+"url": "https://goodcodereview.com/change#chg-flag-owner-retirement",
+"tool_gate": "Flag registry linter that requires owner and expiry fields."
+},
 "chg-match-codebase-pattern": {
 "level": "change",
 "severity": "should-fix",
@@ -1953,6 +2209,14 @@
 "rule": "List any new attack surface in the description.",
 "url": "https://goodcodereview.com/change#chg-name-attack-surface",
 "tool_gate": "SAST and dependency scanning in CI catch the mechanical part."
+},
+"chg-new-dependency-justified": {
+"level": "change",
+"severity": "should-fix",
+"backing": "unjudged",
+"rule": "When a change adds a dependency, say why it is needed and which existing dependency or own code was considered instead.",
+"url": "https://goodcodereview.com/change#chg-new-dependency-justified",
+"tool_gate": "A PR template or CI check that asks for the reason when a manifest gains a dependency."
 },
 "chg-no-per-user-ide-files": {
 "level": "change",

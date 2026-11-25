@@ -4,14 +4,16 @@ level: system
 tags: [compatibility, database, migration, postgres]
 severity: should-fix
 status: draft
-lacks: orgs, PostgreSQL docs are the only backer; needs two more orgs that add constraints in two steps
-note: ADD CONSTRAINT ... USING INDEX route not independently verified; PostgreSQL is the example dialect
+lacks: orgs, PostgreSQL is the only firm backer; Django documents the NOT VALID operation and strong_migrations (one author) shows the pattern; needs two more orgs
+note: ADD CONSTRAINT ... USING INDEX route not independently verified; PostgreSQL is the example dialect. Django describes the NOT VALID and ValidateConstraint operations without advising them; strong_migrations is one author, so neither counts
 lang: core
 applies_when: A migration adds a CHECK, FOREIGN KEY, or NOT NULL constraint to a large existing table.
 context: [data]
 tool_gate: Migration linter.
 borrowed_from:
   - https://www.postgresql.org/docs/current/sql-altertable.html
+  - https://docs.djangoproject.com/en/stable/ref/contrib/postgres/operations/
+  - https://github.com/ankane/strong_migrations/blob/master/README.md
 ---
 
 **Rule.** Add the constraint `NOT VALID`, then run `VALIDATE CONSTRAINT` in a separate step, and never leave the VALIDATE out.

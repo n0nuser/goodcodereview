@@ -7,7 +7,7 @@ status: stable
 lang: core
 applies_when: The change alters behaviour of non-trivial code.
 tool_gate: Coverage-delta or "changed source without changed tests" check in CI.
-note: Rust and Rails state the test that fails without the change; Microsoft and Google state the same-change arm. Only Mozilla (the reviewer writes the reason) and GitLab (open an issue for the gap) touch the stated-reason arm, so it sits in the Counterpoint, not the Rule
+note: Rust, Rails and Django state the test that fails without the change (Rust and Django for a bug fix); Microsoft and Google state the same-change arm. Only Mozilla (the reviewer writes the reason) and GitLab (open an issue for the gap) touch the stated-reason arm, so it sits in the Counterpoint, not the Rule
 borrowed_from:
   - https://www.kubernetes.dev/docs/guide/pull-requests/
   - https://devguide.python.org/getting-started/pull-request-lifecycle/
@@ -16,6 +16,7 @@ borrowed_from:
   - https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html
   - https://microsoft.github.io/code-with-engineering-playbook/code-reviews/process-guidance/reviewer-guidance/
   - https://firefox-source-docs.mozilla.org/testing/testing-policy/index.html
+  - https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/submitting-patches/
 ---
 
 **Rule.** Ship new or changed behaviour in the same change as a test that fails if the behaviour breaks.

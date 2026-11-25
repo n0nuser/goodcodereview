@@ -1,7 +1,7 @@
 ---
 id: svc-rate-limit-by-cost
 level: service
-tags: [performance, reliability, overload, rate-limiting]
+tags: [performance, reliability, overload, rate-limit]
 severity: should-fix
 status: draft
 lacks: evidence, only Microsoft recommends cost-based limits; Shopify, GitHub and Airbnb describe them, and Uber dropped a bytes-based quota

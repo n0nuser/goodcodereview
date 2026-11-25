@@ -414,7 +414,8 @@ def _items_43_46(r: Report, pages: dict[str, Page], content: dict[str, Page]) ->
 # Findings from the AgentReady (agentready.org v2.0), Mintlify and afdocs scanners, kept as offline checks so a change cannot bring them back.
 MD_MAX = 100_000  # afdocs fails a Markdown page past this many characters
 _WHOLE_LEVEL = "the whole level in one file keeps every card in one fetch; its context parts are the split form"
-MD_OVER = {"service.md": _WHOLE_LEVEL, "function.md": _WHOLE_LEVEL}  # file -> why it is allowed over MD_MAX
+_ALL_CONCERNS = "every card grouped by concern in one fetch; the split form is one file per concern under concerns/"
+MD_OVER = {"service.md": _WHOLE_LEVEL, "function.md": _WHOLE_LEVEL, "concerns.md": _ALL_CONCERNS}  # file -> why it is allowed over MD_MAX
 
 
 def _items_49_54(r: Report, pages: dict[str, Page], content: dict[str, Page]) -> None:
@@ -442,7 +443,7 @@ def _items_49_54(r: Report, pages: dict[str, Page], content: dict[str, Page]) ->
     r.check(53, not big, f"afdocs page-size-markdown: every .md is under {MD_MAX:,} characters except {', '.join(MD_OVER)}" + (f": over {big}" if big else ""))
 
     # A split level (docs/research/context-splitting.md): every part says "part n of N", llms.txt links all N and the whole file, and no part is silently left out.
-    split = re.findall(r"\]\(https://goodcodereview\.com/(\w+)-\w+\.md\): \d+ stable cards .*? in (\d+) parts", llms)
+    split = re.findall(r"\]\(https://goodcodereview\.com/(\w+)-[\w-]+\.md\): \d+ stable cards .*? in (\d+) parts", llms)
     broken = []
     for lv, n in split:
         files = [f for f in SITE.glob(f"{lv}-*.md") if "-index" not in f.name]

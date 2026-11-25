@@ -4,12 +4,14 @@ level: module
 tags: [maintainability, architecture]
 severity: should-fix
 status: draft
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+lacks: orgs, Python (PSF) and the Rust Book back it; needs a third org that keeps the entry module to wiring
 lang: core
 applies_when: The application has a main module, an entry point, or a bootstrap file.
 tool_gate: none
-borrowed_from: []
-note: from the author's own Python review guide
+borrowed_from:
+  - https://docs.python.org/3/library/__main__.html
+  - https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html
+note: Python says __main__ files stay short and import the functions they run, so the logic is testable and reusable. The Rust Book says to split the program into main.rs and lib.rs and move the logic to lib.rs. The Go module layout page does not say it
 ---
 
 **Rule.** Keep the entry module to wiring (bootstrap, configuration, lifespan) and put no business logic in it.

@@ -6,7 +6,7 @@ import subprocess
 from dataclasses import dataclass, field, replace
 from pathlib import Path
 
-from card_fields import context_group, group_by_context, href, is_core, is_stable, level_of, page_name
+from card_fields import context_group, href, is_core, is_stable, level_of, page_name
 from config import ROOT
 from errors import BuildError
 from markdown import check_md
@@ -45,18 +45,26 @@ class BuildInput:
     no_stable: frozenset[Level]  # levels whose core cards include no stable one
     links: tuple[NavLink, ...]
     split: frozenset[Level] = field(default_factory=frozenset)  # levels whose HTML page is one hub plus a page per `context`
+    plan: dict[str, str] = field(default_factory=dict)  # card id -> part name, for a context part that was split again (docs/adr/0002)
+
+    def part_of(self, card: Card) -> str:
+        """The part of a split level that holds the card: its context, or the sub-part the planner gave it."""
+        return self.plan.get(card.fm["id"], context_group(card))
 
     def page_of(self, card: Card) -> str:
         """The page slug that holds the card in full: its pack page, its level page, or its context part of a split level."""
-        return f"{level_of(card)}-{context_group(card)}" if is_core(card) and level_of(card) in self.split else page_name(card)
+        return f"{level_of(card)}-{self.part_of(card)}" if is_core(card) and level_of(card) in self.split else page_name(card)
 
     def parts(self, level: Level) -> dict[str, list[Card]]:
-        """The context parts of a split level, each with its cards (stable and draft), in card order."""
-        return group_by_context(self.core_at(level))
+        """The parts of a split level, each with its cards (stable and draft), in card order."""
+        groups: dict[str, list[Card]] = {}
+        for c in self.core_at(level):
+            groups.setdefault(self.part_of(c), []).append(c)
+        return groups
 
-    def with_split(self, split: frozenset[Level]) -> BuildInput:
+    def with_split(self, split: frozenset[Level], plan: dict[str, str] | None = None) -> BuildInput:
         """The same input with `split` levels set and every card link pointing at the page that holds the card."""
-        moved = replace(self, split=split)
+        moved = replace(self, split=split, plan=plan or {})
         return replace(moved, ids={**self.ids, **{c.fm["id"]: f"{moved.page_of(c)}.html#{c.fm['id']}" for c in self.cards}})
 
     @property

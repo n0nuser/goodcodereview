@@ -3,15 +3,16 @@ id: svc-tenant-scope-in-data-layer
 level: service
 tags: [security, correctness, multi-tenant, data]
 severity: should-fix
-status: draft
-lacks: orgs, Microsoft (EF Core query filter) and OWASP (row-level security) only; needs one more org that scopes tenants in the data layer by default
+status: stable
 lang: core
 applies_when: Several tenants share one table or database and the service reads tenant data.
 context: [data]
 tool_gate: A test that reads as a second tenant and asserts the first tenant's rows are absent; Postgres FORCE ROW LEVEL SECURITY.
+note: Microsoft backs the query filter, OWASP and AWS back row-level security. OWASP also asks for an authorization check at a boundary every access path crosses and treats ORM filtering as defence in depth; this card does not replace that check
 borrowed_from:
   - https://learn.microsoft.com/en-us/ef/core/querying/filters
   - https://cheatsheetseries.owasp.org/cheatsheets/Multi_Tenant_Security_Cheat_Sheet.html
+  - https://aws.amazon.com/blogs/database/multi-tenant-data-isolation-with-postgresql-row-level-security/
 ---
 
 **Rule.** Enforce tenant scope in the data layer by default, with a query filter or row-level security, not by a predicate at each call site.

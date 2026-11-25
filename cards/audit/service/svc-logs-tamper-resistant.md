@@ -4,7 +4,7 @@ level: service
 tags: [security, observability, logging]
 severity: should-fix
 status: draft
-lacks: orgs, tamper resistance has Google and OWASP only; needs a third org that ships logs to a store the host cannot alter
+lacks: orgs, Google and OWASP back it; AWS CloudTrail validation detects tampering but does not say to ship logs off-host; needs a third org that does
 lang: core
 applies_when: The service writes security-relevant logs or an audit trail.
 context: [server]
@@ -12,6 +12,7 @@ tool_gate: Config check that the log shipper targets a remote collector, and tha
 borrowed_from:
   - https://google.github.io/building-secure-and-reliable-systems/raw/ch15.html
   - https://top10.owasp.org/2025/A09_2025-Security_Logging_and_Alerting_Failures
+  - https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html
 ---
 
 **Rule.** Ship logs and audit trails to a store that the logged host cannot alter or delete.

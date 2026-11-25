@@ -4,14 +4,18 @@ level: service
 tags: [security, http, authz]
 severity: should-fix
 status: draft
-lacks: orgs, Envoy backs escaped-slash rejection and PortSwigger backs path agreement; each clause has fewer than three orgs
+lacks: orgs, Envoy and Istio each state the normalise clause; escaped-slash rejection has Envoy only; PortSwigger and Cloudflare describe attacks or features
 lang: core
 applies_when: A proxy, gateway or CDN sits in front of the service and a deny, allow or cache rule matches on the URL path.
 context: [server]
 tool_gate: A test that requests `/admin`, `/%61dmin`, `/admin%2Fusers` and `/ADMIN` through the edge and expects the same denial as `/admin`, or 400.
+note: Envoy (edge best practices) and Istio (authorization best practices) tell operators to normalise the path before policy. Istio builds on Envoy but is a separate CNCF project, so it counts as its own organisation. Cloudflare describes its normalisation feature and is soft. The PortSwigger page describes the attack and states no fix, so it does not count
 borrowed_from:
   - https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/http/header_validators/envoy_default/v3/header_validator.proto.html
   - https://portswigger.net/web-security/web-cache-deception
+  - https://www.envoyproxy.io/docs/envoy/latest/configuration/best_practices/edge
+  - https://istio.io/latest/docs/ops/best-practices/security/
+  - https://developers.cloudflare.com/rules/normalization/
 ---
 
 **Rule.** Normalise the URL path once at the first hop, or reject escaped slashes there, so every hop resolves a path to the same resource before any routing or authorisation rule runs.

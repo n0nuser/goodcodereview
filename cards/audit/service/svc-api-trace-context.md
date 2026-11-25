@@ -4,13 +4,16 @@ level: service
 tags: [observability, api, tracing]
 severity: should-fix
 status: draft
-lacks: orgs, W3C is the only backer; needs two more orgs that forward trace headers on every call
+lacks: orgs, W3C is the only firm backer; Google Cloud Trace and OpenTelemetry only describe propagation; needs two more orgs
 lang: core
 applies_when: A service calls another service over HTTP while handling a request.
 context: [server]
 tool_gate: Instrumentation library or HTTP-client middleware that injects `traceparent`; an integration test that checks the outgoing header.
+note: Google Cloud Trace says an application passes the trace identifiers downstream in headers; OpenTelemetry says its default propagator uses the W3C headers. Both describe behaviour and neither is a rule for service authors, so both are soft
 borrowed_from:
   - https://www.w3.org/TR/trace-context/
+  - https://cloud.google.com/trace/docs/trace-context
+  - https://opentelemetry.io/docs/concepts/context-propagation/
 ---
 
 **Rule.** Forward `traceparent` and `tracestate` on every outgoing call, keep the incoming trace id, and set a new parent id for each hop.

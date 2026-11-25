@@ -3,14 +3,14 @@ id: code-gate-new-violations-only
 level: codebase
 tags: [maintainability, process, ci, quality-gates]
 severity: should-fix
-status: draft
-lacks: orgs, SonarSource (a vendor) and ArchUnit back it; needs one more org that gates on new code and keeps old violations apart
+status: stable
 lang: core
 applies_when: Auditing a codebase that adopted a linter, a quality gate or an architecture rule after most of its code existed.
 tool_gate: A baseline or frozen violation store with CI set to read it but not rewrite it (ArchUnit `FreezingArchRule`, a linter baseline file).
 borrowed_from:
   - https://www.sonarsource.com/blog/legacy-codebases-are-a-devops-issue/
   - https://www.archunit.org/userguide/html/000_Index.html
+  - https://developer.android.com/studio/write/lint
 ---
 
 **Rule.** Gate CI on new or modified code, and track pre-existing violations in a separate store without letting a build add to it.

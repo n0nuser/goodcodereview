@@ -21,7 +21,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: The diff adds, removes or changes an HTTP route, a request or response field, a status code or a header.  
 context: server  
-lacks: orgs, OpenAPI and Zalando back it; needs a third org
+lacks: orgs, Kubernetes (spec in the same PR) and Zalando (spec first) back it; OpenAPI defines the format only; needs one more org
 
 Update the API spec in the same change that alters the routes, fields, status codes or headers it describes.
 
@@ -45,23 +45,13 @@ lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more org
 
 In a bug fix, state the cause you saw in evidence, and reject a guard, retry, sleep, longer timeout, swallowed error, cast, skipped or weakened test, or special case for the failing input that the cause does not justify.
 
-## chg-flag-owner-retirement
-
-level: change  
-severity: should-fix  
-concerns: reliability  
-applies_when: The change adds a feature flag, kill switch or config toggle.  
-lacks: orgs, owner has Dropbox and Statsig; removal ticket has Statsig; default has GitLab; each needs another org
-
-Give every new flag an owner, a default, and a removal condition or date, and ticket the removal.
-
 ## chg-link-tracked-issue
 
 level: change  
 severity: discuss  
 concerns: process, maintainability  
 applies_when: The project tracks work in an issue tracker.  
-lacks: orgs, "link each PR to its issue" has Apache and WordPress; needs a third org
+lacks: orgs, Apache requires an issue per PR; WordPress ships a Closes template; CPython puts the issue number in the news file name; needs a third org
 
 Link each pull request to the issue it addresses, with a keyword such as `Closes` or `See`.
 
@@ -71,7 +61,7 @@ level: change
 severity: should-fix  
 concerns: process  
 applies_when: The change links a ticket, spec or issue.  
-lacks: orgs, checking the change against the spec has Google, plus Dropbox for security only; needs a third org
+lacks: orgs, Google and Microsoft check the change against the task; none says to flag changes nobody asked for or missing requirements; needs a third org
 
 Trace every behaviour change in the diff to the stated requirement, and flag missing requirements and any change nobody asked for.
 
@@ -133,7 +123,7 @@ level: change
 severity: should-fix  
 concerns: process  
 applies_when: A change has review comments and is about to merge.  
-lacks: orgs, only Anthropic (a vendor) backs it; needs two more orgs that block merge on open review threads
+lacks: orgs, GitHub and GitLab document the merge setting only; the Anthropic X post cannot be re-fetched; needs orgs that state it as a rule
 
 Do not merge while any review thread is open; each one ends as a fix or as a resolution with a stated reason.
 
@@ -155,7 +145,7 @@ level: function
 severity: should-fix  
 concerns: correctness  
 applies_when: One operation writes to two or more places that must agree (rows, tables, stores, files).  
-lacks: orgs, only one vendor's review skill backs it; the all-or-nothing principle has no cited org
+lacks: orgs, PostgreSQL, Django and Rails describe what a transaction is, not a rule to wrap related writes; needs orgs that tell reviewers to do so
 
 Make related writes succeed or fail together.
 
@@ -175,30 +165,9 @@ level: function
 severity: should-fix  
 concerns: correctness  
 applies_when: A function returns a list, set or map.  
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+lacks: orgs, Microsoft states it; PMD's rule page is a tool description; SEI CERT MET55-J would not load; needs two more orgs
 
 Return an empty collection for "nothing found"; return `None` only when absent differs from empty.
-
-## fn-error-summary
-
-level: function  
-severity: should-fix  
-concerns: accessibility, usability  
-applies_when: Code renders a form again after validation fails.  
-context: ui  
-lacks: orgs, "links each error to its field" has GOV.UK only; needs two more orgs that show a linked summary
-
-After a failed submit, show a summary at the top of the page that lists every error and links each one to its field.
-
-## fn-flags-type-for-flag-sets
-
-level: function  
-severity: should-fix  
-concerns: maintainability, correctness  
-applies_when: A type holds a set of independent options that can be combined, such as permissions or render options.  
-lacks: orgs, Microsoft and the Rust API guidelines state it; a third independent organisation is missing
-
-Model a set of independent flags with the language's or ecosystem's flags type (a `[Flags]` enum in C#, the `bitflags` crate in Rust), and do not use a plain enum for it.
 
 ## fn-known-keys-get-a-type
 
@@ -219,27 +188,6 @@ applies_when: A function returns or passes a tuple whose positions mean differen
 lacks: orgs, only the author's own Python review guide backs it; no independent org
 
 Return a small named record, not a positional tuple, once the fields differ in meaning.
-
-## fn-no-aria-hidden-on-focusable
-
-level: function  
-severity: should-fix  
-concerns: accessibility  
-applies_when: Markup or CSS hides an element that can take keyboard focus.  
-context: ui  
-lacks: orgs, Google and WebAIM state it; a third independent organisation is missing
-
-Never put `aria-hidden="true"` on an element that can take focus, or leave an element visually hidden while it has focus.
-
-## fn-no-logic-in-tests
-
-level: function  
-severity: discuss  
-concerns: testing, maintainability  
-applies_when: A test body contains if, for, while or switch, or a table test branches on its case.  
-lacks: orgs, "no branching in test bodies" has Microsoft and Uber only; needs one more org
-
-Keep `if`, `for`, `while` and `switch` out of test bodies, and split table cases that need different assertions into separate tests.
 
 ## fn-no-pass-through-wrapper
 
@@ -267,19 +215,9 @@ level: function
 severity: should-fix  
 concerns: correctness  
 applies_when: A handler catches an error and either drops it or raises a different one.  
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+lacks: orgs, chaining has Microsoft; Python and Oracle describe the mechanism; Google Go and SEI CERT back no-swallow, which is in the Why; needs two more orgs
 
 Chain the original cause when you translate an exception.
-
-## fn-resource-lifetime
-
-level: function  
-severity: should-fix  
-concerns: correctness  
-applies_when: Code starts a task, thread, goroutine, or subprocess, or opens a handle (file, socket, connection).  
-lacks: orgs, a structured-concurrency blog (one person) and Google (cancel path) back it; needs two more orgs for the owner rule
-
-Give every task and handle an owner that waits for it or closes it, on the error path too.
 
 # module drafts
 
@@ -289,7 +227,7 @@ level: module
 severity: should-fix  
 concerns: testing, reliability  
 applies_when: A test class overrides setUp, tearDown, setUpClass or tearDownClass in an xUnit-style framework.  
-lacks: orgs, "call the parent's setUp and tearDown" has Laravel and PSF; needs a third org
+lacks: orgs, Laravel and Django back it; the Python unittest page states no such rule; needs a third org
 
 A test class that overrides `setUp`, `tearDown`, `setUpClass` or `tearDownClass` calls the parent's version.
 
@@ -379,7 +317,7 @@ level: module
 severity: should-fix  
 concerns: maintainability  
 applies_when: The application has a main module, an entry point, or a bootstrap file.  
-lacks: orgs, only the author's own Python review guide backs it; no independent org
+lacks: orgs, Python (PSF) and the Rust Book back it; needs a third org that keeps the entry module to wiring
 
 Keep the entry module to wiring (bootstrap, configuration, lifespan) and put no business logic in it.
 
@@ -402,7 +340,7 @@ severity: should-fix
 concerns: compatibility, correctness  
 applies_when: A service answers a request that lacks valid credentials for a protected resource.  
 context: server  
-lacks: orgs, one org (IETF); the Siemens guideline restates RFC 9110, so it adds none; needs two more orgs that require the challenge
+lacks: orgs, IETF is the only org; MDN and the Siemens guideline restate RFC 9110, so they add none; needs two more orgs that require the challenge
 
 Send a `WWW-Authenticate` challenge with every 401 response.
 
@@ -435,7 +373,7 @@ severity: should-fix
 concerns: observability  
 applies_when: A service calls another service over HTTP while handling a request.  
 context: server  
-lacks: orgs, W3C is the only backer; needs two more orgs that forward trace headers on every call
+lacks: orgs, W3C is the only firm backer; Google Cloud Trace and OpenTelemetry only describe propagation; needs two more orgs
 
 Forward `traceparent` and `tracestate` on every outgoing call, keep the incoming trace id, and set a new parent id for each hop.
 
@@ -450,17 +388,6 @@ lacks: orgs, Google and Microsoft only; needs one more org that drops the "is" p
 
 Name a new boolean field for its state (`enabled`, `required`), not with an `is` prefix.
 
-## svc-debug-off-in-production
-
-level: service  
-severity: should-fix  
-concerns: security  
-applies_when: The service has a debug mode or serves API docs or a developer UI such as Swagger.  
-context: server  
-lacks: orgs, OWASP backs debug modes and Microsoft backs Swagger UI; needs one more org per clause that turns debug tooling off in production
-
-Keep debug modes and developer tooling, such as Swagger UI, disabled in production.
-
 ## svc-logs-tamper-resistant
 
 level: service  
@@ -468,7 +395,7 @@ severity: should-fix
 concerns: security, observability  
 applies_when: The service writes security-relevant logs or an audit trail.  
 context: server  
-lacks: orgs, tamper resistance has Google and OWASP only; needs a third org that ships logs to a store the host cannot alter
+lacks: orgs, Google and OWASP back it; AWS CloudTrail validation detects tampering but does not say to ship logs off-host; needs a third org that does
 
 Ship logs and audit trails to a store that the logged host cannot alter or delete.
 
@@ -490,7 +417,7 @@ severity: should-fix
 concerns: correctness, compatibility  
 applies_when: The code calls a paginated HTTP or RPC API and reads more than one page.  
 context: server  
-lacks: orgs, "follow the next link" has GitHub only and "do not parse the token" has Google only; needs two more orgs for each
+lacks: orgs, next link has GitHub firm; Microsoft and Zalando state server-side rules only; opaque token has Google and Zalando (cursor opacity); needs more client-side orgs
 
 Fetch the next page only from the link or token the server returned; do not build page numbers or open the token.
 
@@ -501,7 +428,7 @@ severity: should-fix
 concerns: security  
 applies_when: A proxy, gateway or CDN sits in front of the service and a deny, allow or cache rule matches on the URL path.  
 context: server  
-lacks: orgs, Envoy backs escaped-slash rejection and PortSwigger backs path agreement; each clause has fewer than three orgs
+lacks: orgs, Envoy and Istio each state the normalise clause; escaped-slash rejection has Envoy only; PortSwigger and Cloudflare describe attacks or features
 
 Normalise the URL path once at the first hop, or reject escaped slashes there, so every hop resolves a path to the same resource before any routing or authorisation rule runs.
 
@@ -523,7 +450,7 @@ severity: should-fix
 concerns: observability  
 applies_when: A service handles requests and writes logs while doing so.  
 context: server  
-lacks: evidence, the W3C spec does not mention logs; only Honeycomb backs putting the id on every log line
+lacks: evidence, Microsoft, Datadog and Google recommend correlation ids in logs; none says every line; needs a source that does
 
 Put the request or trace id on every log line written during a request.
 
@@ -556,20 +483,9 @@ severity: should-fix
 concerns: security, reliability  
 applies_when: The service runs its own HTTP server and untrusted clients or networks can reach it.  
 context: server  
-lacks: orgs, Cloudflare (Go) and Node.js only; needs one more org that sets server read and header timeouts for untrusted clients
+lacks: orgs, request-read timeout has Cloudflare and Envoy firm; header-read timeout has no firm org; Node, Kestrel, nginx and Apache pages only describe options
 
 Set a header-read timeout and a request-read timeout on a server that faces untrusted clients.
-
-## svc-tenant-scope-in-data-layer
-
-level: service  
-severity: should-fix  
-concerns: security, correctness  
-applies_when: Several tenants share one table or database and the service reads tenant data.  
-context: data  
-lacks: orgs, Microsoft (EF Core query filter) and OWASP (row-level security) only; needs one more org that scopes tenants in the data layer by default
-
-Enforce tenant scope in the data layer by default, with a query filter or row-level security, not by a predicate at each call site.
 
 # system drafts
 
@@ -589,7 +505,7 @@ level: system
 severity: should-fix  
 concerns: performance, reliability  
 applies_when: Cache misses fall through to a database or downstream service.  
-lacks: orgs, AWS is the only backer; needs two more orgs
+lacks: orgs, AWS is the only firm backer; Microsoft covers cache-down fallback only; Fastly and Go singleflight describe coalescing features; needs two more orgs
 
 Cap and coalesce the cache-miss path so an empty cache cannot overwhelm the origin.
 
@@ -600,7 +516,7 @@ severity: should-fix
 concerns: observability, performance, reliability  
 applies_when: The change adds a cache, or resizes one, in front of a database or downstream service.  
 context: server  
-lacks: orgs, both clauses have AWS and Google only; the third source shows a cache chart, not a hit-rate or memory metric; needs one more org
+lacks: orgs, both clauses have AWS and Google; Microsoft lists a Cache Hits metric but gives no advice to alert on it; needs one more org that says to alert
 
 Emit a cache hit-rate or memory-use metric and alert on it, so an undersized cache is noticed before it hurts the origin.
 
@@ -611,7 +527,7 @@ severity: should-fix
 concerns: compatibility  
 applies_when: A migration adds a CHECK, FOREIGN KEY, or NOT NULL constraint to a large existing table.  
 context: data  
-lacks: orgs, PostgreSQL docs are the only backer; needs two more orgs that add constraints in two steps
+lacks: orgs, PostgreSQL is the only firm backer; Django documents the NOT VALID operation and strong_migrations (one author) shows the pattern; needs two more orgs
 
 Add the constraint `NOT VALID`, then run `VALIDATE CONSTRAINT` in a separate step, and never leave the VALIDATE out.
 
@@ -632,20 +548,9 @@ level: system
 severity: should-fix  
 concerns: reliability  
 applies_when: A job runs only on an elected leader or lease holder.  
-lacks: orgs, AWS is the only backer; needs two more orgs
+lacks: orgs, AWS and Microsoft state it firm; Kubernetes client-go only states that its election does not fence; needs a third org that says to guard leader work
 
 Make leader work safe if two leaders overlap: make it idempotent, check the lease before acting, and stop when renewal fails.
-
-## sys-shuffle-shard
-
-level: system  
-severity: should-fix  
-concerns: reliability  
-applies_when: Many tenants share a pool of workers or nodes, and one tenant's traffic or bug can take a worker down.  
-context: server  
-lacks: orgs, AWS and Airbnb back it; needs one more org that assigns tenants to shuffled worker subsets
-
-Assign each tenant a shuffled subset of shared workers, so one tenant's fault reaches only a few other tenants.
 
 # codebase drafts
 
@@ -655,7 +560,7 @@ level: codebase
 severity: discuss  
 concerns: reliability, process  
 applies_when: Auditing how a team keeps its main-branch pipeline and blocking CI jobs trustworthy.  
-lacks: orgs, GitLab states a target and Kubernetes a gate; needs one more org that sets a numeric pass rate for the pipeline or a blocking job
+lacks: orgs, GitLab and Kubernetes back it; Slack's 95% main-branch target is one project's metric (soft); needs one more org that sets a threshold
 
 Set a numeric pass-rate threshold for the pipeline or each blocking job, and act when it falls below it.
 
@@ -669,23 +574,13 @@ lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more org
 
 Keep the setup, build and run commands in the README or contribution guide accurate: they work as written on a clean checkout, and any drift is fixed or reported.
 
-## code-gate-new-violations-only
-
-level: codebase  
-severity: should-fix  
-concerns: maintainability, process  
-applies_when: Auditing a codebase that adopted a linter, a quality gate or an architecture rule after most of its code existed.  
-lacks: orgs, SonarSource (a vendor) and ArchUnit back it; needs one more org that gates on new code and keeps old violations apart
-
-Gate CI on new or modified code, and track pre-existing violations in a separate store without letting a build add to it.
-
 ## code-signed-commits-protected
 
 level: codebase  
 severity: should-fix  
 concerns: security, process  
 applies_when: Auditing the branch protection of a repository that ships code or holds release branches.  
-lacks: orgs, "require signed commits" has OWASP and Node.js; GitHub documents the setting and AWS calls signing optional; needs one more org
+lacks: orgs, OWASP requires it; Node.js signs release commits only; GitHub and GitLab document the setting; needs two more orgs that state it as a rule
 
 Require signed commits on protected branches, so unsigned commits cannot merge or be pushed.
 
@@ -705,11 +600,21 @@ level: codebase
 severity: should-fix  
 concerns: testing, reliability  
 applies_when: Auditing a test suite for tests that pass alone and fail in a run, or the reverse.  
-lacks: orgs, GitLab and Alloy back it; Kent Beck is a person and does not count; needs one more org that runs tests in random order or isolates state
+lacks: orgs, Go and RSpec document shuffle flags only; the GitLab and Alloy pages state no order rule on re-fetch; needs orgs that state the rule
 
 Make each test pass in any order, sharing no mutable state with other tests.
 
 # production drafts
+
+## prod-alert-links-runbook
+
+level: production  
+severity: should-fix  
+concerns: observability, process  
+applies_when: A service ships alert rules that page a person.  
+lacks: orgs, "link a runbook" has Google and Grafana Labs; Prometheus links consoles only and shares an author with Google; needs one more org
+
+Link each paging alert to a runbook or dashboard that says what to check and do.
 
 ## prod-wide-events-bounded-labels
 
@@ -717,7 +622,7 @@ level: production
 severity: should-fix  
 concerns: observability  
 applies_when: A request handler or job emits telemetry.  
-lacks: orgs, Honeycomb is the only backer, and the Rule does not mention bounded labels; needs two more orgs
+lacks: orgs, one event per request has Honeycomb firm and Stripe soft; the label clause has Prometheus; needs two more orgs for each
 
 Emit one structured event per request carrying trace, tenant, build and flag state.
 
@@ -739,7 +644,7 @@ level: incident
 severity: should-fix  
 concerns: reliability, process  
 applies_when: A postmortem or incident review is written or audited.  
-lacks: orgs, an owner and due date on each action has no org; Dropbox and Shopify mention action items without naming either
+lacks: orgs, Atlassian is the only firm backer; the Google SRE workbook shows an owner column in an example table only; needs two more orgs
 
 Give every postmortem action one named owner, a due date, and a tracker link.
 

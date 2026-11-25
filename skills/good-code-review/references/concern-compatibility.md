@@ -4,19 +4,19 @@ Every stable card that lists the `compatibility` concern, by level. The place `<
 
 ## change
 
-- `chg-breaking-change-taxonomy` [block] {compatibility} change.md:L114+27: Treat any change that callers can observe in a signature, return values, error types, defaults, or side effects as breaking until a consumer check says otherwise.
-- `chg-delete-legacy-after-migration` [should-fix] {compatibility, maintainability} <data> change.md:L279+30: When no consumer sits outside the repo, move every caller to the new API and delete the old one, and the tests that pinned its internals, in the same change.
-- `chg-devex-breaking-config` [should-fix] {compatibility, process} change.md:L310+28: Flag a change that renames or removes an environment variable, moves a secret, or remaps a port as breaking for developers and operators, and update every place that documents or sets it.
-- `chg-doc-marks-version-added` [discuss] {compatibility} change.md:L339+26: When a diff adds or changes a documented feature, mark in the docs the version that added or changed it.
-- `chg-expand-contract` [block] {compatibility} <data> change.md:L422+28: Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.
-- `chg-migration-add-column-rewrite` [should-fix] {compatibility} <data> change.md:L481+27: Add the column nullable or with a constant default, then fill volatile, computed, or identity values in batches.
-- `chg-proto-no-field-type-change` [should-fix] {compatibility} change.md:L689+31: Never change the type of a protobuf field, switch it between repeated and scalar, or rename it while any consumer reads JSON or text format; add a new field instead.
-- `chg-proto-reserve-removed-fields` [should-fix] {compatibility} change.md:L721+32: When you delete a protobuf field or enum value, add `reserved` for its number and name in the same change, and never reuse a number.
+- `chg-breaking-change-taxonomy` [block] {compatibility} change.md:L153+27: Treat any change that callers can observe in a signature, return values, error types, defaults, or side effects as breaking until a consumer check says otherwise.
+- `chg-delete-legacy-after-migration` [should-fix] {compatibility, maintainability} <data> change.md:L318+30: When no consumer sits outside the repo, move every caller to the new API and delete the old one, and the tests that pinned its internals, in the same change.
+- `chg-devex-breaking-config` [should-fix] {compatibility, process} change.md:L349+28: Flag a change that renames or removes an environment variable, moves a secret, or remaps a port as breaking for developers and operators, and update every place that documents or sets it.
+- `chg-doc-marks-version-added` [discuss] {compatibility} change.md:L378+26: When a diff adds or changes a documented feature, mark in the docs the version that added or changed it.
+- `chg-expand-contract` [block] {compatibility} <data> change.md:L461+28: Evolve shared contracts in steps: add the new form beside the old (expand), migrate every consumer, then remove the old form (contract) in a later change.
+- `chg-migration-add-column-rewrite` [should-fix] {compatibility} <data> change.md:L641+27: Add the column nullable or with a constant default, then fill volatile, computed, or identity values in batches.
+- `chg-proto-no-field-type-change` [should-fix] {compatibility} change.md:L879+31: Never change the type of a protobuf field, switch it between repeated and scalar, or rename it while any consumer reads JSON or text format; add a new field instead.
+- `chg-proto-reserve-removed-fields` [should-fix] {compatibility} change.md:L911+32: When you delete a protobuf field or enum value, add `reserved` for its number and name in the same change, and never reuse a number.
 
 ## function
 
 - `fn-deprecation-names-version-and-replacement` [should-fix] {compatibility, maintainability} function.md:L308+25: Say in a deprecation notice which version deprecated it and what replaces it.
-- `fn-response-fields-explicit` [should-fix] {security, compatibility} <server> function.md:L2054+28: Return a response type that lists each field, never the stored model or a generic dump of it.
+- `fn-response-fields-explicit` [should-fix] {security, compatibility} <server> function.md:L2343+28: Return a response type that lists each field, never the stored model or a generic dump of it.
 
 ## module
 
@@ -36,6 +36,6 @@ Every stable card that lists the `compatibility` concern, by level. The place `<
 
 ## system
 
-- `sys-index-concurrently` [should-fix] {compatibility} <data> system.md:L175+28: Create indexes with `CONCURRENTLY`, outside a transaction block, and handle a failed build that leaves an INVALID index.
-- `sys-migration-expand-contract` [block] {reliability, compatibility} <data> system.md:L264+26: Run data backfills in batches, in a migration separate from the schema change.
-- `sys-migration-lock-timeout` [should-fix] {compatibility} <data> system.md:L291+27: Set `lock_timeout` for the migration session and retry on timeout.
+- `sys-index-concurrently` [should-fix] {compatibility} <data> system.md:L211+28: Create indexes with `CONCURRENTLY`, outside a transaction block, and handle a failed build that leaves an INVALID index.
+- `sys-migration-expand-contract` [block] {reliability, compatibility} <data> system.md:L300+26: Run data backfills in batches, in a migration separate from the schema change.
+- `sys-migration-lock-timeout` [should-fix] {compatibility} <data> system.md:L327+27: Set `lock_timeout` for the migration session and retry on timeout.

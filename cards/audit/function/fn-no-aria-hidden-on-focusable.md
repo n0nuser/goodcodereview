@@ -3,8 +3,7 @@ id: fn-no-aria-hidden-on-focusable
 level: function
 tags: [accessibility, frontend, aria, keyboard]
 severity: should-fix
-status: draft
-lacks: orgs, Google and WebAIM state it; a third independent organisation is missing
+status: stable
 lang: core
 applies_when: Markup or CSS hides an element that can take keyboard focus.
 context: [ui]
@@ -12,6 +11,11 @@ tool_gate: axe `aria-hidden-focus`.
 borrowed_from:
   - https://web.dev/learn/accessibility/aria-html
   - https://webaim.org/techniques/aria/
+  - https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-hidden
+  - https://dequeuniversity.com/rules/axe/html/4.10/aria-hidden-focus
+  - https://webaim.org/techniques/skipnav/
+  - https://www.w3.org/WAI/WCAG22/Understanding/focus-visible.html
+  - https://web.dev/learn/accessibility/focus
 ---
 
 **Rule.** Never put `aria-hidden="true"` on an element that can take focus, or leave an element visually hidden while it has focus.

@@ -1,17 +1,18 @@
 ---
 id: sys-shuffle-shard
 level: system
-tags: [reliability, multitenancy, isolation]
+tags: [reliability, multi-tenant, isolation]
 severity: should-fix
-status: draft
-lacks: orgs, AWS and Airbnb back it; needs one more org that assigns tenants to shuffled worker subsets
+status: stable
 lang: core
 applies_when: Many tenants share a pool of workers or nodes, and one tenant's traffic or bug can take a worker down.
 context: [server]
 tool_gate: none
+note: AWS describes the technique, Airbnb and Grafana Labs (Mimir) each run it on a shared tenant pool. Airbnb's wording on the technique matches the Mimir page, so the two may not be fully independent
 borrowed_from:
   - https://aws.amazon.com/builders-library/workload-isolation-using-shuffle-sharding/
   - https://airbnb.tech/infrastructure/building-a-fault-tolerant-metrics-storage-system-at-airbnb/
+  - https://grafana.com/docs/mimir/latest/configure/configure-shuffle-sharding/
 ---
 
 **Rule.** Assign each tenant a shuffled subset of shared workers, so one tenant's fault reaches only a few other tenants.

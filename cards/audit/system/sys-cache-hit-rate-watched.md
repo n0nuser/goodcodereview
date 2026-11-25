@@ -4,7 +4,7 @@ level: system
 tags: [observability, performance, reliability, caching]
 severity: should-fix
 status: draft
-lacks: orgs, both clauses have AWS and Google only; the third source shows a cache chart, not a hit-rate or memory metric; needs one more org
+lacks: orgs, both clauses have AWS and Google; Microsoft lists a Cache Hits metric but gives no advice to alert on it; needs one more org that says to alert
 lang: core
 applies_when: The change adds a cache, or resizes one, in front of a database or downstream service.
 context: [server]
@@ -13,6 +13,7 @@ borrowed_from:
   - https://aws.amazon.com/builders-library/caching-challenges-and-strategies/
   - https://cloud.google.com/memorystore/docs/redis/memory-management-best-practices
   - https://www.atlassian.com/blog/atlassian-engineering/unlocking-reliability-with-splunk-smartstore
+  - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-how-to-monitor
 ---
 
 **Rule.** Emit a cache hit-rate or memory-use metric and alert on it, so an undersized cache is noticed before it hurts the origin.
