@@ -13,6 +13,10 @@ SITE_DESC = "A code review checklist for people and agents. Each vetted rule cit
 LICENCE_URL = "https://creativecommons.org/licenses/by/4.0/"
 SKILL_NAME = "good-code-review"
 INDEXNOW_KEY = "f400dd418272a4ed9b4e6ff381270db6"  # public: IndexNow checks that /<key>.txt on the site holds it (tools/indexnow.py)
+VERSION = "0.2.0"  # the release this tree builds, in Semantic Versioning (docs/versioning.md); tools/release.py freezes it into releases/
+# The line a repository adds to AGENTS.md or CLAUDE.md. The README carries the same text (test/test_release.py).
+ADOPTION_LINE = ("Before you call a change done, review it with Good Code Review " + VERSION + " (rules: https://goodcodereview.com/v/" + VERSION
+                 + "/cards.json, format: https://goodcodereview.com/llms.txt). Report each check as PASS, FAIL, or N/A with file:line evidence.")
 FONTSOURCE_VERSION = "5.3.0"  # the @fontsource release the files in tools/fonts were taken from (IBM Plex, SIL OFL 1.1)
 SIMPLE_ICONS_VERSION = "15.22.0"  # the release that tools/org_icons.json was taken from (CC0, https://simpleicons.org)
 SBOM_FILE = ROOT / "sbom.cdx.json"

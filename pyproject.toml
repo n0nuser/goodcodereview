@@ -1,6 +1,6 @@
 [project]
 name = "goodcodereview"
-version = "0.0.0"
+version = "0.2.0"
 description = "Build tools for goodcodereview.com. The build itself uses only the standard library."
 requires-python = ">=3.14"
 dependencies = []

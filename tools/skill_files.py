@@ -12,6 +12,7 @@ from config import (
     SKILL_BODY_BUDGET,
     SKILL_BUDGET,
     SKILL_NAME,
+    VERSION,
 )
 from context import BuildInput, pack_name
 from errors import BuildError
@@ -52,7 +53,7 @@ from prose import (
 )
 
 DRAFT_LINK = "[the draft cards](https://goodcodereview.com/.well-known/agent-skills/good-code-review/references/drafts.md)"
-SKILL_VERSION = "1.0"
+SKILL_VERSION = VERSION
 CANONICAL_LICENCE = "CC-BY-4.0 for the content, MIT for the code"
 COMPATIBILITY = "Reads Markdown only. Needs a file-read tool and, to triage, grep. An audit may also run read-only commands, such as gh api, to quote platform settings as evidence."
 
