@@ -4,7 +4,7 @@ import re
 from collections.abc import Callable
 
 from agent_ready_check import Page
-from card_fields import concerns, lacks, topics
+from card_fields import concerns, is_stable, lacks, topics
 from config import MIN_PART, PAGE_MAX, REPO, SITE_DESC
 from context import BuildInput, pack_name
 from errors import BuildError
@@ -43,7 +43,7 @@ from prose import (
     PRIVACY_DESC,
     VERDICT,
 )
-from seo import MAX_DESC, MIN_DESC, PART_TITLES, home_ld
+from seo import MAX_DESC, MIN_DESC, PARTS, home_ld
 from shell import page
 
 INSTALL_SKILL = "npx skills add n0nuser/goodcodereview"
@@ -54,10 +54,16 @@ CONCERNS_INTRO = ("<p>Every card's rule on one page, and each row links to the f
                   "Add <code>.md</code> or use <code>cards.json</code> for the same view as text or JSON.</p>")
 
 
+def part_name(lv: Level, g: str, cards: list[Card]) -> tuple[str, str]:
+    """The title and description of one part. The description counts stable cards only: a draft is not vetted."""
+    title, covers = PARTS.get(f"{lv}-{g}", (f"{NAME[lv]}, {g} cards", f"the {g} part of the {lv} level"))
+    n = sum(is_stable(c) for c in cards)
+    return title, f"Review {covers}. {n} vetted check{'' if n == 1 else 's'} with FAIL and PASS examples and sources."
+
+
 def part_spec(lv: Level, g: str, cards: list[Card]) -> PageSpec:
     """The page for one context of a split level. Raises BuildError when its description breaks the search-snippet length."""
-    title = PART_TITLES.get(f"{lv}-{g}", f"{NAME[lv]}, {g} cards")
-    desc = f"{title}: {len(cards)} rules, each with a FAIL and a PASS example and links to the organisations that back it."
+    title, desc = part_name(lv, g, cards)
     if not MIN_DESC <= len(desc) <= MAX_DESC:
         raise BuildError(f"{lv}-{g}.html: description is {len(desc)} characters, want {MIN_DESC} to {MAX_DESC}")
     intro = f"<p>{LEVEL_DESC[lv]} This page holds the cards for the <code>{g}</code> {'part' if '-' in g else 'context'}. The <a href=\"{lv}.html\">{NAME[lv]}</a> page lists every card. {VERDICT}</p>"
@@ -67,8 +73,7 @@ def part_spec(lv: Level, g: str, cards: list[Card]) -> PageSpec:
 def hub_spec(b: BuildInput, lv: Level, g: str, cards: list[Card]) -> PageSpec:
     """The page for a context that was split again: it links each of its parts, and its rows keep the old `page#card-id` links alive."""
     parts = {b.part_of(c): sum(b.part_of(x) == b.part_of(c) for x in cards) for c in cards}
-    title = PART_TITLES.get(f"{lv}-{g}", f"{NAME[lv]}, {g} cards")
-    desc = f"{title}: {len(cards)} rules on {len(parts)} pages, each linked to its full text and the organisations that back it."
+    title, desc = part_name(lv, g, cards)
     if not MIN_DESC <= len(desc) <= MAX_DESC:
         raise BuildError(f"{lv}-{g}.html: description is {len(desc)} characters, want {MIN_DESC} to {MAX_DESC}")
     links = ", ".join(f'<a href="{lv}-{p}.html">{p}</a> ({n})' for p, n in parts.items())

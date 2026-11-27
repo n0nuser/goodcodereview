@@ -37,8 +37,6 @@ def svg(title: str, desc: str) -> str:
         return "".join(f'<text x="70" y="{y + i * step}" font-family="Liberation Sans, Arial" font-size="{size}" font-weight="{weight}" fill="{fill}">{html.escape(s)}</text>'
                        for i, s in enumerate(textwrap.wrap(text, width)[:3]))
 
-    desc = desc.removeprefix(f"{title}: ")  # the title is already above it
-    desc = desc[:1].upper() + desc[1:]
     top = 140
     below = top + len(textwrap.wrap(title, 28)[:3]) * 78 + 20
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{OG_IMAGE_WIDTH}" height="{OG_IMAGE_HEIGHT}">'
