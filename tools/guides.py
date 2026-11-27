@@ -87,7 +87,7 @@ GUIDES = (
           "[OWASP Secure Code Review Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secure_Code_Review_Cheat_Sheet.html)."),
     Guide("code-review-with-ai-agents", "Code review with Claude Code, Codex, Cursor, and other agents",
           "Run the same code review checklist in Claude Code, Codex, Cursor, OpenCode, GitHub Copilot, or Gemini CLI: where the skill goes and how to call it.",
-          "An agent can review code with this checklist as a skill, a folder of instructions that it loads when you ask. The same files work in the agents below. "
+          "An agent can review code with this checklist as a skill, a folder of instructions that it loads when you ask. Each agent below documents how it loads a skill. "
           "Each answer ends in PASS, FAIL, or N/A with a file and line, so you can check what the agent says.\n\n"
           "# Try it without installing\n\n"
           "Paste this to your agent. It needs permission to read a web page.\n\n"
