@@ -38,3 +38,7 @@ Duplicate tags were merged first so the concern and topic keys are stable: `conf
 - The first concern tag now decides a card's page. Reordering the tags in a card moves it.
 - Eval, 2026-11-25 (Sonnet, `tools/eval_layout.py`, service level, 70 card ids, 9 parts). At first the `parts` layout, where the agent starts at one part and must open the others, reported every id in 1 of 3 runs and 7 of 70 in the other two: the agent read the first part, said "only this checklist part was given", and stopped. The `llms` layout (llms.txt plus every file) reported all 70 in 2 of 2 runs. Each part's header now carries a numbered list of every part with its card count and says to open all of them. After that change the `parts` layout reported all 70 in 3 of 3 runs. The earlier 5-part check was also 3 of 3. Three runs is a small sample, so read it as fixed, not proven. Forced `audit_repo` passed substance and missed the format line (`Verdict:` first), a miss the README already records for that case.
 - Revisit `MIN_PART` and the concern-first choice when a part named `other` grows past about a fifth of its context, or when a new concern tag appears on many cards.
+
+## Addendum, 2026-11-27: a split context keeps its page
+
+The first build with this planner removed `service-server`, a published URL with search traffic. A context that is split again now keeps its URL as a hub: one compact row per card, linking to the full card, so old `page#card-id` links still land. `test/published_urls.txt` records every published page, and a test fails when one stops being built.

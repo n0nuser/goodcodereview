@@ -62,6 +62,14 @@ class BuildInput:
             groups.setdefault(self.part_of(c), []).append(c)
         return groups
 
+    def hubs(self, level: Level) -> dict[str, list[Card]]:
+        """Each context of a split level that was split again, with its cards. It keeps a hub page: a published URL must not disappear (docs/adr/0002)."""
+        if level not in self.split:
+            return {}
+        cards = self.core_at(level)
+        resplit = {context_group(c) for c in cards if c.fm["id"] in self.plan}
+        return {g: [c for c in cards if context_group(c) == g] for g in dict.fromkeys(map(context_group, cards)) if g in resplit}
+
     def with_split(self, split: frozenset[Level], plan: dict[str, str] | None = None) -> BuildInput:
         """The same input with `split` levels set and every card link pointing at the page that holds the card."""
         moved = replace(self, split=split, plan=plan or {})

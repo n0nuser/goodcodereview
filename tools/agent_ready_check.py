@@ -16,7 +16,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
 
-from config import BASE, LLMS_BUDGET, PAGE_MAX, ROOT, SITE
+from config import BASE, HUB_MARK, LLMS_BUDGET, PAGE_MAX, ROOT, SITE
 
 MIN_INDEX_CHARS = 500
 MIN_TRUST_PAGE_CHARS = 500
@@ -446,7 +446,7 @@ def _items_49_54(r: Report, pages: dict[str, Page], content: dict[str, Page]) ->
     split = re.findall(r"\]\(https://goodcodereview\.com/(\w+)-[\w-]+\.md\): \d+ stable cards .*? in (\d+) parts", llms)
     broken = []
     for lv, n in split:
-        files = [f for f in SITE.glob(f"{lv}-*.md") if "-index" not in f.name]
+        files = [f for f in SITE.glob(f"{lv}-*.md") if "-index" not in f.name and HUB_MARK not in f.read_text()]
         said = all(f"of {n} of the {lv} level" in f.read_text() for f in files)
         linked_all = all(f"/{f.name})" in llms for f in files)
         if len(files) != int(n) or not said or not linked_all or f"[{lv.capitalize()}" not in llms or f"/{lv}.md)" not in llms:

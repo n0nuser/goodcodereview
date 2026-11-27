@@ -3,7 +3,7 @@ import json
 import re
 
 from card_fields import is_core, is_stable, level_of
-from config import BASE, SITE_DESC
+from config import BASE, HUB_MARK, SITE_DESC
 from context import BuildInput, pack_name
 from guides import GUIDES, guide_text, guides_index_text
 from markdown import rule
@@ -36,7 +36,7 @@ from prose import (
     PRIVACY_DESC,
 )
 from shell import page_url
-from site_pages import INSTALL_PLUGIN, INSTALL_SKILL, drafts_markdown, part_spec
+from site_pages import INSTALL_PLUGIN, INSTALL_SKILL, drafts_markdown, hub_spec, part_spec
 from skill_files import SkillOutput, audit_twin, card_section, link_stable
 
 
@@ -125,6 +125,13 @@ def markdown_twins(b: BuildInput, skill: SkillOutput) -> dict[str, str]:
                     f"The whole level is one file at {BASE}/{lv}.md, about {skill.level_chars[lv] // 1000}K characters; a fetch tool may truncate it, so use it only if you can download it.\n\n")
             text = link_stable(head + "\n\n".join(stable) + "\n", skill.stable_home)
             twins[f"{lv}-{ctx}"] = Twin(f"{NAME[lv]}, {ctx} cards", part_spec(lv, ctx, cs).desc, text)
+    for lv in b.split:
+        for ctx, cs in b.hubs(lv).items():
+            subs = dict.fromkeys(b.part_of(c) for c in cs)
+            lines = "\n".join(f"- [{p}]({BASE}/{lv}-{p}.md): {sum(is_stable(c) for c in cs if b.part_of(c) == p)} stable cards" for p in subs)
+            text = (f"# {lv}, {ctx}\n\n{HUB_MARK} {len(subs)} files. This file holds no cards. Open all {len(subs)} before you report on the "
+                    f"`{ctx}` context:\n\n{lines}\n")
+            twins[f"{lv}-{ctx}"] = Twin(f"{NAME[lv]}, {ctx} cards", hub_spec(b, lv, ctx, cs).desc, text)
     for pk in b.packs:
         text = (f"# {pack_name(pk)} pack\n\nEach card says whether it is stable or draft. Stable cards are vetted and also appear in their level file. {DRAFT_NOTE} {DRAFT_RULE}\n\n"
                 + "\n\n".join(card_section(c) for c in b.cards if c.fm["lang"] == pk) + "\n")
