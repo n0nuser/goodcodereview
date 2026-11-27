@@ -85,6 +85,34 @@ GUIDES = (
           "Give each check PASS, FAIL, or N/A with a file and line. One FAIL on a block check means request changes. A FAIL on a should-fix check goes in the review and does not block.\n\n"
           "This list does not replace a threat model or a penetration test. For how to read code during a security review, see the "
           "[OWASP Secure Code Review Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secure_Code_Review_Cheat_Sheet.html)."),
+    Guide("code-review-with-ai-agents", "Code review with Claude Code, Codex, Cursor, and other agents",
+          "Run the same code review checklist in Claude Code, Codex, Cursor, OpenCode, GitHub Copilot, or Gemini CLI: where the skill goes and how to call it.",
+          "An agent can review code with this checklist as a skill, a folder of instructions that it loads when you ask. The same files work in the agents below. "
+          "Each answer ends in PASS, FAIL, or N/A with a file and line, so you can check what the agent says.\n\n"
+          "# Try it without installing\n\n"
+          "Paste this to your agent. It needs permission to read a web page.\n\n"
+          "```text\nRead https://goodcodereview.com/llms.txt and use it to review my code.\n```\n\n"
+          "# Install the skill\n\n"
+          "Run this in your repository and pick your agent:\n\n"
+          "```sh\nnpx skills add n0nuser/goodcodereview\n```\n\n"
+          "To place the folder by hand, copy `skills/good-code-review` from the [repository](https://github.com/n0nuser/goodcodereview) into a directory your agent reads. "
+          "Codex, Cursor, OpenCode, GitHub Copilot, and Gemini CLI all document `.agents/skills`. Claude Code reads `.claude/skills`.\n\n"
+          "# Call it in your agent\n\n"
+          "Name the skill in your request. An agent that is not told may review without it.\n\n"
+          "- Claude Code: type `/good-code-review review this change`. "
+          "It can also be installed as a plugin with `/plugin marketplace add n0nuser/goodcodereview` and then `/plugin install goodcodereview@goodcodereview`. [Claude Code skill docs](https://code.claude.com/docs/en/skills).\n"
+          "- Codex: type `$good-code-review review this change`, or pick the skill with `/skills`. [Codex skill docs](https://learn.chatgpt.com/docs/build-skills).\n"
+          "- Cursor: type `/` in Agent chat and select the skill. [Cursor skill docs](https://cursor.com/docs/context/skills).\n"
+          "- OpenCode: write `@good-code-review` in your prompt. [OpenCode skill docs](https://opencode.ai/docs/skills/).\n"
+          "- GitHub Copilot: ask for a review with the good-code-review skill. Copilot loads a skill when it is relevant. [Copilot skill docs](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills).\n"
+          "- Gemini CLI: ask for a review with the good-code-review skill, and approve the prompt that activates it. [Gemini CLI skill docs](https://geminicli.com/docs/cli/skills/).\n\n"
+          "These steps follow each vendor's documentation as read on 27 November 2026. The tests in our repository ran on Claude models only. "
+          "Product names belong to their owners, and none of them wrote or endorses this site.\n\n"
+          "# Make it the default for a repository\n\n"
+          "Add this line to the instruction file your agent reads, such as `AGENTS.md` or `CLAUDE.md`. Claude Code reads `AGENTS.md` when there is no `CLAUDE.md`.\n\n"
+          "```text\nBefore you call a change done, review it with the good-code-review skill. Report each check as PASS, FAIL, or N/A with file:line evidence.\n```",
+          ("chg-agent-grounded-code", "chg-verify-before-claim", "chg-review-signal"),
+          "Start with the [change level](html:change) for a diff or a pull request."),
     Guide("good-code-review-vs-ai-code-reviewers", "Good Code Review vs AI code reviewers",
           "How a free, open checklist differs from automated AI code review tools such as CodeRabbit, Greptile and Qodo, and how to run both on one pull request.",
           "Good Code Review is a free, open checklist, not a hosted reviewer. Automated AI code review tools, such as [CodeRabbit](https://www.coderabbit.ai), "

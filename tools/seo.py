@@ -53,6 +53,8 @@ META: dict[str, tuple[str, str]] = {
                "Every draft code review card grouped by what keeps it from stable, and what each draft needs to be promoted. Drafts never change a verdict."),
     "guides": ("Code Review Guides: Pull Requests, Security | Good Code Review",
                "Short guides to common review questions, such as how to review a pull request and what to check in a migration. Each lists vetted checks."),
+    "guides/code-review-with-ai-agents": ("Claude Code, Codex and Cursor Code Review | Good Code Review",
+                                          "Run the same code review checklist in Claude Code, Codex, Cursor, OpenCode, GitHub Copilot, or Gemini CLI: where the skill goes and how to call it."),
     "about": ("About Good Code Review: Authorship, Method, Licences",
               "Who makes Good Code Review, how a rule becomes stable, what stable and draft cards mean, and the licences for the content and the code."),
     "faq": ("Good Code Review FAQ: Sources, Method, Privacy",
