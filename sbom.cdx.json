@@ -177,8 +177,8 @@
     {
       "type": "library",
       "name": "axe-core",
-      "version": "4.14.0",
-      "purl": "pkg:npm/axe-core@4.14.0",
+      "version": "4.14.1",
+      "purl": "pkg:npm/axe-core@4.14.1",
       "licenses": [
         {
           "expression": "MPL-2.0"
