@@ -35,7 +35,7 @@ SEVERITY = ["## Severity", "", "- `block`: must be fixed before merge or release
 NAME = {lv: "Change review" if lv == Level.CHANGE else f"{lv.capitalize()} audit" for lv in LEVELS}
 VERDICT = ("Report each check as <code>PASS</code>, <code>FAIL</code>, or <code>N/A</code> with <code>file:line</code> evidence. A <code>FAIL</code> carries the card's severity. "
            "Any <code>block</code> <code>FAIL</code> means request changes. A <code>should-fix</code> or <code>discuss</code> <code>FAIL</code> goes in the review but does not block.")
-EXAMPLE = """Verdict: request changes - change, function - 2 block, 1 should-fix FAIL, 1 PASS, 3 N/A
+EXAMPLE = """Verdict: request changes - change, service - 2 block, 1 should-fix FAIL, 1 PASS, 3 N/A
 FAIL [block] chg-expand-contract - src/a.py:42 - renames the column and drops the old one in one migration
 FAIL [block] svc-sqli-authn - src/db.py:88 - proven: builds the WHERE clause with an f-string from request.args
 FAIL [should-fix] chg-one-concern - src/b.py:7 - a logging rewrite rides along with the bug fix

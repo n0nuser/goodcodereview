@@ -43,7 +43,7 @@ from prose import (
     PRIVACY_DESC,
     VERDICT,
 )
-from seo import MAX_DESC, MIN_DESC, home_ld
+from seo import MAX_DESC, MIN_DESC, PART_TITLES, home_ld
 from shell import page
 
 INSTALL_SKILL = "npx skills add n0nuser/goodcodereview"
@@ -56,22 +56,24 @@ CONCERNS_INTRO = ("<p>Every card's rule on one page, and each row links to the f
 
 def part_spec(lv: Level, g: str, cards: list[Card]) -> PageSpec:
     """The page for one context of a split level. Raises BuildError when its description breaks the search-snippet length."""
-    desc = f"The {g} {'part' if '-' in g else 'context'} of the {lv} review: {len(cards)} cards, each with a FAIL and a PASS example and the organisations that back the rule."
+    title = PART_TITLES.get(f"{lv}-{g}", f"{NAME[lv]}, {g} cards")
+    desc = f"{title}: {len(cards)} rules, each with a FAIL and a PASS example and links to the organisations that back it."
     if not MIN_DESC <= len(desc) <= MAX_DESC:
         raise BuildError(f"{lv}-{g}.html: description is {len(desc)} characters, want {MIN_DESC} to {MAX_DESC}")
     intro = f"<p>{LEVEL_DESC[lv]} This page holds the cards for the <code>{g}</code> {'part' if '-' in g else 'context'}. The <a href=\"{lv}.html\">{NAME[lv]}</a> page lists every card. {VERDICT}</p>"
-    return PageSpec(f"{lv}-{g}.html", f"{NAME[lv]}, {g} cards", intro, tuple(cards), desc, parent=str(lv))
+    return PageSpec(f"{lv}-{g}.html", title, intro, tuple(cards), desc, parent=str(lv))
 
 
 def hub_spec(b: BuildInput, lv: Level, g: str, cards: list[Card]) -> PageSpec:
     """The page for a context that was split again: it links each of its parts, and its rows keep the old `page#card-id` links alive."""
     parts = {b.part_of(c): sum(b.part_of(x) == b.part_of(c) for x in cards) for c in cards}
-    desc = f"The {g} context of the {lv} review, split into {len(parts)} pages. {len(cards)} cards, each listed with a link to its full text."
+    title = PART_TITLES.get(f"{lv}-{g}", f"{NAME[lv]}, {g} cards")
+    desc = f"{title}: {len(cards)} rules on {len(parts)} pages, each linked to its full text and the organisations that back it."
     if not MIN_DESC <= len(desc) <= MAX_DESC:
         raise BuildError(f"{lv}-{g}.html: description is {len(desc)} characters, want {MIN_DESC} to {MAX_DESC}")
     links = ", ".join(f'<a href="{lv}-{p}.html">{p}</a> ({n})' for p, n in parts.items())
     intro = f"<p>{LEVEL_DESC[lv]} The <code>{g}</code> context is split into {len(parts)} pages so each stays small: {links}. Every row links to its card.</p>"
-    return PageSpec(f"{lv}-{g}.html", f"{NAME[lv]}, {g} cards", intro, tuple(cards), desc, parent=str(lv))
+    return PageSpec(f"{lv}-{g}.html", title, intro, tuple(cards), desc, parent=str(lv))
 
 
 def _regroup(cards: list[Card], key: Callable[[Card], list[str]], fallback: str) -> dict[str, list[Card]]:
