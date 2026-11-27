@@ -13,7 +13,7 @@ Good Code Review is a set of Markdown files. An AI coding agent loads them as a 
 That is a real run on a pull request of mine (how it was made: [docs/demo](docs/demo/README.md)). A shorter sample, with made-up paths and lines:
 
 ```text
-Verdict: request changes - change, function - 2 block, 1 should-fix FAIL, 1 PASS, 3 N/A
+Verdict: request changes - change, service - 2 block, 1 should-fix FAIL, 1 PASS, 3 N/A
 FAIL [block] chg-expand-contract - src/a.py:42 - renames the column and drops the old one in one migration
 FAIL [block] svc-sqli-authn - src/db.py:88 - proven: builds the WHERE clause with an f-string from request.args
 FAIL [should-fix] chg-one-concern - src/b.py:7 - a logging rewrite rides along with the bug fix

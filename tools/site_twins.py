@@ -124,14 +124,16 @@ def markdown_twins(b: BuildInput, skill: SkillOutput) -> dict[str, str]:
                     f"This file holds only part of the checklist. Open all {len(by_ctx)} files before you report, and name the parts you read:\n\n{checklist}\n\n{pack_note.strip()} "
                     f"The whole level is one file at {BASE}/{lv}.md, about {skill.level_chars[lv] // 1000}K characters; a fetch tool may truncate it, so use it only if you can download it.\n\n")
             text = link_stable(head + "\n\n".join(stable) + "\n", skill.stable_home)
-            twins[f"{lv}-{ctx}"] = Twin(f"{NAME[lv]}, {ctx} cards", part_spec(lv, ctx, cs).desc, text)
+            spec = part_spec(lv, ctx, cs)
+            twins[f"{lv}-{ctx}"] = Twin(spec.title, spec.desc, text)
     for lv in b.split:
         for ctx, cs in b.hubs(lv).items():
             subs = dict.fromkeys(b.part_of(c) for c in cs)
             lines = "\n".join(f"- [{p}]({BASE}/{lv}-{p}.md): {sum(is_stable(c) for c in cs if b.part_of(c) == p)} stable cards" for p in subs)
             text = (f"# {lv}, {ctx}\n\n{HUB_MARK} {len(subs)} files. This file holds no cards. Open all {len(subs)} before you report on the "
                     f"`{ctx}` context:\n\n{lines}\n")
-            twins[f"{lv}-{ctx}"] = Twin(f"{NAME[lv]}, {ctx} cards", hub_spec(b, lv, ctx, cs).desc, text)
+            hub = hub_spec(b, lv, ctx, cs)
+            twins[f"{lv}-{ctx}"] = Twin(hub.title, hub.desc, text)
     for pk in b.packs:
         text = (f"# {pack_name(pk)} pack\n\nEach card says whether it is stable or draft. Stable cards are vetted and also appear in their level file. {DRAFT_NOTE} {DRAFT_RULE}\n\n"
                 + "\n\n".join(card_section(c) for c in b.cards if c.fm["lang"] == pk) + "\n")

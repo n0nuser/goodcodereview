@@ -8,7 +8,7 @@ from typing import Any
 
 import orgs
 from assets import CSS, JS
-from config import BASE, MONOGRAM_FONT_SIZES, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH, REPO, SITE_DESC, SITE_NAME
+from config import BASE, MONOGRAM_FONT_SIZES, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH, REPO, SITE_DESC, SITE_NAME, TOOLS
 from context import build_date
 from models import LEVELS, NavLink
 from seo import meta, page_ld
@@ -38,9 +38,11 @@ def head_tags(title: str, desc: str, slug: str) -> str:
     def quote(t: str) -> str:
         return html.escape(t, quote=True)
 
+    own = f"og/{slug.replace('/', '--')}.png"  # rendered by tools/og_images.py; the home page and a page not yet rendered use og.png
+    image, alt = (f"{BASE}/{own}", title) if (TOOLS / own).exists() else (f"{BASE}/og.png", f"{SITE_NAME}: {SITE_DESC}")
     og = {"title": title, "description": desc, "type": "website", "url": page_url(slug), "site_name": SITE_NAME,
-          "image": f"{BASE}/og.png", "image:alt": f"{SITE_NAME}: {SITE_DESC}", "locale": "en_US", "image:width": str(OG_IMAGE_WIDTH), "image:height": str(OG_IMAGE_HEIGHT)}
-    tw = {"card": "summary_large_image", "title": title, "description": desc, "image": f"{BASE}/og.png", "image:alt": og["image:alt"]}
+          "image": image, "image:alt": alt, "locale": "en_US", "image:width": str(OG_IMAGE_WIDTH), "image:height": str(OG_IMAGE_HEIGHT)}
+    tw = {"card": "summary_large_image", "title": title, "description": desc, "image": image, "image:alt": alt}
     url = page_url(slug)
     return (f'<meta name="description" content="{quote(desc)}"><link rel="canonical" href="{url}">'
             '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">'

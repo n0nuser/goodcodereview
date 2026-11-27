@@ -4,6 +4,7 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ## [Unreleased]
 
+- The pages of a split level have titles in search wording, such as "API Security Review Checklist", in place of "Service audit, server-security cards", and every page but the home page has its own share image (`tools/og_images.py`). The sample verdict now names the levels its cards belong to (change, service).
 - Removed five drafts that no research pass could back with enough organisations: `mod-central-config`, `mod-no-wire-types-in-public-api`, `inc-review-asks-which-check`, `chg-review-rounds-capped` and `chg-review-rigour-by-risk`.
 - `/service-server` and `/service-server.md` answer again, as a hub that links the five pages the split made. The split in the previous change removed both and left the `.html` redirect pointing at a 404. A test now fails when a published page stops being built (`test/published_urls.txt`).
 - `/guides/code-review-checklist-for-security` is now a full secure code review checklist: its stable cards grouped under task headings, with what to look for in each group, how to report, and what the list does not replace. A guide can now group its cards in sections (`tools/guides.py`).
