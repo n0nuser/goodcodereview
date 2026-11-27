@@ -63,23 +63,39 @@ META: dict[str, tuple[str, str]] = {
               "How to audit a whole repo, service, or release with the same cards: scope, read order, missing controls, accepted risk, and the report shape."),
 }
 
-# The name of each part of a split level, in search wording; a part with no entry keeps "<level>, <part> cards". Used for the h1, <title> and share cards.
-PART_TITLES: dict[str, str] = {
-    "function-ui": "Frontend and Accessibility Review Checklist",
-    "function-any": "Clean Code Review Checklist",
-    "function-server": "API Handler Security Review Checklist",
-    "function-data": "Data Access Code Review Checklist",
-    "function-cli": "CLI Command Code Review Checklist",
-    "service-server": "Backend Service Review Checklist",
-    "service-server-security": "API Security Review Checklist",
-    "service-server-reliability": "Service Reliability Review Checklist",
-    "service-server-compatibility": "API Design and Compatibility Checklist",
-    "service-server-correctness": "API Correctness Review Checklist",
-    "service-server-other": "HTTP API Review Checklist",
-    "service-ui": "Frontend App Review Checklist",
-    "service-cli": "CLI Tool Review Checklist",
-    "service-data": "Data Service Review Checklist",
-    "service-any": "Resilience and Performance Checklist",
+# Each part of a split level: its name in search wording (h1, <title>, share card) and what its description says it reviews.
+# A part with no entry keeps "<level>, <part> cards".
+PARTS: dict[str, tuple[str, str]] = {
+    "function-ui": ("Frontend and Accessibility Review Checklist",
+        "front-end functions for accessibility, usability, forms, and CSS"),
+    "function-any": ("Clean Code Review Checklist",
+        "any function for readability, correctness, and maintainability"),
+    "function-server": ("API Handler Security Review Checklist",
+        "server-side functions for authentication, authorisation, and crypto"),
+    "function-data": ("Data Access Code Review Checklist",
+        "database and data access code for correctness and performance"),
+    "function-cli": ("CLI Command Code Review Checklist",
+        "command-line code, from secret handling to what it prints"),
+    "service-server": ("Backend Service Review Checklist",
+        "a backend service: its API, its security, and how it fails"),
+    "service-server-security": ("API Security Review Checklist",
+        "API security: authentication, authorisation, sessions, and TLS"),
+    "service-server-reliability": ("Service Reliability Review Checklist",
+        "a service for reliability: idempotency, retries, queues, and limits"),
+    "service-server-compatibility": ("API Design and Compatibility Checklist",
+        "API changes for versioning, error shape, and deprecation"),
+    "service-server-correctness": ("API Correctness Review Checklist",
+        "how an API handles bad input, documented errors, and concurrent writes"),
+    "service-server-other": ("HTTP API Review Checklist",
+        "HTTP API behaviour such as caching, naming, logging, and paging"),
+    "service-ui": ("Frontend App Review Checklist",
+        "a web front end for usability, accessibility, and performance"),
+    "service-cli": ("CLI Tool Review Checklist",
+        "a command-line tool for safe automation and maintainability"),
+    "service-data": ("Data Service Review Checklist",
+        "a data service for injection, tenant isolation, and data handling"),
+    "service-any": ("Resilience and Performance Checklist",
+        "any service for reliability, resilience, and performance"),
 }
 
 PAGE_TYPE: dict[str, str] = {**{k: "CollectionPage" for k in ("concerns", "glossary", "drafts", "guides", *map(str, LEVELS))}, "about": "AboutPage"}
