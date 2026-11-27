@@ -29,4 +29,6 @@ The first 16-case run of 2026-11-15 (Sonnet, 2 runs: 6 gains, 10 ties, mean +0.1
 
 ## Limits
 
+**The `coverage_codebase` gain follows from its graders.** Its prompt asks for every stable card of the codebase level, and its 22 scored graders are regexes on card ids. A run without the skill cannot know the ids, so the 1.0 gain measures whether the reply names the cards, not whether the review is better. Without that case the mean delta is +0.114 on Sonnet and +0.102 on Haiku (arithmetic on the table above, not a rerun).
+
 The cases and graders were written by the skill's author, graders are mostly regex, and there are 16 tasks. Treat the numbers as a first look, not a benchmark. The mean delta rests on a few cases: `coverage_codebase` gains 1.0 on both models. The second model is another Claude model, because `plugin eval` runs only Claude models.
