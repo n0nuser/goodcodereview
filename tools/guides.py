@@ -11,6 +11,14 @@ TRY = "To run these checks, paste `Read https://goodcodereview.com/llms.txt and 
 
 
 @dataclass(frozen=True, slots=True)
+class Section:
+    """One group of checks in a long guide: a task heading, where to look, and the cards."""
+    heading: str
+    look: str
+    ids: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class Guide:
     slug: str
     title: str
@@ -18,6 +26,12 @@ class Guide:
     intro: str
     ids: tuple[str, ...]
     outro: str
+    sections: tuple[Section, ...] = ()  # a long guide groups its cards here and leaves `ids` empty
+    after: str = ""  # Markdown between the sections and "Run them", with its own "# " headings
+
+    @property
+    def all_ids(self) -> tuple[str, ...]:
+        return self.ids + tuple(i for s in self.sections for i in s.ids)
 
 
 GUIDES = (
@@ -28,14 +42,49 @@ GUIDES = (
           ("chg-one-concern", "chg-size-ceiling", "chg-refactor-separate", "chg-tests-ship-with-change", "chg-verify-before-claim",
            "chg-breaking-change-taxonomy", "chg-author-hygiene", "chg-review-signal"),
           "A diff also takes the function, module, and service cards that its changed lines touch. See the [change level](html:change) for the full list with FAIL and PASS examples."),
-    Guide("code-review-checklist-for-security", "Code review checklist for security",
-          "A security checklist for code review: injection, authorisation, secrets, sessions, and supply chain, each with its published sources.",
-          "A security code review checks the places where untrusted input, identity, or secrets cross a boundary. "
-          "These are the blocking security checks from the stable cards, from a single function up to the dependency pipeline. Each card names the organisations behind it.",
-          ("svc-sqli-authn", "fn-no-shell-with-input", "fn-no-raw-html-sink", "fn-object-level-authz", "svc-authz-central-deny-default",
-           "svc-csrf-state-changing", "svc-session-lifecycle", "svc-auth-throttle-generic-errors", "fn-confine-file-path", "svc-upload-validate-store",
-           "sys-ssrf", "sys-secrets-and-errors", "code-secret-scan", "code-dependency-pinning"),
-          "Every stable security card, including the should-fix ones, is on the [security concern page](concern:security)."),
+    Guide("code-review-checklist-for-security", "Secure code review checklist",
+          "Secure code review checklist for pull requests and repositories: access control, injection, sessions, secrets, files, and dependencies, with sources.",
+          "Use this checklist to review a change or a repository for security. The checks are grouped by where code takes risk: where it decides who may act, "
+          "where it reads outside data, and where it keeps secrets and dependencies. Each rule comes from a stable card that names the organisations behind it, such as OWASP, NIST, or Google.\n\n"
+          "# Before you start\n\n"
+          "- List the places where the change takes outside data, such as request fields, headers, files, queue messages, and model output. [[chg-name-attack-surface]] asks the author to list them.\n"
+          "- Run a secret scan and a dependency audit first.\n"
+          "- Mark a check N/A when the change does not touch what it covers.",
+          (),
+          "The [security concern page](concern:security) lists the same cards with filters.",
+          sections=(
+              Section("Check access control", "Start at each route and each query that takes an id. Ask who may call it and which records it may read or change.",
+                      ("svc-authn-by-default", "svc-authz-central-deny-default", "fn-object-level-authz", "svc-tenant-scope-in-data-layer", "svc-export-scope",
+                       "svc-soft-delete-default", "fn-no-mass-assignment", "fn-response-fields-explicit")),
+              Section("Check injection and unsafe parsing", "Follow each outside value to the place where code interprets it: a query, a shell, a template, a parser, a header, or a log line.",
+                      ("svc-sqli-authn", "fn-no-shell-with-input", "fn-no-raw-html-sink", "fn-no-eval-untrusted", "fn-no-native-deserialise-untrusted",
+                       "fn-xml-no-external-entities", "fn-no-prototype-pollution", "fn-header-value-encoding", "svc-log-input-neutralised")),
+              Section("Check sign-in, sessions, and tokens", "Read the failure paths of login, logout, password reset, and account linking as closely as the success path.",
+                      ("svc-auth-throttle-generic-errors", "fn-password-slow-hash", "fn-password-min-length", "svc-password-reset", "svc-session-lifecycle",
+                       "svc-mfa-step-up", "svc-token-revocation", "fn-jwt-verify-pinned", "svc-oauth-code-flow-binding", "svc-saml-assertion-binding",
+                       "svc-account-linking", "svc-api-key-scope")),
+              Section("Check browser requests, redirects, and caching", "Look at what another origin, a forged request, or a shared cache can make your server do.",
+                      ("svc-csrf-state-changing", "svc-cors-allowlist", "svc-csp-strict-script-src", "fn-redirect-target-allowlist", "fn-link-url-scheme-allowlist",
+                       "svc-host-header-trust", "svc-cache-key-completeness", "svc-api-cache-control", "svc-request-framing")),
+              Section("Check files, uploads, and outbound calls", "Find the code that builds a path or a URL from outside data, accepts a file, or trusts a signed message.",
+                      ("fn-confine-file-path", "svc-upload-validate-store", "sys-ssrf", "svc-webhook-replay-window", "svc-update-verify-provenance")),
+              Section("Check secrets, cryptography, and transport", "Search the diff and the configuration for credentials, then check how the code creates, compares, stores, and sends them.",
+                      ("code-secret-scan", "code-secrets-not-plaintext-in-repo", "code-env-files-ignored", "svc-no-secrets-in-url", "svc-no-secrets-in-logs",
+                       "svc-tenant-id-in-telemetry", "fn-mask-credentials-in-output", "fn-csprng-for-secrets", "fn-constant-time-secret-compare",
+                       "mod-vetted-crypto-only", "fn-tls-verify-on", "svc-tls-all-traffic", "svc-tls-modern-only")),
+              Section("Check limits and failure behaviour", "Ask what happens when a setting is missing, a check throws, or a client sends far more than expected.",
+                      ("sys-secrets-and-errors", "svc-fail-closed-defaults", "svc-debug-off-in-production", "svc-bound-client-controlled-sizes",
+                       "svc-decompression-cap", "fn-bounded-read-fails-at-cap", "svc-rate-limit-quota")),
+              Section("Check dependencies and the build pipeline", "Open the lockfile and the workflow files. A pipeline that holds deploy credentials is part of the attack surface.",
+                      ("code-dependency-pinning", "code-dependency-licence-sbom", "code-vuln-remediation-window", "code-workflow-supply-chain",
+                       "code-workflow-token-per-job-write", "code-workload-identity")),
+              Section("Check AI features and personal data", "Treat model output as untrusted input, and ask how long each store keeps personal data.",
+                      ("sys-prompt-injection", "sys-agent-tool-least-privilege", "sys-pii-minimise-retention")),
+          ),
+          after="# Report the result\n\n"
+          "Give each check PASS, FAIL, or N/A with a file and line. One FAIL on a block check means request changes. A FAIL on a should-fix check goes in the review and does not block.\n\n"
+          "This list does not replace a threat model or a penetration test. For how to read code during a security review, see the "
+          "[OWASP Secure Code Review Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secure_Code_Review_Cheat_Sheet.html)."),
     Guide("good-code-review-vs-ai-code-reviewers", "Good Code Review vs AI code reviewers",
           "How a free, open checklist differs from automated AI code review tools such as CodeRabbit, Greptile and Qodo, and how to run both on one pull request.",
           "Good Code Review is a free, open checklist, not a hosted reviewer. Automated AI code review tools, such as [CodeRabbit](https://www.coderabbit.ai), "
@@ -109,16 +158,28 @@ def _links(text: str, html: bool) -> str:
 def guide_text(b: BuildInput, g: Guide, *, html: bool) -> str:
     """The guide as Markdown. In `html` mode card links are `[[id]]` for the page renderer; otherwise they are absolute Markdown links."""
     stable = {c.fm["id"]: c for c in b.stable}
-    missing = [i for i in g.ids if i not in stable]
+    missing = [i for i in g.all_ids if i not in stable]
     if missing:
         raise BuildError(f"guide {g.slug} lists cards that are missing or not stable: {', '.join(missing)}")
-    rows = []
-    for i in g.ids:
-        c = stable[i]
-        ref = f"[[{i}]]" if html else f"[`{i}`]({BASE}/{c.fm['level']}.md#{i})"
-        rows.append(f"- {ref} [{c.fm['severity']}]: {rule(c.body)}")
     h = "#" if html else "##"  # the page renderer draws "#" as an h2, under the page's h1
-    return _links(f"{g.intro}\n\n{h} The checks\n\n" + "\n".join(rows) + f"\n\n{h} Run them\n\n{TRY} {g.outro}\n", html)
+
+    def rows(ids: tuple[str, ...]) -> str:
+        out = []
+        for i in ids:
+            c = stable[i]
+            ref = f"[[{i}]]" if html else f"[`{i}`]({BASE}/{c.fm['level']}.md#{i})"
+            out.append(f"- {ref} [{c.fm['severity']}]: {rule(c.body)}")
+        return "\n".join(out)
+
+    def headings(text: str) -> str:
+        return re.sub(r"(?m)^# ", f"{h} ", text)
+
+    checks = [f"{h} {s.heading}\n\n{s.look}\n\n{rows(s.ids)}" for s in g.sections] or [f"{h} The checks\n\n{rows(g.ids)}"]
+    blocks = [headings(g.intro), *checks, headings(g.after), f"{h} Run them\n\n{TRY} {g.outro}"]
+    text = "\n\n".join(x for x in blocks if x) + "\n"
+    if not html:
+        text = re.sub(r"\[\[([\w-]+)\]\]", lambda m: f"[`{m[1]}`]({BASE}/{stable[m[1]].fm['level']}.md#{m[1]})", text)
+    return _links(text, html)
 
 
 def guides_index_text(*, html: bool) -> str:
