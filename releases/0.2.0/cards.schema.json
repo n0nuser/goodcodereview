@@ -1,0 +1,386 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goodcodereview.com/cards.schema.json",
+  "title": "Good Code Review cards",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "integer"
+    },
+    "kind": {
+      "enum": [
+        "stable",
+        "drafts"
+      ]
+    },
+    "name": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "licence": {
+      "type": "string"
+    },
+    "generated": {
+      "type": "string"
+    },
+    "concerns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "levels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "enum": [
+              "change",
+              "function",
+              "module",
+              "service",
+              "system",
+              "codebase",
+              "production",
+              "incident"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "input": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "stable_count": {
+            "type": "integer"
+          },
+          "draft_count": {
+            "type": "integer"
+          },
+          "gives_verdict": {
+            "type": "boolean"
+          },
+          "url": {
+            "type": "string"
+          },
+          "markdown_url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "input",
+          "description",
+          "stable_count",
+          "draft_count",
+          "gives_verdict",
+          "url",
+          "markdown_url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "cards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "level": {
+            "enum": [
+              "change",
+              "function",
+              "module",
+              "service",
+              "system",
+              "codebase",
+              "production",
+              "incident"
+            ]
+          },
+          "status": {
+            "enum": [
+              "stable",
+              "draft"
+            ]
+          },
+          "severity": {
+            "enum": [
+              "block",
+              "should-fix",
+              "discuss"
+            ]
+          },
+          "concerns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "topics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "lang": {
+            "type": "string"
+          },
+          "applies_when": {
+            "type": "string"
+          },
+          "context": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tool_gate": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "lacks": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "enum": [
+                      "orgs",
+                      "evidence",
+                      "failable",
+                      "duplicate",
+                      "contradiction",
+                      "held",
+                      "unreviewed"
+                    ]
+                  },
+                  "note": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "reason",
+                  "note"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rule": {
+            "type": "string"
+          },
+          "why": {
+            "type": "string"
+          },
+          "counterpoint": {
+            "type": "string"
+          },
+          "fail": {
+            "type": "object",
+            "properties": {
+              "language": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "code": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "language",
+              "code"
+            ],
+            "additionalProperties": false
+          },
+          "pass": {
+            "type": "object",
+            "properties": {
+              "language": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "code": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "language",
+              "code"
+            ],
+            "additionalProperties": false
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "orgs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "strength": {
+                  "enum": [
+                    "supports",
+                    "partial",
+                    "weak",
+                    "off",
+                    "unjudged"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "sources",
+                "strength"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "people": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "strength": {
+                  "enum": [
+                    "supports",
+                    "partial",
+                    "weak",
+                    "off",
+                    "unjudged"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "sources",
+                "strength"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "backing": {
+            "enum": [
+              "strong",
+              "mixed",
+              "unjudged"
+            ]
+          },
+          "url": {
+            "type": "string"
+          },
+          "markdown_url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "level",
+          "status",
+          "severity",
+          "concerns",
+          "topics",
+          "lang",
+          "applies_when",
+          "context",
+          "tool_gate",
+          "note",
+          "lacks",
+          "rule",
+          "why",
+          "counterpoint",
+          "fail",
+          "pass",
+          "sources",
+          "orgs",
+          "people",
+          "backing",
+          "url",
+          "markdown_url"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "name",
+    "url",
+    "licence",
+    "generated",
+    "concerns",
+    "levels",
+    "cards"
+  ],
+  "additionalProperties": false
+}

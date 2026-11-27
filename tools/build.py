@@ -39,7 +39,7 @@ def _encode(texts: dict[str, str]) -> Files:
     return {name: text.encode() for name, text in texts.items()}
 
 
-def site_files(b: BuildInput, skill: SkillOutput) -> Files:
+def site_files(b: BuildInput, skill: SkillOutput, root: Path) -> Files:
     """Every file of site/, from the pages and twins to the discovery files."""
     slugs = page_slugs(b)
     texts: dict[str, str] = {}
@@ -60,6 +60,7 @@ def site_files(b: BuildInput, skill: SkillOutput) -> Files:
     files["og.png"] = (TOOLS / "og.png").read_bytes()
     for img in sorted((TOOLS / "og").glob("*.png")):
         files[f"og/{img.name}"] = img.read_bytes()
+    files.update({f"v/{p.parent.name}/{p.name}": p.read_bytes() for p in sorted(root.glob("releases/*/*"))})
     files["favicon.svg"] = FAVICON_SVG.encode()
     files["favicon.ico"] = (TOOLS / "favicon.ico").read_bytes()
     files.update({f"fonts/{p.name}": p.read_bytes() for p in sorted((TOOLS / "fonts").iterdir())})
@@ -70,7 +71,7 @@ def plan_build(root: Path) -> Plan:
     """Read the cards and produce every output in memory. Raises ToolError before anything is written."""
     b = split_levels(read_input(root, build_date()))
     skill = skill_output(b)
-    site = site_files(b, skill)
+    site = site_files(b, skill, root)
     pages = len(page_slugs(b)) + 1
     skill_lines = skill.files["SKILL.md"].count("\n") + 1
     summary = (f"site: {pages} pages; SKILL.md: {skill_lines} lines; stable cards: {len(b.stable)}; "

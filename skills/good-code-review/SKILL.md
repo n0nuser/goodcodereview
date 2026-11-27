@@ -5,7 +5,7 @@ license: "CC-BY-4.0 for the content, MIT for the code"
 compatibility: "Reads Markdown only. Needs a file-read tool and, to triage, grep. An audit may also run read-only commands, such as gh api, to quote platform settings as evidence."
 metadata:
   author: "Pablo Jesús González Rubio"
-  version: "1.0"
+  version: "0.2.0"
 ---
 
 # Good Code Review

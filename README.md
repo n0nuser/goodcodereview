@@ -66,9 +66,22 @@ Everything is static files, served without a server, an account, or a key:
 - [`llms.txt`](https://goodcodereview.com/llms.txt): the routing table and verdict format, for an agent's first read.
 - [`agent.json`](https://goodcodereview.com/agent.json), [`.well-known/ard.json`](https://goodcodereview.com/.well-known/ard.json), and [`.well-known/agent-skills/index.json`](https://goodcodereview.com/.well-known/agent-skills/index.json): discovery files.
 - WebMCP: pages register read-only tools (`start_review`, `list_levels`, `list_cards`) in browsers that support it.
-- A command line in [`cli/`](cli/README.md). It is not on PyPI yet, so `uvx goodcodereview` does not work today; run it from a checkout.
 
-The only stability promise is the one in [docs/api-versioning.md](docs/api-versioning.md).
+Releases follow [Semantic Versioning](docs/versioning.md). A command line for contributors is in [`cli/`](cli/README.md).
+
+## Adopt it in your repository
+
+Add this line to your `AGENTS.md` or `CLAUDE.md`:
+
+```text
+Before you call a change done, review it with Good Code Review 0.2.0 (rules: https://goodcodereview.com/v/0.2.0/cards.json, format: https://goodcodereview.com/llms.txt). Report each check as PASS, FAIL, or N/A with file:line evidence.
+```
+
+To show it, add the badge to your README:
+
+```markdown
+[![Reviewed against Good Code Review v0.2.0](https://goodcodereview.com/v/0.2.0/badge.svg)](https://goodcodereview.com)
+```
 
 ## Choose a starting point
 

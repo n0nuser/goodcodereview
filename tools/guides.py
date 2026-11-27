@@ -2,7 +2,7 @@
 import re
 from dataclasses import dataclass
 
-from config import BASE
+from config import ADOPTION_LINE, BASE
 from context import BuildInput
 from errors import BuildError
 from markdown import rule
@@ -110,7 +110,8 @@ GUIDES = (
           "Product names belong to their owners, and none of them wrote or endorses this site.\n\n"
           "# Make it the default for a repository\n\n"
           "Add this line to the instruction file your agent reads, such as `AGENTS.md` or `CLAUDE.md`. Claude Code reads `AGENTS.md` when there is no `CLAUDE.md`.\n\n"
-          "```text\nBefore you call a change done, review it with the good-code-review skill. Report each check as PASS, FAIL, or N/A with file:line evidence.\n```",
+          "The line pins one release, so a new card does not change your reviews until you raise the number.\n\n"
+          "```text\n" + ADOPTION_LINE + "\n```",
           ("chg-agent-grounded-code", "chg-verify-before-claim", "chg-review-signal"),
           "Start with the [change level](html:change) for a diff or a pull request."),
     Guide("good-code-review-vs-ai-code-reviewers", "Good Code Review vs AI code reviewers",

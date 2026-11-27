@@ -39,6 +39,15 @@ Rules:
 - After you change the skill text, the description, or a card the evals plant, run `python3 tools/eval.py run --mode forced --runs 1` and `python3 tools/eval.py triggers --split train --runs 1`, and say what failed. `test/evals/README.md` explains the cases. They spend tokens, so CI does not run them.
 - Eval runs: ask the maintainer first, naming the case, mode, number of runs, and model. Always pass `--save <dir>` (for example `--save /tmp/evals`) so a failure can be read without a second run, and `--model sonnet` unless told otherwise. Example: `python3 tools/eval.py run --mode forced --runs 1 --model sonnet --save /tmp/evals audit_repo`. One sample is not a verdict: a single substance failure needs the saved reply read before you call it a regression.
 
+## Versioning
+
+The project follows Semantic Versioning 2.0.0, strictly: read `docs/versioning.md` before you remove or rename anything.
+
+- Every change that a user can see adds a line under `Unreleased` in `CHANGELOG.md`, and says when it is breaking.
+- Never edit a file under `releases/`. A release is frozen.
+- Never remove a published URL or a stable card id without the maintainer's approval: both are breaking changes.
+- Raise `VERSION` (`tools/config.py`) only in a release pull request, with `tools/release.py`. Do not tag or publish a release unless the maintainer asks.
+
 ## Contribute a card
 
 1. Copy `cards/_template.md` to `cards/change/` or `cards/audit/<level>/`. Set `status: draft` and a `lacks:` line that says why it is not stable yet. `docs/PROMOTION.md` lists the reasons and the bar for stable.

@@ -18,9 +18,15 @@ jobs:
         with:
           python-version: "3.14"
       - run: python3 tools/validate.py && python3 tools/build.py
+      - name: The tag is VERSION and its files are frozen
+        run: |
+          version=$(sed -n 's/^VERSION = "\([0-9.]*\)".*/\1/p' tools/config.py)
+          test "$GITHUB_REF_NAME" = "v$version" || { echo "::error::$GITHUB_REF_NAME is not v$version."; exit 1; }
+          test -f "releases/$version/cards.json" || { echo "::error::releases/$version is missing."; exit 1; }
+          (cd releases && sha256sum --check --quiet SHA256SUMS)
       - name: skills/ matches the cards at this tag
         run: git diff --exit-code skills/
       - name: Publish the release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes --title "$GITHUB_REF_NAME"
+        run: gh release create "$GITHUB_REF_NAME" releases/"${GITHUB_REF_NAME#v}"/* --verify-tag --generate-notes --title "$GITHUB_REF_NAME"
