@@ -146,7 +146,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | pocock-smells | Message Chains | `mod-law-of-demeter` | draft |
 | pocock-smells | Middle Man | `fn-no-pass-through-wrapper` | draft |
 | pocock-smells | Refused Bequest | `mod-subtype-passes-parent-tests` | draft |
-| pocock-smells | Smells are judgement calls; the repo's own standard overrides the baseline | `mod-fowler-smells` | draft |
+| pocock-smells | Smells are judgement calls; the repo's own standard overrides the baseline | `mod-fowler-smells` | stable |
 | pocock-smells | Skip what tooling already enforces | `py-ruff-gate` | draft |
 | pocock-smells | Axes reported separately, never reranked; worst finding per axis | dropped: output format of one skill | dropped |
 | thermo-nuclear | P0 Ambition: restructure to delete whole layers (code judo) | dropped: reviewer posture, nothing to FAIL | dropped |
@@ -229,7 +229,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Architecture: No pass-through wrappers | `fn-no-pass-through-wrapper` | draft |
 | core-python | Architecture: Behaviour lives with the state it owns | `mod-behaviour-lives-with-state` | draft |
 | core-python | Config and typing: Env config through pydantic-settings | `py-settings-pydantic-settings` | draft |
-| core-python | Config and typing: Config values live in the settings module | `mod-central-config` | draft |
+| core-python | Config and typing: Config values live in the settings module | dropped: no organisation backs one settings module | dropped |
 | core-python | Config and typing: No `cast()` | `py-no-cast` | draft |
 | core-python | Config and typing: Fixed key set gets a type | `fn-known-keys-get-a-type` | draft |
 | core-python | Config and typing: No stringly-typed returns | `fn-no-stringly-typed-returns`, `py-strenum-not-strings` | draft |
@@ -281,7 +281,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | core-python | Critical rules: Bookmark table | dropped: bookmark table, severity lives on cards | dropped |
 | core-python | Additions beyond the guide: Deep modules | `mod-deep-modules` | draft |
 | core-python | Additions beyond the guide: Wrong abstraction | `mod-no-wrong-abstraction` | draft |
-| core-python | Additions beyond the guide: Fowler smells | `mod-fowler-smells` | draft |
+| core-python | Additions beyond the guide: Fowler smells | `mod-fowler-smells` | stable |
 | service-system | asyncio: discarded create_task, TaskGroup, shield | `py-task-reference` | draft |
 | service-system | asyncio: swallowed CancelledError, TimeoutError inside timeout block | `py-cancellation` | draft |
 | service-system | asyncio: await without timeout bound; Azure retry/timeouts | `svc-timeouts` | stable |
@@ -329,7 +329,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 2 Fails only after restart: suspect persisted state | dropped: investigation tip, nothing to FAIL | dropped |
 | cursor-plugins | 3 Attack the premise after two failed fixes | dropped: author process, not visible in a diff | dropped |
 | cursor-plugins | 4 Validate at the boundary; pure logic, thin shell | `mod-validate-at-boundary-once`, `mod-thin-entry-point` | draft |
-| cursor-plugins | 5 No transport, storage or wire types in the public surface | `mod-no-wire-types-in-public-api` | draft |
+| cursor-plugins | 5 No transport, storage or wire types in the public surface | dropped: one vendor source only | dropped |
 | cursor-plugins | 6 Distinct types for semantic primitives (ids) | `fn-distinct-types-for-ids` | draft |
 | cursor-plugins | 7 Derive types from the owning schema | `mod-derive-dont-duplicate` | stable |
 | cursor-plugins | 8 External data untyped until parsed at the boundary | `mod-validate-at-boundary-once` | draft |
@@ -340,7 +340,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 13 Scaffold first; small single-purpose commits | `chg-one-concern`, `code-ci-gates` | stable |
 | cursor-plugins | 14 Reader load: layers to trace, state to hold; inline one-caller wrappers | `fn-no-pass-through-wrapper`, `mod-no-module-mutable-state`, `mod-deep-modules` | draft |
 | cursor-plugins | 15 30-second reader-load test | glossary/reader-load | glossary |
-| cursor-plugins | 16 One source of truth for a decision; smallest diff | `mod-central-config`, `chg-one-concern` | draft |
+| cursor-plugins | 16 One source of truth for a decision; smallest diff | `chg-one-concern` | stable |
 | cursor-plugins | 17 Subtract first; no speculative validators or stubs | `mod-yagni` | stable |
 | cursor-plugins | 18 Operations converge on rerun and after a crash; stale markers recognisable | `fn-rerun-safe-after-crash`, `svc-idempotency-key` | stable |
 | cursor-plugins | 19 Separate before serialising shared state; single writer; convention is not a lock | `mod-single-writer-per-state` | stable |
@@ -367,7 +367,7 @@ Nothing leaves without a row. Status is `draft` or `stable` for cards, `glossary
 | cursor-plugins | 39 Object arguments over positional | `fn-bool-arg-at-callsite` | draft |
 | cursor-plugins | 40 Do not mock what you can run; no console.log in shipped code | dropped: mock half is mod-mock-at-boundaries-only; logging is linter-owned | dropped |
 | cursor-plugins | 41 Red flag: shallow module | `mod-deep-modules` | draft |
-| cursor-plugins | 42 Red flag: information leakage | `mod-fowler-smells`, `mod-no-wire-types-in-public-api` | draft |
+| cursor-plugins | 42 Red flag: information leakage | `mod-fowler-smells` | stable |
 | cursor-plugins | 43 Red flag: temporal decomposition | `mod-cohesive-unit` | draft |
 | cursor-plugins | 44 Red flag: pass-through method | `fn-no-pass-through-wrapper` | draft |
 | cursor-plugins | 45 Red flag: split ownership of state | `mod-single-writer-per-state` | stable |
@@ -476,7 +476,6 @@ Source: `docs/research/security-pass.md`. Row numbers are that file's.
 - `mod-single-writer-per-state`: FAIL if more than one writer can change the same state at once, with no single owner, serialising queue or compare-and-swap, or if only a convention guards it.
 - `mod-internals-unreachable`: FAIL if a caller outside a module can import its internals and no check fails the build.
 - `mod-derive-dont-duplicate`: FAIL if a type, list or enum duplicates a shape owned by a schema or another list, with no derivation and no build check for disagreement.
-- `mod-no-wire-types-in-public-api`: FAIL if a public interface exposes transport, storage or framework types instead of domain types.
 - `mod-cli-non-interactive`: FAIL if a CLI command needs a prompt or menu for any input that has no flag, or hangs on a missing flag instead of exiting with an example.
 - `mod-cli-destructive-dry-run`: FAIL if a destructive CLI command has no preview flag or no non-interactive confirmation bypass.
 - `code-rule-has-enforcer`: FAIL if a repeated review correction or an instruction file rule that a type, lint or CI check could enforce has no enforcer.

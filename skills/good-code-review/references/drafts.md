@@ -97,26 +97,6 @@ lacks: evidence, Google and Orosz recommend labels; Cloudflare and Dropbox descr
 
 Label each review comment with its severity: block, should-fix, or discuss.
 
-## chg-review-rigour-by-risk
-
-level: change  
-severity: should-fix  
-concerns: process  
-applies_when: A repository sets how many approvals or how deep a review a change needs.  
-lacks: orgs, only Anthropic (a vendor) backs it; needs two more orgs that set review depth by what the change touches
-
-Set the review tier from what the change touches, such as auth, billing, CI or release workflows, and not from who wrote it.
-
-## chg-review-rounds-capped
-
-level: change  
-severity: discuss  
-concerns: process  
-applies_when: A change goes through repeated review rounds, especially with an automated author or reviewer.  
-lacks: orgs, only Anthropic (a vendor) backs it; needs two more orgs that cap review rounds or limit re-review to the new diff
-
-Cap the number of review rounds; after the cap, re-review only the new diff and ask the author to rethink the approach if findings keep coming.
-
 ## chg-review-threads-resolved
 
 level: change  
@@ -231,16 +211,6 @@ lacks: orgs, Laravel and Django back it; the Python unittest page states no such
 
 A test class that overrides `setUp`, `tearDown`, `setUpClass` or `tearDownClass` calls the parent's version.
 
-## mod-central-config
-
-level: module  
-severity: should-fix  
-concerns: maintainability  
-applies_when: Business code reads environment variables or holds configuration values.  
-lacks: orgs, "one settings module" has no org; Uber and Cabify back only keeping knobs out of code
-
-Read configuration in one settings module and pass it in; business code must not read the environment or hold knobs.
-
 ## mod-cohesive-unit
 
 level: module  
@@ -270,16 +240,6 @@ applies_when: The same switch or if-chain on one type, status or kind appears in
 lacks: orgs, "repeated condition to polymorphism" has Refactoring.Guru and Google; needs one more org (the Shopify post does not mention switches)
 
 When the same switch or if-chain on one type appears in more than one place, replace the copies with polymorphism, unless each copy is an exhaustive switch over a closed type that fails the build when a case is missing.
-
-## mod-no-wire-types-in-public-api
-
-level: module  
-severity: should-fix  
-concerns: maintainability  
-applies_when: A module exposes a public function, class or re-export.  
-lacks: orgs, one vendor's guidance (cursor/plugins) backs it; needs two more orgs
-
-Expose domain types in a module's public interface, and keep transport, storage and framework types behind it.
 
 ## mod-prefer-sync-api
 
@@ -647,13 +607,3 @@ applies_when: A postmortem or incident review is written or audited.
 lacks: orgs, Atlassian is the only firm backer; the Google SRE workbook shows an owner column in an example table only; needs two more orgs
 
 Give every postmortem action one named owner, a due date, and a tracker link.
-
-## inc-review-asks-which-check
-
-level: incident  
-severity: should-fix  
-concerns: reliability, process  
-applies_when: An incident review or postmortem is written or audited.  
-lacks: orgs, only Anthropic (a vendor) backs it; needs two more orgs whose incident review asks which check or layer should have caught the fault
-
-Every incident review names the check that should have caught the fault (a test, CI gate, review, canary or alert) and turns the gap into a new or fixed check.
