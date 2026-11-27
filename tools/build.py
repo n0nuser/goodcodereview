@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from assets import FAVICON_SVG
-from config import ROOT, SITE, SKILL, TOOLS
+from config import INDEXNOW_KEY, ROOT, SITE, SKILL, TOOLS
 from context import BuildInput, build_date, read_input
 from errors import ToolError
 from site_cards import cards_files
@@ -50,6 +50,7 @@ def site_files(b: BuildInput, skill: SkillOutput) -> Files:
     texts["llms-full.txt"] = llms_full(texts, b)
     texts["sitemap.xml"] = sitemap(slugs, b.date)
     texts["robots.txt"] = robots()
+    texts[f"{INDEXNOW_KEY}.txt"] = INDEXNOW_KEY
     texts["_headers"] = headers_file(slugs)
     texts[".well-known/security.txt"] = security_txt(b.date)
     texts.update(cards_files(b))

@@ -1,0 +1,29 @@
+name: indexnow
+# After a push to main, tell IndexNow search engines which pages changed. Cloudflare deploys the site; the script waits for it.
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: indexnow
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.14"
+      - name: Build the site before and after this push
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          python3 tools/build.py
+          git worktree add --detach /tmp/before "$BEFORE"
+          (cd /tmp/before && python3 tools/build.py)
+      - name: Submit the changed pages
+        run: python3 tools/indexnow.py /tmp/before/site site
