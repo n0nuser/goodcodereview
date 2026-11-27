@@ -251,7 +251,8 @@ def _llms(level_index: dict[Level, list[IndexPart]], b: BuildInput, chars: dict[
             core = sum(is_stable(c) for cs in b.parts(lv).values() for c in cs)
             extra = f" ({part.count - core} language-pack cards are on the pack pages)" if part.count > core else ""
             out.append(f"- [{NAME[lv]}, part 1 of {1 + len(rest)}: {first}]({BASE}/{lv}-{first}.md): {core} stable cards with examples{extra}, in {1 + len(rest)} parts; read every part. The others: "
-                       + ", ".join(f"[{c}]({BASE}/{lv}-{c}.md)" for c in rest) + ".")
+                       + ", ".join(f"[{c}]({BASE}/{lv}-{c}.md)" for c in rest) + "."
+                       + "".join(f" [{g} hub]({BASE}/{lv}-{g}.md)." for g in b.hubs(lv)))
             out.append(f"- [{NAME[lv]}, whole file]({BASE}/{lv}.md): all {n} in one file of about {chars[lv] // 1000}K characters; a fetch tool may truncate it; use it only if you can download it.")
             out.append(f"- [{NAME[lv]} index]({BASE}/{part.slug}.md): one line per card, with a link to each part.")
         else:

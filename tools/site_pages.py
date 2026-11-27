@@ -63,6 +63,17 @@ def part_spec(lv: Level, g: str, cards: list[Card]) -> PageSpec:
     return PageSpec(f"{lv}-{g}.html", f"{NAME[lv]}, {g} cards", intro, tuple(cards), desc, parent=str(lv))
 
 
+def hub_spec(b: BuildInput, lv: Level, g: str, cards: list[Card]) -> PageSpec:
+    """The page for a context that was split again: it links each of its parts, and its rows keep the old `page#card-id` links alive."""
+    parts = {b.part_of(c): sum(b.part_of(x) == b.part_of(c) for x in cards) for c in cards}
+    desc = f"The {g} context of the {lv} review, split into {len(parts)} pages. {len(cards)} cards, each listed with a link to its full text."
+    if not MIN_DESC <= len(desc) <= MAX_DESC:
+        raise BuildError(f"{lv}-{g}.html: description is {len(desc)} characters, want {MIN_DESC} to {MAX_DESC}")
+    links = ", ".join(f'<a href="{lv}-{p}.html">{p}</a> ({n})' for p, n in parts.items())
+    intro = f"<p>{LEVEL_DESC[lv]} The <code>{g}</code> context is split into {len(parts)} pages so each stays small: {links}. Every row links to its card.</p>"
+    return PageSpec(f"{lv}-{g}.html", f"{NAME[lv]}, {g} cards", intro, tuple(cards), desc, parent=str(lv))
+
+
 def _regroup(cards: list[Card], key: Callable[[Card], list[str]], fallback: str) -> dict[str, list[Card]]:
     """The cards by the first value `key` gives (or `fallback`); a group under MIN_PART cards joins "other"."""
     groups: dict[str, list[Card]] = {}
@@ -120,6 +131,8 @@ def page_specs(b: BuildInput) -> list[PageSpec]:
         specs.append(PageSpec(f"{lv}.html", NAME[lv], intro, tuple(b.core_at(lv)), LEVEL_DESC[lv]))
         for g, cs in (b.parts(lv) if lv in b.split else {}).items():
             specs.append(part_spec(lv, g, cs))
+        for g, cs in b.hubs(lv).items():
+            specs.append(hub_spec(b, lv, g, cs))
     for pk in b.packs:
         specs.append(PageSpec(
             f"pack-{pk}.html", f"{pack_name(pk)} pack",
@@ -132,8 +145,9 @@ def page_specs(b: BuildInput) -> list[PageSpec]:
 def listing_pages(b: BuildInput) -> dict[str, str]:
     """The listing pages by file name. Raises BuildError when a card lost its FAIL or PASS block in rendering."""
     pages = {}
+    hubs = {f"{lv}-{g}" for lv in b.split for g in b.hubs(lv)}
     for spec in page_specs(b):
-        compact = spec.file == "concerns.html" or spec.file[:-5] in b.split
+        compact = spec.file == "concerns.html" or spec.file[:-5] in b.split | hubs
         out = listing(spec, b.ids, b.links, empty=spec.file[:-5] in b.no_stable, compact=compact, date=b.date)
         if "<code></code>" in out or out.count("<strong>PASS</strong>") != (0 if compact else len(spec.cards)):
             raise BuildError(f"{spec.file}: a card lost its FAIL or PASS block in rendering")

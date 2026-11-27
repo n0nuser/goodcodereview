@@ -23,6 +23,7 @@ LLMS_BUDGET = 12_000  # characters in llms.txt (llmstxt.org asks for a concise s
 SKILL_BODY_BUDGET = 16_000  # characters in SKILL.md after the frontmatter, about 4,000 tokens (the Agent Skills spec recommends under 5,000)
 PAGE_MAX = 100_000  # characters of text in one human page (agents read the .md twins); past it a level page splits by `context`, then by concern, then by topic (docs/adr/0002)
 MIN_PART = 4  # a sub-part with fewer cards joins the "other" part of its context instead of getting a page
+HUB_MARK = "This context is split into"  # opens the .md of a re-split context; tools/agent_ready_check.py item 54 tells hubs from parts by it
 INDEX_BUDGET = 12_000  # characters in one level index; past it the index splits by `context`
 
 SECURITY_TXT_DAYS = 180  # RFC 9116 Expires, counted from the build date so each rebuild renews it
