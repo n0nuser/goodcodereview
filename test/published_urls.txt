@@ -15,6 +15,7 @@ glossary
 guides
 guides/ai-code-review-vs-static-analysis
 guides/code-review-checklist-for-security
+guides/code-review-with-ai-agents
 guides/good-code-review-vs-ai-code-reviewers
 guides/good-code-review-vs-asking-your-agent
 guides/how-to-review-a-pull-request

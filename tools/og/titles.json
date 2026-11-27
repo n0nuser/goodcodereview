@@ -16,6 +16,7 @@
  "guides": "Code Review Guides: Pull Requests, Security",
  "guides/ai-code-review-vs-static-analysis": "AI code review vs static analysis vs a checklist",
  "guides/code-review-checklist-for-security": "Secure code review checklist",
+ "guides/code-review-with-ai-agents": "Claude Code, Codex and Cursor Code Review",
  "guides/good-code-review-vs-ai-code-reviewers": "Good Code Review vs AI code reviewers",
  "guides/good-code-review-vs-asking-your-agent": "Good Code Review vs asking your agent",
  "guides/how-to-review-a-pull-request": "How to review a pull request",

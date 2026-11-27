@@ -4,6 +4,7 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ## [Unreleased]
 
+- New guide, `/guides/code-review-with-ai-agents`: where the skill goes and how to call it in Claude Code, Codex, Cursor, OpenCode, GitHub Copilot, and Gemini CLI.
 - The pages of a split level have titles in search wording, such as "API Security Review Checklist", in place of "Service audit, server-security cards", and every page but the home page has its own share image (`tools/og_images.py`). The sample verdict now names the levels its cards belong to (change, service).
 - The comparison with "asking your agent" no longer lists the whole-codebase audit as a gain. Its graders look for card ids, so a run without the skill could not pass. The page and `docs/eval` now give the average gain without it: 0.11 on Sonnet and 0.10 on Haiku.
 - After each deploy, a workflow tells IndexNow search engines, such as Bing, which pages changed (`tools/indexnow.py`).
