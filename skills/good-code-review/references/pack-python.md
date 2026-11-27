@@ -88,7 +88,7 @@ level: module
 severity: should-fix  
 concerns: maintainability  
 applies_when: Python code reads configuration from the environment.  
-lacks: held, cites the draft card(s) mod-central-config; stable once those are stable
+lacks: orgs, no organisation backs it yet; needs three that load environment config through pydantic-settings
 
 Load env config with `BaseSettings` from `pydantic_settings`.
 

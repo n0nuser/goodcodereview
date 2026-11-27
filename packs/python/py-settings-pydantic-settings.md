@@ -4,7 +4,7 @@ level: module
 tags: [maintainability, python, config]
 severity: should-fix
 status: draft
-lacks: held, cites the draft card(s) mod-central-config; stable once those are stable
+lacks: orgs, no organisation backs it yet; needs three that load environment config through pydantic-settings
 lang: python
 applies_when: Python code reads configuration from the environment.
 tool_gate: ruff TID251 (banned-api) on `os.environ`
@@ -15,7 +15,7 @@ note: from the author's own Python review guide
 
 **Rule.** Load env config with `BaseSettings` from `pydantic_settings`.
 
-**Why.** Core rule: [[mod-central-config]]. `os.environ.get` returns untyped strings with silent defaults, while `BaseSettings` parses, validates, and fails at startup. In pydantic v2, `BaseSettings` is no longer importable from `pydantic`.
+**Why.** `os.environ.get` returns untyped strings with silent defaults, while `BaseSettings` parses, validates, and fails at startup. In pydantic v2, `BaseSettings` is no longer importable from `pydantic`.
 
 **FAIL**
 
