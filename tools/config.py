@@ -12,6 +12,7 @@ SITE_NAME = "Good Code Review"
 SITE_DESC = "A code review checklist for people and agents. Each vetted rule cites at least three independent organisations, and every check ends in PASS, FAIL, or N/A with file:line evidence."
 LICENCE_URL = "https://creativecommons.org/licenses/by/4.0/"
 SKILL_NAME = "good-code-review"
+INDEXNOW_KEY = "f400dd418272a4ed9b4e6ff381270db6"  # public: IndexNow checks that /<key>.txt on the site holds it (tools/indexnow.py)
 FONTSOURCE_VERSION = "5.3.0"  # the @fontsource release the files in tools/fonts were taken from (IBM Plex, SIL OFL 1.1)
 SIMPLE_ICONS_VERSION = "15.22.0"  # the release that tools/org_icons.json was taken from (CC0, https://simpleicons.org)
 SBOM_FILE = ROOT / "sbom.cdx.json"
